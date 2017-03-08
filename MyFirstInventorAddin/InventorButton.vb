@@ -105,6 +105,7 @@ Namespace MyFirstInventorAddin
             Inherits AxHost
 
             Public Sub New()
+                MyBase.New(String.Empty)
             End Sub
 
             Public Shared Function ImageToPicture(ByVal image As Image) As stdole.IPictureDisp

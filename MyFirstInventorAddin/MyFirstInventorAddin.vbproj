@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="AddinGlobal.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="ButtonActions.vb" />
     <Compile Include="InventorButton.vb" />
     <Compile Include="iPropertiesForm.Designer.vb">
       <DependentUpon>iPropertiesForm.vb</DependentUpon>
@@ -152,6 +153,9 @@
     <EmbeddedResource Include="iPropertiesForm.resx">
       <DependentUpon>iPropertiesForm.vb</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\addin.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

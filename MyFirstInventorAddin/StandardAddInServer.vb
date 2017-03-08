@@ -1,6 +1,8 @@
 Imports Inventor
 Imports System.Runtime.InteropServices
 Imports log4net
+Imports System.Drawing
+Imports System.Reflection
 
 Namespace MyFirstInventorAddin
     <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"), _
@@ -13,7 +15,7 @@ Namespace MyFirstInventorAddin
         Private WithEvents m_UserInputEvents As UserInputEvents
         Private WithEvents m_AppEvents As ApplicationEvents
 
-        Private thisAssembly As System.Reflection.Assembly = Reflection.Assembly.GetExecutingAssembly()
+        Private thisAssembly As System.Reflection.Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
@@ -27,33 +29,47 @@ Namespace MyFirstInventorAddin
         ' This method is called by Inventor when it loads the AddIn. The AddInSiteObject provides access  
         ' to the Inventor Application object. The FirstTime flag indicates if the AddIn is loaded for
         ' the first time. However, with the introduction of the ribbon this argument is always true.
-        Public Sub Activate(ByVal addInSiteObject As Inventor.ApplicationAddInSite, ByVal firstTime As Boolean) Implements Inventor.ApplicationAddInServer.Activate
+        Public Sub Activate(ByVal addInSiteObject As ApplicationAddInSite, ByVal firstTime As Boolean) Implements ApplicationAddInServer.Activate
             ' Initialize AddIn members.
-            g_inventorApplication = addInSiteObject.Application
-            'store our Addin path.
-            thisAssemblyPath = IO.Path.GetDirectoryName(thisAssembly.Location)
-            ' Connect to the user-interface events to handle a ribbon reset.
-            m_uiEvents = g_inventorApplication.UserInterfaceManager.UserInterfaceEvents
-            'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
-            m_AppEvents = g_inventorApplication.ApplicationEvents
-            'start our logger.
-            logHelper.Init()
-            logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
-            logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
-            logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
-            log.Debug("Loading My First Inventor Addin")
-            ' TODO: Add button definitions.
+            AddinGlobal.InventorApp = addInSiteObject.Application
+            Try
 
-            ' Sample to illustrate creating a button definition.
-            'Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourBigImage)
-            'Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourSmallImage)
-            'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
-            'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
 
-            ' Add to the user interface, if it's the first time.
-            If firstTime Then
-                AddToUserInterface()
-            End If
+                AddinGlobal.GetAddinClassId(Me.GetType())
+                'store our Addin path.
+                thisAssemblyPath = IO.Path.GetDirectoryName(thisAssembly.Location)
+                ' Connect to the user-interface events to handle a ribbon reset.
+                m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
+                'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
+                m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
+                'start our logger.
+                logHelper.Init()
+                logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
+                logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
+                logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
+                log.Debug("Loading My First Inventor Addin")
+                ' TODO: Add button definitions.
+
+                ' Sample to illustrate creating a button definition.
+                'Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourBigImage)
+                'Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourSmallImage)
+                'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
+                'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
+
+                Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("MyFirstInventorAddin.addin.ico"))
+                'Change it if necessary but make sure it's embedded.
+                Dim button1 As New InventorButton("Button 1", "MyVBInventorAddin.Button_" & Guid.NewGuid().ToString(), "Button 1 description", "Button 1 tooltip", icon1, icon1,
+                    CommandTypesEnum.kShapeEditCmdType, ButtonDisplayEnum.kDisplayTextInLearningMode)
+                button1.SetBehavior(True, True, True)
+                button1.Execute = AddressOf ButtonActions.Button1_Execute
+
+                ' Add to the user interface, if it's the first time.
+                If firstTime Then
+                    AddToUserInterface(button1)
+                End If
+            Catch ex As Exception
+                log.Error(ex.Message)
+            End Try
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
@@ -61,10 +77,22 @@ Namespace MyFirstInventorAddin
         Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
 
             ' TODO:  Add ApplicationAddInServer.Deactivate implementation
+            For Each item As InventorButton In AddinGlobal.ButtonList
+                Marshal.FinalReleaseComObject(item.ButtonDef)
+            Next
+
 
             ' Release objects.
+            m_UserInputEvents = Nothing
+            m_AppEvents = Nothing
             m_uiEvents = Nothing
-            g_inventorApplication = Nothing
+
+            If AddinGlobal.RibbonPanel IsNot Nothing Then
+                Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
+            End If
+            If AddinGlobal.InventorApp IsNot Nothing Then
+                Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
+            End If
 
             System.GC.Collect()
             System.GC.WaitForPendingFinalizers()
@@ -89,7 +117,7 @@ Namespace MyFirstInventorAddin
 #Region "User interface definition"
         ' Sub where the user-interface creation is done.  This is called when
         ' the add-in loaded and also if the user interface is reset.
-        Private Sub AddToUserInterface()
+        Private Sub AddToUserInterface(button1 As InventorButton)
             ' This is where you'll add code to add buttons to the ribbon.
 
             '** Sample to illustrate creating a button on a new panel of the Tools tab of the Part ribbon.
@@ -105,12 +133,34 @@ Namespace MyFirstInventorAddin
 
             '' Add a button.
             'customPanel.CommandControls.AddButton(m_sampleButton)
-        End Sub
+            Try
 
-        Private Sub m_uiEvents_OnResetRibbonInterface(Context As NameValueMap) Handles m_uiEvents.OnResetRibbonInterface
-            ' The ribbon was reset, so add back the add-ins user-interface.
-            AddToUserInterface()
+
+                Dim uiMan As UserInterfaceManager = AddinGlobal.InventorApp.UserInterfaceManager
+                If uiMan.InterfaceStyle = InterfaceStyleEnum.kRibbonInterface Then
+                    'kClassicInterface support can be added if necessary.
+                    Dim ribbon As Inventor.Ribbon = uiMan.Ribbons("Part")
+                    Dim tab As RibbonTab
+                    Try
+                        tab = ribbon.RibbonTabs("id_TabSheetMetal") 'Change it if necessary.
+                    Catch
+                        tab = ribbon.RibbonTabs.Add("id_TabSheetMetal", "id_Tabid_TabSheetMetal", Guid.NewGuid().ToString())
+                    End Try
+                    AddinGlobal.RibbonPanelId = "{51f8ccf4-5fc6-4592-b68d-e19c993f5faa}"
+                    AddinGlobal.RibbonPanel = tab.RibbonPanels.Add("InventorNetAddin", "MyVBInventorAddin.RibbonPanel_" & Guid.NewGuid().ToString(), AddinGlobal.RibbonPanelId, String.Empty, True)
+
+                    Dim cmdCtrls As CommandControls = AddinGlobal.RibbonPanel.CommandControls
+                    cmdCtrls.AddButton(button1.ButtonDef, button1.DisplayBigIcon, button1.DisplayText, "", button1.InsertBeforeTarget)
+                End If
+            Catch ex As Exception
+                log.Error(ex.Message)
+            End Try
         End Sub
+        'no need for this since we can just restart Inventor and have it reload the addin.
+        'Private Sub m_uiEvents_OnResetRibbonInterface(Context As NameValueMap) Handles m_uiEvents.OnResetRibbonInterface
+        '    ' The ribbon was reset, so add back the add-ins user-interface.
+        '    AddToUserInterface()
+        'End Sub
 
         ' Sample handler for the button.
         'Private Sub m_sampleButton_OnExecute(Context As NameValueMap) Handles m_sampleButton.OnExecute
