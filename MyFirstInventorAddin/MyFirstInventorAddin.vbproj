@@ -94,7 +94,9 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddinGlobal.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="InventorButton.vb" />
     <Compile Include="iPropertiesForm.Designer.vb">
       <DependentUpon>iPropertiesForm.vb</DependentUpon>
     </Compile>
@@ -107,7 +109,9 @@
     <None Include="MyFirstInventorAddin.X.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Autodesk.MyFirstInventorAddin.Inventor.addin" />
+    <None Include="Autodesk.MyFirstInventorAddin.Inventor.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -153,10 +157,8 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"
-			mt.exe -manifest "$(ProjectDir)MyFirstInventorAddin.X.manifest" -outputresource:"$(TargetPath)";#2
-			XCopy "$(TargetPath)" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-		    XCopy "$(ProjectDir)Autodesk.MyFirstInventorAddin.Inventor.addin" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-	</PostBuildEvent>
+    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)MyFirstInventorAddin.X.manifest" -outputresource:"$(TargetPath)";#2
+XCopy "$(TargetDir)*.*" "%25ALLUSERSPROFILE%25\Autodesk\ApplicationPlugins\$(TargetName)\*.*" /Y /R
+if not exist "C:\Logs" mkdir "C:\Logs"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,7 +1,6 @@
 Imports Inventor
 Imports System.Runtime.InteropServices
 Imports log4net
-Imports Log4NetFileHelper
 
 Namespace MyFirstInventorAddin
     <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"), _
@@ -17,7 +16,7 @@ Namespace MyFirstInventorAddin
         Private thisAssembly As System.Reflection.Assembly = Reflection.Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
 
-        Private logHelper As Log4NetFileHelper = New Log4NetFileHelper()
+        Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
 
 
@@ -31,10 +30,18 @@ Namespace MyFirstInventorAddin
         Public Sub Activate(ByVal addInSiteObject As Inventor.ApplicationAddInSite, ByVal firstTime As Boolean) Implements Inventor.ApplicationAddInServer.Activate
             ' Initialize AddIn members.
             g_inventorApplication = addInSiteObject.Application
-
+            'store our Addin path.
+            thisAssemblyPath = IO.Path.GetDirectoryName(thisAssembly.Location)
             ' Connect to the user-interface events to handle a ribbon reset.
             m_uiEvents = g_inventorApplication.UserInterfaceManager.UserInterfaceEvents
-
+            'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
+            m_AppEvents = g_inventorApplication.ApplicationEvents
+            'start our logger.
+            logHelper.Init()
+            logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
+            logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
+            logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
+            log.Debug("Loading My First Inventor Addin")
             ' TODO: Add button definitions.
 
             ' Sample to illustrate creating a button definition.
