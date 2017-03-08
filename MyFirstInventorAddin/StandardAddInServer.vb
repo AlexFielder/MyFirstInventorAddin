@@ -1,6 +1,7 @@
 Imports Inventor
 Imports System.Runtime.InteropServices
-Imports Microsoft.Win32
+Imports log4net
+Imports Log4NetFileHelper
 
 Namespace MyFirstInventorAddin
     <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"), _
@@ -8,7 +9,18 @@ Namespace MyFirstInventorAddin
     Public Class StandardAddInServer
         Implements Inventor.ApplicationAddInServer
 
+        'some events objects we might need later
         Private WithEvents m_uiEvents As UserInterfaceEvents
+        Private WithEvents m_UserInputEvents As UserInputEvents
+        Private WithEvents m_AppEvents As ApplicationEvents
+
+        Private thisAssembly As System.Reflection.Assembly = Reflection.Assembly.GetExecutingAssembly()
+        Private thisAssemblyPath As String = String.Empty
+
+        Private logHelper As Log4NetFileHelper = New Log4NetFileHelper()
+        Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
+
+
         'Private WithEvents m_sampleButton As ButtonDefinition
 
 #Region "ApplicationAddInServer Members"
