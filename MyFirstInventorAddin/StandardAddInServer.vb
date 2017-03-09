@@ -81,6 +81,7 @@ Namespace MyFirstInventorAddin
                     Window = localWindow
 
                 End If
+                log.Info("Loaded My First Inventor Add-in")
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try

@@ -11,6 +11,7 @@ Public Class iPropertiesForm
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
     Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+        log.Debug("Loading iProperties Form")
         InitializeComponent()
         Me.inventorApp = inventorApp
         Me.value = addinCLS
@@ -26,6 +27,7 @@ Public Class iPropertiesForm
         Me.Dock = DockStyle.Fill
         Me.Visible = True
         localWindow = myDockableWindow
+        log.Info("iProperties Form Loaded")
     End Sub
 
     Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave
