@@ -49,6 +49,7 @@ Namespace MyFirstInventorAddin
 
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
+                AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
 
                 'start our logger.
                 logHelper.Init()
@@ -85,6 +86,13 @@ Namespace MyFirstInventorAddin
             End Try
         End Sub
 
+        Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                UpdateDisplayediProperties()
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
         Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
@@ -98,7 +106,9 @@ Namespace MyFirstInventorAddin
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
-
+        ''' <summary>
+        ''' Need to add more updates here as we add textboxes and therefore properties to this list.
+        ''' </summary>
         Private Sub UpdateDisplayediProperties()
             myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
             myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
@@ -107,27 +117,30 @@ Namespace MyFirstInventorAddin
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
         ' unloaded either manually by the user or when the Inventor session is terminated.
         Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
+            Try
+                ' TODO:  Add ApplicationAddInServer.Deactivate implementation
+                For Each item As InventorButton In AddinGlobal.ButtonList
+                    Marshal.FinalReleaseComObject(item.ButtonDef)
+                Next
 
-            ' TODO:  Add ApplicationAddInServer.Deactivate implementation
-            For Each item As InventorButton In AddinGlobal.ButtonList
-                Marshal.FinalReleaseComObject(item.ButtonDef)
-            Next
 
+                ' Release objects.
+                m_UserInputEvents = Nothing
+                m_AppEvents = Nothing
+                m_uiEvents = Nothing
 
-            ' Release objects.
-            m_UserInputEvents = Nothing
-            m_AppEvents = Nothing
-            m_uiEvents = Nothing
+                If AddinGlobal.RibbonPanel IsNot Nothing Then
+                    Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
+                End If
+                If AddinGlobal.InventorApp IsNot Nothing Then
+                    Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
+                End If
 
-            If AddinGlobal.RibbonPanel IsNot Nothing Then
-                Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
-            End If
-            If AddinGlobal.InventorApp IsNot Nothing Then
-                Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
-            End If
-
-            System.GC.Collect()
-            System.GC.WaitForPendingFinalizers()
+                System.GC.Collect()
+                System.GC.WaitForPendingFinalizers()
+            Catch ex As Exception
+                log.Error(ex.Message)
+            End Try
         End Sub
 
         ' This property is provided to allow the AddIn to expose an API of its own to other 

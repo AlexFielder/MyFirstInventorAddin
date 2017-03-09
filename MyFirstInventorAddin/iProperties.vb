@@ -97,7 +97,11 @@ Namespace yFirstInventorAddin
             If propertyTypeStr = String.Empty Then
                 propertyTypeStr = GetiPropertyTypeString(invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum))
             End If
-            Return currentvalue
+            If currentvalue = String.Empty Then
+                Return newpropertyvalue
+            Else
+                Return currentvalue
+            End If
         End Function
 
         ''' <summary>
@@ -122,7 +126,11 @@ Namespace yFirstInventorAddin
             If propertyTypeStr = String.Empty Then
                 propertyTypeStr = GetiPropertyTypeString(invSummaryiProperties.ItemByPropId(iPropertyTypeEnum))
             End If
-            Return currentvalue
+            If currentvalue = String.Empty Then
+                Return newpropertyvalue
+            Else
+                Return currentvalue
+            End If
         End Function
 #End Region
 #Region "Get or Set Custom iProperty Values"
