@@ -3,6 +3,7 @@ Imports System.Runtime.InteropServices
 Imports log4net
 Imports System.Drawing
 Imports System.Reflection
+Imports MyFirstInventorAddin.yFirstInventorAddin
 
 Namespace MyFirstInventorAddin
     <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"), _
@@ -15,8 +16,10 @@ Namespace MyFirstInventorAddin
         Private WithEvents m_UserInputEvents As UserInputEvents
         Private WithEvents m_AppEvents As ApplicationEvents
 
-        Private thisAssembly As System.Reflection.Assembly = Assembly.GetExecutingAssembly()
+        Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
+        Public Shared attribute As GuidAttribute = Nothing
+        Public myiPropsForm As iPropertiesForm = Nothing
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
@@ -32,6 +35,7 @@ Namespace MyFirstInventorAddin
         Public Sub Activate(ByVal addInSiteObject As ApplicationAddInSite, ByVal firstTime As Boolean) Implements ApplicationAddInServer.Activate
             ' Initialize AddIn members.
             AddinGlobal.InventorApp = addInSiteObject.Application
+            attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
             Try
 
 
@@ -42,6 +46,10 @@ Namespace MyFirstInventorAddin
                 m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
                 'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
                 m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
+
+                AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
+                AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
+
                 'start our logger.
                 logHelper.Init()
                 logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
@@ -66,10 +74,34 @@ Namespace MyFirstInventorAddin
                 ' Add to the user interface, if it's the first time.
                 If firstTime Then
                     AddToUserInterface(button1)
+                    'add our userform to a new DockableWindow
+                    Dim localWindow As DockableWindow = Nothing
+                    myiPropsForm = New iPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
+                    Window = localWindow
+
                 End If
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                UpdateDisplayediProperties()
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                UpdateDisplayediProperties()
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+        Private Sub UpdateDisplayediProperties()
+            myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+            myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
@@ -106,6 +138,25 @@ Namespace MyFirstInventorAddin
                 Return Nothing
             End Get
         End Property
+
+        Private m_thisWindow As DockableWindow
+        Public Property Window() As DockableWindow
+            Get
+                Return m_thisWindow
+            End Get
+            Set(ByVal value As DockableWindow)
+                m_thisWindow = value
+            End Set
+        End Property
+
+        'Public Property Window As DockableWindow
+        '    Get
+        '        Return
+        '    End Get
+        '    Set(value As DockableWindow)
+
+        '    End Set
+        'End Property
 
         ' Note:this method is now obsolete, you should use the 
         ' ControlDefinition functionality for implementing commands.
@@ -155,6 +206,10 @@ Namespace MyFirstInventorAddin
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Protected Overrides Sub Finalize()
+            MyBase.Finalize()
         End Sub
         'no need for this since we can just restart Inventor and have it reload the addin.
         'Private Sub m_uiEvents_OnResetRibbonInterface(Context As NameValueMap) Handles m_uiEvents.OnResetRibbonInterface
