@@ -21,8 +21,13 @@ Public Class iPropertiesForm
         myDockableWindow.AddChild(Me.Handle)
 
         If Not myDockableWindow.IsCustomized = True Then
+            'myDockableWindow.DockingState = DockingStateEnum.kFloat
+            myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
+        Else
             myDockableWindow.DockingState = DockingStateEnum.kFloat
         End If
+
+        myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
 
         Me.Dock = DockStyle.Fill
         Me.Visible = True
@@ -52,6 +57,55 @@ Public Class iPropertiesForm
                                                           TextBox2.Text,
                                                           "")
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox3_Leave(sender As Object, e As EventArgs) Handles TextBox3.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
+                                                          TextBox3.Text,
+                                                          "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Stock Number Updated to: " + iPropPartNum)
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox4_Leave(sender As Object, e As EventArgs) Handles TextBox4.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                          TextBox4.Text,
+                                                          "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
+            End If
+        End If
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        'need to decide whether or not to leave our textbox.leave events as they are or change all to be driven by 
+        'clicking this button.
+        'If we do change, we need to error check the one time for activedocument and filename.length
+
+        'For Each TxtBox As Windows.Forms.TextBox In Me.Controls
+        '    ' this may or may not work because of the different types available within the controls collection.
+        'Next
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                'try these and see if they fire or not!
+                TextBox1_Leave(sender, e)
+                TextBox2_Leave(sender, e)
+                TextBox3_Leave(sender, e)
+                TextBox4_Leave(sender, e)
+                Dim iPropPartNum As String =
+                    TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox5.Text)
             End If
         End If
     End Sub
