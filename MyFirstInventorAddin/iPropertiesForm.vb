@@ -11,28 +11,34 @@ Public Class iPropertiesForm
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
     Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
-        log.Debug("Loading iProperties Form")
-        InitializeComponent()
-        Me.inventorApp = inventorApp
-        Me.value = addinCLS
-        Me.localWindow = localWindow
-        Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-        Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "MyFirstWindow", "My Add-in Dock")
-        myDockableWindow.AddChild(Me.Handle)
+        Try
+            log.Debug("Loading iProperties Form")
+            InitializeComponent()
+            Me.inventorApp = inventorApp
+            Me.value = addinCLS
+            Me.localWindow = localWindow
+            Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "MyFirstWindow", "My Add-in Dock")
+            myDockableWindow.AddChild(Me.Handle)
 
-        If Not myDockableWindow.IsCustomized = True Then
-            'myDockableWindow.DockingState = DockingStateEnum.kFloat
-            myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
-        Else
-            myDockableWindow.DockingState = DockingStateEnum.kFloat
-        End If
+            If Not myDockableWindow.IsCustomized = True Then
+                'myDockableWindow.DockingState = DockingStateEnum.kFloat
+                myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
+            Else
+                myDockableWindow.DockingState = DockingStateEnum.kFloat
+            End If
 
-        myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+            myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
 
-        Me.Dock = DockStyle.Fill
-        Me.Visible = True
-        localWindow = myDockableWindow
+            Me.Dock = DockStyle.Fill
+            Me.Visible = True
+            localWindow = myDockableWindow
+            AddinGlobal.DockableList.Add(myDockableWindow)
+        Catch ex As Exception
+            log.Error(ex.Message)
+        End Try
         log.Info("iProperties Form Loaded")
+
     End Sub
 
     Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave

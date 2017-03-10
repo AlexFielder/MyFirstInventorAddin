@@ -133,8 +133,13 @@ Namespace MyFirstInventorAddin
                     Marshal.FinalReleaseComObject(item.ButtonDef)
                 Next
 
+                For Each item As DockableWindow In AddinGlobal.DockableList
+                    Marshal.FinalReleaseComObject(item)
+                Next
 
                 ' Release objects.
+                thisAssembly = Nothing
+                myiPropsForm = Nothing
                 m_UserInputEvents = Nothing
                 m_AppEvents = Nothing
                 m_uiEvents = Nothing
@@ -142,12 +147,12 @@ Namespace MyFirstInventorAddin
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
                 End If
-                If AddinGlobal.InventorApp IsNot Nothing Then
-                    Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
-                End If
+                'If AddinGlobal.InventorApp IsNot Nothing Then
+                '    Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
+                'End If
 
-                System.GC.Collect()
-                System.GC.WaitForPendingFinalizers()
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
