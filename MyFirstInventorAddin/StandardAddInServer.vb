@@ -121,6 +121,7 @@ Namespace MyFirstInventorAddin
             Dim myMass2 As Decimal = Math.Round(kgMass, 3)
             'Dim iPropPartNum As String =
             myiPropsForm.TextBox5.Text = myMass2 & " kg"
+            myiPropsForm.Label7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
