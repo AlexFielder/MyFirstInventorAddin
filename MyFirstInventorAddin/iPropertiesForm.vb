@@ -96,15 +96,21 @@ Public Class iPropertiesForm
         'For Each TxtBox As Windows.Forms.TextBox In Me.Controls
         '    ' this may or may not work because of the different types available within the controls collection.
         'Next
+
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                 'try these and see if they fire or not!
                 TextBox1_Leave(sender, e)
                 TextBox2_Leave(sender, e)
                 TextBox3_Leave(sender, e)
                 TextBox4_Leave(sender, e)
-                Dim iPropPartNum As String =
-                    TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "")
+                Dim kgMass As Decimal = myMass / 1000
+                Dim myMass2 As Decimal = Math.Round(kgMass, 1)
+                'Dim iPropPartNum As String =
+                TextBox5.Text = myMass2 & " kg"
+                'TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox5.Text)
             End If
         End If
