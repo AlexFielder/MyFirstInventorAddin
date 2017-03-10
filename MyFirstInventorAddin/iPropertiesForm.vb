@@ -105,9 +105,9 @@ Public Class iPropertiesForm
                 TextBox2_Leave(sender, e)
                 TextBox3_Leave(sender, e)
                 TextBox4_Leave(sender, e)
-                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "")
+                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 Dim kgMass As Decimal = myMass / 1000
-                Dim myMass2 As Decimal = Math.Round(kgMass, 1)
+                Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                 'Dim iPropPartNum As String =
                 TextBox5.Text = myMass2 & " kg"
                 'TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
