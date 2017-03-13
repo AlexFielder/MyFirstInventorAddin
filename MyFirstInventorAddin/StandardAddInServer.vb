@@ -115,11 +115,10 @@ Namespace MyFirstInventorAddin
             myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
             myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
             myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-            'myiPropsForm.TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+
             Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
             Dim kgMass As Decimal = myMass / 1000
             Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-            'Dim iPropPartNum As String =
             myiPropsForm.TextBox5.Text = myMass2 & " kg"
             myiPropsForm.Label7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
 
@@ -134,6 +133,16 @@ Namespace MyFirstInventorAddin
             Else
                 myiPropsForm.Button2.Hide()
                 myiPropsForm.Label8.Hide()
+            End If
+
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                myiPropsForm.Label9.Show()
+                myiPropsForm.TextBox6.Show()
+                Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                myiPropsForm.TextBox6.Text = myDensity & " g/cm^3"
+            Else
+                myiPropsForm.Label9.Hide()
+                myiPropsForm.TextBox6.Hide()
             End If
 
         End Sub

@@ -111,13 +111,16 @@ Public Class iPropertiesForm
                 TextBox2_Leave(sender, e)
                 TextBox3_Leave(sender, e)
                 TextBox4_Leave(sender, e)
+
                 Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 Dim kgMass As Decimal = myMass / 1000
                 Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-                'Dim iPropPartNum As String =
                 TextBox5.Text = myMass2 & " kg"
-                'TextBox5.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox5.Text)
+
+                Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                TextBox6.Text = myDensity & " g/cm^3"
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox6.Text)
             End If
         End If
     End Sub
