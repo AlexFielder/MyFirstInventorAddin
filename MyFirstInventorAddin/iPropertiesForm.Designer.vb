@@ -35,6 +35,8 @@ Partial Class iPropertiesForm
         Me.TextBox5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.Button2 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Label1
@@ -48,7 +50,7 @@ Partial Class iPropertiesForm
         '
         'TextBox1
         '
-        Me.TextBox1.Location = New System.Drawing.Point(92, 6)
+        Me.TextBox1.Location = New System.Drawing.Point(101, 6)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(180, 20)
         Me.TextBox1.TabIndex = 1
@@ -64,7 +66,7 @@ Partial Class iPropertiesForm
         '
         'TextBox2
         '
-        Me.TextBox2.Location = New System.Drawing.Point(92, 29)
+        Me.TextBox2.Location = New System.Drawing.Point(101, 29)
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.Size = New System.Drawing.Size(180, 20)
         Me.TextBox2.TabIndex = 2
@@ -80,7 +82,7 @@ Partial Class iPropertiesForm
         '
         'TextBox3
         '
-        Me.TextBox3.Location = New System.Drawing.Point(92, 52)
+        Me.TextBox3.Location = New System.Drawing.Point(101, 52)
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(180, 20)
         Me.TextBox3.TabIndex = 3
@@ -96,7 +98,7 @@ Partial Class iPropertiesForm
         '
         'TextBox4
         '
-        Me.TextBox4.Location = New System.Drawing.Point(92, 75)
+        Me.TextBox4.Location = New System.Drawing.Point(101, 75)
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(180, 20)
         Me.TextBox4.TabIndex = 4
@@ -112,7 +114,7 @@ Partial Class iPropertiesForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(198, 100)
+        Me.Button1.Location = New System.Drawing.Point(208, 101)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 23)
         Me.Button1.TabIndex = 200
@@ -146,11 +148,31 @@ Partial Class iPropertiesForm
         Me.Label7.TabIndex = 6
         Me.Label7.Text = "Date"
         '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(12, 160)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(118, 13)
+        Me.Label8.TabIndex = 107
+        Me.Label8.Text = "Defer Drawing Updates"
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(175, 155)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(108, 23)
+        Me.Button2.TabIndex = 201
+        Me.Button2.Text = "Defer/Un-Defer"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(284, 261)
+        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.TextBox5)
@@ -186,4 +208,6 @@ Partial Class iPropertiesForm
     Friend WithEvents TextBox5 As Windows.Forms.Label
     Friend WithEvents Label6 As Windows.Forms.Label
     Friend WithEvents Label7 As Windows.Forms.Label
+    Friend WithEvents Label8 As Windows.Forms.Label
+    Friend WithEvents Button2 As Windows.Forms.Button
 End Class
