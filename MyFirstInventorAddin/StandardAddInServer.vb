@@ -128,7 +128,7 @@ Namespace MyFirstInventorAddin
                 myiPropsForm.TextBox5.Text = myMass2 & " kg"
             End If
 
-            myiPropsForm.Label7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
+            myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
 
             If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                 myiPropsForm.Button2.Show()
@@ -154,6 +154,8 @@ Namespace MyFirstInventorAddin
             End If
 
             myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+
+
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be

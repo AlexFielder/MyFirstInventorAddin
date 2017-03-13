@@ -144,4 +144,9 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.ValueChanged
+
+        inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value
+
+    End Sub
 End Class
