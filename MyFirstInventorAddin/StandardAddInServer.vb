@@ -122,11 +122,20 @@ Namespace MyFirstInventorAddin
             'Dim iPropPartNum As String =
             myiPropsForm.TextBox5.Text = myMass2 & " kg"
             myiPropsForm.Label7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
-            If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                myiPropsForm.Label8.Text = "Drawing Updates Deferred"
-            ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
+
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                myiPropsForm.Button2.Show()
+                myiPropsForm.Label8.Show()
+                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                    myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                    myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
+                End If
+            Else
+                myiPropsForm.Button2.Hide()
+                myiPropsForm.Label8.Hide()
             End If
+
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
