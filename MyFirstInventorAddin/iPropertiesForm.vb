@@ -124,13 +124,17 @@ Public Class iPropertiesForm
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         'Toggle 'Defer updates' on and off in a Drawing
-
-        If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-            inventorApp.DrawingSettings.DeferUpdates() = False
-            Label8.Text = "Drawing Updates Not Deferred"
-        ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-            inventorApp.DrawingSettings.DeferUpdates() = True
-            Label8.Text = "Drawing Updates Deferred"
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
+                    'DrawingSettings.DeferUpdates = False
+                    Label8.Text = "Drawing Updates Not Deferred"
+                ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                    Label8.Text = "Drawing Updates Deferred"
+                End If
+            End If
         End If
     End Sub
 End Class
