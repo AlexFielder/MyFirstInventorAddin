@@ -116,10 +116,18 @@ Namespace MyFirstInventorAddin
             myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
             myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
 
-            Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-            Dim kgMass As Decimal = myMass / 1000
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                myiPropsForm.Label5.Hide()
+                myiPropsForm.TextBox5.Hide()
+            Else
+                myiPropsForm.Label5.Show()
+                myiPropsForm.TextBox5.Show()
+                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                Dim kgMass As Decimal = myMass / 1000
             Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-            myiPropsForm.TextBox5.Text = myMass2 & " kg"
+                myiPropsForm.TextBox5.Text = myMass2 & " kg"
+            End If
+
             myiPropsForm.Label7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
 
             If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -135,16 +143,17 @@ Namespace MyFirstInventorAddin
                 myiPropsForm.Label8.Hide()
             End If
 
-            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                myiPropsForm.Label9.Show()
-                myiPropsForm.TextBox6.Show()
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                myiPropsForm.Label9.Hide()
+                myiPropsForm.TextBox6.Hide()
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                 myiPropsForm.TextBox6.Text = myDensity & " g/cm^3"
             Else
-                myiPropsForm.Label9.Hide()
-                myiPropsForm.TextBox6.Hide()
+                myiPropsForm.Label9.Show()
+                myiPropsForm.TextBox6.Show()
             End If
 
+            myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be

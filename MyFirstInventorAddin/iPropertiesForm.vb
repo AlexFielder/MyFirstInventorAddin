@@ -121,6 +121,8 @@ Public Class iPropertiesForm
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                 TextBox6.Text = myDensity & " g/cm^3"
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox6.Text)
+
+                Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
             End If
         End If
     End Sub
@@ -141,4 +143,5 @@ Public Class iPropertiesForm
             End If
         End If
     End Sub
+
 End Class
