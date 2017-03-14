@@ -143,6 +143,7 @@ Public Class iPropertiesForm
                 TextBox2_Leave(sender, e)
                 TextBox3_Leave(sender, e)
                 TextBox4_Leave(sender, e)
+                TextBox7_Leave(sender, e)
 
                 Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 Dim kgMass As Decimal = myMass / 1000
@@ -180,5 +181,18 @@ Public Class iPropertiesForm
 
         inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value
 
+    End Sub
+
+    Private Sub TextBox7_Leave(sender As Object, e As EventArgs) Handles TextBox7.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForSummaryInformationEnum.kAuthorSummaryInformation,
+                                                          TextBox7.Text,
+                                                          "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropPartNum)
+            End If
+        End If
     End Sub
 End Class

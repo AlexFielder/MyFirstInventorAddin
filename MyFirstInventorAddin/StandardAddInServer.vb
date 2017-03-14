@@ -188,7 +188,14 @@ Namespace MyFirstInventorAddin
 
             myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                myiPropsForm.Label7.Show()
+                myiPropsForm.TextBox7.Show()
+                myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+            Else
+                myiPropsForm.Label7.Hide()
+                myiPropsForm.TextBox7.Hide()
+            End If
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be

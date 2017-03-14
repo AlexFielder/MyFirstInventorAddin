@@ -41,6 +41,8 @@ Partial Class iPropertiesForm
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.TextBox7 = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -58,7 +60,6 @@ Partial Class iPropertiesForm
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(210, 20)
         Me.TextBox1.TabIndex = 1
-        Me.TextBox1.Text = ""
         '
         'Label2
         '
@@ -73,9 +74,9 @@ Partial Class iPropertiesForm
         '
         Me.TextBox2.Location = New System.Drawing.Point(101, 29)
         Me.TextBox2.Name = "TextBox2"
+        Me.TextBox2.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal
         Me.TextBox2.Size = New System.Drawing.Size(210, 20)
         Me.TextBox2.TabIndex = 2
-        Me.TextBox2.Text = ""
         '
         'Label3
         '
@@ -92,7 +93,6 @@ Partial Class iPropertiesForm
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(210, 20)
         Me.TextBox3.TabIndex = 3
-        Me.TextBox3.Text = ""
         '
         'Label4
         '
@@ -109,7 +109,6 @@ Partial Class iPropertiesForm
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(210, 20)
         Me.TextBox4.TabIndex = 4
-        Me.TextBox4.Text = ""
         '
         'Label5
         '
@@ -122,9 +121,9 @@ Partial Class iPropertiesForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(236, 101)
+        Me.Button1.Location = New System.Drawing.Point(207, 101)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.Size = New System.Drawing.Size(104, 40)
         Me.Button1.TabIndex = 200
         Me.Button1.Text = "Update All"
         Me.Button1.UseVisualStyleBackColor = True
@@ -191,7 +190,7 @@ Partial Class iPropertiesForm
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(104, 147)
+        Me.Label12.Location = New System.Drawing.Point(100, 147)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(44, 13)
         Me.Label12.TabIndex = 9
@@ -206,11 +205,29 @@ Partial Class iPropertiesForm
         Me.DateTimePicker1.Size = New System.Drawing.Size(136, 20)
         Me.DateTimePicker1.TabIndex = 301
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(12, 102)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(53, 13)
+        Me.Label7.TabIndex = 110
+        Me.Label7.Text = "Drawn By"
+        '
+        'TextBox7
+        '
+        Me.TextBox7.Location = New System.Drawing.Point(101, 98)
+        Me.TextBox7.Name = "TextBox7"
+        Me.TextBox7.Size = New System.Drawing.Size(100, 20)
+        Me.TextBox7.TabIndex = 7
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(325, 234)
+        Me.ClientSize = New System.Drawing.Size(325, 248)
+        Me.Controls.Add(Me.TextBox7)
+        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
@@ -258,4 +275,6 @@ Partial Class iPropertiesForm
     Friend WithEvents Label11 As Windows.Forms.Label
     Friend WithEvents Label12 As Windows.Forms.Label
     Friend WithEvents DateTimePicker1 As Windows.Forms.DateTimePicker
+    Friend WithEvents Label7 As Windows.Forms.Label
+    Friend WithEvents TextBox7 As Windows.Forms.TextBox
 End Class
