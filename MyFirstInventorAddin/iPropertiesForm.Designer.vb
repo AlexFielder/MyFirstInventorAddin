@@ -58,6 +58,7 @@ Partial Class iPropertiesForm
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(210, 20)
         Me.TextBox1.TabIndex = 1
+        Me.TextBox1.Text = ""
         '
         'Label2
         '
@@ -74,6 +75,7 @@ Partial Class iPropertiesForm
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.Size = New System.Drawing.Size(210, 20)
         Me.TextBox2.TabIndex = 2
+        Me.TextBox2.Text = ""
         '
         'Label3
         '
@@ -90,6 +92,7 @@ Partial Class iPropertiesForm
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(210, 20)
         Me.TextBox3.TabIndex = 3
+        Me.TextBox3.Text = ""
         '
         'Label4
         '
@@ -106,6 +109,7 @@ Partial Class iPropertiesForm
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(210, 20)
         Me.TextBox4.TabIndex = 4
+        Me.TextBox4.Text = ""
         '
         'Label5
         '

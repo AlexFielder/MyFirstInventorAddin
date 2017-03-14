@@ -44,12 +44,20 @@ Public Class iPropertiesForm
     Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                Dim iPropPartNum As String =
+                If TextBox1.Text = "Part Number" Then
+                    Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
+                                                          "",
+                                                          "")
+                Else
+                    Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
                                                           TextBox1.Text,
                                                           "")
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Part Number Updated to: " + iPropPartNum)
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Part Number Updated to: " + iPropPartNum)
+                End If
             End If
         End If
     End Sub
@@ -57,12 +65,20 @@ Public Class iPropertiesForm
     Private Sub TextBox2_Leave(sender As Object, e As EventArgs) Handles TextBox2.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                Dim iPropPartNum As String =
+                If TextBox2.Text = "Description" Then
+                    Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
+                                                          "",
+                                                          "")
+                Else
+                    Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
                                                           TextBox2.Text,
                                                           "")
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
+                End If
             End If
         End If
     End Sub
@@ -70,12 +86,20 @@ Public Class iPropertiesForm
     Private Sub TextBox3_Leave(sender As Object, e As EventArgs) Handles TextBox3.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                Dim iPropPartNum As String =
+                If TextBox3.Text = "Stock Number" Then
+                    Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
+                                                          "",
+                                                          "")
+                Else
+                    Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
                                                           TextBox3.Text,
                                                           "")
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Stock Number Updated to: " + iPropPartNum)
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Stock Number Updated to: " + iPropPartNum)
+                End If
             End If
         End If
     End Sub
@@ -83,12 +107,20 @@ Public Class iPropertiesForm
     Private Sub TextBox4_Leave(sender As Object, e As EventArgs) Handles TextBox4.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                Dim iPropPartNum As String =
+                If TextBox4.Text = "Engineer" Then
+                    Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                          "",
+                                                          "")
+                Else
+                    Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
                                                           TextBox4.Text,
                                                           "")
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
+                End If
             End If
         End If
     End Sub
