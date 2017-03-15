@@ -224,7 +224,7 @@ Partial Class iPropertiesForm
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(194, 191)
+        Me.Button3.Location = New System.Drawing.Point(105, 62)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(117, 23)
         Me.Button3.TabIndex = 202
