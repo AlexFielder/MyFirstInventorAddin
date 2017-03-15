@@ -20,7 +20,6 @@ Namespace MyFirstInventorAddin
         Private WithEvents m_AssemblyEvents As AssemblyEvents
         Private WithEvents m_PartEvents As PartEvents
         Private WithEvents m_ModelingEvents As ModelingEvents
-        Private WithEvents m_StyleEvents As StyleEvents
 
 
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
@@ -61,9 +60,7 @@ Namespace MyFirstInventorAddin
                 AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
-                'AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
-                'AddHandler m_AppEvents.OnNewDocument, AddressOf Me.m_ApplicationEvents_OnNewDocument
-                'AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+                AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
 
                 'start our logger.
                 logHelper.Init()
@@ -101,11 +98,11 @@ Namespace MyFirstInventorAddin
             End Try
         End Sub
 
-        Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Style As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+        Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
             End If
-            Throw New NotImplementedException()
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -134,20 +131,15 @@ Namespace MyFirstInventorAddin
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
-        Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+        Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
-        Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    UpdateDisplayediProperties()
-                End If
-            End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
+
+
+
         ''' <summary>
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
         ''' </summary>
@@ -237,12 +229,6 @@ Namespace MyFirstInventorAddin
                         myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
                     End If
 
-                    If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-                        myiPropsForm.Button3.Show()
-                    Else
-                        myiPropsForm.Button3.Hide()
-                    End If
-
                     myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
                     myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
@@ -269,12 +255,6 @@ Namespace MyFirstInventorAddin
                 m_UserInputEvents = Nothing
                 m_AppEvents = Nothing
                 m_uiEvents = Nothing
-
-                m_DocEvents = Nothing
-                m_AssemblyEvents = Nothing
-                m_PartEvents = Nothing
-                m_ModelingEvents = Nothing
-                m_StyleEvents = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
