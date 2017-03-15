@@ -197,39 +197,39 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    'Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-    '    Dim doc = inventorApp.ActiveDocument
-    '    Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-    '    Dim oBOM As BOM = oAssyDef.BOM
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim doc = inventorApp.ActiveDocument
+        Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+        Dim oBOM As BOM = oAssyDef.BOM
 
-    '    oBOM.StructuredViewEnabled = True
+        oBOM.StructuredViewEnabled = True
 
-    '    Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+        Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-    '    Dim oBOMRow As BOMRow
+        Dim oBOMRow As BOMRow
 
-    'For Each oBOMRow In oBOMView.BOMRows
-    '    'Set a reference to the primary ComponentDefinition of the row
-    '    Dim oCompDef As ComponentDefinition
-    '    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+        For Each oBOMRow In oBOMView.BOMRows
+            'Set a reference to the primary ComponentDefinition of the row
+            Dim oCompDef As ComponentDefinition
+            oCompDef = oBOMRow.ComponentDefinitions.Item(1)
 
-    '    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-    '    Dim CompFileNameOnly As String
-    '    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+            Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+            Dim CompFileNameOnly As String
+            Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-    '    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+            CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-    '    'MessageBox.Show(CompFileNameOnly)
+            'MessageBox.Show(CompFileNameOnly)
 
-    '    Dim item As String
-    '    item = oBOMRow.ItemNumber
+            Dim item As String
+            item = oBOMRow.ItemNumber
+            iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+            'Dim invCustomPropertySet As PropertySet
+            'invCustomPropertySet = oCompDef.Document.PropertySets.Item("Inventor User Defined Properties")
 
-    '    Dim invCustomPropertySet As PropertySet
-    '    invCustomPropertySet = doc.PropertySets.Item("Inventor User Defined Properties")
-
-    '    invCustomPropertySet.Add(item, "#ITEM")
-    '    'inventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties").Item(CompFileNameOnly).Item("#ITEM").Value = item
-    '    'inventorApp.ActiveDocument.PropertySets.value(CompFileNameOnly, "Custom", "#ITEM") = item
-    'Next
-    'End Sub
+            'invCustomPropertySet.Add(item, "#ITEM")
+            'inventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties").Item(CompFileNameOnly).Item("#ITEM").Value = item
+            'inventorApp.ActiveDocument.PropertySets.value(CompFileNameOnly, "Custom", "#ITEM") = item
+        Next
+    End Sub
 End Class

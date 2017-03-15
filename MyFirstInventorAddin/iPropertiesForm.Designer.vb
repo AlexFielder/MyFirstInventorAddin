@@ -230,7 +230,6 @@ Partial Class iPropertiesForm
         Me.Button3.TabIndex = 202
         Me.Button3.Text = "#ITEM"
         Me.Button3.UseVisualStyleBackColor = True
-        Me.Button3.Visible = False
         '
         'iPropertiesForm
         '
