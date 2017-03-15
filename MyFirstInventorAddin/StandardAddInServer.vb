@@ -324,9 +324,9 @@ Namespace MyFirstInventorAddin
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-                If DocumentToPulliPropValuesFrom.ReadOnly = False Then
+                If DocumentToPulliPropValuesFrom.IsModifiable = True Then
                     myiPropsForm.Label10.Text = "CHECKED OUT"
-                Else
+                ElseIf DocumentToPulliPropValuesFrom.IsModifiable = False Then
                     myiPropsForm.Label10.Text = "CHECKED IN"
                 End If
 
