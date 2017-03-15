@@ -43,6 +43,7 @@ Partial Class iPropertiesForm
         Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.TextBox7 = New System.Windows.Forms.TextBox()
+        Me.Button3 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Label1
@@ -140,7 +141,7 @@ Partial Class iPropertiesForm
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(12, 192)
+        Me.Label8.Location = New System.Drawing.Point(12, 67)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
         Me.Label8.TabIndex = 107
@@ -148,7 +149,7 @@ Partial Class iPropertiesForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(194, 187)
+        Me.Button2.Location = New System.Drawing.Point(194, 62)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(117, 23)
         Me.Button2.TabIndex = 201
@@ -221,11 +222,22 @@ Partial Class iPropertiesForm
         Me.TextBox7.Size = New System.Drawing.Size(100, 20)
         Me.TextBox7.TabIndex = 7
         '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(194, 191)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(117, 23)
+        Me.Button3.TabIndex = 202
+        Me.Button3.Text = "#ITEM"
+        Me.Button3.UseVisualStyleBackColor = True
+        Me.Button3.Visible = False
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(325, 248)
+        Me.ClientSize = New System.Drawing.Size(325, 277)
+        Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.TextBox7)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.DateTimePicker1)
@@ -277,4 +289,5 @@ Partial Class iPropertiesForm
     Friend WithEvents DateTimePicker1 As Windows.Forms.DateTimePicker
     Friend WithEvents Label7 As Windows.Forms.Label
     Friend WithEvents TextBox7 As Windows.Forms.TextBox
+    Friend WithEvents Button3 As Windows.Forms.Button
 End Class
