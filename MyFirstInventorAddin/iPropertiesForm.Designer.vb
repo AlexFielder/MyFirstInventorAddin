@@ -44,6 +44,7 @@ Partial Class iPropertiesForm
         Me.Label7 = New System.Windows.Forms.Label()
         Me.TextBox7 = New System.Windows.Forms.TextBox()
         Me.Button3 = New System.Windows.Forms.Button()
+        Me.Label10 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -231,11 +232,21 @@ Partial Class iPropertiesForm
         Me.Button3.Text = "#ITEM"
         Me.Button3.UseVisualStyleBackColor = True
         '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(238, 169)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(81, 13)
+        Me.Label10.TabIndex = 302
+        Me.Label10.Text = "Checked in/out"
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(325, 277)
+        Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.TextBox7)
         Me.Controls.Add(Me.Label7)
@@ -289,4 +300,5 @@ Partial Class iPropertiesForm
     Friend WithEvents Label7 As Windows.Forms.Label
     Friend WithEvents TextBox7 As Windows.Forms.TextBox
     Friend WithEvents Button3 As Windows.Forms.Button
+    Friend WithEvents Label10 As Windows.Forms.Label
 End Class

@@ -155,6 +155,8 @@ Namespace MyFirstInventorAddin
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 m_DocEvents = DocumentObject.DocumentEvents
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
+                m_StyleEvents = DocumentObject.StyleEvents
+                AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 UpdateDisplayediProperties()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -321,6 +323,12 @@ Namespace MyFirstInventorAddin
                 myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+
+                If DocumentToPulliPropValuesFrom.ReadOnly = False Then
+                    myiPropsForm.Label10.Text = "CHECKED OUT"
+                Else
+                    myiPropsForm.Label10.Text = "CHECKED IN"
+                End If
 
             End If
 
