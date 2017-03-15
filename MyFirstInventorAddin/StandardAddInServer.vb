@@ -61,6 +61,7 @@ Namespace MyFirstInventorAddin
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 End If
                 'start our logger.
