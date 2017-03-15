@@ -4,10 +4,11 @@ Imports log4net
 Imports System.Drawing
 Imports System.Reflection
 Imports MyFirstInventorAddin.yFirstInventorAddin
+Imports System.IO
 
 Namespace MyFirstInventorAddin
-    <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"), _
-    GuidAttribute("e691af34-cb32-4296-8cca-5d1027a27c72")> _
+    <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"),
+    GuidAttribute("e691af34-cb32-4296-8cca-5d1027a27c72")>
     Public Class StandardAddInServer
         Implements Inventor.ApplicationAddInServer
 
@@ -113,7 +114,7 @@ Namespace MyFirstInventorAddin
                 UpdateDisplayediProperties()
 
             End If
-                HandlingCode = HandlingCodeEnum.kEventNotHandled
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -155,10 +156,10 @@ Namespace MyFirstInventorAddin
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 m_DocEvents = DocumentObject.DocumentEvents
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
-                m_StyleEvents = DocumentObject.StyleEvents
-                AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+                'm_StyleEvents = DocumentObject.StyleEvents
+                'AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 UpdateDisplayediProperties()
-                IsModified()
+                'IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -166,7 +167,7 @@ Namespace MyFirstInventorAddin
         Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
-                IsModified()
+                'IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -326,15 +327,42 @@ Namespace MyFirstInventorAddin
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-                'If DocumentToPulliPropValuesFrom.IsModifiable Then
-                '    myiPropsForm.Label10.Text = "CHECKED OUT"
-                'ElseIf DocumentToPulliPropValuesFrom.IsNotModifiable = False Then
-                '    myiPropsForm.Label10.Text = "CHECKED IN"
-                'End If
+                If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                    myiPropsForm.Label10.Text = "CHECKED IN"
+                Else
+                    myiPropsForm.Label10.Text = "CHECKED OUT"
+                End If
 
             End If
 
         End Sub
+        ''' <summary>
+        ''' Original copied verbatim from here:
+        ''' http://adndevblog.typepad.com/manufacturing/2012/05/checking-whether-a-inventor-document-is-read-only-or-not.html
+        ''' Modified as suggested by this page:
+        ''' https://msdn.microsoft.com/en-us/library/system.io.fileattributes(v=vs.110).aspx?f=255&MSPPError=-2147217396&cs-save-lang=1&cs-lang=vb#code-snippet-2
+        ''' </summary>
+        ''' <param name="doc"></param>
+        ''' <returns></returns>
+        Function CheckReadOnly(ByVal doc As Document) As Boolean
+
+            ' Handle the case with the active document never saved
+            If System.IO.File.Exists(doc.FullFileName) = False Then
+                MsgBox("Save file before executing this method. Exiting ...")
+                Return False
+            End If
+
+            Dim atts As FileAttributes = IO.File.GetAttributes(doc.FullFileName)
+
+            If ((atts And FileAttributes.ReadOnly) = System.IO.FileAttributes.ReadOnly) Then
+                Return True
+            Else
+                'The file is Read/Write
+                Return False
+            End If
+
+        End Function
+
         Private Sub IsModified()
             If AddinGlobal.InventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If AddinGlobal.InventorApp.ActiveDocument.IsModifiable = True Then
