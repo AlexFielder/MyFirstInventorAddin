@@ -132,103 +132,96 @@ Namespace MyFirstInventorAddin
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
         ''' </summary>
         Private Sub UpdateDisplayediProperties()
-            If AddinGlobal.InventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-
-                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
-                    myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                ElseIf myiPropsForm.TextBox1.Text = "Part Number" Then
-                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                Else
-                    myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                End If
-
-                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length > 0 Then
-                    myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                ElseIf myiPropsForm.TextBox2.Text = "Description" Then
-                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                Else
-                    myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                End If
-
-                If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    myiPropsForm.Label3.Show()
-                    myiPropsForm.TextBox3.Show()
-                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "").Length > 0 Then
-                        myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
-                    ElseIf myiPropsForm.TextBox3.Text = "Stock Number" Then
-                        iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If AddinGlobal.InventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
+                        myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                    ElseIf myiPropsForm.TextBox1.Text = "Part Number" Then
+                        iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                     Else
-                        myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+                        myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                     End If
-                Else
-                    myiPropsForm.Label3.Hide()
-                    myiPropsForm.TextBox3.Hide()
-                End If
 
-                If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    myiPropsForm.Label4.Show()
-                    myiPropsForm.TextBox4.Show()
-                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
-                        myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                    ElseIf myiPropsForm.TextBox4.Text = "Engineer" Then
-                        iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length > 0 Then
+                        myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                    ElseIf myiPropsForm.TextBox2.Text = "Description" Then
+                        iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                     Else
-                        myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        myiPropsForm.TextBox2.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                     End If
-                Else
-                    myiPropsForm.Label4.Hide()
-                    myiPropsForm.TextBox4.Hide()
+
+                    If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        myiPropsForm.Label3.Show()
+                        myiPropsForm.TextBox3.Show()
+                        myiPropsForm.Label4.Show()
+                        myiPropsForm.TextBox4.Show()
+                        If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "").Length > 0 Then
+                            myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+                        ElseIf myiPropsForm.TextBox3.Text = "Stock Number" Then
+                            iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+                        Else
+                            myiPropsForm.TextBox3.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+                        End If
+
+                        If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
+                            myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        ElseIf myiPropsForm.TextBox4.Text = "Engineer" Then
+                            iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        Else
+                            myiPropsForm.TextBox4.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        End If
+                    Else
+                        myiPropsForm.Label3.Hide()
+                        myiPropsForm.TextBox3.Hide()
+                        myiPropsForm.Label4.Hide()
+                        myiPropsForm.TextBox4.Hide()
+                    End If
+
+
+
+                    If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                        myiPropsForm.Label5.Hide()
+                        myiPropsForm.TextBox5.Hide()
+                        myiPropsForm.Button2.Show()
+                        myiPropsForm.Label8.Show()
+                        myiPropsForm.Label9.Hide()
+                        myiPropsForm.TextBox6.Hide()
+                        myiPropsForm.Label7.Show()
+                        myiPropsForm.TextBox7.Show()
+
+                        myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+
+                        If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                            myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                        ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                            myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
+                        End If
+
+                    Else
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        myiPropsForm.Label5.Show()
+                        myiPropsForm.TextBox5.Show()
+                        myiPropsForm.Button2.Hide()
+                        myiPropsForm.Label8.Hide()
+                        myiPropsForm.Label9.Show()
+                        myiPropsForm.TextBox6.Show()
+                        myiPropsForm.Label7.Hide()
+                        myiPropsForm.TextBox7.Hide()
+
+                        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                        Dim kgMass As Decimal = myMass / 1000
+                        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                        myiPropsForm.TextBox5.Text = myMass2 & " kg"
+                        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
+                    End If
+
+                    myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
+                    myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+
                 End If
             End If
-
-            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                myiPropsForm.Label5.Hide()
-                myiPropsForm.TextBox5.Hide()
-            Else
-                myiPropsForm.Label5.Show()
-                myiPropsForm.TextBox5.Show()
-                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-                Dim kgMass As Decimal = myMass / 1000
-                Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-                myiPropsForm.TextBox5.Text = myMass2 & " kg"
-            End If
-
-            myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
-
-            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                myiPropsForm.Button2.Show()
-                myiPropsForm.Label8.Show()
-                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                    myiPropsForm.Label8.Text = "Drawing Updates Deferred"
-                ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                    myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
-                End If
-            Else
-                myiPropsForm.Button2.Hide()
-                myiPropsForm.Label8.Hide()
-            End If
-
-            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                myiPropsForm.Label9.Hide()
-                myiPropsForm.TextBox6.Hide()
-                Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-                myiPropsForm.TextBox6.Text = myDensity & " g/cm^3"
-            Else
-                myiPropsForm.Label9.Show()
-                myiPropsForm.TextBox6.Show()
-            End If
-
-            myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-
-            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                myiPropsForm.Label7.Show()
-                myiPropsForm.TextBox7.Show()
-                myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
-            Else
-                myiPropsForm.Label7.Hide()
-                myiPropsForm.TextBox7.Hide()
-            End If
-
         End Sub
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be

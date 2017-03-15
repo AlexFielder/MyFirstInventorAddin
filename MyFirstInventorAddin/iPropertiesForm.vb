@@ -152,7 +152,8 @@ Public Class iPropertiesForm
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox5.Text)
 
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-                TextBox6.Text = myDensity & " g/cm^3"
+                Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                TextBox6.Text = myDensity2 & " g/cm^3"
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox6.Text)
 
                 Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
@@ -224,12 +225,6 @@ Public Class iPropertiesForm
             Dim item As String
             item = oBOMRow.ItemNumber
             iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-            'Dim invCustomPropertySet As PropertySet
-            'invCustomPropertySet = oCompDef.Document.PropertySets.Item("Inventor User Defined Properties")
-
-            'invCustomPropertySet.Add(item, "#ITEM")
-            'inventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties").Item(CompFileNameOnly).Item("#ITEM").Value = item
-            'inventorApp.ActiveDocument.PropertySets.value(CompFileNameOnly, "Custom", "#ITEM") = item
         Next
     End Sub
 End Class
