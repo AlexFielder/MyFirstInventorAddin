@@ -204,7 +204,7 @@ Partial Class iPropertiesForm
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
         Me.DateTimePicker1.Location = New System.Drawing.Point(101, 165)
         Me.DateTimePicker1.Name = "DateTimePicker1"
-        Me.DateTimePicker1.Size = New System.Drawing.Size(136, 20)
+        Me.DateTimePicker1.Size = New System.Drawing.Size(121, 20)
         Me.DateTimePicker1.TabIndex = 301
         '
         'Label7
@@ -235,7 +235,7 @@ Partial Class iPropertiesForm
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(238, 169)
+        Me.Label10.Location = New System.Drawing.Point(228, 169)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(81, 13)
         Me.Label10.TabIndex = 302

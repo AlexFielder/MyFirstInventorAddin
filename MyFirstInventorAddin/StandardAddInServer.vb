@@ -158,6 +158,7 @@ Namespace MyFirstInventorAddin
                 m_StyleEvents = DocumentObject.StyleEvents
                 AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 UpdateDisplayediProperties()
+                IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -165,6 +166,7 @@ Namespace MyFirstInventorAddin
         Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
+                IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -324,16 +326,24 @@ Namespace MyFirstInventorAddin
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-                If DocumentToPulliPropValuesFrom.IsModifiable = True Then
-                    myiPropsForm.Label10.Text = "CHECKED OUT"
-                ElseIf DocumentToPulliPropValuesFrom.IsModifiable = False Then
-                    myiPropsForm.Label10.Text = "CHECKED IN"
-                End If
+                'If DocumentToPulliPropValuesFrom.IsModifiable Then
+                '    myiPropsForm.Label10.Text = "CHECKED OUT"
+                'ElseIf DocumentToPulliPropValuesFrom.IsNotModifiable = False Then
+                '    myiPropsForm.Label10.Text = "CHECKED IN"
+                'End If
 
             End If
 
         End Sub
-
+        Private Sub IsModified()
+            If AddinGlobal.InventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                If AddinGlobal.InventorApp.ActiveDocument.IsModifiable = True Then
+                    myiPropsForm.Label10.Text = "CHECKED OUT"
+                ElseIf AddinGlobal.InventorApp.ActiveDocument.IsModifiable = False Then
+                    myiPropsForm.Label10.Text = "CHECKED IN"
+                End If
+            End If
+        End Sub
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
         ' unloaded either manually by the user or when the Inventor session is terminated.
         Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
