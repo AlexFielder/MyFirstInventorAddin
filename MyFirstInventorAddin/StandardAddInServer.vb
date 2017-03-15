@@ -20,6 +20,7 @@ Namespace MyFirstInventorAddin
         Private WithEvents m_AssemblyEvents As AssemblyEvents
         Private WithEvents m_PartEvents As PartEvents
         Private WithEvents m_ModelingEvents As ModelingEvents
+        Private WithEvents m_StyleEvents As StyleEvents
 
 
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
@@ -64,6 +65,12 @@ Namespace MyFirstInventorAddin
                     m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 End If
+
+                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    m_StyleEvents = AddinGlobal.InventorApp.ActiveDocument.StyleEvents
+                    AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+                End If
+
                 'start our logger.
                 logHelper.Init()
                 logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
@@ -98,6 +105,15 @@ Namespace MyFirstInventorAddin
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Style As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+
+                UpdateDisplayediProperties()
+
+            End If
+                HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -293,6 +309,12 @@ Namespace MyFirstInventorAddin
                     myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
                 End If
 
+                If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                    myiPropsForm.Button3.Show()
+                Else
+                    myiPropsForm.Button3.Hide()
+                End If
+
                 myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
@@ -323,6 +345,7 @@ Namespace MyFirstInventorAddin
                 m_UserInputEvents = Nothing
                 m_AppEvents = Nothing
                 m_uiEvents = Nothing
+                m_StyleEvents = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
