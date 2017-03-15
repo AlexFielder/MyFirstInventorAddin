@@ -15,7 +15,12 @@ Namespace MyFirstInventorAddin
         Private WithEvents m_uiEvents As UserInterfaceEvents
         Private WithEvents m_UserInputEvents As UserInputEvents
         Private WithEvents m_AppEvents As ApplicationEvents
+        ' new unused - at this point - event objects
         Private WithEvents m_DocEvents As DocumentEvents
+        Private WithEvents m_AssemblyEvents As AssemblyEvents
+        Private WithEvents m_PartEvents As PartEvents
+        Private WithEvents m_ModelingEvents As ModelingEvents
+
 
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
@@ -53,6 +58,8 @@ Namespace MyFirstInventorAddin
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
                 AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
                 AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
+                'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
+                'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
 
                 'start our logger.
                 logHelper.Init()
