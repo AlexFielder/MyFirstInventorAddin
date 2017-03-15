@@ -20,6 +20,7 @@ Namespace MyFirstInventorAddin
         Private thisAssemblyPath As String = String.Empty
         Public Shared attribute As GuidAttribute = Nothing
         Public myiPropsForm As iPropertiesForm = Nothing
+        Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
@@ -50,6 +51,7 @@ Namespace MyFirstInventorAddin
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
                 AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
+                AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
 
                 'start our logger.
                 logHelper.Init()
@@ -85,6 +87,12 @@ Namespace MyFirstInventorAddin
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kBefore Then
+                InventorAppQuitting = True
+            End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -242,9 +250,13 @@ Namespace MyFirstInventorAddin
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
                 End If
-                'If AddinGlobal.InventorApp IsNot Nothing Then
-                '    Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
-                'End If
+
+                If Not InventorAppQuitting Then
+                    If AddinGlobal.InventorApp IsNot Nothing Then
+                        Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
+                    End If
+                End If
+
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
@@ -271,6 +283,8 @@ Namespace MyFirstInventorAddin
                 m_thisWindow = value
             End Set
         End Property
+
+
 
         'Public Property Window As DockableWindow
         '    Get
