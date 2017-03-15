@@ -48,11 +48,15 @@ Namespace MyFirstInventorAddin
                 m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
                 'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
                 m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
+                'Connect to the Document Events
+                m_DocEvents = AddinGlobal.InventorApp.DocumentEvents
 
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
                 AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
                 AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
+                'AddHandler m_AppEvents.OnNewDocument, AddressOf Me.m_ApplicationEvents_OnNewDocument
+                'AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
 
                 'start our logger.
                 logHelper.Init()
@@ -116,18 +120,20 @@ Namespace MyFirstInventorAddin
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
-        Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                UpdateDisplayediProperties()
-            End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
-        Private Sub m_DocumentEvents_OnChangeSelectSet(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                UpdateDisplayediProperties()
-            End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
+        'Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+        '    If BeforeOrAfter = EventTimingEnum.kAfter Then
+        '        UpdateDisplayediProperties()
+        '    End If
+        '    HandlingCode = HandlingCodeEnum.kEventNotHandled
+        'End Sub
+        'Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+        '    If BeforeOrAfter = EventTimingEnum.kAfter Then
+        '        If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+        '            UpdateDisplayediProperties()
+        '        End If
+        '    End If
+        '    HandlingCode = HandlingCodeEnum.kEventNotHandled
+        'End Sub
         ''' <summary>
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
         ''' </summary>
@@ -242,6 +248,7 @@ Namespace MyFirstInventorAddin
                 myiPropsForm = Nothing
                 m_UserInputEvents = Nothing
                 m_AppEvents = Nothing
+                m_DocEvents = Nothing
                 m_uiEvents = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
