@@ -24,7 +24,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=C:\temp\iPropertiesController_Installer
 OutputBaseFilename=iPropertiesController_setup
-SetupIconFile=C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\Resources\addin.ico
+SetupIconFile=..\Resources\addin.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -32,15 +32,15 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\autodesk.inventor.interop.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\Autodesk.iPropertiesController.Inventor.addin"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\iPropertiesController.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\log4net.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\Log4NetFileHelper.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\Log4NetFileHelper.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\Log4NetFileHelper.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Alex.Fielder\Source\Repos\iPropertiesController\iPropertiesController\bin\Release\stdole.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\autodesk.inventor.interop.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\Autodesk.iPropertiesController.Inventor.addin"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\iPropertiesController.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\log4net.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\Log4NetFileHelper.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\Log4NetFileHelper.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\Log4NetFileHelper.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\stdole.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
