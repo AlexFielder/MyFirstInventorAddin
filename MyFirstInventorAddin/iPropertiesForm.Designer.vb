@@ -45,6 +45,10 @@ Partial Class iPropertiesForm
         Me.TextBox7 = New System.Windows.Forms.TextBox()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.Label10 = New System.Windows.Forms.Label()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -204,7 +208,7 @@ Partial Class iPropertiesForm
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
         Me.DateTimePicker1.Location = New System.Drawing.Point(101, 165)
         Me.DateTimePicker1.Name = "DateTimePicker1"
-        Me.DateTimePicker1.Size = New System.Drawing.Size(121, 20)
+        Me.DateTimePicker1.Size = New System.Drawing.Size(114, 20)
         Me.DateTimePicker1.TabIndex = 301
         '
         'Label7
@@ -235,11 +239,35 @@ Partial Class iPropertiesForm
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(228, 169)
+        Me.Label10.Location = New System.Drawing.Point(237, 169)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(81, 13)
         Me.Label10.TabIndex = 302
         Me.Label10.Text = "Checked in/out"
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
+        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox1.Image = Global.MyFirstInventorAddin.My.Resources.Resources.white_button
+        Me.PictureBox1.Location = New System.Drawing.Point(221, 168)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(15, 15)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox1.TabIndex = 303
+        Me.PictureBox1.TabStop = False
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox2.Image = Global.MyFirstInventorAddin.My.Resources.Resources.green_button
+        Me.PictureBox2.Location = New System.Drawing.Point(221, 168)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(15, 15)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox2.TabIndex = 304
+        Me.PictureBox2.TabStop = False
         '
         'iPropertiesForm
         '
@@ -269,10 +297,14 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.PictureBox1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "iPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
         Me.Text = "iPropertiesForm"
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -301,4 +333,6 @@ Partial Class iPropertiesForm
     Friend WithEvents TextBox7 As Windows.Forms.TextBox
     Friend WithEvents Button3 As Windows.Forms.Button
     Friend WithEvents Label10 As Windows.Forms.Label
+    Friend WithEvents PictureBox1 As Windows.Forms.PictureBox
+    Friend WithEvents PictureBox2 As Windows.Forms.PictureBox
 End Class

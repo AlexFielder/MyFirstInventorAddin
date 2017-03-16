@@ -116,9 +116,13 @@ Namespace MyFirstInventorAddin
 
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                        myiPropsForm.Label10.Text = "CHECKED IN"
+                        myiPropsForm.Label10.Text = "Checked In"
+                        myiPropsForm.PictureBox1.Show()
+                        myiPropsForm.PictureBox2.Hide()
                     Else
-                        myiPropsForm.Label10.Text = "CHECKED OUT"
+                        myiPropsForm.Label10.Text = "Checked Out"
+                        myiPropsForm.PictureBox1.Hide()
+                        myiPropsForm.PictureBox2.Show()
                     End If
                 End If
             End If
@@ -362,9 +366,13 @@ Namespace MyFirstInventorAddin
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                    myiPropsForm.Label10.Text = "CHECKED IN"
+                    myiPropsForm.Label10.Text = "Checked In"
+                    myiPropsForm.PictureBox1.Show()
+                    myiPropsForm.PictureBox2.Hide()
                 Else
-                    myiPropsForm.Label10.Text = "CHECKED OUT"
+                    myiPropsForm.Label10.Text = "Checked Out"
+                    myiPropsForm.PictureBox1.Hide()
+                    myiPropsForm.PictureBox2.Show()
                 End If
 
             End If
