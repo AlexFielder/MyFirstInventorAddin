@@ -231,11 +231,13 @@ Public Class iPropertiesForm
     Private Sub TextBox5_Enter(sender As Object, e As EventArgs) Handles TextBox5.Enter
         Clipboard.SetText(TextBox5.Text)
         'CreateObject("WScript.Shell").PopUp("Copied to Clipboard", 1)
+        UpdateStatusBar("Copied to Clipboard")
     End Sub
 
     Private Sub TextBox6_Enter(sender As Object, e As EventArgs) Handles TextBox6.Enter
         Clipboard.SetText(TextBox6.Text)
         'CreateObject("WScript.Shell").PopUp("Copied to Clipboard", 1)
+        UpdateStatusBar("Copied to Clipboard")
     End Sub
 
     Private Sub UpdateStatusBar(ByVal Message As String)
