@@ -171,6 +171,9 @@
   <ItemGroup>
     <None Include="Resources\green button.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\green button tick.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>

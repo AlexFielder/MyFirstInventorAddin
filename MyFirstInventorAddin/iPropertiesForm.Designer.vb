@@ -22,7 +22,6 @@ Partial Class iPropertiesForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(iPropertiesForm))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -249,10 +248,10 @@ Partial Class iPropertiesForm
         'PictureBox2
         '
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
-        Me.PictureBox2.Location = New System.Drawing.Point(224, 171)
+        Me.PictureBox2.Image = Global.MyFirstInventorAddin.My.Resources.Resources.green_button_tick
+        Me.PictureBox2.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(10, 10)
+        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.PictureBox2.TabIndex = 304
         Me.PictureBox2.TabStop = False
@@ -261,10 +260,10 @@ Partial Class iPropertiesForm
         '
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Window
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox1.Location = New System.Drawing.Point(224, 171)
+        Me.PictureBox1.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(10, 10)
+        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
