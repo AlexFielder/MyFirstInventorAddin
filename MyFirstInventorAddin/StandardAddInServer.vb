@@ -3,7 +3,7 @@ Imports System.Runtime.InteropServices
 Imports log4net
 Imports System.Drawing
 Imports System.Reflection
-Imports MyFirstInventorAddin.yFirstInventorAddin
+Imports MyFirstInventorAddin.MyFirstInventorAddin
 Imports System.IO
 
 Namespace MyFirstInventorAddin

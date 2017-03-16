@@ -1,7 +1,7 @@
 ﻿Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
-Imports MyFirstInventorAddin.yFirstInventorAddin
+Imports MyFirstInventorAddin.MyFirstInventorAddin
 
 Public Class iPropertiesForm
     Private inventorApp As Inventor.Application
@@ -236,5 +236,10 @@ Public Class iPropertiesForm
     Private Sub TextBox6_Enter(sender As Object, e As EventArgs) Handles TextBox6.Enter
         Clipboard.SetText(TextBox6.Text)
         'CreateObject("WScript.Shell").PopUp("Copied to Clipboard", 1)
+    End Sub
+
+    Private Sub UpdateStatusBar(ByVal Message As String)
+        Dim m_inventorApplication = inventorApp
+        m_inventorApplication.StatusBarText = Message
     End Sub
 End Class

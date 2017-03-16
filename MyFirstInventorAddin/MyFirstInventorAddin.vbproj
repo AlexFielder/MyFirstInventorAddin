@@ -116,7 +116,7 @@
     <None Include="MyFirstInventorAddin.X.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Autodesk.MyFirstInventorAddin.Inventor.addin">
+    <None Include="Autodesk.iPropertiesController.Inventor.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
