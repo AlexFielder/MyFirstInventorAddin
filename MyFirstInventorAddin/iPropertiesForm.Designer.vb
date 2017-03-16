@@ -250,7 +250,7 @@ Partial Class iPropertiesForm
         'PictureBox2
         '
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox2.Image = Global.MyFirstInventorAddin.My.Resources.Resources.green_button_tick
+        Me.PictureBox2.Image = Global.iPropertiesController.My.Resources.Resources.green_button_tick
         Me.PictureBox2.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)

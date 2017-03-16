@@ -4,7 +4,7 @@
   <ClientId>{e691af34-cb32-4296-8cca-5d1027a27c72}</ClientId>
   <DisplayName>iPropertiesController</DisplayName>
   <Description>iPropertiesController</Description>
-  <Assembly>MyFirstInventorAddin.dll</Assembly>
+  <Assembly>iPropertiesController.dll</Assembly>
   <LoadOnStartUp>1</LoadOnStartUp>
   <UserUnloadable>1</UserUnloadable>
   <Hidden>0</Hidden>

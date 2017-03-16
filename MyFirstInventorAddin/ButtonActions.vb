@@ -1,7 +1,7 @@
 ﻿Imports System.Windows.Forms
 Imports log4net
 
-Namespace MyFirstInventorAddin
+Namespace iPropertiesController
     Friend Class ButtonActions
         Public Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(ButtonActions))
         Friend Shared Sub Button1_Execute()

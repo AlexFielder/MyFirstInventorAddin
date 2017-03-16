@@ -3,11 +3,11 @@ Imports System.Runtime.InteropServices
 Imports log4net
 Imports System.Drawing
 Imports System.Reflection
-Imports MyFirstInventorAddin.MyFirstInventorAddin
+Imports iPropertiesController.iPropertiesController
 Imports System.IO
 
-Namespace MyFirstInventorAddin
-    <ProgIdAttribute("MyFirstInventorAddin.StandardAddInServer"),
+Namespace iPropertiesController
+    <ProgIdAttribute("iPropertiesController.StandardAddInServer"),
     GuidAttribute("e691af34-cb32-4296-8cca-5d1027a27c72")>
     Public Class StandardAddInServer
         Implements Inventor.ApplicationAddInServer
@@ -76,7 +76,7 @@ Namespace MyFirstInventorAddin
 
                 'start our logger.
                 logHelper.Init()
-                logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "MyFirstInventorAddin.log"))
+                logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "iPropertiesController.log"))
                 logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
                 logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
                 log.Debug("Loading My First Inventor Addin")
@@ -88,7 +88,7 @@ Namespace MyFirstInventorAddin
                 'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
                 'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
 
-                Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("MyFirstInventorAddin.addin.ico"))
+                Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("iPropertiesController.addin.ico"))
                 'Change it if necessary but make sure it's embedded.
                 Dim button1 As New InventorButton("Button 1", "MyVBInventorAddin.Button_" & Guid.NewGuid().ToString(), "Button 1 description", "Button 1 tooltip", icon1, icon1,
                     CommandTypesEnum.kShapeEditCmdType, ButtonDisplayEnum.kDisplayTextInLearningMode)
@@ -552,7 +552,7 @@ Public Module Globals
     Public Function AddInClientID() As String
         Dim guid As String = ""
         Try
-            Dim t As Type = GetType(MyFirstInventorAddin.StandardAddInServer)
+            Dim t As Type = GetType(iPropertiesController.StandardAddInServer)
             Dim customAttributes() As Object = t.GetCustomAttributes(GetType(GuidAttribute), False)
             Dim guidAttribute As GuidAttribute = CType(customAttributes(0), GuidAttribute)
             guid = "{" + guidAttribute.Value.ToString() + "}"

@@ -4,7 +4,7 @@ Imports System.Drawing
 Imports Inventor
 
 
-Namespace MyFirstInventorAddin
+Namespace iPropertiesController
 
     Public Class InventorButton
 
