@@ -113,7 +113,7 @@
     <Compile Include="StandardAddInServer.vb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MyFirstInventorAddin.X.manifest" />
+    <None Include="iPropertiesController.X.manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Autodesk.iPropertiesController.Inventor.addin">
