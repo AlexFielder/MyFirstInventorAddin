@@ -1,7 +1,7 @@
 ﻿Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
-Imports MyFirstInventorAddin.MyFirstInventorAddin
+Imports iPropertiesController.iPropertiesController
 
 Public Class iPropertiesForm
     Private inventorApp As Inventor.Application

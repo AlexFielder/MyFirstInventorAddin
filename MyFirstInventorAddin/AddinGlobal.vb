@@ -1,7 +1,7 @@
 ﻿Imports System.Collections.Generic
 Imports System.Runtime.InteropServices
 Imports Inventor
-Imports MyFirstInventorAddin.MyFirstInventorAddin
+Imports iPropertiesController.iPropertiesController
 
 Public Class AddinGlobal
 
