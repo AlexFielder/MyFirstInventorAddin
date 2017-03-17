@@ -37,7 +37,9 @@ Namespace iPropertiesController
         'Private WithEvents m_sampleButton As ButtonDefinition
 
 #Region "ApplicationAddInServer Members"
-
+        'Public Sub New(ByVal obj As UserInputEvents)
+        '    m_UserInputEvents = obj
+        'End Sub
         ' This method is called by Inventor when it loads the AddIn. The AddInSiteObject provides access  
         ' to the Inventor Application object. The FirstTime flag indicates if the AddIn is loaded for
         ' the first time. However, with the introduction of the ribbon this argument is always true.
@@ -72,6 +74,10 @@ Namespace iPropertiesController
                     m_StyleEvents = AddinGlobal.InventorApp.ActiveDocument.StyleEvents
                     AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 End If
+
+
+
+                'AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
 
 
                 'start our logger.
@@ -109,6 +115,16 @@ Namespace iPropertiesController
                 log.Error(ex.Message)
             End Try
         End Sub
+
+        'Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
+        '    MsgBox("OnActivateCommand")
+        '    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+        '    If (DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+        '        If (CommandName = "VaultCheckinTop") Then
+        '            MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo)
+        '        End If
+        '    End If
+        'End Sub
 
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then

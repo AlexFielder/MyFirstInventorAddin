@@ -241,7 +241,6 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub UpdateStatusBar(ByVal Message As String)
-        Dim m_inventorApplication = inventorApp
-        m_inventorApplication.StatusBarText = Message
+        inventorApp.StatusBarText() = Message
     End Sub
 End Class
