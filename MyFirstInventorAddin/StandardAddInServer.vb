@@ -37,9 +37,7 @@ Namespace iPropertiesController
         'Private WithEvents m_sampleButton As ButtonDefinition
 
 #Region "ApplicationAddInServer Members"
-        'Public Sub New(ByVal obj As UserInputEvents)
-        '    m_UserInputEvents = obj
-        'End Sub
+
         ' This method is called by Inventor when it loads the AddIn. The AddInSiteObject provides access  
         ' to the Inventor Application object. The FirstTime flag indicates if the AddIn is loaded for
         ' the first time. However, with the introduction of the ribbon this argument is always true.
@@ -71,14 +69,14 @@ Namespace iPropertiesController
                 End If
 
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    m_StyleEvents = AddinGlobal.InventorApp.ActiveDocument.StyleEvents
+                    m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
                     AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 End If
 
-
-
-                'AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
-
+                'If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                '    m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
+                '    AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
+                'End If
 
                 'start our logger.
                 logHelper.Init()
@@ -117,10 +115,8 @@ Namespace iPropertiesController
         End Sub
 
         'Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
-        '    MsgBox("OnActivateCommand")
-        '    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-        '    If (DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-        '        If (CommandName = "VaultCheckinTop") Then
+        '    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+        '        If CommandName = "VaultCheckinTop" Then
         '            MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo)
         '        End If
         '    End If
