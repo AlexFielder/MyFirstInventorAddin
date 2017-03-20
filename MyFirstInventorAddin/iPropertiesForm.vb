@@ -249,44 +249,63 @@ Public Class iPropertiesForm
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-        Dim oSheets As Sheets
-        Dim oViews As DrawingViews
-        Dim oScale As Double
+        Dim oSheets As Sheets = Nothing
+        Dim oViews As DrawingViews = Nothing
+        Dim oScale As Double = Nothing
         Dim oViewCount As Integer = 0
         Dim oTitleBlock = oSheet.TitleBlock
-        'Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+        Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
 
-        'Dim oSht As Sheet = oDWG.ActiveSheet
+        Dim oSht As Sheet = oDWG.ActiveSheet
 
-        'Dim oView As DrawingView = oSht.View("VIEW1").View
+        'the following two lines are fine so long as you have a view labelled VIEW1 on your drawing sheet otherwise it will
+        'error every time you try to run this code.
+
+        'suggest something like either of these to get the first view instead regardless of label:
+        Dim oView As DrawingView = Nothing
+        Dim drawnDoc As Document = Nothing
+
+        For i As Integer = 0 To oSht.DrawingViews.Count
+            oView = oSht.DrawingViews(i)
+            Exit For
+        Next
+
+        For Each view As DrawingView In oSht.DrawingViews
+            oView = view
+            Exit For
+        Next
+
+        'oView = oSht.View("VIEW1").View
         'Dim oAssy As AssemblyDocument = oSht.View("VIEW1").ModelDocument
+        drawnDoc = oSht.View(oView.Name).ModelDocument
 
-        Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-        'modelName = IO.Path.GetFileName(oAssy.FullFileName) 'or GetFullPath  
+
+        'Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
+        'Dim modelName = IO.Path.GetFileName(oDWG.FullFileName) 'or GetFullPath  
         'prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, 'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
         prtMaterial = InputBox("Enter Material", "Material", "Enter Material Here")
 
         Dim MaterialTextBox As Inventor.TextBox = GetMaterialTextBox(oTitleBlock.Definition)
         Dim MaterialString As String = String.Empty
         MaterialString = prtMaterial
-        'If prtMaterial = "Engineer" Then
-        '    MaterialString = iProperties.GetorSetStandardiProperty(modelName,
-        '                                                  PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-        '                                                  "",
-        '                                                  "")
-        'ElseIf prtMaterial = "PRT" Then
-        '    MaterialString = UCase(iProperties.GetorSetStandardiProperty(modelName,
-        '                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
-        '                                                  "",
-        '                                                  ""))
-        'ElseIf prtMaterial = "prt" Then
-        '    MaterialString = UCase(iProperties.GetorSetStandardiProperty(modelName,
-        '                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
-        '                                                  "",
-        '                                                  ""))
-        'Else
-        '    MaterialString = prtMaterial
-        'End If
+        If prtMaterial = "Engineer" Then
+            MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                          "",
+                                                          "")
+        ElseIf prtMaterial = "PRT" Then
+            MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+                                                          "",
+                                                          ""))
+        ElseIf prtMaterial = "prt" Then
+            MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                          PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+                                                          "",
+                                                          ""))
+        Else
+            MaterialString = prtMaterial
+        End If
         oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
     End Sub
 
