@@ -65,7 +65,7 @@ Namespace My.Resources
         '''</summary>
         Friend ReadOnly Property green_button() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("green button", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("green_button", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -75,7 +75,7 @@ Namespace My.Resources
         '''</summary>
         Friend ReadOnly Property green_button_tick() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("green button tick", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("green_button_tick", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -85,7 +85,7 @@ Namespace My.Resources
         '''</summary>
         Friend ReadOnly Property white_button() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("white button", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("white_button", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
