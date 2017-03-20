@@ -199,33 +199,37 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        Dim doc = inventorApp.ActiveDocument
-        Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-        Dim oBOM As BOM = oAssyDef.BOM
+        Try
+            Dim doc = inventorApp.ActiveDocument
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
 
-        oBOM.StructuredViewEnabled = True
+            oBOM.StructuredViewEnabled = True
 
-        Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-        Dim oBOMRow As BOMRow
+            Dim oBOMRow As BOMRow
 
-        For Each oBOMRow In oBOMView.BOMRows
-            'Set a reference to the primary ComponentDefinition of the row
-            Dim oCompDef As ComponentDefinition
-            oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+            For Each oBOMRow In oBOMView.BOMRows
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
 
-            Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-            Dim CompFileNameOnly As String
-            Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                Dim CompFileNameOnly As String
+                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-            CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-            'MessageBox.Show(CompFileNameOnly)
+                'MessageBox.Show(CompFileNameOnly)
 
-            Dim item As String
-            item = oBOMRow.ItemNumber
-            iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-        Next
+                Dim item As String
+                item = oBOMRow.ItemNumber
+                iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+            Next
+        Catch ex As Exception
+            log.Error(ex.Message)
+        End Try
     End Sub
 
     Private Sub TextBox5_Enter(sender As Object, e As EventArgs) Handles TextBox5.Enter
