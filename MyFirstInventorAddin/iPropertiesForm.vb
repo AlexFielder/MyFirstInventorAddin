@@ -230,14 +230,15 @@ Public Class iPropertiesForm
 
     Private Sub TextBox5_Enter(sender As Object, e As EventArgs) Handles TextBox5.Enter
         Clipboard.SetText(TextBox5.Text)
-        MsgBox("Copied to Clipboard", 1)
-        'inventorApp.StatusBarText = "Copied to Clipboard"
+        UpdateStatusBar("Copied to Clipboard")
     End Sub
 
     Private Sub TextBox6_Enter(sender As Object, e As EventArgs) Handles TextBox6.Enter
         Clipboard.SetText(TextBox6.Text)
-        MsgBox("Copied to Clipboard", 1)
-        'inventorApp.StatusBarText = "Copied to Clipboard"
+        UpdateStatusBar("Copied to Clipboard")
     End Sub
 
+    Private Sub UpdateStatusBar(ByVal Message As String)
+        inventorApp.m_inventorApplication.StatusBarText = Message
+    End Sub
 End Class
