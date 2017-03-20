@@ -250,15 +250,21 @@ Public Class iPropertiesForm
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
         Dim oSheets As Sheets
-        Dim oView As DrawingView
         Dim oViews As DrawingViews
         Dim oScale As Double
         Dim oViewCount As Integer = 0
         Dim oTitleBlock = oSheet.TitleBlock
+        Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+
+        Dim oSht As Sheet = oDWG.ActiveSheet
+
+        Dim oView As DrawingView = oSht.View("VIEW1").View
+        Dim oAssy As AssemblyDocument = oSht.View("VIEW1").ModelDocument
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-        'modelName = IO.Path.GetFileName(ThisDrawing.ModelDocument.FullFileName) 'or GetFullPath  
-        prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, 'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
+        'modelName = IO.Path.GetFileName(oAssy.FullFileName) 'or GetFullPath  
+        'prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, 'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
+        prtMaterial = InputBox("Enter Material", "Material", "Enter Material Here")
 
         Dim MaterialTextBox As Inventor.TextBox = GetMaterialTextBox(oTitleBlock.Definition)
         Dim MaterialString As String = String.Empty
