@@ -254,12 +254,12 @@ Public Class iPropertiesForm
         Dim oScale As Double
         Dim oViewCount As Integer = 0
         Dim oTitleBlock = oSheet.TitleBlock
-        Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+        'Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
 
-        Dim oSht As Sheet = oDWG.ActiveSheet
+        'Dim oSht As Sheet = oDWG.ActiveSheet
 
-        Dim oView As DrawingView = oSht.View("VIEW1").View
-        Dim oAssy As AssemblyDocument = oSht.View("VIEW1").ModelDocument
+        'Dim oView As DrawingView = oSht.View("VIEW1").View
+        'Dim oAssy As AssemblyDocument = oSht.View("VIEW1").ModelDocument
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         'modelName = IO.Path.GetFileName(oAssy.FullFileName) 'or GetFullPath  
