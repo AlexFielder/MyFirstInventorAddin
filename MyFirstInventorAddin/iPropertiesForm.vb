@@ -265,7 +265,7 @@ Public Class iPropertiesForm
         Dim oView As DrawingView = Nothing
         Dim drawnDoc As Document = Nothing
 
-        For i As Integer = 0 To oSht.DrawingViews.Count
+        For i As Integer = 1 To oSht.DrawingViews.Count
             oView = oSht.DrawingViews(i)
             Exit For
         Next
@@ -277,13 +277,16 @@ Public Class iPropertiesForm
 
         'oView = oSht.View("VIEW1").View
         'Dim oAssy As AssemblyDocument = oSht.View("VIEW1").ModelDocument
-        drawnDoc = oSht.View(oView.Name).ModelDocument
+        drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+        'drawnDoc = oSht.DrawingViews(oView.Name).ReferencedDocumentDescriptor.ReferencedDocument
+        'drawnDoc = oSht.Views(oView.Name).Document
 
 
         'Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         'Dim modelName = IO.Path.GetFileName(oDWG.FullFileName) 'or GetFullPath  
-        'prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, 'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
-        prtMaterial = InputBox("Enter Material", "Material", "Enter Material Here")
+        prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
+                               vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
+        'prtMaterial = InputBox("Enter Material", "Material", "Enter Material Here")
 
         Dim MaterialTextBox As Inventor.TextBox = GetMaterialTextBox(oTitleBlock.Definition)
         Dim MaterialString As String = String.Empty
@@ -293,12 +296,7 @@ Public Class iPropertiesForm
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
                                                           "",
                                                           "")
-        ElseIf prtMaterial = "PRT" Then
-            MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
-                                                          PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
-                                                          "",
-                                                          ""))
-        ElseIf prtMaterial = "prt" Then
+        ElseIf UCase(prtMaterial) = "PRT" Then
             MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
                                                           PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
                                                           "",

@@ -258,6 +258,9 @@ Namespace iPropertiesController
 
         ''' <summary>
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
+        ''' 
+        ''' </summary>
+        ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
             Try
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
