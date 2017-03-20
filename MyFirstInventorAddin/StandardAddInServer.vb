@@ -211,18 +211,39 @@ Namespace iPropertiesController
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 m_DocEvents = DocumentObject.DocumentEvents
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
-                'm_StyleEvents = DocumentObject.StyleEvents
-                'AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+
+                If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        log.Info("Mass Updated correctly")
+
+                    ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        log.Info("Mass Updated correctly")
+                    End If
+                End If
                 UpdateDisplayediProperties()
-                'IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+
+                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+
+                If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        log.Info("Mass Updated correctly")
+
+                    ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        log.Info("Mass Updated correctly")
+                    End If
+                End If
                 UpdateDisplayediProperties()
-                'IsModified()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -237,8 +258,6 @@ Namespace iPropertiesController
 
         ''' <summary>
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
-        ''' </summary>
-        ''' <param name="DocumentToPulliPropValuesFrom">An optional document object to help us cope with occurrence selections within an assembly</param>
         Private Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
             Try
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
@@ -291,6 +310,8 @@ Namespace iPropertiesController
                         myiPropsForm.TextBox3.Hide()
                         myiPropsForm.Label4.Hide()
                         myiPropsForm.TextBox4.Hide()
+                        myiPropsForm.Button4.Show()
+                        myiPropsForm.Button5.Show()
 
                         myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -307,8 +328,9 @@ Namespace iPropertiesController
                         End If
 
                     Else
-                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        log.Info("Mass Updated correctly")
+                        'MassProps()
+                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        'log.Info("Mass Updated correctly")
                         myiPropsForm.Label5.Show()
                         myiPropsForm.TextBox5.Show()
                         myiPropsForm.Label9.Show()
@@ -321,6 +343,8 @@ Namespace iPropertiesController
                         myiPropsForm.TextBox7.Hide()
                         myiPropsForm.Button2.Hide()
                         myiPropsForm.Label8.Hide()
+                        myiPropsForm.Button4.Hide()
+                        myiPropsForm.Button5.Hide()
 
                         If iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -394,6 +418,58 @@ Namespace iPropertiesController
                 log.Error(ex.Message)
             End Try
         End Sub
+
+        'Public Sub MassProps()
+
+        '    MassDoc = AddinGlobal.InventorApp.ActiveDocument
+
+        '    ' Set a reference to the mass properties object.
+        '    Dim oMassProps As MassProperties
+        '    oMassProps = MassDoc.ComponentDefinition.MassProperties
+
+        '    'Check if mass property results are already available
+        '    'at a high accuracy level or better. If so, simply
+        '    'print out the results, else, set a flag to not cache
+        '    'the results in the document.
+        '    If oMassProps.AvailableAccuracy <> k_High And
+        '        oMassProps.AvailableAccuracy <> k_VeryHigh Then
+        '        ' Set the accuracy to high.
+        '        oMassProps.Accuracy = k_High
+
+        '        'Set CacheResultsOnCompute property to False
+        '        'so that results are not saved with the document
+        '        'and hence the document is not 'dirtied'.
+        '        oMassProps.CacheResultsOnCompute = False
+        '        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
+        '                   MassDoc,
+        '                   PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+        '        Dim kgMass As Decimal = myMass / 1000
+        '        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+        '        myiPropsForm.TextBox5.Text = myMass2 & " kg"
+        '        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
+        '            MassDoc,
+        '            PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+        '        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+        '        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
+        '    Else
+        '        oMassProps.CacheResultsOnCompute = True
+        '        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+        '        log.Info("Mass Updated correctly")
+        '        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
+        '                  MassDoc,
+        '                  PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+        '        Dim kgMass As Decimal = myMass / 1000
+        '        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+        '        myiPropsForm.TextBox5.Text = myMass2 & " kg"
+        '        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
+        '            MassDoc,
+        '            PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+        '        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+        '        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
+        '    End If
+
+        'End Sub
+
         ''' <summary>
         ''' Original copied verbatim from here:
         ''' http://adndevblog.typepad.com/manufacturing/2012/05/checking-whether-a-inventor-document-is-read-only-or-not.html

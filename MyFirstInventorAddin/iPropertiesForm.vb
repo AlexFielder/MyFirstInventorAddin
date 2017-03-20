@@ -245,4 +245,90 @@ Public Class iPropertiesForm
     Private Sub UpdateStatusBar(ByVal Message As String)
         inventorApp.StatusBarText = Message
     End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
+        Dim oSheet As Sheet = oDrawDoc.ActiveSheet
+        Dim oSheets As Sheets
+        Dim oView As DrawingView
+        Dim oViews As DrawingViews
+        Dim oScale As Double
+        Dim oViewCount As Integer = 0
+        Dim oTitleBlock = oSheet.TitleBlock
+
+        Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
+        'modelName = IO.Path.GetFileName(ThisDrawing.ModelDocument.FullFileName) 'or GetFullPath  
+        prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, 'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
+
+        Dim MaterialTextBox As Inventor.TextBox = GetMaterialTextBox(oTitleBlock.Definition)
+        Dim MaterialString As String = String.Empty
+        MaterialString = prtMaterial
+        'If prtMaterial = "Engineer" Then
+        '    MaterialString = iProperties.GetorSetStandardiProperty(modelName,
+        '                                                  PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+        '                                                  "",
+        '                                                  "")
+        'ElseIf prtMaterial = "PRT" Then
+        '    MaterialString = UCase(iProperties.GetorSetStandardiProperty(modelName,
+        '                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+        '                                                  "",
+        '                                                  ""))
+        'ElseIf prtMaterial = "prt" Then
+        '    MaterialString = UCase(iProperties.GetorSetStandardiProperty(modelName,
+        '                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+        '                                                  "",
+        '                                                  ""))
+        'Else
+        '    MaterialString = prtMaterial
+        'End If
+        oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
+        Dim oSheet As Sheet = oDrawDoc.ActiveSheet
+        Dim oSheets As Sheets
+        Dim oView As DrawingView
+        Dim oViews As DrawingViews
+        Dim oScale As Double
+        Dim oViewCount As Integer = 0
+
+        Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
+
+        dwgScale = InputBox("If you leave as 'Scale From Sheet View' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", "Scale From Sheet View")
+        Dim oTitleBlock = oSheet.TitleBlock
+        Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
+        Dim scaleString As String = String.Empty
+        For Each viewX As DrawingView In oSheet.DrawingViews
+            If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
+                If dwgScale = "Scale From Sheet View" Then
+                    scaleString = viewX.ScaleString
+                Else
+                    scaleString = dwgScale
+
+                    Exit For
+                End If
+
+            End If
+        Next
+        oTitleBlock.SetPromptResultText(scaleTextBox, scaleString)
+    End Sub
+
+    Function GetMaterialTextBox(ByVal titleDef As TitleBlockDefinition) As Inventor.TextBox
+        For Each defText As Inventor.TextBox In titleDef.Sketch.TextBoxes
+            If (defText.Text = "<Material>" Or defText.Text = "Material") Then
+                Return defText
+            End If
+        Next
+        Return Nothing
+    End Function
+
+    Function GetScaleTextBox(ByVal titleDef As TitleBlockDefinition) As Inventor.TextBox
+        For Each defText As Inventor.TextBox In titleDef.Sketch.TextBoxes
+            If (defText.Text = "<Scale>" Or defText.Text = "Scale") Then
+                Return defText
+            End If
+        Next
+        Return Nothing
+    End Function
 End Class

@@ -47,6 +47,8 @@ Partial Class iPropertiesForm
         Me.Label10 = New System.Windows.Forms.Label()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.Button5 = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -146,7 +148,7 @@ Partial Class iPropertiesForm
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(12, 67)
+        Me.Label8.Location = New System.Drawing.Point(12, 56)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
         Me.Label8.TabIndex = 107
@@ -154,7 +156,7 @@ Partial Class iPropertiesForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(194, 62)
+        Me.Button2.Location = New System.Drawing.Point(194, 51)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(117, 23)
         Me.Button2.TabIndex = 201
@@ -271,11 +273,31 @@ Partial Class iPropertiesForm
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
         '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(12, 74)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(117, 23)
+        Me.Button4.TabIndex = 305
+        Me.Button4.Text = "Sheet Material"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'Button5
+        '
+        Me.Button5.Location = New System.Drawing.Point(194, 74)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(117, 23)
+        Me.Button5.TabIndex = 306
+        Me.Button5.Text = "Sheet Scale"
+        Me.Button5.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(325, 277)
+        Me.Controls.Add(Me.Button5)
+        Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Button3)
@@ -337,4 +359,6 @@ Partial Class iPropertiesForm
     Friend WithEvents Label10 As Windows.Forms.Label
     Friend WithEvents PictureBox1 As Windows.Forms.PictureBox
     Friend WithEvents PictureBox2 As Windows.Forms.PictureBox
+    Friend WithEvents Button4 As Windows.Forms.Button
+    Friend WithEvents Button5 As Windows.Forms.Button
 End Class
