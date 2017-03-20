@@ -244,9 +244,8 @@ Namespace iPropertiesController
                 DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
             End If
             If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                If AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppGroundPlaneToggleCmd") Is Nothing Then
 
-                    If iProperties.GetorSetStandardiProperty(
+                If iProperties.GetorSetStandardiProperty(
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
                         myiPropsForm.TextBox1.Text = iProperties.GetorSetStandardiProperty(
@@ -379,15 +378,14 @@ Namespace iPropertiesController
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                        myiPropsForm.Label10.Text = "Checked In"
-                        myiPropsForm.PictureBox1.Show()
-                        myiPropsForm.PictureBox2.Hide()
-                    Else
-                        myiPropsForm.Label10.Text = "Checked Out"
-                        myiPropsForm.PictureBox1.Hide()
-                        myiPropsForm.PictureBox2.Show()
-                    End If
+                If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                    myiPropsForm.Label10.Text = "Checked In"
+                    myiPropsForm.PictureBox1.Show()
+                    myiPropsForm.PictureBox2.Hide()
+                Else
+                    myiPropsForm.Label10.Text = "Checked Out"
+                    myiPropsForm.PictureBox1.Hide()
+                    myiPropsForm.PictureBox2.Show()
                 End If
             End If
 

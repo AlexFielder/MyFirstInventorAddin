@@ -163,9 +163,9 @@ Partial Class iPropertiesForm
         '
         'TextBox5
         '
-        Me.TextBox5.ReadOnly = True
         Me.TextBox5.Location = New System.Drawing.Point(101, 98)
         Me.TextBox5.Name = "TextBox5"
+        Me.TextBox5.ReadOnly = True
         Me.TextBox5.Size = New System.Drawing.Size(100, 20)
         Me.TextBox5.TabIndex = 5
         '
@@ -180,9 +180,9 @@ Partial Class iPropertiesForm
         '
         'TextBox6
         '
-        Me.TextBox6.ReadOnly = True
         Me.TextBox6.Location = New System.Drawing.Point(101, 121)
         Me.TextBox6.Name = "TextBox6"
+        Me.TextBox6.ReadOnly = True
         Me.TextBox6.Size = New System.Drawing.Size(100, 20)
         Me.TextBox6.TabIndex = 8
         '
@@ -260,8 +260,9 @@ Partial Class iPropertiesForm
         '
         'PictureBox1
         '
-        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Window
+        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox1.Image = Global.iPropertiesController.My.Resources.Resources.white_button
         Me.PictureBox1.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
@@ -297,9 +298,9 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.TextBox7)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.TextBox7)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "iPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
