@@ -252,7 +252,7 @@ Partial Class iPropertiesForm
         'PictureBox2
         '
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox2.Image = Global.iPropertiesController.My.Resources.Resources.green_button_tick
+        Me.PictureBox2.Image = My.Resources.green_button_tick
         Me.PictureBox2.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
@@ -264,7 +264,7 @@ Partial Class iPropertiesForm
         '
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox1.Image = Global.iPropertiesController.My.Resources.Resources.white_button
+        Me.PictureBox1.Image = My.Resources.white_button
         Me.PictureBox1.Location = New System.Drawing.Point(223, 169)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"

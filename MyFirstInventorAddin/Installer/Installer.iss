@@ -32,7 +32,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "..\bin\Release\autodesk.inventor.interop.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "..\bin\Release\autodesk.inventor.interop.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Autodesk.iPropertiesController.Inventor.addin"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\iPropertiesController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion
