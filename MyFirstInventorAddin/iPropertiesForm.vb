@@ -18,7 +18,7 @@ Public Class iPropertiesForm
             Me.value = addinCLS
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "MyFirstWindow", "My Add-in Dock")
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "My Add-in Dock")
             myDockableWindow.AddChild(Me.Handle)
 
             If Not myDockableWindow.IsCustomized = True Then
