@@ -126,14 +126,16 @@ Namespace iPropertiesController
         Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
             If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                 If CommandName = "VaultCheckinTop" Then
-                    WhatToDo = MsgBox("Have you deferred updates?", vbYesNo, "Deferred Checker")
-                    If WhatToDo = vbYes Then
-                        'Do Nothing
-                    Else
-                        AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                        myiPropsForm.Label8.Text = "Drawing Updates Deferred"
-                        UpdateStatusBar("Copied to Clipboard")
-                        MsgBox("Updates Now Deferred, Continue Checkin", vbOKOnly, "Deferred Checker")
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                        WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
+                        If WhatToDo = vbYes Then
+                            AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                            myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                            UpdateStatusBar("Updates are now Deferred")
+                            MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
+                        Else
+                            'Do Nothing
+                        End If
                     End If
                 End If
             End If
