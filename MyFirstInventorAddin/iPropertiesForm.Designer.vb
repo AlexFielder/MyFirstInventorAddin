@@ -130,9 +130,9 @@ Partial Class iPropertiesForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(207, 101)
+        Me.Button1.Location = New System.Drawing.Point(223, 101)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(104, 40)
+        Me.Button1.Size = New System.Drawing.Size(88, 40)
         Me.Button1.TabIndex = 200
         Me.Button1.Text = "Update All"
         Me.Button1.UseVisualStyleBackColor = True
@@ -140,7 +140,7 @@ Partial Class iPropertiesForm
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(12, 169)
+        Me.Label6.Location = New System.Drawing.Point(12, 170)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(75, 13)
         Me.Label6.TabIndex = 106
@@ -169,7 +169,7 @@ Partial Class iPropertiesForm
         Me.TextBox5.Location = New System.Drawing.Point(101, 98)
         Me.TextBox5.Name = "TextBox5"
         Me.TextBox5.ReadOnly = True
-        Me.TextBox5.Size = New System.Drawing.Size(100, 20)
+        Me.TextBox5.Size = New System.Drawing.Size(114, 20)
         Me.TextBox5.TabIndex = 5
         '
         'Label9
@@ -186,7 +186,7 @@ Partial Class iPropertiesForm
         Me.TextBox6.Location = New System.Drawing.Point(101, 121)
         Me.TextBox6.Name = "TextBox6"
         Me.TextBox6.ReadOnly = True
-        Me.TextBox6.Size = New System.Drawing.Size(100, 20)
+        Me.TextBox6.Size = New System.Drawing.Size(114, 20)
         Me.TextBox6.TabIndex = 8
         '
         'Label11
@@ -211,7 +211,7 @@ Partial Class iPropertiesForm
         'DateTimePicker1
         '
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
-        Me.DateTimePicker1.Location = New System.Drawing.Point(101, 165)
+        Me.DateTimePicker1.Location = New System.Drawing.Point(101, 166)
         Me.DateTimePicker1.Name = "DateTimePicker1"
         Me.DateTimePicker1.Size = New System.Drawing.Size(114, 20)
         Me.DateTimePicker1.TabIndex = 301
@@ -234,9 +234,9 @@ Partial Class iPropertiesForm
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(103, 190)
+        Me.Button3.Location = New System.Drawing.Point(101, 142)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(117, 23)
+        Me.Button3.Size = New System.Drawing.Size(114, 23)
         Me.Button3.TabIndex = 202
         Me.Button3.Text = "#ITEM"
         Me.Button3.UseVisualStyleBackColor = True
@@ -244,7 +244,7 @@ Partial Class iPropertiesForm
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(237, 169)
+        Me.Label10.Location = New System.Drawing.Point(237, 170)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(81, 13)
         Me.Label10.TabIndex = 302
@@ -255,7 +255,7 @@ Partial Class iPropertiesForm
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(223, 169)
+        Me.PictureBox2.Location = New System.Drawing.Point(223, 170)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -267,7 +267,7 @@ Partial Class iPropertiesForm
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(223, 169)
+        Me.PictureBox1.Location = New System.Drawing.Point(223, 170)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
@@ -323,8 +323,8 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.TextBox7)
-        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.PictureBox1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "iPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide

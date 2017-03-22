@@ -122,6 +122,13 @@ Namespace iPropertiesController
         '    End If
         'End Sub
 
+        'Public Sub DeferCheck()
+        '    Dim CommandName = AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("VaultCheckinTop").Execute()
+        '    If CommandName True Then
+        '        MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo, "Defer Updates Check")
+        '    End If
+        'End Sub
+
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
