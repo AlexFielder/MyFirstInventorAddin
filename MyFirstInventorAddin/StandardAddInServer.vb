@@ -56,6 +56,7 @@ Namespace iPropertiesController
                 'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
                 m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
                 m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
+                m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
 
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
@@ -72,10 +73,8 @@ Namespace iPropertiesController
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 End If
 
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
-                    AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
-                End If
+                AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+
 
                 'start our logger.
                 logHelper.Init()
@@ -162,30 +161,32 @@ Namespace iPropertiesController
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
-
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-
-                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
+                If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                    If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                        Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                        Material = iProperties.GetorSetStandardiProperty(
+                               DocumentToPulliPropValuesFrom,
+                               PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                        If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                            AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
+                                    DocumentToPulliPropValuesFrom,
+                                    PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                            Dim kgMass As Decimal = myMass / 1000
+                            Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                            myiPropsForm.TextBox5.Text = myMass2 & " kg"
+                            Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
-                                PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-                        Dim kgMass As Decimal = myMass / 1000
-                        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-                        myiPropsForm.TextBox5.Text = myMass2 & " kg"
-                        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
-                            DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-                        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-                        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
+                                PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                            Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                            myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
 
-                        myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
-                           DocumentToPulliPropValuesFrom,
-                           PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                            myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
+                               DocumentToPulliPropValuesFrom,
+                               PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                        End If
                     End If
                 End If
-
             End If
 
             HandlingCode = HandlingCodeEnum.kEventNotHandled
