@@ -61,6 +61,8 @@ Namespace iPropertiesController
                 AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
                 AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
                 AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
+
+                AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
@@ -114,13 +116,13 @@ Namespace iPropertiesController
             End Try
         End Sub
 
-        'Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
-        '    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-        '        If CommandName = "VaultCheckinTop" Then
-        '            MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo)
-        '        End If
-        '    End If
-        'End Sub
+        Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
+            If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                If CommandName = "VaultCheckinTop" Then
+                    MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo)
+                End If
+            End If
+        End Sub
 
         'Public Sub DeferCheck()
         '    Dim CommandName = AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("VaultCheckinTop").Execute()
@@ -371,10 +373,10 @@ Namespace iPropertiesController
                         myiPropsForm.Label12.Text = MaterialString
 
                     Else
-                            'MassProps()
-                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                            'log.Info("Mass Updated correctly")
-                            myiPropsForm.Label5.Show()
+                        'MassProps()
+                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        'log.Info("Mass Updated correctly")
+                        myiPropsForm.Label5.Show()
                         myiPropsForm.TextBox5.Show()
                         myiPropsForm.Label9.Show()
                         myiPropsForm.TextBox6.Show()
