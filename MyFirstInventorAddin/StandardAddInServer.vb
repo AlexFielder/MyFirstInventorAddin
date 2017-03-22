@@ -64,6 +64,7 @@ Namespace iPropertiesController
                 AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
 
                 AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
+                'AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
@@ -75,11 +76,6 @@ Namespace iPropertiesController
                     m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
                     AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
                 End If
-
-                'If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                '    m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
-                '    AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
-                'End If
 
                 'start our logger.
                 logHelper.Init()
@@ -117,20 +113,31 @@ Namespace iPropertiesController
             End Try
         End Sub
 
+        'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
+        '    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+        '        CommandName = "VaultCheckinTop"
+        '    End If
+        'End Sub
+
+        Private Sub UpdateStatusBar(ByVal Message As String)
+            AddinGlobal.InventorApp.StatusBarText = Message
+        End Sub
+
         Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
             If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                 If CommandName = "VaultCheckinTop" Then
-                    MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo)
+                    WhatToDo = MsgBox("Have you deferred updates?", vbYesNo, "Deferred Checker")
+                    If WhatToDo = vbYes Then
+                        'Do Nothing
+                    Else
+                        AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                        myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                        UpdateStatusBar("Copied to Clipboard")
+                        MsgBox("Updates Now Deferred, Continue Checkin", vbOKOnly, "Deferred Checker")
+                    End If
                 End If
             End If
         End Sub
-
-        'Public Sub DeferCheck()
-        '    Dim CommandName = AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("VaultCheckinTop").Execute()
-        '    If CommandName True Then
-        '        MsgBox("Have you deferred updates?", MsgBoxStyle.YesNo, "Defer Updates Check")
-        '    End If
-        'End Sub
 
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
@@ -469,57 +476,6 @@ Namespace iPropertiesController
                 log.Error(ex.Message)
             End Try
         End Sub
-
-        'Public Sub MassProps()
-
-        '    MassDoc = AddinGlobal.InventorApp.ActiveDocument
-
-        '    ' Set a reference to the mass properties object.
-        '    Dim oMassProps As MassProperties
-        '    oMassProps = MassDoc.ComponentDefinition.MassProperties
-
-        '    'Check if mass property results are already available
-        '    'at a high accuracy level or better. If so, simply
-        '    'print out the results, else, set a flag to not cache
-        '    'the results in the document.
-        '    If oMassProps.AvailableAccuracy <> k_High And
-        '        oMassProps.AvailableAccuracy <> k_VeryHigh Then
-        '        ' Set the accuracy to high.
-        '        oMassProps.Accuracy = k_High
-
-        '        'Set CacheResultsOnCompute property to False
-        '        'so that results are not saved with the document
-        '        'and hence the document is not 'dirtied'.
-        '        oMassProps.CacheResultsOnCompute = False
-        '        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
-        '                   MassDoc,
-        '                   PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-        '        Dim kgMass As Decimal = myMass / 1000
-        '        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-        '        myiPropsForm.TextBox5.Text = myMass2 & " kg"
-        '        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
-        '            MassDoc,
-        '            PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-        '        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-        '        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
-        '    Else
-        '        oMassProps.CacheResultsOnCompute = True
-        '        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-        '        log.Info("Mass Updated correctly")
-        '        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
-        '                  MassDoc,
-        '                  PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-        '        Dim kgMass As Decimal = myMass / 1000
-        '        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-        '        myiPropsForm.TextBox5.Text = myMass2 & " kg"
-        '        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(
-        '            MassDoc,
-        '            PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-        '        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-        '        myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
-        '    End If
-
-        'End Sub
 
         ''' <summary>
         ''' Original copied verbatim from here:
