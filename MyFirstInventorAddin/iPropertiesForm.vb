@@ -307,10 +307,10 @@ Public Class iPropertiesForm
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-        Dim oSheets As Sheets
-        Dim oView As DrawingView
-        Dim oViews As DrawingViews
-        Dim oScale As Double
+        Dim oSheets As Sheets = Nothing
+        Dim oView As DrawingView = Nothing
+        Dim oViews As DrawingViews = Nothing
+        Dim oScale As Double = Nothing
         Dim oViewCount As Integer = 0
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)

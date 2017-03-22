@@ -305,6 +305,8 @@ Namespace iPropertiesController
                         myiPropsForm.Label8.Show()
                         myiPropsForm.Label7.Show()
                         myiPropsForm.TextBox7.Show()
+                        myiPropsForm.Button4.Show()
+                        myiPropsForm.Button5.Show()
                         myiPropsForm.Label5.Hide()
                         myiPropsForm.TextBox5.Hide()
                         myiPropsForm.Label9.Hide()
@@ -313,8 +315,6 @@ Namespace iPropertiesController
                         myiPropsForm.TextBox3.Hide()
                         myiPropsForm.Label4.Hide()
                         myiPropsForm.TextBox4.Hide()
-                        myiPropsForm.Button4.Show()
-                        myiPropsForm.Button5.Show()
 
                         myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -330,11 +330,44 @@ Namespace iPropertiesController
                             myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
                         End If
 
+                        Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                        Dim oSheet As Sheet = oDrawDoc.ActiveSheet
+                        Dim oSheets As Sheets = Nothing
+                        Dim oViews As DrawingViews = Nothing
+                        Dim oScale As Double = Nothing
+                        Dim oViewCount As Integer = 0
+                        Dim oTitleBlock = oSheet.TitleBlock
+                        Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+                        Dim oSht As Sheet = oDWG.ActiveSheet
+
+                        Dim oView As DrawingView = Nothing
+                        Dim drawnDoc As Document = Nothing
+
+                        For i As Integer = 1 To oSht.DrawingViews.Count
+                            oView = oSht.DrawingViews(i)
+                            Exit For
+                        Next
+
+                        For Each view As DrawingView In oSht.DrawingViews
+                            oView = view
+                            Exit For
+                        Next
+
+                        drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                        Dim MaterialString As String = String.Empty
+
+                        MaterialString = iProperties.GetorSetStandardiProperty(
+                        drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+
+                        myiPropsForm.Label12.Text = MaterialString
+
                     Else
-                        'MassProps()
-                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        'log.Info("Mass Updated correctly")
-                        myiPropsForm.Label5.Show()
+                            'MassProps()
+                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            'log.Info("Mass Updated correctly")
+                            myiPropsForm.Label5.Show()
                         myiPropsForm.TextBox5.Show()
                         myiPropsForm.Label9.Show()
                         myiPropsForm.TextBox6.Show()
@@ -392,20 +425,25 @@ Namespace iPropertiesController
                             PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                         Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                         myiPropsForm.TextBox6.Text = myDensity2 & " g/cm^3"
+
+                        myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
                     End If
 
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
                         myiPropsForm.Button3.Show()
+                        myiPropsForm.Label11.Hide()
+                        myiPropsForm.Label12.Hide()
                     Else
                         myiPropsForm.Button3.Hide()
+                        myiPropsForm.Label11.Show()
+                        myiPropsForm.Label12.Show()
                     End If
 
                     myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,
                         PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
-                    myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
-                        DocumentToPulliPropValuesFrom,
-                        PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
                     If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
                         myiPropsForm.Label10.Text = "Checked In"
