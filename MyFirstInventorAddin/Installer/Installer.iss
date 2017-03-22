@@ -40,7 +40,7 @@ Source: "..\bin\Release\log4net.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Log4NetFileHelper.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Log4NetFileHelper.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Log4NetFileHelper.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\stdole.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

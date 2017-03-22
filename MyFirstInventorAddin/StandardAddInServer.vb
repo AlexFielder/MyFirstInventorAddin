@@ -55,6 +55,7 @@ Namespace iPropertiesController
                 m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
                 'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
                 m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
+                m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
 
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
