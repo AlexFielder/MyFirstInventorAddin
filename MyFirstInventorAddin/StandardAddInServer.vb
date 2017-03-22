@@ -123,17 +123,19 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
-            If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-                If CommandName = "VaultCheckinTop" Then
-                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                        WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
-                        If WhatToDo = vbYes Then
-                            AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                            myiPropsForm.Label8.Text = "Drawing Updates Deferred"
-                            UpdateStatusBar("Updates are now Deferred")
-                            MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
-                        Else
-                            'Do Nothing
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                    If CommandName = "VaultCheckinTop" Then
+                        If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                            WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
+                            If WhatToDo = vbYes Then
+                                AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                                myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                                UpdateStatusBar("Updates are now Deferred")
+                                MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
+                            Else
+                                'Do Nothing
+                            End If
                         End If
                     End If
                 End If
@@ -204,8 +206,13 @@ Namespace iPropertiesController
                                 selecteddoc = compOcc.Definition.Document
                                 UpdateDisplayediProperties(selecteddoc)
                                 AssyDoc.SelectSet.Select(compOcc)
-                            ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
-                                log.Info("Found a pattern!")
+                                'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
+                                '    Dim selecteddoc As Document = Nothing
+                                '    Dim compPat As OccurrencePatternElement = AssyDoc.SelectSet(1)
+                                '    selecteddoc = compPat
+                                '    UpdateDisplayediProperties(selecteddoc)
+                                '    AssyDoc.SelectSet.Select(compPat)
+                                '    log.Info("Found Pattern Element")
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
                             UpdateDisplayediProperties(AssyDoc)
