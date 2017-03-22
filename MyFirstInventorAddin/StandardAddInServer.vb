@@ -203,6 +203,8 @@ Namespace iPropertiesController
                                 selecteddoc = compOcc.Definition.Document
                                 UpdateDisplayediProperties(selecteddoc)
                                 AssyDoc.SelectSet.Select(compOcc)
+                            ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
+                                log.Info("Found a pattern!")
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
                             UpdateDisplayediProperties(AssyDoc)
