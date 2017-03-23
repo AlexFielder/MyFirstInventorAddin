@@ -229,8 +229,8 @@ Namespace iPropertiesController
                                 '    '    selecteddoc = oElem.Occurrences.compOcc
                                 '    '    'Next
                                 '    'Next
-                                'End If
-                            ElseIf AssyDoc.SelectSet.Count = 0 Then
+                            End If
+                        ElseIf AssyDoc.SelectSet.Count = 0 Then
                             UpdateDisplayediProperties(AssyDoc)
                         End If
                     End If
