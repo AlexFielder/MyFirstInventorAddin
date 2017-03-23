@@ -213,8 +213,24 @@ Namespace iPropertiesController
                                 '    UpdateDisplayediProperties(selecteddoc)
                                 '    AssyDoc.SelectSet.Select(compPat)
                                 '    log.Info("Found Pattern Element")
-                            End If
-                        ElseIf AssyDoc.SelectSet.Count = 0 Then
+
+                                'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
+                                '    Dim oPatt As OccurrencePattern
+                                '    oPatt = AssyDoc.SelectSet(1)
+                                '    Dim selecteddoc As Document = Nothing
+                                '    Dim oElem As OccurrencePatternElement = AssyDoc.SelectSet(1)
+                                '    selecteddoc = oElem.Definition.Document
+                                '    'UpdateDisplayediProperties(selecteddoc)
+                                '    AssyDoc.SelectSet.Select(oElem)
+                                '    log.Info("found part element")
+                                '    'Dim oElem As OccurrencePatternElement
+                                '    'For Each oElem In oPatt.OccurrencePatternElements
+                                '    '    'For Each compOcc In oElem.Occurrences
+                                '    '    selecteddoc = oElem.Occurrences.compOcc
+                                '    '    'Next
+                                '    'Next
+                                'End If
+                            ElseIf AssyDoc.SelectSet.Count = 0 Then
                             UpdateDisplayediProperties(AssyDoc)
                         End If
                     End If
