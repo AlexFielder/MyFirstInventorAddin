@@ -517,7 +517,7 @@ Namespace iPropertiesController
             Try
                 ' Handle the case with the active document never saved
                 If System.IO.File.Exists(doc.FullFileName) = False Then
-                    MsgBox("Save file before executing this method. Exiting ...")
+                    UpdateStatusBar("Save file before executing this method. Exiting ...")
                     Return False
                 End If
 
