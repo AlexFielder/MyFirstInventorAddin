@@ -234,12 +234,18 @@ Public Class iPropertiesForm
 
     Private Sub TextBox5_Enter(sender As Object, e As EventArgs) Handles TextBox5.Enter
         Clipboard.SetText(TextBox5.Text)
-        UpdateStatusBar("Copied to Clipboard")
+        UpdateStatusBar("Mass Copied to Clipboard")
+    End Sub
+    Private Sub TextBox5_MouseClick(sender As Object, e As MouseEventArgs) Handles TextBox5.MouseClick
+        TextBox5_Enter(sender, e)
     End Sub
 
     Private Sub TextBox6_Enter(sender As Object, e As EventArgs) Handles TextBox6.Enter
         Clipboard.SetText(TextBox6.Text)
-        UpdateStatusBar("Copied to Clipboard")
+        UpdateStatusBar("Density Copied to Clipboard")
+    End Sub
+    Private Sub TextBox6_MouseClick(sender As Object, e As MouseEventArgs) Handles TextBox6.MouseClick
+        TextBox6_Enter(sender, e)
     End Sub
 
     Private Sub UpdateStatusBar(ByVal Message As String)
