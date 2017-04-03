@@ -61,7 +61,7 @@ Partial Class iPropertiesForm
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 9)
+        Me.Label1.Location = New System.Drawing.Point(8, 9)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(66, 13)
         Me.Label1.TabIndex = 100
@@ -69,7 +69,7 @@ Partial Class iPropertiesForm
         '
         'TextBox1
         '
-        Me.TextBox1.Location = New System.Drawing.Point(101, 6)
+        Me.TextBox1.Location = New System.Drawing.Point(105, 6)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(210, 20)
         Me.TextBox1.TabIndex = 1
@@ -77,7 +77,7 @@ Partial Class iPropertiesForm
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(12, 33)
+        Me.Label2.Location = New System.Drawing.Point(8, 33)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(60, 13)
         Me.Label2.TabIndex = 101
@@ -85,7 +85,7 @@ Partial Class iPropertiesForm
         '
         'TextBox2
         '
-        Me.TextBox2.Location = New System.Drawing.Point(101, 29)
+        Me.TextBox2.Location = New System.Drawing.Point(105, 29)
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal
         Me.TextBox2.Size = New System.Drawing.Size(210, 20)
@@ -94,7 +94,7 @@ Partial Class iPropertiesForm
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(12, 56)
+        Me.Label3.Location = New System.Drawing.Point(8, 56)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(75, 13)
         Me.Label3.TabIndex = 102
@@ -102,7 +102,7 @@ Partial Class iPropertiesForm
         '
         'TextBox3
         '
-        Me.TextBox3.Location = New System.Drawing.Point(101, 52)
+        Me.TextBox3.Location = New System.Drawing.Point(105, 52)
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(210, 20)
         Me.TextBox3.TabIndex = 3
@@ -110,7 +110,7 @@ Partial Class iPropertiesForm
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 79)
+        Me.Label4.Location = New System.Drawing.Point(8, 79)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(49, 13)
         Me.Label4.TabIndex = 104
@@ -118,7 +118,7 @@ Partial Class iPropertiesForm
         '
         'TextBox4
         '
-        Me.TextBox4.Location = New System.Drawing.Point(101, 75)
+        Me.TextBox4.Location = New System.Drawing.Point(105, 75)
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(210, 20)
         Me.TextBox4.TabIndex = 4
@@ -134,7 +134,7 @@ Partial Class iPropertiesForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(223, 101)
+        Me.Button1.Location = New System.Drawing.Point(227, 101)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(88, 40)
         Me.Button1.TabIndex = 200
@@ -144,7 +144,7 @@ Partial Class iPropertiesForm
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(12, 170)
+        Me.Label6.Location = New System.Drawing.Point(8, 170)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(75, 13)
         Me.Label6.TabIndex = 106
@@ -153,7 +153,7 @@ Partial Class iPropertiesForm
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(12, 56)
+        Me.Label8.Location = New System.Drawing.Point(8, 56)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
         Me.Label8.TabIndex = 107
@@ -161,7 +161,7 @@ Partial Class iPropertiesForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(194, 51)
+        Me.Button2.Location = New System.Drawing.Point(198, 51)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(117, 23)
         Me.Button2.TabIndex = 201
@@ -170,7 +170,7 @@ Partial Class iPropertiesForm
         '
         'TextBox5
         '
-        Me.TextBox5.Location = New System.Drawing.Point(101, 98)
+        Me.TextBox5.Location = New System.Drawing.Point(105, 98)
         Me.TextBox5.Name = "TextBox5"
         Me.TextBox5.ReadOnly = True
         Me.TextBox5.Size = New System.Drawing.Size(114, 20)
@@ -179,7 +179,7 @@ Partial Class iPropertiesForm
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(12, 125)
+        Me.Label9.Location = New System.Drawing.Point(8, 125)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(42, 13)
         Me.Label9.TabIndex = 108
@@ -187,7 +187,7 @@ Partial Class iPropertiesForm
         '
         'TextBox6
         '
-        Me.TextBox6.Location = New System.Drawing.Point(101, 121)
+        Me.TextBox6.Location = New System.Drawing.Point(105, 121)
         Me.TextBox6.Name = "TextBox6"
         Me.TextBox6.ReadOnly = True
         Me.TextBox6.Size = New System.Drawing.Size(114, 20)
@@ -196,7 +196,7 @@ Partial Class iPropertiesForm
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(12, 147)
+        Me.Label11.Location = New System.Drawing.Point(8, 147)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(44, 13)
         Me.Label11.TabIndex = 109
@@ -223,7 +223,7 @@ Partial Class iPropertiesForm
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(12, 102)
+        Me.Label7.Location = New System.Drawing.Point(8, 102)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 13)
         Me.Label7.TabIndex = 110
@@ -231,7 +231,7 @@ Partial Class iPropertiesForm
         '
         'TextBox7
         '
-        Me.TextBox7.Location = New System.Drawing.Point(101, 98)
+        Me.TextBox7.Location = New System.Drawing.Point(106, 98)
         Me.TextBox7.Name = "TextBox7"
         Me.TextBox7.Size = New System.Drawing.Size(100, 20)
         Me.TextBox7.TabIndex = 7
@@ -281,7 +281,7 @@ Partial Class iPropertiesForm
         '
         'Button4
         '
-        Me.Button4.Location = New System.Drawing.Point(12, 74)
+        Me.Button4.Location = New System.Drawing.Point(8, 74)
         Me.Button4.Name = "Button4"
         Me.Button4.Size = New System.Drawing.Size(117, 23)
         Me.Button4.TabIndex = 305
@@ -290,7 +290,7 @@ Partial Class iPropertiesForm
         '
         'Button5
         '
-        Me.Button5.Location = New System.Drawing.Point(194, 74)
+        Me.Button5.Location = New System.Drawing.Point(198, 74)
         Me.Button5.Name = "Button5"
         Me.Button5.Size = New System.Drawing.Size(117, 23)
         Me.Button5.TabIndex = 306
@@ -299,7 +299,7 @@ Partial Class iPropertiesForm
         '
         'Button6
         '
-        Me.Button6.Location = New System.Drawing.Point(67, 74)
+        Me.Button6.Location = New System.Drawing.Point(71, 74)
         Me.Button6.Name = "Button6"
         Me.Button6.Size = New System.Drawing.Size(16, 23)
         Me.Button6.TabIndex = 307
@@ -308,7 +308,7 @@ Partial Class iPropertiesForm
         '
         'Button7
         '
-        Me.Button7.Location = New System.Drawing.Point(84, 74)
+        Me.Button7.Location = New System.Drawing.Point(88, 74)
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(16, 23)
         Me.Button7.TabIndex = 308
@@ -317,7 +317,7 @@ Partial Class iPropertiesForm
         '
         'Button8
         '
-        Me.Button8.Location = New System.Drawing.Point(84, 28)
+        Me.Button8.Location = New System.Drawing.Point(88, 28)
         Me.Button8.Name = "Button8"
         Me.Button8.Size = New System.Drawing.Size(16, 23)
         Me.Button8.TabIndex = 310
@@ -326,7 +326,7 @@ Partial Class iPropertiesForm
         '
         'Button9
         '
-        Me.Button9.Location = New System.Drawing.Point(67, 28)
+        Me.Button9.Location = New System.Drawing.Point(71, 28)
         Me.Button9.Name = "Button9"
         Me.Button9.Size = New System.Drawing.Size(16, 23)
         Me.Button9.TabIndex = 309
