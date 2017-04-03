@@ -359,46 +359,46 @@ Public Class iPropertiesForm
     End Function
 
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
-        Dim insertText = "Ø"
+        Dim insertText6 = "Ø"
         Dim insertPos As Integer = TextBox4.SelectionStart
         If TextBox4.Text = "Engineer" Then
-            TextBox4.Text = insertText
+            TextBox4.Text = insertText6
         Else
-            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
-            TextBox4.SelectionStart = insertPos + insertText.Length
+            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText6)
+            TextBox4.SelectionStart = insertPos + insertText6.Length
         End If
     End Sub
 
     Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
-        Dim insertText = "°"
+        Dim insertText7 = "°"
         Dim insertPos As Integer = TextBox4.SelectionStart
         If TextBox4.Text = "Engineer" Then
-            TextBox4.Text = insertText
+            TextBox4.Text = insertText7
         Else
-            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
-            TextBox4.SelectionStart = insertPos + insertText.Length
+            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText7)
+            TextBox4.SelectionStart = insertPos + insertText7.Length
         End If
     End Sub
 
     Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
-        Dim insertText = "Ø"
+        Dim insertText9 = "Ø"
         Dim insertPos As Integer = TextBox4.SelectionStart
         If TextBox2.Text = "Description" Then
-            TextBox2.Text = insertText
+            TextBox2.Text = insertText9
         Else
-            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
-            TextBox2.SelectionStart = insertPos + insertText.Length
+            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText9)
+            TextBox2.SelectionStart = insertPos + insertText9.Length
         End If
     End Sub
 
     Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
-        Dim insertText = "°"
+        Dim insertText8 = "°"
         Dim insertPos As Integer = TextBox2.SelectionStart
         If TextBox2.Text = "Description" Then
-            TextBox2.Text = insertText
+            TextBox2.Text = insertText8
         Else
-            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
-            TextBox2.SelectionStart = insertPos + insertText.Length
+            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText8)
+            TextBox2.SelectionStart = insertPos + insertText8.Length
         End If
     End Sub
 End Class
