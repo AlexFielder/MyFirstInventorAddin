@@ -380,7 +380,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button6.Click
+    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
         Dim insertText = "Ø"
         Dim insertPos As Integer = TextBox4.SelectionStart
         If TextBox2.Text = "Description" Then
@@ -391,7 +391,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button7.Click
+    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
         Dim insertText = "°"
         Dim insertPos As Integer = TextBox2.SelectionStart
         If TextBox2.Text = "Description" Then
