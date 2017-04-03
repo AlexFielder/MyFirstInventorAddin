@@ -357,4 +357,48 @@ Public Class iPropertiesForm
         Next
         Return Nothing
     End Function
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Dim insertText = "Ø"
+        Dim insertPos As Integer = TextBox4.SelectionStart
+        If TextBox4.Text = "Engineer" Then
+            TextBox4.Text = insertText
+        Else
+            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox4.SelectionStart = insertPos + insertText.Length
+        End If
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Dim insertText = "°"
+        Dim insertPos As Integer = TextBox4.SelectionStart
+        If TextBox4.Text = "Engineer" Then
+            TextBox4.Text = insertText
+        Else
+            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox4.SelectionStart = insertPos + insertText.Length
+        End If
+    End Sub
+
+    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Dim insertText = "Ø"
+        Dim insertPos As Integer = TextBox4.SelectionStart
+        If TextBox2.Text = "Description" Then
+            TextBox2.Text = insertText
+        Else
+            TextBox2.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox2.SelectionStart = insertPos + insertText.Length
+        End If
+    End Sub
+
+    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Dim insertText = "°"
+        Dim insertPos As Integer = TextBox2.SelectionStart
+        If TextBox2.Text = "Description" Then
+            TextBox2.Text = insertText
+        Else
+            TextBox2.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox2.SelectionStart = insertPos + insertText.Length
+        End If
+    End Sub
 End Class

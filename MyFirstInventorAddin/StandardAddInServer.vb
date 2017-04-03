@@ -360,6 +360,10 @@ Namespace iPropertiesController
                         myiPropsForm.TextBox3.Hide()
                         myiPropsForm.Label4.Hide()
                         myiPropsForm.TextBox4.Hide()
+                        myiPropsForm.Button6.Hide()
+                        myiPropsForm.Button7.Hide()
+                        myiPropsForm.Button8.Hide()
+                        myiPropsForm.Button9.Hide()
 
                         myiPropsForm.TextBox7.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -420,6 +424,10 @@ Namespace iPropertiesController
                         myiPropsForm.TextBox3.Show()
                         myiPropsForm.Label4.Show()
                         myiPropsForm.TextBox4.Show()
+                        myiPropsForm.Button6.Show()
+                        myiPropsForm.Button7.Show()
+                        myiPropsForm.Button8.Show()
+                        myiPropsForm.Button9.Show()
                         myiPropsForm.Label7.Hide()
                         myiPropsForm.TextBox7.Hide()
                         myiPropsForm.Button2.Hide()
