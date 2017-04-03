@@ -386,7 +386,7 @@ Public Class iPropertiesForm
         If TextBox2.Text = "Description" Then
             TextBox2.Text = insertText
         Else
-            TextBox2.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
             TextBox2.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
@@ -397,7 +397,7 @@ Public Class iPropertiesForm
         If TextBox2.Text = "Description" Then
             TextBox2.Text = insertText
         Else
-            TextBox2.Text = TextBox4.Text.Insert(insertPos, insertText)
+            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
             TextBox2.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
