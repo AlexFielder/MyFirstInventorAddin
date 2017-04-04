@@ -41,10 +41,10 @@ Public Class iPropertiesForm
 
     End Sub
 
-    Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave
+    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If TextBox1.Text = "Part Number" Then
+                If tbPartNumber.Text = "Part Number" Then
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
@@ -54,7 +54,7 @@ Public Class iPropertiesForm
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
-                                                          TextBox1.Text,
+                                                          tbPartNumber.Text,
                                                           "")
                     log.Debug(inventorApp.ActiveDocument.FullFileName + " Part Number Updated to: " + iPropPartNum)
                 End If
@@ -62,10 +62,10 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub TextBox2_Leave(sender As Object, e As EventArgs) Handles TextBox2.Leave
+    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If TextBox2.Text = "Description" Then
+                If tbDescription.Text = "Description" Then
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
@@ -75,7 +75,7 @@ Public Class iPropertiesForm
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-                                                          TextBox2.Text,
+                                                          tbDescription.Text,
                                                           "")
                     log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
                 End If
@@ -83,10 +83,10 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub TextBox3_Leave(sender As Object, e As EventArgs) Handles TextBox3.Leave
+    Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If TextBox3.Text = "Stock Number" Then
+                If tbStockNumber.Text = "Stock Number" Then
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
@@ -96,7 +96,7 @@ Public Class iPropertiesForm
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
-                                                          TextBox3.Text,
+                                                          tbStockNumber.Text,
                                                           "")
                     log.Debug(inventorApp.ActiveDocument.FullFileName + " Stock Number Updated to: " + iPropPartNum)
                 End If
@@ -104,10 +104,10 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub TextBox4_Leave(sender As Object, e As EventArgs) Handles TextBox4.Leave
+    Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If TextBox4.Text = "Engineer" Then
+                If tbEngineer.Text = "Engineer" Then
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
@@ -117,7 +117,7 @@ Public Class iPropertiesForm
                     Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-                                                          TextBox4.Text,
+                                                          tbEngineer.Text,
                                                           "")
                     log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
                 End If
@@ -125,7 +125,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub btUpdateAll_Click(sender As Object, e As EventArgs) Handles btUpdateAll.Click
 
         'need to decide whether or not to leave our textbox.leave events as they are or change all to be driven by 
         'clicking this button.
@@ -139,22 +139,22 @@ Public Class iPropertiesForm
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                 'try these and see if they fire or not!
-                TextBox1_Leave(sender, e)
-                TextBox2_Leave(sender, e)
-                TextBox3_Leave(sender, e)
-                TextBox4_Leave(sender, e)
-                TextBox7_Leave(sender, e)
+                tbPartNumber_Leave(sender, e)
+                tbDescription_Leave(sender, e)
+                tbStockNumber_Leave(sender, e)
+                tbEngineer_Leave(sender, e)
+                tbDrawnBy_Leave(sender, e)
 
                 Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 Dim kgMass As Decimal = myMass / 1000
                 Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-                TextBox5.Text = myMass2 & " kg"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox5.Text)
+                tbMass.Text = myMass2 & " kg"
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
 
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                 Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-                TextBox6.Text = myDensity2 & " g/cm^3"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + TextBox6.Text)
+                tbDensity.Text = myDensity2 & " g/cm^3"
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
 
                 Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
@@ -162,7 +162,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+    Private Sub btDefer_Click(sender As Object, e As EventArgs) Handles btDefer.Click
 
         'Toggle 'Defer updates' on and off in a Drawing
         If Not inventorApp.ActiveDocument Is Nothing Then
@@ -185,20 +185,20 @@ Public Class iPropertiesForm
 
     End Sub
 
-    Private Sub TextBox7_Leave(sender As Object, e As EventArgs) Handles TextBox7.Leave
+    Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForSummaryInformationEnum.kAuthorSummaryInformation,
-                                                          TextBox7.Text,
+                                                          tbDrawnBy.Text,
                                                           "")
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropPartNum)
             End If
         End If
     End Sub
 
-    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+    Private Sub btITEM_Click(sender As Object, e As EventArgs) Handles btITEM.Click
         Try
             Dim doc = inventorApp.ActiveDocument
             Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
@@ -232,27 +232,27 @@ Public Class iPropertiesForm
         End Try
     End Sub
 
-    Private Sub TextBox5_Enter(sender As Object, e As EventArgs) Handles TextBox5.Enter
-        Clipboard.SetText(TextBox5.Text)
+    Private Sub tbMass_Enter(sender As Object, e As EventArgs) Handles tbMass.Enter
+        Clipboard.SetText(tbMass.Text)
         UpdateStatusBar("Mass Copied to Clipboard")
     End Sub
-    Private Sub TextBox5_MouseClick(sender As Object, e As MouseEventArgs) Handles TextBox5.MouseClick
-        TextBox5_Enter(sender, e)
+    Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.MouseClick
+        tbMass_Enter(sender, e)
     End Sub
 
-    Private Sub TextBox6_Enter(sender As Object, e As EventArgs) Handles TextBox6.Enter
-        Clipboard.SetText(TextBox6.Text)
+    Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.Enter
+        Clipboard.SetText(tbDensity.Text)
         UpdateStatusBar("Density Copied to Clipboard")
     End Sub
-    Private Sub TextBox6_MouseClick(sender As Object, e As MouseEventArgs) Handles TextBox6.MouseClick
-        TextBox6_Enter(sender, e)
+    Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.MouseClick
+        tbDensity_Enter(sender, e)
     End Sub
 
     Private Sub UpdateStatusBar(ByVal Message As String)
         AddinGlobal.InventorApp.StatusBarText = Message
     End Sub
 
-    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+    Private Sub btShtMaterial_Click(sender As Object, e As EventArgs) Handles btShtMaterial.Click
         Dim MaterialTextBox As Inventor.TextBox = Nothing
         Try
             Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
@@ -310,7 +310,7 @@ Public Class iPropertiesForm
         End Try
     End Sub
 
-    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+    Private Sub btShtScale_Click(sender As Object, e As EventArgs) Handles btShtScale.Click
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
         Dim oSheets As Sheets = Nothing
@@ -360,49 +360,49 @@ Public Class iPropertiesForm
 
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         Dim insertText = "Ø"
-        Dim insertPos As Integer = TextBox4.SelectionStart
-        If TextBox4.Text = "Engineer" Then
-            TextBox4.Text = insertText
-            TextBox4.SelectionStart = insertPos + insertText.Length
+        Dim insertPos As Integer = tbEngineer.SelectionStart
+        If tbEngineer.Text = "Engineer" Then
+            tbEngineer.Text = insertText
+            tbEngineer.SelectionStart = insertPos + insertText.Length
         Else
-            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
-            TextBox4.SelectionStart = insertPos + insertText.Length
+            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+            tbEngineer.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
 
     Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
         Dim insertText = "°"
-        Dim insertPos As Integer = TextBox4.SelectionStart
-        If TextBox4.Text = "Engineer" Then
-            TextBox4.Text = insertText
-            TextBox4.SelectionStart = insertPos + insertText.Length
+        Dim insertPos As Integer = tbEngineer.SelectionStart
+        If tbEngineer.Text = "Engineer" Then
+            tbEngineer.Text = insertText
+            tbEngineer.SelectionStart = insertPos + insertText.Length
         Else
-            TextBox4.Text = TextBox4.Text.Insert(insertPos, insertText)
-            TextBox4.SelectionStart = insertPos + insertText.Length
+            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+            tbEngineer.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
 
     Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
         Dim insertText = "°"
-        Dim insertPos As Integer = TextBox2.SelectionStart
-        If TextBox2.Text = "Description" Then
-            TextBox2.Text = insertText
-            TextBox2.SelectionStart = insertPos + insertText.Length
+        Dim insertPos As Integer = tbDescription.SelectionStart
+        If tbDescription.Text = "Description" Then
+            tbDescription.Text = insertText
+            tbDescription.SelectionStart = insertPos + insertText.Length
         Else
-            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
-            TextBox2.SelectionStart = insertPos + insertText.Length
+            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+            tbDescription.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
 
     Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
         Dim insertText = "Ø"
-        Dim insertPos As Integer = TextBox2.SelectionStart
-        If TextBox2.Text = "Description" Then
-            TextBox2.Text = insertText
-            TextBox2.SelectionStart = insertPos + insertText.Length
+        Dim insertPos As Integer = tbDescription.SelectionStart
+        If tbDescription.Text = "Description" Then
+            tbDescription.Text = insertText
+            tbDescription.SelectionStart = insertPos + insertText.Length
         Else
-            TextBox2.Text = TextBox2.Text.Insert(insertPos, insertText)
-            TextBox2.SelectionStart = insertPos + insertText.Length
+            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+            tbDescription.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
 End Class
