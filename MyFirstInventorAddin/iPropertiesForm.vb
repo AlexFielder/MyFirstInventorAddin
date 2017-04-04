@@ -361,11 +361,14 @@ Public Class iPropertiesForm
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         Dim insertText = "Ø"
         Dim insertPos As Integer = tbEngineer.SelectionStart
+        Dim focusPoint = insertPos + insertText.Length
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Text = insertText
+            tbEngineer.Focus()
             tbEngineer.SelectionStart = insertPos + insertText.Length
         Else
             tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+            tbEngineer.Focus()
             tbEngineer.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
@@ -375,9 +378,11 @@ Public Class iPropertiesForm
         Dim insertPos As Integer = tbEngineer.SelectionStart
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Text = insertText
+            tbEngineer.Focus()
             tbEngineer.SelectionStart = insertPos + insertText.Length
         Else
             tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+            tbEngineer.Focus()
             tbEngineer.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
@@ -387,9 +392,11 @@ Public Class iPropertiesForm
         Dim insertPos As Integer = tbDescription.SelectionStart
         If tbDescription.Text = "Description" Then
             tbDescription.Text = insertText
+            tbDescription.Focus()
             tbDescription.SelectionStart = insertPos + insertText.Length
         Else
             tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+            tbDescription.Focus()
             tbDescription.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
@@ -399,9 +406,11 @@ Public Class iPropertiesForm
         Dim insertPos As Integer = tbDescription.SelectionStart
         If tbDescription.Text = "Description" Then
             tbDescription.Text = insertText
+            tbDescription.Focus()
             tbDescription.SelectionStart = insertPos + insertText.Length
         Else
             tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+            tbDescription.Focus()
             tbDescription.SelectionStart = insertPos + insertText.Length
         End If
     End Sub
