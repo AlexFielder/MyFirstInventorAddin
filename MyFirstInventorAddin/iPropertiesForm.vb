@@ -480,8 +480,66 @@ Public Class iPropertiesForm
                 UpdateStatusBar("File saved as Step file")
             End If
         Else
-            'do nothing
-            UpdateStatusBar("Drawings can't be saved as Step file")
+            Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
+            Dim oSht As Sheet = oDrawDoc.ActiveSheet
+            Dim oView As DrawingView = Nothing
+            Dim oDoc As Document = Nothing
+
+            For i As Integer = 1 To oSht.DrawingViews.Count
+                oView = oSht.DrawingViews(i)
+                Exit For
+            Next
+
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            oDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            ' Get the STEP translator Add-In.
+            Dim oSTEPTranslator As TranslatorAddIn
+            oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+            If oSTEPTranslator Is Nothing Then
+                MsgBox("Could not access STEP translator.")
+                Exit Sub
+            End If
+
+            'Dim FileName As String = inventorApp.ActiveDocument.FullFileName
+            'Dim FileName As String = System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            Dim oContext As TranslationContext
+            oContext = inventorApp.TransientObjects.CreateTranslationContext
+            Dim oOptions As NameValueMap
+            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+            If oSTEPTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+                ' Set application protocol.
+                ' 2 = AP 203 - Configuration Controlled Design
+                ' 3 = AP 214 - Automotive Design
+                oOptions.Value("ApplicationProtocolType") = 3
+
+                ' Other options...
+                'oOptions.Value("Author") = ""
+                'oOptions.Value("Authorization") = ""
+                'oOptions.Value("Description") = ""
+                'oOptions.Value("Organization") = ""
+
+                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                Dim oData As DataMedium
+                oData = inventorApp.TransientObjects.CreateDataMedium
+                oData.FileName = NewPath + ".stp"
+
+                Call oSTEPTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                UpdateStatusBar("Part/Assy file saved as Step file")
+            End If
         End If
     End Sub
 
@@ -543,8 +601,76 @@ Public Class iPropertiesForm
                 UpdateStatusBar("File saved as STL file")
             End If
         Else
-            'do nothing
-            UpdateStatusBar("Drawings can't be saved as STL file")
+            Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
+            Dim oSht As Sheet = oDrawDoc.ActiveSheet
+            Dim oView As DrawingView = Nothing
+            Dim oDoc As Document = Nothing
+
+            For i As Integer = 1 To oSht.DrawingViews.Count
+                oView = oSht.DrawingViews(i)
+                Exit For
+            Next
+
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            oDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            ' Get the STL translator Add-In.
+            Dim oSTLTranslator As TranslatorAddIn
+            oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
+            If oSTLTranslator Is Nothing Then
+                MsgBox("Could not access STL translator.")
+                Exit Sub
+            End If
+
+            Dim oContext As TranslationContext
+            oContext = inventorApp.TransientObjects.CreateTranslationContext
+
+            Dim oOptions As NameValueMap
+            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+
+            '    Save Copy As Options:
+            '       Name Value Map:
+            '               ExportUnits = 4
+            '               Resolution = 1
+            '               AllowMoveMeshNode = False
+            '               SurfaceDeviation = 60
+            '               NormalDeviation = 14
+            '               MaxEdgeLength = 100
+            '               AspectRatio = 40
+            '               ExportFileStructure = 0
+            '               OutputFileType = 0
+            '               ExportColor = True
+
+            If oSTLTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+
+                ' Set accuracy.
+                '   2 = High,  1 = Medium,  0 = Low
+                oOptions.Value("Resolution") = 2
+
+                ' Set output file type:
+                '   0 - binary,  1 - ASCII
+                oOptions.Value("OutputFileType") = 0
+
+                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                Dim oData As DataMedium
+                oData = inventorApp.TransientObjects.CreateDataMedium
+                oData.FileName = NewPath + ".stl"
+
+                Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                UpdateStatusBar("Part/Assy file saved as STL file")
+            End If
         End If
     End Sub
 
