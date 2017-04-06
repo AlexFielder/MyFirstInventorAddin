@@ -33,11 +33,6 @@ Namespace iPropertiesController
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
 
-        Public stCurrentPath As String = ""
-        Public stNewPath As String = ""
-        Public stRefNewPath As String = ""
-        Public stRefDoc As String = ""
-
         'Private WithEvents m_sampleButton As ButtonDefinition
 
 #Region "ApplicationAddInServer Members"
@@ -517,36 +512,6 @@ Namespace iPropertiesController
             End Try
         End Sub
 
-        Public Sub GetNewFilePaths()
-            stCurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-            stNewPath = stCurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-            'Check for the PDF folder and create it if it does not exist
-            If Not System.IO.Directory.Exists(stNewPath) Then
-                System.IO.Directory.CreateDirectory(stNewPath)
-            End If
-            Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            Dim oSht As Sheet = oDrawDoc.ActiveSheet
-            Dim oView As DrawingView = Nothing
-            Dim oDoc As Document = Nothing
-
-            For i As Integer = 1 To oSht.DrawingViews.Count
-                oView = oSht.DrawingViews(i)
-                Exit For
-            Next
-
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
-
-            stRefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-            stRefNewPath = stCurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-            'Check for the PDF folder and create it if it does not exist
-            If Not System.IO.Directory.Exists(stRefNewPath) Then
-                System.IO.Directory.CreateDirectory(stRefNewPath)
-            End If
-        End Sub
-
         ''' <summary>
         ''' Original copied verbatim from here:
         ''' http://adndevblog.typepad.com/manufacturing/2012/05/checking-whether-a-inventor-document-is-read-only-or-not.html
@@ -597,10 +562,10 @@ Namespace iPropertiesController
                 m_uiEvents = Nothing
                 m_StyleEvents = Nothing
 
-                stCurrentPath = Nothing
-                stNewPath = Nothing
-                stRefNewPath = Nothing
-                stRefDoc = Nothing
+                'myiPropsForm.CurrentPath = Nothing
+                'myiPropsForm.NewPath = Nothing
+                'myiPropsForm.RefNewPath = Nothing
+                'myiPropsForm.RefDoc = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)

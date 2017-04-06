@@ -10,6 +10,41 @@ Public Class iPropertiesForm
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
+    'Public Sub GetNewFilePaths()
+    '    CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+    '    NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+    '    'Check for the PDF folder and create it if it does not exist
+    '    If Not System.IO.Directory.Exists(NewPath) Then
+    '        System.IO.Directory.CreateDirectory(NewPath)
+    '    End If
+    '    Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+    '    Dim oSht As Sheet = oDrawDoc.ActiveSheet
+    '    Dim oView As DrawingView = Nothing
+    '    Dim oDoc As Document = Nothing
+
+    '    'For i As Integer = 1 To oSht.DrawingViews.Count
+    '    '    oView = oSht.DrawingViews(i)
+    '    '    Exit For
+    '    'Next
+
+    '    For Each view As DrawingView In oSht.DrawingViews
+    '        oView = view
+    '        Exit For
+    '    Next
+
+    '    RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+    '    RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+    '    'Check for the PDF folder and create it if it does not exist
+    '    If Not System.IO.Directory.Exists(RefNewPath) Then
+    '        System.IO.Directory.CreateDirectory(RefNewPath)
+    '    End If
+    'End Sub
+
+    'Public CurrentPath As String = String.Empty
+    'Public NewPath As String = String.Empty
+    'Public RefNewPath As String = String.Empty
+    'Public RefDoc As String = String.Empty
+
     Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
             log.Debug("Loading iProperties Form")
@@ -436,12 +471,13 @@ Public Class iPropertiesForm
 
     Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
             If Not System.IO.Directory.Exists(NewPath) Then
                 System.IO.Directory.CreateDirectory(NewPath)
             End If
+
             ' Get the STEP translator Add-In.
             Dim oSTEPTranslator As TranslatorAddIn
             oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
@@ -494,13 +530,13 @@ Public Class iPropertiesForm
                 Exit For
             Next
 
-            oDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
-            If Not System.IO.Directory.Exists(NewPath) Then
-                System.IO.Directory.CreateDirectory(NewPath)
+            If Not System.IO.Directory.Exists(RefNewPath) Then
+                System.IO.Directory.CreateDirectory(RefNewPath)
             End If
 
             ' Get the STEP translator Add-In.
@@ -518,7 +554,7 @@ Public Class iPropertiesForm
             oContext = inventorApp.TransientObjects.CreateTranslationContext
             Dim oOptions As NameValueMap
             oOptions = inventorApp.TransientObjects.CreateNameValueMap
-            If oSTEPTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+            If oSTEPTranslator.HasSaveCopyAsOptions(RefDoc, oContext, oOptions) Then
                 ' Set application protocol.
                 ' 2 = AP 203 - Configuration Controlled Design
                 ' 3 = AP 214 - Automotive Design
@@ -534,9 +570,9 @@ Public Class iPropertiesForm
 
                 Dim oData As DataMedium
                 oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + ".stp"
+                oData.FileName = RefNewPath + ".stp"
 
-                Call oSTEPTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                 UpdateStatusBar("Part/Assy file saved as Step file")
             End If
         End If
@@ -544,8 +580,8 @@ Public Class iPropertiesForm
 
     Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
             If Not System.IO.Directory.Exists(NewPath) Then
                 System.IO.Directory.CreateDirectory(NewPath)
@@ -615,13 +651,13 @@ Public Class iPropertiesForm
                 Exit For
             Next
 
-            oDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
-            If Not System.IO.Directory.Exists(NewPath) Then
-                System.IO.Directory.CreateDirectory(NewPath)
+            If Not System.IO.Directory.Exists(RefNewPath) Then
+                System.IO.Directory.CreateDirectory(RefNewPath)
             End If
 
             ' Get the STL translator Add-In.
@@ -651,7 +687,7 @@ Public Class iPropertiesForm
             '               OutputFileType = 0
             '               ExportColor = True
 
-            If oSTLTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+            If oSTLTranslator.HasSaveCopyAsOptions(RefDoc, oContext, oOptions) Then
 
                 ' Set accuracy.
                 '   2 = High,  1 = Medium,  0 = Low
@@ -665,9 +701,9 @@ Public Class iPropertiesForm
 
                 Dim oData As DataMedium
                 oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + ".stl"
+                oData.FileName = RefNewPath + ".stl"
 
-                Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                 UpdateStatusBar("Part/Assy file saved as STL file")
             End If
         End If
@@ -675,8 +711,8 @@ Public Class iPropertiesForm
 
     Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
             If Not System.IO.Directory.Exists(NewPath) Then
                 System.IO.Directory.CreateDirectory(NewPath)
@@ -769,8 +805,8 @@ Public Class iPropertiesForm
             Call oPDFConvertor3D.Publish(oDocument, oOptions)
             UpdateStatusBar("File saved as 3D pdf file")
         Else
-            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
-            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            CurrentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
             'Check for the PDF folder and create it if it does not exist
             If Not System.IO.Directory.Exists(NewPath) Then
                 System.IO.Directory.CreateDirectory(NewPath)
