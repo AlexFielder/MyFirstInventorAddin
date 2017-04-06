@@ -368,6 +368,15 @@ Public Class iPropertiesForm
         Return Nothing
     End Function
 
+    Function GetAuthorTextBox(ByVal titleDef As TitleBlockDefinition) As Inventor.TextBox
+        For Each defText As Inventor.TextBox In titleDef.Sketch.TextBoxes
+            If (defText.Text = "<AUTHOR>" Or defText.Text = "AUTHOR") Then
+                Return defText
+            End If
+        Next
+        Return Nothing
+    End Function
+
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         Dim insertText = "Ø"
         Dim insertPos As Integer = tbEngineer.SelectionStart
@@ -422,6 +431,267 @@ Public Class iPropertiesForm
             tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
             tbDescription.Focus()
             tbDescription.Select(insertPos + insertText.Length, 0)
+        End If
+    End Sub
+
+    Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
+        If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            ' Get the STEP translator Add-In.
+            Dim oSTEPTranslator As TranslatorAddIn
+            oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+            If oSTEPTranslator Is Nothing Then
+                MsgBox("Could not access STEP translator.")
+                Exit Sub
+            End If
+
+            'Dim FileName As String = inventorApp.ActiveDocument.FullFileName
+            'Dim FileName As String = System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            Dim oContext As TranslationContext
+            oContext = inventorApp.TransientObjects.CreateTranslationContext
+            Dim oOptions As NameValueMap
+            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+            If oSTEPTranslator.HasSaveCopyAsOptions(inventorApp.ActiveDocument, oContext, oOptions) Then
+                ' Set application protocol.
+                ' 2 = AP 203 - Configuration Controlled Design
+                ' 3 = AP 214 - Automotive Design
+                oOptions.Value("ApplicationProtocolType") = 3
+
+                ' Other options...
+                'oOptions.Value("Author") = ""
+                'oOptions.Value("Authorization") = ""
+                'oOptions.Value("Description") = ""
+                'oOptions.Value("Organization") = ""
+
+                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                Dim oData As DataMedium
+                oData = inventorApp.TransientObjects.CreateDataMedium
+                oData.FileName = NewPath + ".stp"
+
+                Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
+                UpdateStatusBar("File saved as Step file")
+            End If
+        Else
+            'do nothing
+            UpdateStatusBar("Drawings can't be saved as Step file")
+        End If
+    End Sub
+
+    Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
+        If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            ' Get the STL translator Add-In.
+            Dim oSTLTranslator As TranslatorAddIn
+            oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
+            If oSTLTranslator Is Nothing Then
+                MsgBox("Could not access STL translator.")
+                Exit Sub
+            End If
+
+            Dim oDoc = inventorApp.ActiveDocument
+
+            Dim oContext As TranslationContext
+            oContext = inventorApp.TransientObjects.CreateTranslationContext
+
+            Dim oOptions As NameValueMap
+            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+
+            '    Save Copy As Options:
+            '       Name Value Map:
+            '               ExportUnits = 4
+            '               Resolution = 1
+            '               AllowMoveMeshNode = False
+            '               SurfaceDeviation = 60
+            '               NormalDeviation = 14
+            '               MaxEdgeLength = 100
+            '               AspectRatio = 40
+            '               ExportFileStructure = 0
+            '               OutputFileType = 0
+            '               ExportColor = True
+
+            If oSTLTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+
+                ' Set accuracy.
+                '   2 = High,  1 = Medium,  0 = Low
+                oOptions.Value("Resolution") = 2
+
+                ' Set output file type:
+                '   0 - binary,  1 - ASCII
+                oOptions.Value("OutputFileType") = 0
+
+                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                Dim oData As DataMedium
+                oData = inventorApp.TransientObjects.CreateDataMedium
+                oData.FileName = NewPath + ".stl"
+
+                Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                UpdateStatusBar("File saved as STL file")
+            End If
+        Else
+            'do nothing
+            UpdateStatusBar("Drawings can't be saved as STL file")
+        End If
+    End Sub
+
+    Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
+        If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            If Not inventorApp.SoftwareVersion.Major > 20 Then
+                inventorApp.StatusBarText = inventorApp.SoftwareVersion.Major
+                MessageBox.Show("3D PDF export not available in Inventor versions < 2017 release!")
+                Exit Sub
+            End If
+            ' Get the 3D PDF Add-In.
+            Dim oPDFAddIn As ApplicationAddIn
+            Dim oAddin As ApplicationAddIn
+            For Each oAddin In inventorApp.ApplicationAddIns
+                If oAddin.ClassIdString = "{3EE52B28-D6E0-4EA4-8AA6-C2A266DEBB88}" Then
+                    oPDFAddIn = oAddin
+                    Exit For
+                End If
+            Next
+
+            If oPDFAddIn Is Nothing Then
+                MsgBox("Inventor 3D PDF Addin not loaded.")
+                Exit Sub
+            End If
+
+            Dim oPDFConvertor3D = oPDFAddIn.Automation
+
+            'Set a reference to the active document (the document to be published).
+            Dim oDocument As Document = inventorApp.ActiveDocument
+
+            If oDocument.FileSaveCounter = 0 Then
+                MsgBox("You must save the document to continue...")
+                Return
+            End If
+
+            ' Create a NameValueMap objectfor all options...
+            Dim oOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+            Dim STEPFileOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+
+            ' All Possible Options
+            ' Export file name and location...
+            oOptions.Value("FileOutputLocation") = NewPath + ".pdf"
+            ' Export annotations?
+            oOptions.Value("ExportAnnotations") = 1
+            ' Export work features?
+            oOptions.Value("ExportWokFeatures") = 1
+            ' Attach STEP file to 3D PDF?
+            oOptions.Value("GenerateAndAttachSTEPFile") = True
+            ' What quality (high quality takes longer to export)
+            'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
+            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
+            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
+            oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
+            ' Limit export to entities in selected view representation(s)
+            oOptions.Value("LimitToEntitiesInDVRs") = True
+            ' Open the 3D PDF when export is complete?
+            oOptions.Value("ViewPDFWhenFinished") = False
+
+            ' Export all properties?
+            oOptions.Value("ExportAllProperties") = True
+            ' OR - Set the specific properties to export
+            '    Dim sProps(5) As String
+            '    sProps(0) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Title"  
+            '    sProps(1) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Keywords"  
+            '    sProps(2) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Comments" 
+            '    sProps(3) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Description"
+            '    sProps(4) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Stock Number"
+            '    sProps(5) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Revision Number"
+
+            'oOptions.Value("ExportProperties") = sProps
+
+            ' Choose the export template based off the current document type
+            If oDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Part Template.pdf"
+            Else
+                oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Assembly Template.pdf"
+            End If
+
+            ' Define a file to attach to the exported 3D PDF - note here I have picked an Excel spreadsheet
+            ' You need to use the full path and filename - if it does not exist the file will not be attached.
+            Dim oAttachedFiles As String() = {"C:\FileToAttach.xlsx"}
+            oOptions.Value("AttachedFiles") = oAttachedFiles
+
+            ' Set the design view(s) to export - note here I am exporting only the active design view (view representation)
+            Dim sDesignViews(0) As String
+            sDesignViews(0) = oDocument.ComponentDefinition.RepresentationsManager.ActiveDesignViewRepresentation.Name
+            oOptions.Value("ExportDesignViewRepresentations") = sDesignViews
+
+            'Publish document.
+            Call oPDFConvertor3D.Publish(oDocument, oOptions)
+            UpdateStatusBar("File saved as 3D pdf file")
+        Else
+            currentPath = System.IO.Path.GetDirectoryName(inventorApp.ActiveDocument.FullDocumentName)
+            NewPath = currentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(inventorApp.ActiveDocument.FullDocumentName)
+            'Check for the PDF folder and create it if it does not exist
+            If Not System.IO.Directory.Exists(NewPath) Then
+                System.IO.Directory.CreateDirectory(NewPath)
+            End If
+
+            ' Get the PDF translator Add-In.
+            Dim PDFAddIn As TranslatorAddIn
+            PDFAddIn = inventorApp.ApplicationAddIns.ItemById("{0AC6FD96-2F4D-42CE-8BE0-8AEA580399E4}")
+
+            'Set a reference to the active document (the document to be published).
+            Dim oDocument As Document
+            oDocument = inventorApp.ActiveDocument
+
+            Dim oContext As TranslationContext
+            oContext = inventorApp.TransientObjects.CreateTranslationContext
+            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+            ' Create a NameValueMap object
+            Dim oOptions As NameValueMap
+            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+
+            ' Create a DataMedium object
+            Dim oDataMedium As DataMedium
+            oDataMedium = inventorApp.TransientObjects.CreateDataMedium
+
+            ' Check whether the translator has 'SaveCopyAs' options
+            If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
+
+                ' Options for drawings...
+
+                oOptions.Value("All_Color_AS_Black") = 1
+
+                'oOptions.Value("Remove_Line_Weights") = 0
+                'oOptions.Value("Vector_Resolution") = 400
+                'oOptions.Value("Sheet_Range") = kPrintAllSheets
+                'oOptions.Value("Custom_Begin_Sheet") = 2
+                'oOptions.Value("Custom_End_Sheet") = 4
+
+            End If
+
+            'Set the destination file name
+            oDataMedium.FileName = NewPath + ".pdf"
+
+            'Publish document.
+            Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
+            UpdateStatusBar("File saved as pdf file")
         End If
     End Sub
 

@@ -54,6 +54,9 @@ Partial Class iPropertiesForm
         Me.Button7 = New System.Windows.Forms.Button()
         Me.Button8 = New System.Windows.Forms.Button()
         Me.Button9 = New System.Windows.Forms.Button()
+        Me.btExpStp = New System.Windows.Forms.Button()
+        Me.btExpStl = New System.Windows.Forms.Button()
+        Me.btExpPdf = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -333,11 +336,41 @@ Partial Class iPropertiesForm
         Me.Button9.Text = "Ø"
         Me.Button9.UseVisualStyleBackColor = True
         '
+        'btExpStp
+        '
+        Me.btExpStp.Location = New System.Drawing.Point(8, 186)
+        Me.btExpStp.Name = "btExpStp"
+        Me.btExpStp.Size = New System.Drawing.Size(96, 23)
+        Me.btExpStp.TabIndex = 311
+        Me.btExpStp.Text = "Export to Step"
+        Me.btExpStp.UseVisualStyleBackColor = True
+        '
+        'btExpStl
+        '
+        Me.btExpStl.Location = New System.Drawing.Point(115, 186)
+        Me.btExpStl.Name = "btExpStl"
+        Me.btExpStl.Size = New System.Drawing.Size(96, 23)
+        Me.btExpStl.TabIndex = 312
+        Me.btExpStl.Text = "Export to STL"
+        Me.btExpStl.UseVisualStyleBackColor = True
+        '
+        'btExpPdf
+        '
+        Me.btExpPdf.Location = New System.Drawing.Point(221, 186)
+        Me.btExpPdf.Name = "btExpPdf"
+        Me.btExpPdf.Size = New System.Drawing.Size(94, 23)
+        Me.btExpPdf.TabIndex = 313
+        Me.btExpPdf.Text = "Export to PDF"
+        Me.btExpPdf.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(325, 277)
+        Me.Controls.Add(Me.btExpPdf)
+        Me.Controls.Add(Me.btExpStl)
+        Me.Controls.Add(Me.btExpStp)
         Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.Button8)
@@ -411,4 +444,7 @@ Partial Class iPropertiesForm
     Friend WithEvents Button7 As Windows.Forms.Button
     Friend WithEvents Button8 As Windows.Forms.Button
     Friend WithEvents Button9 As Windows.Forms.Button
+    Friend WithEvents btExpStp As Windows.Forms.Button
+    Friend WithEvents btExpStl As Windows.Forms.Button
+    Friend WithEvents btExpPdf As Windows.Forms.Button
 End Class
