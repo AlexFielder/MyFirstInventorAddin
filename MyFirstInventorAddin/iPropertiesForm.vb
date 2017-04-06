@@ -442,7 +442,6 @@ Public Class iPropertiesForm
             If Not System.IO.Directory.Exists(NewPath) Then
                 System.IO.Directory.CreateDirectory(NewPath)
             End If
-
             ' Get the STEP translator Add-In.
             Dim oSTEPTranslator As TranslatorAddIn
             oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
@@ -632,7 +631,7 @@ Public Class iPropertiesForm
                 MsgBox("Could not access STL translator.")
                 Exit Sub
             End If
-
+            
             Dim oContext As TranslationContext
             oContext = inventorApp.TransientObjects.CreateTranslationContext
 
@@ -821,25 +820,51 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    'Private Sub tbPartNumber_TextChanged(sender As Object, e As EventArgs) Handles tbPartNumber.TextChanged
-    '    If Not inventorApp.ActiveDocument Is Nothing Then
-    '        If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-    '            If tbPartNumber.Text = "Part Number" Then
-    '                Dim iPropPartNum As String =
-    '                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-    '                                                      PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
-    '                                                      "",
-    '                                                      "")
-    '            Else
-    '                Dim iPropPartNum As String =
-    '                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-    '                                                      PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties,
-    '                                                      tbPartNumber.Text,
-    '                                                      "")
-    '                log.Debug(inventorApp.ActiveDocument.FullFileName + " Part Number Updated to: " + iPropPartNum)
-    '                UpdateStatusBar("Part Number updated to " + iPropPartNum)
-    '            End If
-    '        End If
-    '    End If
-    'End Sub
+    Private Sub tbPartNumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbPartNumber.KeyPress
+        If e.KeyChar = Chr(9) Then
+            tbDescription.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            tbPartNumber_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub tbDescription_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbDescription.KeyPress
+        If e.KeyChar = Chr(9) Then
+            tbStockNumber.Focus()
+            'ElseIf e.KeyChar = Chr(33 And 38) Then
+            '    tbPartNumber.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            tbDescription_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub tbStockNumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbStockNumber.KeyPress
+        If e.KeyChar = Chr(9) Then
+            tbEngineer.Focus()
+            'ElseIf e.KeyChar = Chr(33 And 38) Then
+            '    tbDescription.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            tbStockNumber_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub tbEngineer_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbEngineer.KeyPress
+        If e.KeyChar = Chr(9) Then
+            btUpdateAll.Focus()
+            'ElseIf e.KeyChar = Chr(33 And 38) Then
+            '    tbStockNumber.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            tbEngineer_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub btUpdateAll_KeyPress(sender As Object, e As KeyPressEventArgs) Handles btUpdateAll.KeyPress
+        If e.KeyChar = Chr(9) Then
+            btUpdateAll_Click(sender, e)
+            'ElseIf e.KeyChar = Chr(33 And 38) Then
+            '    tbEngineer.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            btUpdateAll_Click(sender, e)
+        End If
+    End Sub
 End Class
