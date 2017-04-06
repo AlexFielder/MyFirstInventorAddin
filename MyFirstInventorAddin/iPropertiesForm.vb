@@ -727,9 +727,9 @@ Public Class iPropertiesForm
             oOptions.Value("GenerateAndAttachSTEPFile") = True
             ' What quality (high quality takes longer to export)
             'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
-            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
+            oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
             'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
-            oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
+            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
             ' Limit export to entities in selected view representation(s)
             oOptions.Value("LimitToEntitiesInDVRs") = True
             ' Open the 3D PDF when export is complete?
