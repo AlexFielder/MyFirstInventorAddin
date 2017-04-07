@@ -268,6 +268,7 @@ Namespace iPropertiesController
                     End If
                 End If
                 UpdateDisplayediProperties()
+                myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -562,10 +563,10 @@ Namespace iPropertiesController
                 m_uiEvents = Nothing
                 m_StyleEvents = Nothing
 
-                'myiPropsForm.CurrentPath = Nothing
-                'myiPropsForm.NewPath = Nothing
-                'myiPropsForm.RefNewPath = Nothing
-                'myiPropsForm.RefDoc = Nothing
+                myiPropsForm.CurrentPath = Nothing
+                myiPropsForm.NewPath = Nothing
+                myiPropsForm.RefNewPath = Nothing
+                myiPropsForm.RefDoc = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
