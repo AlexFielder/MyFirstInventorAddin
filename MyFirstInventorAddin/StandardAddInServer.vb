@@ -117,7 +117,7 @@ Namespace iPropertiesController
         '    End If
         'End Sub
 
-        Private Sub UpdateStatusBar(ByVal Message As String)
+        Public Shared Sub UpdateStatusBar(ByVal Message As String)
             AddinGlobal.InventorApp.StatusBarText = Message
         End Sub
 
@@ -247,6 +247,7 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
+                myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -289,6 +290,7 @@ Namespace iPropertiesController
                     End If
                 End If
                 UpdateDisplayediProperties()
+                myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -521,7 +523,7 @@ Namespace iPropertiesController
         ''' </summary>
         ''' <param name="doc"></param>
         ''' <returns></returns>
-        Function CheckReadOnly(ByVal doc As Document) As Boolean
+        Public Shared Function CheckReadOnly(ByVal doc As Document) As Boolean
             Try
                 ' Handle the case with the active document never saved
                 If System.IO.File.Exists(doc.FullFileName) = False Then

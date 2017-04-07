@@ -52,8 +52,17 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
+        Dim oleReference As ReferencedOLEFileDescriptor
+        oleReference = odoc.ReferencedOLEFileDescriptors _
+                    .Add(selectedfile, OLEDocumentTypeEnum.kOLEDocumentLinkObject)
+        oleReference.BrowserVisible = True
+        oleReference.Visible = False
+        oleReference.DisplayName = System.IO.Path.GetFileName(selectedfile)
+    End Sub
+
     Public CurrentPath As String = String.Empty
-    Public NewPath As String = String.Empty
+        Public NewPath As String = String.Empty
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
@@ -481,6 +490,16 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
+        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+        If AttachFile = vbYes Then
+            AddReferences(ActiveDoc, RefFile)
+            UpdateStatusBar("File attached")
+        Else
+            'Do Nothing
+        End If
+    End Sub
+
     Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             'GetNewFilePaths()
@@ -517,6 +536,15 @@ Public Class iPropertiesForm
 
                 Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                 UpdateStatusBar("File saved as Step file")
+
+                AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                'If AttachFile = vbYes Then
+                '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                '    UpdateStatusBar("File attached")
+                'Else
+                '    'Do Nothing
+                'End If
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
@@ -561,6 +589,7 @@ Public Class iPropertiesForm
 
                     Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as Step file")
+                    AttachRefFile(RefDoc, oData.FileName)
                 End If
             End If
         End If
@@ -616,6 +645,7 @@ Public Class iPropertiesForm
 
                 Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
                 UpdateStatusBar("File saved as STL file")
+                AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
@@ -672,6 +702,7 @@ Public Class iPropertiesForm
 
                     Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as STL file")
+                    AttachRefFile(RefDoc, oData.FileName)
                 End If
             End If
         End If
@@ -766,6 +797,7 @@ Public Class iPropertiesForm
             'Publish document.
             Call oPDFConvertor3D.Publish(oDocument, oOptions)
             UpdateStatusBar("File saved as 3D pdf file")
+            AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
         Else
             'GetNewFilePaths()
             ' Get the PDF translator Add-In.
@@ -809,6 +841,7 @@ Public Class iPropertiesForm
             'Publish document.
             Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
             UpdateStatusBar("File saved as pdf file")
+            AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
         End If
     End Sub
 
