@@ -25,6 +25,7 @@ Public Class iPropertiesForm
                         'Do Nothing
                     Else
                         CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
                         Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         Dim oSht As Sheet = oDrawDoc.ActiveSheet
                         Dim oView As DrawingView = Nothing
