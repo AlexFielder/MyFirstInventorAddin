@@ -129,6 +129,7 @@ Namespace iPropertiesController
                             WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
                             If WhatToDo = vbYes Then
                                 AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                                myiPropsForm.Label8.ForeColor = Drawing.Color.Red
                                 myiPropsForm.Label8.Text = "Drawing Updates Deferred"
                                 UpdateStatusBar("Updates are now Deferred")
                                 MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
@@ -314,7 +315,8 @@ Namespace iPropertiesController
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 End If
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullDocumentName
+                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
                     If iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,
                         PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
@@ -379,6 +381,7 @@ Namespace iPropertiesController
                         ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                            myiPropsForm.Label8.ForeColor = Drawing.Color.Green
                             myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
                         End If
 
@@ -510,6 +513,7 @@ Namespace iPropertiesController
                         myiPropsForm.PictureBox1.Hide()
                         myiPropsForm.PictureBox2.Show()
                     End If
+
                 End If
             Catch ex As Exception
                 log.Error(ex.Message)

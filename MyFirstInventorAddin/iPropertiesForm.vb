@@ -231,11 +231,12 @@ Public Class iPropertiesForm
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
                     'DrawingSettings.DeferUpdates = False
-                    Label8.ForeColor = Drawing.Color.Red
+                    Label8.ForeColor = Drawing.Color.Green
                     Label8.Text = "Drawing Updates Not Deferred"
                     UpdateStatusBar("Drawing updates are no longer deferred")
                 ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                    Label8.ForeColor = Drawing.Color.Red
                     Label8.Text = "Drawing Updates Deferred"
                     UpdateStatusBar("Drawing updates are now deferred")
                 End If
@@ -893,5 +894,18 @@ Public Class iPropertiesForm
         ElseIf e.KeyChar = Chr(13) Then
             btUpdateAll_Click(sender, e)
         End If
+    End Sub
+
+    Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
+        Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+        Process.Start("explorer.exe", directoryPath)
+    End Sub
+
+    Private Sub FileLocation_MouseHover(sender As Object, e As EventArgs) Handles FileLocation.MouseHover
+        FileLocation.ForeColor = Drawing.Color.Blue
+    End Sub
+
+    Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
+        FileLocation.ForeColor = Drawing.Color.Black
     End Sub
 End Class
