@@ -57,6 +57,7 @@ Partial Class iPropertiesForm
         Me.btExpStp = New System.Windows.Forms.Button()
         Me.btExpStl = New System.Windows.Forms.Button()
         Me.btExpPdf = New System.Windows.Forms.Button()
+        Me.FileLocation = New System.Windows.Forms.Label()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -363,11 +364,21 @@ Partial Class iPropertiesForm
         Me.btExpPdf.Text = "Export to PDF"
         Me.btExpPdf.UseVisualStyleBackColor = True
         '
+        'FileLocation
+        '
+        Me.FileLocation.Location = New System.Drawing.Point(8, 212)
+        Me.FileLocation.Name = "FileLocation"
+        Me.FileLocation.Size = New System.Drawing.Size(307, 52)
+        Me.FileLocation.TabIndex = 314
+        Me.FileLocation.Text = "File location"
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(325, 277)
+        Me.Controls.Add(Me.FileLocation)
         Me.Controls.Add(Me.btExpPdf)
         Me.Controls.Add(Me.btExpStl)
         Me.Controls.Add(Me.btExpStp)
@@ -447,4 +458,5 @@ Partial Class iPropertiesForm
     Friend WithEvents btExpStp As Windows.Forms.Button
     Friend WithEvents btExpStl As Windows.Forms.Button
     Friend WithEvents btExpPdf As Windows.Forms.Button
+    Friend WithEvents FileLocation As Windows.Forms.Label
 End Class

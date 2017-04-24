@@ -314,7 +314,7 @@ Namespace iPropertiesController
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 End If
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-
+                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullDocumentName
                     If iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,
                         PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
@@ -374,6 +374,7 @@ Namespace iPropertiesController
                         If iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                            myiPropsForm.Label8.ForeColor = Drawing.Color.Red
                             myiPropsForm.Label8.Text = "Drawing Updates Deferred"
                         ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
