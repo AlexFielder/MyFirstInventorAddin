@@ -279,10 +279,18 @@ Namespace iPropertiesController
 
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
                         AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         log.Info("Mass Updated correctly")
 
                     ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
                         AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         log.Info("Mass Updated correctly")
                     End If
@@ -300,10 +308,18 @@ Namespace iPropertiesController
 
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
                         AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         log.Info("Mass Updated correctly")
 
                     ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
                         AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         log.Info("Mass Updated correctly")
                     End If

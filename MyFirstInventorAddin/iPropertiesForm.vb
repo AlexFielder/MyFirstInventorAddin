@@ -717,6 +717,8 @@ Public Class iPropertiesForm
                 '   0 - binary,  1 - ASCII
                 oOptions.Value("OutputFileType") = 0
 
+                oOptions.Value("ExportUnits") = 5
+
                 oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
 
                 Dim oData As DataMedium
