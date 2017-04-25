@@ -1044,13 +1044,8 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
-        If inventorApp.ActiveEditObject IsNot Nothing Then
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditObject.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
-        ElseIf inventorApp.ActiveEditObject Is Nothing Then
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
-        End If
+        Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+        Process.Start("explorer.exe", directoryPath)
     End Sub
 
     Private Sub FileLocation_MouseHover(sender As Object, e As EventArgs) Handles FileLocation.MouseHover

@@ -341,13 +341,8 @@ Namespace iPropertiesController
                     '    DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
                 End If
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
-                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditObject.FullFileName
-                    ElseIf AddinGlobal.InventorApp.ActiveEditObject Is Nothing Then
-                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
-                    End If
+                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
 
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                         myiPropsForm.btDefer.Show()
