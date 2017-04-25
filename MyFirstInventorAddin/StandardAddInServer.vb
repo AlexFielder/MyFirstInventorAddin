@@ -74,6 +74,7 @@ Namespace iPropertiesController
 
                 AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
 
+                AddHandler m_AppEvents.OnNewEditObject, AddressOf Me.m_ApplicationEvents_OnNewEditObject
 
                 'start our logger.
                 logHelper.Init()
@@ -109,6 +110,16 @@ Namespace iPropertiesController
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    Dim selecteddoc As Document = Nothing
+                    selecteddoc = AddinGlobal.InventorApp.ActiveEditObject
+                    UpdateDisplayediProperties(selecteddoc)
+                End If
+            End If
         End Sub
 
         'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
