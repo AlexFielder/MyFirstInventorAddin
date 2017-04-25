@@ -63,7 +63,7 @@ Public Class iPropertiesForm
     End Sub
 
     Public CurrentPath As String = String.Empty
-    Public NewPath As String = String.Empty
+        Public NewPath As String = String.Empty
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
@@ -1056,4 +1056,7 @@ Public Class iPropertiesForm
         FileLocation.ForeColor = Drawing.Color.Black
     End Sub
 
+    Private Sub ExportTest_Click(sender As Object, e As EventArgs) Handles ExportTest.Click
+
+    End Sub
 End Class
