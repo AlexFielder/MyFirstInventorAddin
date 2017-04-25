@@ -115,11 +115,13 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    Dim selecteddoc As Document = Nothing
-                    selecteddoc = AddinGlobal.InventorApp.ActiveEditObject
-                    UpdateDisplayediProperties(selecteddoc)
+                    If Not AddinGlobal.InventorApp.ActiveEditDocument Is Nothing Then
+                        Dim selecteddoc As Document = Nothing
+                        selecteddoc = AddinGlobal.InventorApp.ActiveEditDocument
+                        UpdateDisplayediProperties(selecteddoc)
+                    End If
                 End If
-            End If
+                End If
         End Sub
 
         'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
@@ -221,29 +223,6 @@ Namespace iPropertiesController
                                 selecteddoc = compOcc.Definition.Document
                                 UpdateDisplayediProperties(selecteddoc)
                                 AssyDoc.SelectSet.Select(compOcc)
-                                'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
-                                '    Dim selecteddoc As Document = Nothing
-                                '    Dim compPat As OccurrencePatternElement = AssyDoc.SelectSet(1)
-                                '    selecteddoc = compPat
-                                '    UpdateDisplayediProperties(selecteddoc)
-                                '    AssyDoc.SelectSet.Select(compPat)
-                                '    log.Info("Found Pattern Element")
-
-                                'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
-                                '    Dim oPatt As OccurrencePattern
-                                '    oPatt = AssyDoc.SelectSet(1)
-                                '    Dim selecteddoc As Document = Nothing
-                                '    Dim oElem As OccurrencePatternElement = AssyDoc.SelectSet(1)
-                                '    selecteddoc = oElem.Definition.Document
-                                '    'UpdateDisplayediProperties(selecteddoc)
-                                '    AssyDoc.SelectSet.Select(oElem)
-                                '    log.Info("found part element")
-                                '    'Dim oElem As OccurrencePatternElement
-                                '    'For Each oElem In oPatt.OccurrencePatternElements
-                                '    '    'For Each compOcc In oElem.Occurrences
-                                '    '    selecteddoc = oElem.Occurrences.compOcc
-                                '    '    'Next
-                                '    'Next
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
@@ -358,6 +337,8 @@ Namespace iPropertiesController
             Try
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                    'ElseIf AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                    '    DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
                 End If
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
