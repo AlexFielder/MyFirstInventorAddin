@@ -9,5 +9,5 @@ The initial commit consisted of a basic Add-in for Autodesk Inventor and demonst
 2) how to add a button to the Inventor ribbonbar.
 3) how to add a dockablewindow containing a Windows Form with a couple of dialogue boxes.
 
-It has since been worked on for several hours to create the current build available (as of 2017-03-21 this exists in the JamesSmith branch)
+It has since been worked on for several hours to create the current build available (Merged to reflect current progress of JamesSmith branch on 2017-04-25)
 
