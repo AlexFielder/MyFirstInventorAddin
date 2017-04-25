@@ -114,10 +114,14 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    Dim selecteddoc As Document = Nothing
-                    selecteddoc = AddinGlobal.InventorApp.ActiveEditObject
-                    UpdateDisplayediProperties(selecteddoc)
+                If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                    'Do nothing
+                Else
+                    If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                        Dim selecteddoc As Document = Nothing
+                        selecteddoc = AddinGlobal.InventorApp.ActiveEditObject
+                        UpdateDisplayediProperties(selecteddoc)
+                    End If
                 End If
             End If
         End Sub
