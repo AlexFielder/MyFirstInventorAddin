@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <assemblyIdentity name="iPropertiesController" version="1.0.0.0"></assemblyIdentity>
+
+  <clrClass clsid="{e691af34-cb32-4296-8cca-5d1027a27c72}" progid="iPropertiesController.StandardAddInServer" threadingModel="Both" name="iPropertiesController.iPropertiesController.StandardAddInServer" runtimeVersion=""></clrClass>
+
+  <file name="iPropertiesController.dll" hashalg="SHA1"></file>
+
+</assembly>

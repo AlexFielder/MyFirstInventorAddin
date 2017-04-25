@@ -1,6 +1,6 @@
 ﻿Imports Inventor
 
-Namespace yFirstInventorAddin
+Namespace iPropertiesController
     Public Class iProperties
 
         Public Shared Function GetiPropertyDisplayName(ByVal iProp As Inventor.Property) As String

@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("MyFirstInventorAddin")>
-<Assembly: AssemblyDescription("MyFirstInventorAddin")>
-<Assembly: AssemblyCompany("Autodesk, Inc.")>
-<Assembly: AssemblyProduct("Autodesk Inventor")>
-<Assembly: AssemblyCopyright("Copyright ?2012 Autodesk, Inc.")>
+<Assembly: AssemblyTitle("iPropertiesController")>
+<Assembly: AssemblyDescription("iPropertiesController for Autodesk Inventor")>
+<Assembly: AssemblyCompany("the-war-horse, alexf.")>
+<Assembly: AssemblyProduct("Autodesk Inventor iPropertiesController")>
+<Assembly: AssemblyCopyright("Copyright ?2017 the-war-horse, alexf.")>
 <Assembly: AssemblyTrademark("")>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
@@ -28,4 +28,4 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("1.0.*")>
+<Assembly: AssemblyVersion("1.0.0.0")>
