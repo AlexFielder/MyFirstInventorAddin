@@ -63,7 +63,7 @@ Public Class iPropertiesForm
     End Sub
 
     Public CurrentPath As String = String.Empty
-        Public NewPath As String = String.Empty
+    Public NewPath As String = String.Empty
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
@@ -294,7 +294,43 @@ Public Class iPropertiesForm
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If inventorApp.ActiveEditObject IsNot Nothing Then
+                If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                    Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                    Dim oSheet As Sheet = oDrawDoc.ActiveSheet
+                    Dim oSheets As Sheets = Nothing
+                    Dim oViews As DrawingViews = Nothing
+                    Dim oScale As Double = Nothing
+                    Dim oViewCount As Integer = 0
+                    Dim oTitleBlock = oSheet.TitleBlock
+                    Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+                    Dim oSht As Sheet = oDWG.ActiveSheet
+
+                    Dim oView As DrawingView = Nothing
+                    Dim drawnDoc As Document = Nothing
+
+                    For Each view As DrawingView In oSht.DrawingViews
+                        oView = view
+                        Exit For
+                    Next
+
+                    drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    If tbEngineer.Text = "Engineer" Then
+                        Dim iPropPartNum As String =
+                        iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                              "",
+                                                              "")
+                    Else
+                        Dim iPropPartNum As String =
+                        iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                              tbEngineer.Text,
+                                                              "")
+                        log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
+                        UpdateStatusBar("Engineer updated to " + iPropPartNum)
+                    End If
+                ElseIf inventorApp.ActiveEditObject IsNot Nothing Then
                     If tbEngineer.Text = "Engineer" Then
                         Dim iPropPartNum As String =
                         iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
@@ -303,7 +339,7 @@ Public Class iPropertiesForm
                                                               "")
                     Else
                         Dim iPropPartNum As String =
-                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
+                        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
                                                           tbEngineer.Text,
                                                           "")
@@ -319,7 +355,7 @@ Public Class iPropertiesForm
                                                               "")
                     Else
                         Dim iPropPartNum As String =
-                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
                                                           tbEngineer.Text,
                                                           "")
@@ -1044,8 +1080,13 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
-        Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-        Process.Start("explorer.exe", directoryPath)
+        If inventorApp.ActiveEditObject IsNot Nothing Then
+            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+            Process.Start("explorer.exe", directoryPath)
+        Else
+            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+            Process.Start("explorer.exe", directoryPath)
+        End If
     End Sub
 
     Private Sub FileLocation_MouseHover(sender As Object, e As EventArgs) Handles FileLocation.MouseHover
@@ -1054,9 +1095,5 @@ Public Class iPropertiesForm
 
     Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
         FileLocation.ForeColor = Drawing.Color.Black
-    End Sub
-
-    Private Sub ExportTest_Click(sender As Object, e As EventArgs) Handles ExportTest.Click
-
     End Sub
 End Class

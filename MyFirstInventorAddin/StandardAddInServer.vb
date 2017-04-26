@@ -364,8 +364,13 @@ Namespace iPropertiesController
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 End If
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
+                    If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
+                    Else
+                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
+                    End If
 
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                         myiPropsForm.btDefer.Show()
@@ -374,6 +379,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDrawnBy.Show()
                         myiPropsForm.btShtMaterial.Show()
                         myiPropsForm.btShtScale.Show()
+                        myiPropsForm.tbEngineer.Show()
                         myiPropsForm.Label5.Hide()
                         myiPropsForm.tbMass.Hide()
                         myiPropsForm.Label9.Hide()
@@ -381,7 +387,6 @@ Namespace iPropertiesController
                         myiPropsForm.Label3.Hide()
                         myiPropsForm.tbStockNumber.Hide()
                         myiPropsForm.Label4.Hide()
-                        myiPropsForm.tbEngineer.Hide()
                         myiPropsForm.Button6.Hide()
                         myiPropsForm.Button7.Hide()
                         myiPropsForm.Button8.Hide()
@@ -462,6 +467,23 @@ Namespace iPropertiesController
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                         End If
+
+                        If iProperties.GetorSetStandardiProperty(
+                            drawnDoc,
+                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
+                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
+                                drawnDoc,
+                                PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        ElseIf myiPropsForm.tbEngineer.Text = "Engineer" Then
+                            iProperties.GetorSetStandardiProperty(
+                            drawnDoc,
+                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        Else
+                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
+                                drawnDoc,
+                                PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        End If
+
                     Else
                         'MassProps()
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
