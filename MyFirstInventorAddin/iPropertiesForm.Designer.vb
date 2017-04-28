@@ -75,7 +75,7 @@ Partial Class iPropertiesForm
         '
         Me.tbPartNumber.Location = New System.Drawing.Point(71, 6)
         Me.tbPartNumber.Name = "tbPartNumber"
-        Me.tbPartNumber.Size = New System.Drawing.Size(182, 20)
+        Me.tbPartNumber.Size = New System.Drawing.Size(206, 20)
         Me.tbPartNumber.TabIndex = 1
         '
         'Label2
@@ -90,14 +90,15 @@ Partial Class iPropertiesForm
         'tbDescription
         '
         Me.tbDescription.Location = New System.Drawing.Point(71, 29)
+        Me.tbDescription.Multiline = True
         Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.Size = New System.Drawing.Size(182, 20)
+        Me.tbDescription.Size = New System.Drawing.Size(206, 40)
         Me.tbDescription.TabIndex = 2
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(1, 56)
+        Me.Label3.Location = New System.Drawing.Point(1, 76)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(55, 13)
         Me.Label3.TabIndex = 102
@@ -105,15 +106,15 @@ Partial Class iPropertiesForm
         '
         'tbStockNumber
         '
-        Me.tbStockNumber.Location = New System.Drawing.Point(71, 52)
+        Me.tbStockNumber.Location = New System.Drawing.Point(71, 72)
         Me.tbStockNumber.Name = "tbStockNumber"
-        Me.tbStockNumber.Size = New System.Drawing.Size(182, 20)
+        Me.tbStockNumber.Size = New System.Drawing.Size(206, 20)
         Me.tbStockNumber.TabIndex = 3
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(1, 79)
+        Me.Label4.Location = New System.Drawing.Point(1, 99)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(29, 13)
         Me.Label4.TabIndex = 104
@@ -121,15 +122,15 @@ Partial Class iPropertiesForm
         '
         'tbEngineer
         '
-        Me.tbEngineer.Location = New System.Drawing.Point(71, 75)
+        Me.tbEngineer.Location = New System.Drawing.Point(71, 95)
         Me.tbEngineer.Name = "tbEngineer"
-        Me.tbEngineer.Size = New System.Drawing.Size(182, 20)
+        Me.tbEngineer.Size = New System.Drawing.Size(206, 20)
         Me.tbEngineer.TabIndex = 4
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(12, 102)
+        Me.Label5.Location = New System.Drawing.Point(12, 122)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(32, 13)
         Me.Label5.TabIndex = 105
@@ -138,7 +139,7 @@ Partial Class iPropertiesForm
         'btUpdateAll
         '
         Me.btUpdateAll.AccessibleDescription = " up"
-        Me.btUpdateAll.Location = New System.Drawing.Point(188, 100)
+        Me.btUpdateAll.Location = New System.Drawing.Point(211, 120)
         Me.btUpdateAll.Name = "btUpdateAll"
         Me.btUpdateAll.Size = New System.Drawing.Size(65, 40)
         Me.btUpdateAll.TabIndex = 200
@@ -148,7 +149,7 @@ Partial Class iPropertiesForm
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(1, 170)
+        Me.Label6.Location = New System.Drawing.Point(1, 190)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(75, 13)
         Me.Label6.TabIndex = 106
@@ -157,7 +158,7 @@ Partial Class iPropertiesForm
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(1, 56)
+        Me.Label8.Location = New System.Drawing.Point(1, 76)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
         Me.Label8.TabIndex = 107
@@ -165,7 +166,7 @@ Partial Class iPropertiesForm
         '
         'btDefer
         '
-        Me.btDefer.Location = New System.Drawing.Point(165, 51)
+        Me.btDefer.Location = New System.Drawing.Point(189, 71)
         Me.btDefer.Name = "btDefer"
         Me.btDefer.Size = New System.Drawing.Size(87, 23)
         Me.btDefer.TabIndex = 201
@@ -174,7 +175,7 @@ Partial Class iPropertiesForm
         '
         'tbMass
         '
-        Me.tbMass.Location = New System.Drawing.Point(71, 98)
+        Me.tbMass.Location = New System.Drawing.Point(71, 118)
         Me.tbMass.Name = "tbMass"
         Me.tbMass.ReadOnly = True
         Me.tbMass.Size = New System.Drawing.Size(114, 20)
@@ -183,7 +184,7 @@ Partial Class iPropertiesForm
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(8, 125)
+        Me.Label9.Location = New System.Drawing.Point(8, 145)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(42, 13)
         Me.Label9.TabIndex = 108
@@ -191,7 +192,7 @@ Partial Class iPropertiesForm
         '
         'tbDensity
         '
-        Me.tbDensity.Location = New System.Drawing.Point(71, 121)
+        Me.tbDensity.Location = New System.Drawing.Point(71, 141)
         Me.tbDensity.Name = "tbDensity"
         Me.tbDensity.ReadOnly = True
         Me.tbDensity.Size = New System.Drawing.Size(114, 20)
@@ -200,7 +201,7 @@ Partial Class iPropertiesForm
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(1, 147)
+        Me.Label11.Location = New System.Drawing.Point(1, 167)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(47, 13)
         Me.Label11.TabIndex = 109
@@ -209,7 +210,7 @@ Partial Class iPropertiesForm
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(50, 147)
+        Me.Label12.Location = New System.Drawing.Point(50, 167)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(44, 13)
         Me.Label12.TabIndex = 9
@@ -219,7 +220,7 @@ Partial Class iPropertiesForm
         'DateTimePicker1
         '
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
-        Me.DateTimePicker1.Location = New System.Drawing.Point(75, 166)
+        Me.DateTimePicker1.Location = New System.Drawing.Point(86, 186)
         Me.DateTimePicker1.Name = "DateTimePicker1"
         Me.DateTimePicker1.Size = New System.Drawing.Size(115, 20)
         Me.DateTimePicker1.TabIndex = 301
@@ -227,7 +228,7 @@ Partial Class iPropertiesForm
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(1, 102)
+        Me.Label7.Location = New System.Drawing.Point(1, 122)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 13)
         Me.Label7.TabIndex = 110
@@ -235,16 +236,16 @@ Partial Class iPropertiesForm
         '
         'tbDrawnBy
         '
-        Me.tbDrawnBy.Location = New System.Drawing.Point(72, 98)
+        Me.tbDrawnBy.Location = New System.Drawing.Point(72, 118)
         Me.tbDrawnBy.Name = "tbDrawnBy"
-        Me.tbDrawnBy.Size = New System.Drawing.Size(100, 20)
+        Me.tbDrawnBy.Size = New System.Drawing.Size(114, 20)
         Me.tbDrawnBy.TabIndex = 7
         '
         'btITEM
         '
-        Me.btITEM.Location = New System.Drawing.Point(1, 142)
+        Me.btITEM.Location = New System.Drawing.Point(102, 163)
         Me.btITEM.Name = "btITEM"
-        Me.btITEM.Size = New System.Drawing.Size(52, 23)
+        Me.btITEM.Size = New System.Drawing.Size(75, 23)
         Me.btITEM.TabIndex = 202
         Me.btITEM.Text = "#ITEM"
         Me.btITEM.UseVisualStyleBackColor = True
@@ -252,7 +253,7 @@ Partial Class iPropertiesForm
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(184, 148)
+        Me.Label10.Location = New System.Drawing.Point(208, 168)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(67, 13)
         Me.Label10.TabIndex = 302
@@ -263,7 +264,7 @@ Partial Class iPropertiesForm
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(170, 148)
+        Me.PictureBox2.Location = New System.Drawing.Point(194, 168)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -275,7 +276,7 @@ Partial Class iPropertiesForm
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(170, 148)
+        Me.PictureBox1.Location = New System.Drawing.Point(194, 168)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
@@ -285,7 +286,7 @@ Partial Class iPropertiesForm
         '
         'btShtMaterial
         '
-        Me.btShtMaterial.Location = New System.Drawing.Point(1, 120)
+        Me.btShtMaterial.Location = New System.Drawing.Point(1, 140)
         Me.btShtMaterial.Name = "btShtMaterial"
         Me.btShtMaterial.Size = New System.Drawing.Size(75, 23)
         Me.btShtMaterial.TabIndex = 305
@@ -294,7 +295,7 @@ Partial Class iPropertiesForm
         '
         'btShtScale
         '
-        Me.btShtScale.Location = New System.Drawing.Point(91, 120)
+        Me.btShtScale.Location = New System.Drawing.Point(102, 140)
         Me.btShtScale.Name = "btShtScale"
         Me.btShtScale.Size = New System.Drawing.Size(75, 23)
         Me.btShtScale.TabIndex = 306
@@ -303,7 +304,7 @@ Partial Class iPropertiesForm
         '
         'Button6
         '
-        Me.Button6.Location = New System.Drawing.Point(33, 74)
+        Me.Button6.Location = New System.Drawing.Point(33, 94)
         Me.Button6.Name = "Button6"
         Me.Button6.Size = New System.Drawing.Size(16, 23)
         Me.Button6.TabIndex = 307
@@ -312,7 +313,7 @@ Partial Class iPropertiesForm
         '
         'Button7
         '
-        Me.Button7.Location = New System.Drawing.Point(50, 74)
+        Me.Button7.Location = New System.Drawing.Point(50, 94)
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(16, 23)
         Me.Button7.TabIndex = 308
@@ -339,7 +340,7 @@ Partial Class iPropertiesForm
         '
         'btExpStp
         '
-        Me.btExpStp.Location = New System.Drawing.Point(1, 186)
+        Me.btExpStp.Location = New System.Drawing.Point(1, 206)
         Me.btExpStp.Name = "btExpStp"
         Me.btExpStp.Size = New System.Drawing.Size(75, 23)
         Me.btExpStp.TabIndex = 311
@@ -348,7 +349,7 @@ Partial Class iPropertiesForm
         '
         'btExpStl
         '
-        Me.btExpStl.Location = New System.Drawing.Point(90, 186)
+        Me.btExpStl.Location = New System.Drawing.Point(101, 206)
         Me.btExpStl.Name = "btExpStl"
         Me.btExpStl.Size = New System.Drawing.Size(75, 23)
         Me.btExpStl.TabIndex = 312
@@ -357,7 +358,7 @@ Partial Class iPropertiesForm
         '
         'btExpPdf
         '
-        Me.btExpPdf.Location = New System.Drawing.Point(178, 186)
+        Me.btExpPdf.Location = New System.Drawing.Point(202, 206)
         Me.btExpPdf.Name = "btExpPdf"
         Me.btExpPdf.Size = New System.Drawing.Size(75, 23)
         Me.btExpPdf.TabIndex = 313
@@ -366,9 +367,9 @@ Partial Class iPropertiesForm
         '
         'FileLocation
         '
-        Me.FileLocation.Location = New System.Drawing.Point(1, 212)
+        Me.FileLocation.Location = New System.Drawing.Point(1, 232)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(250, 66)
+        Me.FileLocation.Size = New System.Drawing.Size(274, 66)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -378,25 +379,22 @@ Partial Class iPropertiesForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(257, 287)
+        Me.ClientSize = New System.Drawing.Size(280, 313)
         Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.btITEM)
+        Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.FileLocation)
         Me.Controls.Add(Me.btExpPdf)
         Me.Controls.Add(Me.btExpStl)
         Me.Controls.Add(Me.btExpStp)
-        Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.Button8)
         Me.Controls.Add(Me.Button9)
         Me.Controls.Add(Me.Button7)
         Me.Controls.Add(Me.Button6)
-        Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label10)
-        Me.Controls.Add(Me.btITEM)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label12)
-        Me.Controls.Add(Me.Label11)
-        Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label6)
@@ -411,9 +409,12 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.tbEngineer)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.btShtScale)
+        Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.tbDrawnBy)
         Me.Controls.Add(Me.tbMass)
-        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.Label11)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "iPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide

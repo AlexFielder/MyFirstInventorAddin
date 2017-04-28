@@ -163,10 +163,12 @@ Namespace iPropertiesController
 
                 If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                         myiPropsForm.Label10.Text = "Checked In"
                         myiPropsForm.PictureBox1.Show()
                         myiPropsForm.PictureBox2.Hide()
                     Else
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                         myiPropsForm.Label10.Text = "Checked Out"
                         myiPropsForm.PictureBox1.Hide()
                         myiPropsForm.PictureBox2.Show()
@@ -225,6 +227,16 @@ Namespace iPropertiesController
                                 selecteddoc = compOcc.Definition.Document
                                 UpdateDisplayediProperties(selecteddoc)
                                 AssyDoc.SelectSet.Select(compOcc)
+
+                                'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePatternElement Then
+                                '    Dim VarientName = OccurrencePatternElement.Component
+                                '    Dim selecteddoc As Document = Nothing
+                                '    OccurrencePatternElement.Name(VarientIndex)
+                                '    Dim compPat As String = VarientIndex
+                                '    selecteddoc = compPat
+                                '    UpdateDisplayediProperties(selecteddoc)
+                                '    AssyDoc.SelectSet.Select(compPat)
+
                                 'ElseIf TypeOf AssyDoc.SelectSet(1) Is OccurrencePattern Then
                                 '    Dim selecteddoc As Document = Nothing
                                 '    Dim compPat As OccurrencePatternElement = AssyDoc.SelectSet(1)
@@ -604,10 +616,12 @@ Namespace iPropertiesController
                         PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
 
                     If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                         myiPropsForm.Label10.Text = "Checked In"
                         myiPropsForm.PictureBox1.Show()
                         myiPropsForm.PictureBox2.Hide()
                     Else
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                         myiPropsForm.Label10.Text = "Checked Out"
                         myiPropsForm.PictureBox1.Hide()
                         myiPropsForm.PictureBox2.Show()
