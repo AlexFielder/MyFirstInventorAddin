@@ -130,7 +130,7 @@ Partial Class iPropertiesForm
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(12, 122)
+        Me.Label5.Location = New System.Drawing.Point(1, 122)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(32, 13)
         Me.Label5.TabIndex = 105
@@ -184,7 +184,7 @@ Partial Class iPropertiesForm
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(8, 145)
+        Me.Label9.Location = New System.Drawing.Point(1, 145)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(42, 13)
         Me.Label9.TabIndex = 108
@@ -380,9 +380,9 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(258, 313)
+        Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.btITEM)
-        Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.FileLocation)
         Me.Controls.Add(Me.btExpPdf)
         Me.Controls.Add(Me.btExpStl)
@@ -391,14 +391,11 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Button9)
         Me.Controls.Add(Me.Button7)
         Me.Controls.Add(Me.Button6)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label12)
-        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btUpdateAll)
-        Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
         Me.Controls.Add(Me.tbDescription)
@@ -415,6 +412,9 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.tbMass)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.Label10)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.Label5)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "iPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide

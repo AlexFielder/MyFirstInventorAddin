@@ -31,9 +31,9 @@ Public Class iPropertiesForm
                     CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
                     NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
                     'Check for the PDF folder and create it if it does not exist
-                    If Not System.IO.Directory.Exists(NewPath) Then
-                        System.IO.Directory.CreateDirectory(NewPath)
-                    End If
+                    'If Not System.IO.Directory.Exists(NewPath) Then
+                    '    System.IO.Directory.CreateDirectory(NewPath)
+                    'End If
                 ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                     If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                         'Do Nothing
@@ -58,9 +58,9 @@ Public Class iPropertiesForm
                         RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                         RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
                         'Check for the PDF folder and create it if it does not exist
-                        If Not System.IO.Directory.Exists(RefNewPath) Then
-                            System.IO.Directory.CreateDirectory(RefNewPath)
-                        End If
+                        'If Not System.IO.Directory.Exists(RefNewPath) Then
+                        '    System.IO.Directory.CreateDirectory(RefNewPath)
+                        'End If
                     End If
                 End If
             End If
@@ -702,6 +702,10 @@ Public Class iPropertiesForm
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             'GetNewFilePaths()
             ' Get the STEP translator Add-In.
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             Dim oSTEPTranslator As TranslatorAddIn
             oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
@@ -730,7 +734,7 @@ Public Class iPropertiesForm
 
                 Dim oData As DataMedium
                 oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + ".stp"
+                oData.FileName = NewPath + "_R" + oRev + ".stp"
 
                 Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                 UpdateStatusBar("File saved as Step file")
@@ -746,6 +750,10 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                RefDoc,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                 UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
             Else
@@ -783,7 +791,7 @@ Public Class iPropertiesForm
 
                     Dim oData As DataMedium
                     oData = inventorApp.TransientObjects.CreateDataMedium
-                    oData.FileName = RefNewPath + ".stp"
+                    oData.FileName = RefNewPath + "_R" + oRev + ".stp"
 
                     Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as Step file")
@@ -797,6 +805,10 @@ Public Class iPropertiesForm
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             'GetNewFilePaths()
             ' Get the STL translator Add-In.
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             Dim oSTLTranslator As TranslatorAddIn
             oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
             If oSTLTranslator Is Nothing Then
@@ -844,7 +856,7 @@ Public Class iPropertiesForm
 
                 Dim oData As DataMedium
                 oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + ".stl"
+                oData.FileName = NewPath + "_R" + oRev + ".stl"
 
                 Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
                 UpdateStatusBar("File saved as STL file")
@@ -852,6 +864,10 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                RefDoc,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                 UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
             Else
@@ -901,7 +917,7 @@ Public Class iPropertiesForm
 
                     Dim oData As DataMedium
                     oData = inventorApp.TransientObjects.CreateDataMedium
-                    oData.FileName = RefNewPath + ".stl"
+                    oData.FileName = RefNewPath + "_R" + oRev + ".stl"
 
                     Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as STL file")
@@ -914,6 +930,10 @@ Public Class iPropertiesForm
     Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             'GetNewFilePaths()
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             If Not inventorApp.SoftwareVersion.Major > 20 Then
                 inventorApp.StatusBarText = inventorApp.SoftwareVersion.Major
                 MessageBox.Show("3D PDF export not available in Inventor versions < 2017 release!")
@@ -950,7 +970,7 @@ Public Class iPropertiesForm
 
             ' All Possible Options
             ' Export file name and location...
-            oOptions.Value("FileOutputLocation") = NewPath + ".pdf"
+            oOptions.Value("FileOutputLocation") = NewPath + "_R" + oRev + ".pdf"
             ' Export annotations?
             oOptions.Value("ExportAnnotations") = 1
             ' Export work features?
@@ -1004,6 +1024,10 @@ Public Class iPropertiesForm
         Else
             'GetNewFilePaths()
             ' Get the PDF translator Add-In.
+            Dim oRev = iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
             Dim PDFAddIn As TranslatorAddIn
             PDFAddIn = inventorApp.ApplicationAddIns.ItemById("{0AC6FD96-2F4D-42CE-8BE0-8AEA580399E4}")
 
@@ -1039,7 +1063,7 @@ Public Class iPropertiesForm
             End If
 
             'Set the destination file name
-            oDataMedium.FileName = NewPath + ".pdf"
+            oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
 
             'Publish document.
             Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
