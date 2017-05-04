@@ -115,22 +115,14 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
-                    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Or (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
-                        'Do Nothing
-                    ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                        If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                            Dim AssyDoc As Document = Nothing
-                            AssyDoc = AddinGlobal.InventorApp.ActiveEditObject
-                            UpdateDisplayediProperties(AssyDoc)
-                        ElseIf (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
-                            Dim SelectedDoc As Document = Nothing
-                            SelectedDoc = AddinGlobal.InventorApp.ActiveEditObject
-                            UpdateDisplayediProperties(SelectedDoc)
-                        End If
+                    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                        'Do nothing
+                    Else
+                        Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
+                        UpdateDisplayediProperties(selecteddoc)
                     End If
                 End If
             End If
-            'HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
