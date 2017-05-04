@@ -113,17 +113,24 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-                    'Do nothing
-                Else
-                    If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                        Dim selecteddoc As Document = Nothing
-                        selecteddoc = AddinGlobal.InventorApp.ActiveEditObject
-                        UpdateDisplayediProperties(selecteddoc)
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If BeforeOrAfter = EventTimingEnum.kAfter Then
+                    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Or (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                        'Do Nothing
+                    ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                        If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                            Dim AssyDoc As Document = Nothing
+                            AssyDoc = AddinGlobal.InventorApp.ActiveEditObject
+                            UpdateDisplayediProperties(AssyDoc)
+                        ElseIf (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                            Dim SelectedDoc As Document = Nothing
+                            SelectedDoc = AddinGlobal.InventorApp.ActiveEditObject
+                            UpdateDisplayediProperties(SelectedDoc)
+                        End If
                     End If
                 End If
             End If
+            'HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
@@ -391,18 +398,18 @@ Namespace iPropertiesController
                         myiPropsForm.tbDrawnBy.Show()
                         myiPropsForm.btShtMaterial.Show()
                         myiPropsForm.btShtScale.Show()
-                        myiPropsForm.tbEngineer.Show()
+                        'myiPropsForm.tbEngineer.Show()
                         myiPropsForm.Label5.Hide()
                         myiPropsForm.tbMass.Hide()
                         myiPropsForm.Label9.Hide()
                         myiPropsForm.tbDensity.Hide()
                         myiPropsForm.Label3.Hide()
                         myiPropsForm.tbStockNumber.Hide()
-                        myiPropsForm.Label4.Hide()
-                        myiPropsForm.Button6.Hide()
-                        myiPropsForm.Button7.Hide()
-                        myiPropsForm.Button8.Hide()
-                        myiPropsForm.Button9.Hide()
+                        'myiPropsForm.Label4.Show()
+                        'myiPropsForm.Button6.Show()
+                        'myiPropsForm.Button7.Show()
+                        'myiPropsForm.Button8.Show()
+                        'myiPropsForm.Button9.Show()
 
                         myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -506,12 +513,12 @@ Namespace iPropertiesController
                         myiPropsForm.tbDensity.Show()
                         myiPropsForm.Label3.Show()
                         myiPropsForm.tbStockNumber.Show()
-                        myiPropsForm.Label4.Show()
-                        myiPropsForm.tbEngineer.Show()
-                        myiPropsForm.Button6.Show()
-                        myiPropsForm.Button7.Show()
-                        myiPropsForm.Button8.Show()
-                        myiPropsForm.Button9.Show()
+                        'myiPropsForm.Label4.Show()
+                        'myiPropsForm.tbEngineer.Show()
+                        'myiPropsForm.Button6.Show()
+                        'myiPropsForm.Button7.Show()
+                        'myiPropsForm.Button8.Show()
+                        'myiPropsForm.Button9.Show()
                         myiPropsForm.Label7.Hide()
                         myiPropsForm.tbDrawnBy.Hide()
                         myiPropsForm.btDefer.Hide()
