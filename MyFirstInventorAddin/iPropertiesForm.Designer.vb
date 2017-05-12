@@ -140,11 +140,11 @@ Partial Class iPropertiesForm
         'btUpdateAll
         '
         Me.btUpdateAll.AccessibleDescription = " up"
-        Me.btUpdateAll.Location = New System.Drawing.Point(193, 130)
+        Me.btUpdateAll.Location = New System.Drawing.Point(184, 127)
         Me.btUpdateAll.Name = "btUpdateAll"
-        Me.btUpdateAll.Size = New System.Drawing.Size(65, 40)
+        Me.btUpdateAll.Size = New System.Drawing.Size(75, 46)
         Me.btUpdateAll.TabIndex = 200
-        Me.btUpdateAll.Text = "Update All"
+        Me.btUpdateAll.Text = "Update iProp"
         Me.btUpdateAll.UseVisualStyleBackColor = True
         '
         'Label6
@@ -152,9 +152,9 @@ Partial Class iPropertiesForm
         Me.Label6.AutoSize = True
         Me.Label6.Location = New System.Drawing.Point(3, 200)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(75, 13)
+        Me.Label6.Size = New System.Drawing.Size(67, 13)
         Me.Label6.TabIndex = 106
-        Me.Label6.Text = "Creation Date:"
+        Me.Label6.Text = "Drawn Date:"
         '
         'Label8
         '
@@ -179,7 +179,7 @@ Partial Class iPropertiesForm
         Me.tbMass.Location = New System.Drawing.Point(73, 128)
         Me.tbMass.Name = "tbMass"
         Me.tbMass.ReadOnly = True
-        Me.tbMass.Size = New System.Drawing.Size(114, 20)
+        Me.tbMass.Size = New System.Drawing.Size(106, 20)
         Me.tbMass.TabIndex = 5
         '
         'Label9
@@ -196,7 +196,7 @@ Partial Class iPropertiesForm
         Me.tbDensity.Location = New System.Drawing.Point(73, 151)
         Me.tbDensity.Name = "tbDensity"
         Me.tbDensity.ReadOnly = True
-        Me.tbDensity.Size = New System.Drawing.Size(114, 20)
+        Me.tbDensity.Size = New System.Drawing.Size(105, 20)
         Me.tbDensity.TabIndex = 8
         '
         'Label11
@@ -221,9 +221,9 @@ Partial Class iPropertiesForm
         'DateTimePicker1
         '
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
-        Me.DateTimePicker1.Location = New System.Drawing.Point(88, 196)
+        Me.DateTimePicker1.Location = New System.Drawing.Point(67, 196)
         Me.DateTimePicker1.Name = "DateTimePicker1"
-        Me.DateTimePicker1.Size = New System.Drawing.Size(115, 20)
+        Me.DateTimePicker1.Size = New System.Drawing.Size(116, 20)
         Me.DateTimePicker1.TabIndex = 301
         '
         'Label7
@@ -237,14 +237,14 @@ Partial Class iPropertiesForm
         '
         'tbDrawnBy
         '
-        Me.tbDrawnBy.Location = New System.Drawing.Point(74, 128)
+        Me.tbDrawnBy.Location = New System.Drawing.Point(73, 128)
         Me.tbDrawnBy.Name = "tbDrawnBy"
-        Me.tbDrawnBy.Size = New System.Drawing.Size(114, 20)
+        Me.tbDrawnBy.Size = New System.Drawing.Size(106, 20)
         Me.tbDrawnBy.TabIndex = 7
         '
         'btITEM
         '
-        Me.btITEM.Location = New System.Drawing.Point(96, 173)
+        Me.btITEM.Location = New System.Drawing.Point(94, 173)
         Me.btITEM.Name = "btITEM"
         Me.btITEM.Size = New System.Drawing.Size(75, 23)
         Me.btITEM.TabIndex = 202
@@ -296,7 +296,7 @@ Partial Class iPropertiesForm
         '
         'btShtScale
         '
-        Me.btShtScale.Location = New System.Drawing.Point(96, 150)
+        Me.btShtScale.Location = New System.Drawing.Point(94, 150)
         Me.btShtScale.Name = "btShtScale"
         Me.btShtScale.Size = New System.Drawing.Size(75, 23)
         Me.btShtScale.TabIndex = 306
@@ -382,7 +382,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v1.02"
+        Me.Label13.Text = "iProperties Controller v1.04"
         '
         'iPropertiesForm
         '

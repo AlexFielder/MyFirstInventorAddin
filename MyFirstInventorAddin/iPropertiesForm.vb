@@ -30,10 +30,7 @@ Public Class iPropertiesForm
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                     CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
                     NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-                    'Check for the PDF folder and create it if it does not exist
-                    'If Not System.IO.Directory.Exists(NewPath) Then
-                    '    System.IO.Directory.CreateDirectory(NewPath)
-                    'End If
+
                 ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                     If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                         'Do Nothing
@@ -57,10 +54,6 @@ Public Class iPropertiesForm
 
                         RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                         RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-                        'Check for the PDF folder and create it if it does not exist
-                        'If Not System.IO.Directory.Exists(RefNewPath) Then
-                        '    System.IO.Directory.CreateDirectory(RefNewPath)
-                        'End If
                     End If
                 End If
             End If
@@ -585,13 +578,14 @@ Public Class iPropertiesForm
         Dim oViews As DrawingViews = Nothing
         Dim oScale As Double = Nothing
         Dim oViewCount As Integer = 0
-
-        Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-
-        dwgScale = InputBox("If you leave as 'Scale From Sheet View' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", "Scale From Sheet View")
         Dim oTitleBlock = oSheet.TitleBlock
         Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
         Dim scaleString As String = String.Empty
+        Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
+        dwgScale = InputBox("If you leave as 'Scale From Sheet View' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", scaleTextBox.Text)
+        'Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
+        'Dim scaleString As String = scaleTextBox.Text
+
         For Each viewX As DrawingView In oSheet.DrawingViews
             If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
                 If dwgScale = "Scale From Sheet View" Then
@@ -604,6 +598,7 @@ Public Class iPropertiesForm
 
             End If
         Next
+
         oTitleBlock.SetPromptResultText(scaleTextBox, scaleString)
         UpdateStatusBar("Drawing scale set")
     End Sub
@@ -761,10 +756,6 @@ Public Class iPropertiesForm
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                 UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
             Else
-                'Check for the PDF folder and create it if it does not exist
-                If Not System.IO.Directory.Exists(RefNewPath) Then
-                    System.IO.Directory.CreateDirectory(RefNewPath)
-                End If
 
                 ' Get the STEP translator Add-In.
                 Dim oSTEPTranslator As TranslatorAddIn
@@ -875,11 +866,6 @@ Public Class iPropertiesForm
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                 UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
             Else
-                'Check for the PDF folder and create it if it does not exist
-                If Not System.IO.Directory.Exists(RefNewPath) Then
-                    System.IO.Directory.CreateDirectory(RefNewPath)
-                End If
-
                 ' Get the STL translator Add-In.
                 Dim oSTLTranslator As TranslatorAddIn
                 oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
@@ -1141,6 +1127,15 @@ Public Class iPropertiesForm
     Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
         FileLocation.ForeColor = Drawing.Color.Black
     End Sub
+
+    'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
+    '    If RefDoc.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+    '        inventorApp.CommandManager.ControlDefinitions.Item("AssemblyGlobalUpdateCmd").Execute()
+    '        inventorApp.CommandManager.ControlDefinitions.Item("AppGlobalUpdateWrapperCmd").Execute()
+    '    Else
+    '        UpdateStatusBar("Can't update a part!! Come on, you know this!")
+    '    End If
+    'End Sub
 End Class
 
 '-------------------------------------------------------------------------------
