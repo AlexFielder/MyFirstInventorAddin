@@ -167,11 +167,21 @@ Namespace iPropertiesController
                             myiPropsForm.Label10.Text = "Checked In"
                             myiPropsForm.PictureBox1.Show()
                             myiPropsForm.PictureBox2.Hide()
+
+                            myiPropsForm.tbPartNumber.ReadOnly = True
+                            myiPropsForm.tbDescription.ReadOnly = True
+                            myiPropsForm.tbStockNumber.ReadOnly = True
+                            myiPropsForm.tbEngineer.ReadOnly = True
                         Else
                             myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                             myiPropsForm.Label10.Text = "Checked Out"
                             myiPropsForm.PictureBox1.Hide()
                             myiPropsForm.PictureBox2.Show()
+
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
                         End If
                     End If
                 End If
@@ -737,11 +747,21 @@ Namespace iPropertiesController
                         myiPropsForm.Label10.Text = "Checked In"
                         myiPropsForm.PictureBox1.Show()
                         myiPropsForm.PictureBox2.Hide()
+
+                        myiPropsForm.tbPartNumber.ReadOnly = True
+                        myiPropsForm.tbDescription.ReadOnly = True
+                        myiPropsForm.tbStockNumber.ReadOnly = True
+                        myiPropsForm.tbEngineer.ReadOnly = True
                     Else
                         myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                         myiPropsForm.Label10.Text = "Checked Out"
                         myiPropsForm.PictureBox1.Hide()
                         myiPropsForm.PictureBox2.Show()
+
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
                     End If
 
                 End If
