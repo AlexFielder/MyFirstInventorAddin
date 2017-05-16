@@ -237,12 +237,12 @@ Namespace iPropertiesController
                                 UpdateDisplayediProperties(selecteddoc)
                                 AssyDoc.SelectSet.Select(compOcc)
 
-                            ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeatureProxy Then
+                            ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
-                                Dim holeOcc As HoleFeatureProxy = AssyDoc.SelectSet(1)
+                                Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
                                 Dim spotsize = Nothing
                                 Dim spotdepth = Nothing
                                 Dim cbore = Nothing
@@ -250,39 +250,42 @@ Namespace iPropertiesController
                                 Dim chamdia = Nothing
                                 Dim holedia = Nothing
 
-                                If holeOcc.Tapped Then
-                                    HoleTap = holeOcc.TapInfo.ThreadDesignation
-                                    'HoleDia = holeOcc.TapInfo.ThreadType
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
-                                     cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                Else
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
-                                       cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                End If
-
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '     cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '       cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
                             ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
@@ -296,44 +299,48 @@ Namespace iPropertiesController
                                 Dim chamdia = Nothing
                                 Dim holedia = Nothing
 
-                                If holeOcc.Tapped Then
-                                    HoleTap = holeOcc.TapInfo.ThreadDesignation
-                                    'HoleDia = holeOcc.TapInfo.ThreadType
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
-                                     cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                Else
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
-                                       cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                End If
-
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '     cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '       cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = holeOcc.Name
+                                myiPropsForm.tbStockNumber.Text = holeOcc.Name
+                                myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                UpdateDisplayediProperties(AssyDoc)
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
                             UpdateDisplayediProperties(AssyDoc)
@@ -345,12 +352,12 @@ Namespace iPropertiesController
                     ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
                         Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
                         If PartDoc.SelectSet.Count = 1 Then
-                            If TypeOf PartDoc.SelectSet(1) Is HoleFeature Then
+                            If TypeOf PartDoc.SelectSet(1) Is PartFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
-                                Dim holeOcc As HoleFeature = PartDoc.SelectSet(1)
+                                Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
                                 Dim spotsize = Nothing
                                 Dim spotdepth = Nothing
                                 Dim cbore = Nothing
@@ -358,50 +365,57 @@ Namespace iPropertiesController
                                 Dim chamdia = Nothing
                                 Dim holedia = Nothing
 
-                                If holeOcc.Tapped Then
-                                    HoleTap = holeOcc.TapInfo.ThreadDesignation
-                                    'HoleDia = holeOcc.TapInfo.ThreadType
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
-                                     cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                Else
-                                    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
-                                        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
-                                        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
-                                        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
-                                    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
-                                        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
-                                    End If
-                                    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
-                                    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
-                                    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
-                                       cbore & " " & cboredepth & chamdia
-                                    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
-                                    myiPropsForm.tbEngineer.Text = "Hole in the head!"
-                                End If
-
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    'myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '    'cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    'myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '    '   cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                UpdateDisplayediProperties()
                             End If
                         Else
                             myiPropsForm.tbPartNumber.ReadOnly = False
                             myiPropsForm.tbDescription.ReadOnly = False
                             myiPropsForm.tbStockNumber.ReadOnly = False
                             myiPropsForm.tbEngineer.ReadOnly = False
+                            UpdateDisplayediProperties()
                         End If
                     End If
                 End If
