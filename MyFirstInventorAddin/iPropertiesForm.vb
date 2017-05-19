@@ -582,13 +582,13 @@ Public Class iPropertiesForm
         Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
         Dim scaleString As String = String.Empty
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-        dwgScale = InputBox("If you leave as 'Scale From Sheet View' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", scaleTextBox.Text)
+        dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", "Scale from view")
         'Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
         'Dim scaleString As String = scaleTextBox.Text
 
         For Each viewX As DrawingView In oSheet.DrawingViews
             If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
-                If dwgScale = "Scale From Sheet View" Then
+                If dwgScale = "Scale from view" Then
                     scaleString = viewX.ScaleString
                 Else
                     scaleString = dwgScale
