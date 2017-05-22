@@ -162,6 +162,11 @@ Namespace iPropertiesController
                     Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
                     If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                         If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
                             myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                             myiPropsForm.Label10.Text = "Checked In"
