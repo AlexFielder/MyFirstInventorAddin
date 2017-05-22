@@ -109,6 +109,7 @@ Public Class iPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                    tbPartNumber.ForeColor = Drawing.Color.Black
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
@@ -186,6 +187,7 @@ Public Class iPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                    tbDescription.ForeColor = Drawing.Color.Black
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
@@ -261,6 +263,7 @@ Public Class iPropertiesForm
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                tbStockNumber.ForeColor = Drawing.Color.Black
                 If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                     'Do Nothing
                 Else
@@ -306,6 +309,7 @@ Public Class iPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                    tbEngineer.ForeColor = Drawing.Color.Black
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
@@ -1182,6 +1186,26 @@ Public Class iPropertiesForm
 
     Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
         FileLocation.ForeColor = Drawing.Color.Black
+    End Sub
+
+    Private Sub tbDescription_TextChanged(sender As Object, e As EventArgs) Handles tbDescription.TextChanged
+        tbDescription.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbPartNumber_TextChanged(sender As Object, e As EventArgs) Handles tbPartNumber.TextChanged
+        tbPartNumber.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbStockNumber_TextChanged(sender As Object, e As EventArgs) Handles tbStockNumber.TextChanged
+        tbStockNumber.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbEngineer_TextChanged(sender As Object, e As EventArgs) Handles tbEngineer.TextChanged
+        tbEngineer.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbDrawnBy_TextChanged(sender As Object, e As EventArgs) Handles tbDrawnBy.TextChanged
+        tbDrawnBy.ForeColor = Drawing.Color.Red
     End Sub
 
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)

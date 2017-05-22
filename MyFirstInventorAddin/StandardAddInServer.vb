@@ -432,6 +432,7 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
+                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -462,6 +463,11 @@ Namespace iPropertiesController
                     End If
                 End If
                 UpdateDisplayediProperties()
+                myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -491,6 +497,11 @@ Namespace iPropertiesController
                     End If
                 End If
                 UpdateDisplayediProperties()
+                myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
