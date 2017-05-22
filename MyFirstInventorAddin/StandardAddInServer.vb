@@ -162,11 +162,6 @@ Namespace iPropertiesController
                     Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
                     If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                         If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
                             myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                             myiPropsForm.Label10.Text = "Checked In"
@@ -231,6 +226,11 @@ Namespace iPropertiesController
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                         Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                         If AssyDoc.SelectSet.Count = 1 Then
+                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                             If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
@@ -355,6 +355,11 @@ Namespace iPropertiesController
                             myiPropsForm.tbEngineer.ReadOnly = False
                         End If
                     ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                         Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
                         If PartDoc.SelectSet.Count = 1 Then
                             If TypeOf PartDoc.SelectSet(1) Is PartFeature Then

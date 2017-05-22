@@ -108,8 +108,9 @@ Public Class iPropertiesForm
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                tbPartNumber.ForeColor = Drawing.Color.Black
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                    tbPartNumber.ForeColor = Drawing.Color.Black
+
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
@@ -186,8 +187,9 @@ Public Class iPropertiesForm
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                tbDescription.ForeColor = Drawing.Color.Black
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                    tbDescription.ForeColor = Drawing.Color.Black
+
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
@@ -308,8 +310,9 @@ Public Class iPropertiesForm
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+                tbEngineer.ForeColor = Drawing.Color.Black
                 If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                    tbEngineer.ForeColor = Drawing.Color.Black
+
                     Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                     Dim oSheet As Sheet = oDrawDoc.ActiveSheet
                     Dim oSheets As Sheets = Nothing
