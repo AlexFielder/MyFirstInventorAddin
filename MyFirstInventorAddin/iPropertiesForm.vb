@@ -528,6 +528,33 @@ Public Class iPropertiesForm
             Dim oView As DrawingView = Nothing
             Dim drawnDoc As Document = Nothing
 
+            Dim oPromptEntry = Nothing
+
+            Dim oCurrentSheet = Nothing
+            oCurrentSheet = oDrawDoc.ActiveSheet.Name
+
+            i = 1
+            For Each oSheet In oDrawDoc.Sheets
+                'i = i+1
+                inventorApp.ActiveDocument.Sheets.Item(i).Activate
+                oTitleBlock = oSheet.TitleBlock
+                oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
+                For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
+                    Select Case oTextBox.Text
+                        Case "<Material>"
+                            oPromptEntry = oTitleBlock.GetResultText(oTextBox)
+                    End Select
+                Next
+            Next
+
+            If oPromptEntry = "<Material>" Then
+                oPromptText = "Engineer"
+            ElseIf oPromptEntry = "" Then
+                oPromptText = "Engineer"
+            Else
+                oPromptText = oPromptEntry
+            End If
+
             'For i As Integer = 1 To oSht.DrawingViews.Count
             '    oView = oSht.DrawingViews(i)
             '    Exit For
@@ -541,7 +568,7 @@ Public Class iPropertiesForm
             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
             prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
-                                   vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", "Engineer")
+                                   vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
 
             MaterialTextBox = GetMaterialTextBox(oTitleBlock.Definition)
             Dim MaterialString As String = String.Empty
@@ -581,8 +608,37 @@ Public Class iPropertiesForm
         Dim oTitleBlock = oSheet.TitleBlock
         Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
         Dim scaleString As String = String.Empty
+
+
+        Dim oPromptEntry = Nothing
+
+        Dim oCurrentSheet = Nothing
+        oCurrentSheet = oDrawDoc.ActiveSheet.Name
+
+        i = 1
+        For Each oSheet In oDrawDoc.Sheets
+            'i = i+1
+            inventorApp.ActiveDocument.Sheets.Item(i).Activate
+            oTitleBlock = oSheet.TitleBlock
+            oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
+            For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
+                Select Case oTextBox.Text
+                    Case "<Scale>"
+                        oPromptEntry = oTitleBlock.GetResultText(oTextBox)
+                End Select
+            Next
+        Next
+
+        If oPromptEntry = "<Scale>" Then
+            oPromptText = "Scale from view"
+        ElseIf oPromptEntry = "" Then
+            oPromptText = "Scale from view"
+        Else
+            oPromptText = oPromptEntry
+        End If
+
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-        dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", "Scale from view")
+        dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
         'Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
         'Dim scaleString As String = scaleTextBox.Text
 
