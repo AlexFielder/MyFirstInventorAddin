@@ -1,3 +1,4 @@
+
 Imports Inventor
 Imports System.Runtime.InteropServices
 Imports log4net
@@ -1081,10 +1082,10 @@ Public Module Globals
     ' Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.MyIcon)
 
     Public NotInheritable Class PictureDispConverter
-        <DllImport("OleAut32.dll", EntryPoint:="OleCreatePictureIndirect", ExactSpelling:=True, PreserveSig:=False)> _
-        Private Shared Function OleCreatePictureIndirect( _
-            <MarshalAs(UnmanagedType.AsAny)> ByVal picdesc As Object, _
-            ByRef iid As Guid, _
+        <DllImport("OleAut32.dll", EntryPoint:="OleCreatePictureIndirect", ExactSpelling:=True, PreserveSig:=False)>
+        Private Shared Function OleCreatePictureIndirect(
+            <MarshalAs(UnmanagedType.AsAny)> ByVal picdesc As Object,
+            ByRef iid As Guid,
             <MarshalAs(UnmanagedType.Bool)> ByVal fOwn As Boolean) As stdole.IPictureDisp
         End Function
 
@@ -1098,7 +1099,7 @@ Public Module Globals
             Public Const PICTYPE_BITMAP As Short = 1
             Public Const PICTYPE_ICON As Short = 3
 
-            <StructLayout(LayoutKind.Sequential)> _
+            <StructLayout(LayoutKind.Sequential)>
             Public Class Icon
                 Friend cbSizeOfStruct As Integer = Marshal.SizeOf(GetType(PICTDESC.Icon))
                 Friend picType As Integer = PICTDESC.PICTYPE_ICON
@@ -1111,7 +1112,7 @@ Public Module Globals
                 End Sub
             End Class
 
-            <StructLayout(LayoutKind.Sequential)> _
+            <StructLayout(LayoutKind.Sequential)>
             Public Class Bitmap
                 Friend cbSizeOfStruct As Integer = Marshal.SizeOf(GetType(PICTDESC.Bitmap))
                 Friend picType As Integer = PICTDESC.PICTYPE_BITMAP

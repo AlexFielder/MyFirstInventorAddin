@@ -184,7 +184,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
+    Private Sub tbDescription_Leave(sender As Object, e As EventArgs)
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 tbDescription.ForeColor = Drawing.Color.Black
@@ -1133,7 +1133,7 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub tbDescription_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbDescription.KeyPress
+    Private Sub tbDescription_KeyPress(sender As Object, e As KeyPressEventArgs)
         If e.KeyChar = Chr(9) Then
             tbStockNumber.Focus()
             'ElseIf e.KeyChar = Chr(33 And 38) Then
@@ -1191,7 +1191,7 @@ Public Class iPropertiesForm
         FileLocation.ForeColor = Drawing.Color.Black
     End Sub
 
-    Private Sub tbDescription_TextChanged(sender As Object, e As EventArgs) Handles tbDescription.TextChanged
+    Private Sub tbDescription_TextChanged(sender As Object, e As EventArgs)
         tbDescription.ForeColor = Drawing.Color.Red
     End Sub
 
