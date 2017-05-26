@@ -463,10 +463,10 @@ Public Class iPropertiesForm
             oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
             i = 1
-            For Each oSheet In oDrawDoc.Sheets
-                'i = i+1
-                inventorApp.ActiveDocument.Sheets.Item(i).Activate
-                oTitleBlock = oSheet.TitleBlock
+            'For Each oSheet In oDrawDoc.Sheets
+            'i = i + 1
+            'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+            oTitleBlock = oSheet.TitleBlock
                 oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
                 For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
                     Select Case oTextBox.Text
@@ -474,7 +474,7 @@ Public Class iPropertiesForm
                             oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                     End Select
                 Next
-            Next
+            'Next
 
             If oPromptEntry = "<Material>" Then
                 oPromptText = "Engineer"
@@ -545,10 +545,10 @@ Public Class iPropertiesForm
         oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
         i = 1
-        For Each oSheet In oDrawDoc.Sheets
-            'i = i+1
-            inventorApp.ActiveDocument.Sheets.Item(i).Activate
-            oTitleBlock = oSheet.TitleBlock
+        'For Each oSheet In oDrawDoc.Sheets
+        'i = i + 1
+        'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+        oTitleBlock = oSheet.TitleBlock
             oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
             For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
                 Select Case oTextBox.Text
@@ -556,7 +556,7 @@ Public Class iPropertiesForm
                         oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                 End Select
             Next
-        Next
+        'Next
 
         If oPromptEntry = "<Scale>" Then
             oPromptText = "Scale from view"
