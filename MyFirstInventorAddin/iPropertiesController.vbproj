@@ -112,7 +112,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StandardAddInServer.vb" />
+    <Compile Include="iPropertiesAddInServer.vb" />
   </ItemGroup>
   <ItemGroup>
     <None Include="iPropertiesController.X.manifest" />

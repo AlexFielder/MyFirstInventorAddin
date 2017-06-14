@@ -10,7 +10,7 @@ Imports System.IO
 Namespace iPropertiesController
     <ProgIdAttribute("iPropertiesController.StandardAddInServer"),
     GuidAttribute("e691af34-cb32-4296-8cca-5d1027a27c72")>
-    Public Class StandardAddInServer
+    Public Class iPropertiesAddInServer
         Implements Inventor.ApplicationAddInServer
 
         'some events objects we might need later
@@ -32,7 +32,7 @@ Namespace iPropertiesController
         Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
-        Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(StandardAddInServer))
+        Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesAddInServer))
 
         'Private WithEvents m_sampleButton As ButtonDefinition
 
@@ -454,32 +454,33 @@ Namespace iPropertiesController
                 m_DocEvents = DocumentObject.DocumentEvents
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
+                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                        If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
+                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            'log.Info("Mass Updated correctly")
 
-                If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                        myiPropsForm.tbPartNumber.ReadOnly = False
-                        myiPropsForm.tbDescription.ReadOnly = False
-                        myiPropsForm.tbStockNumber.ReadOnly = False
-                        myiPropsForm.tbEngineer.ReadOnly = False
-                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        'log.Info("Mass Updated correctly")
-
-                    ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-                        myiPropsForm.tbPartNumber.ReadOnly = False
-                        myiPropsForm.tbDescription.ReadOnly = False
-                        myiPropsForm.tbStockNumber.ReadOnly = False
-                        myiPropsForm.tbEngineer.ReadOnly = False
-                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        'log.Info("Mass Updated correctly")
+                        ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
+                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            'log.Info("Mass Updated correctly")
+                        End If
                     End If
+                    UpdateDisplayediProperties()
+                    myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                    myiPropsForm.GetNewFilePaths()
                 End If
-                UpdateDisplayediProperties()
-                myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -488,34 +489,36 @@ Namespace iPropertiesController
             If BeforeOrAfter = EventTimingEnum.kAfter Then
 
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                'this change prevents this firing for EVERY opening file.
+                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
+                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                        If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
+                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            'log.Info("Mass Updated correctly")
 
-                If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                        myiPropsForm.tbPartNumber.ReadOnly = False
-                        myiPropsForm.tbDescription.ReadOnly = False
-                        myiPropsForm.tbStockNumber.ReadOnly = False
-                        myiPropsForm.tbEngineer.ReadOnly = False
-                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        'log.Info("Mass Updated correctly")
-
-                    ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-                        myiPropsForm.tbPartNumber.ReadOnly = False
-                        myiPropsForm.tbDescription.ReadOnly = False
-                        myiPropsForm.tbStockNumber.ReadOnly = False
-                        myiPropsForm.tbEngineer.ReadOnly = False
-                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                        'log.Info("Mass Updated correctly")
+                        ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
+                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                            'log.Info("Mass Updated correctly")
+                        End If
                     End If
+                    UpdateDisplayediProperties()
+                    myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                    myiPropsForm.GetNewFilePaths()
                 End If
-                UpdateDisplayediProperties()
-                myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                myiPropsForm.GetNewFilePaths()
             End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
+                HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
         Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
@@ -1038,7 +1041,7 @@ Public Module Globals
     Public Function AddInClientID() As String
         Dim guid As String = ""
         Try
-            Dim t As Type = GetType(iPropertiesController.StandardAddInServer)
+            Dim t As Type = GetType(iPropertiesController.iPropertiesAddInServer)
             Dim customAttributes() As Object = t.GetCustomAttributes(GetType(GuidAttribute), False)
             Dim guidAttribute As GuidAttribute = CType(customAttributes(0), GuidAttribute)
             guid = "{" + guidAttribute.Value.ToString() + "}"
