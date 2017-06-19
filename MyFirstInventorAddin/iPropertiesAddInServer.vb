@@ -903,8 +903,7 @@ Namespace iPropertiesController
                 Next
 
                 ' Release objects.
-                thisAssembly = Nothing
-                myiPropsForm = Nothing
+
                 m_UserInputEvents = Nothing
                 m_AppEvents = Nothing
                 m_uiEvents = Nothing
@@ -914,6 +913,8 @@ Namespace iPropertiesController
                 myiPropsForm.NewPath = Nothing
                 myiPropsForm.RefNewPath = Nothing
                 myiPropsForm.RefDoc = Nothing
+                thisAssembly = Nothing
+                myiPropsForm = Nothing
 
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
