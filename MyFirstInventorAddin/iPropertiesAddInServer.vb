@@ -118,9 +118,11 @@ Namespace iPropertiesController
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                         'Do nothing
-                    Else
+                    ElseIf TypeOf (EditObject) Is Document Then
                         Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
                         UpdateDisplayediProperties(selecteddoc)
+                    Else
+                        'Do nothing more
                     End If
                 End If
             End If
