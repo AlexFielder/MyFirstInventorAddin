@@ -162,8 +162,8 @@ Namespace iPropertiesController
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
                     Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
-                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                        If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                    'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
                             myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                             myiPropsForm.Label10.Text = "Checked In"
                             myiPropsForm.PictureBox1.Show()
@@ -184,7 +184,7 @@ Namespace iPropertiesController
                             myiPropsForm.tbStockNumber.ReadOnly = False
                             myiPropsForm.tbEngineer.ReadOnly = False
                         End If
-                    End If
+                    'End If
                 End If
             End If
         End Sub
@@ -197,8 +197,8 @@ Namespace iPropertiesController
                         Material = iProperties.GetorSetStandardiProperty(
                                DocumentToPulliPropValuesFrom,
                                PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                        If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                            AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                        AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                             Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
                                     DocumentToPulliPropValuesFrom,
                                     PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
@@ -214,7 +214,7 @@ Namespace iPropertiesController
                             myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
                                DocumentToPulliPropValuesFrom,
                                PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                        End If
+                        'End If
                     End If
                 End If
             End If
@@ -455,8 +455,8 @@ Namespace iPropertiesController
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
-                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                        If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                    'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                             myiPropsForm.tbPartNumber.ReadOnly = False
                             myiPropsForm.tbDescription.ReadOnly = False
                             myiPropsForm.tbStockNumber.ReadOnly = False
@@ -472,7 +472,7 @@ Namespace iPropertiesController
                             'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                             'log.Info("Mass Updated correctly")
                         End If
-                    End If
+                    'End If
                     UpdateDisplayediProperties()
                     myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
                     myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
@@ -491,8 +491,8 @@ Namespace iPropertiesController
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 'this change prevents this firing for EVERY opening file.
                 If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
-                    If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                        If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                    'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                             myiPropsForm.tbPartNumber.ReadOnly = False
                             myiPropsForm.tbDescription.ReadOnly = False
                             myiPropsForm.tbStockNumber.ReadOnly = False
@@ -508,7 +508,7 @@ Namespace iPropertiesController
                             'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                             'log.Info("Mass Updated correctly")
                         End If
-                    End If
+                    'End If
                     UpdateDisplayediProperties()
                     myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
                     myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
@@ -539,8 +539,8 @@ Namespace iPropertiesController
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 End If
-                If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
                         myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
                         myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
                     Else
@@ -854,7 +854,7 @@ Namespace iPropertiesController
                             myiPropsForm.tbEngineer.ReadOnly = False
                         End If
                     End If
-                End If
+                'End If
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
