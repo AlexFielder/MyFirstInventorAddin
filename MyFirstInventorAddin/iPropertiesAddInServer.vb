@@ -168,7 +168,7 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
-
+                    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                         Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                         If AssyDoc.SelectSet.Count = 1 Then
@@ -394,6 +394,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.ReadOnly = False
                                 UpdateDisplayediProperties()
                             End If
+
                         Else
                             myiPropsForm.tbPartNumber.ReadOnly = False
                             myiPropsForm.tbDescription.ReadOnly = False
@@ -402,37 +403,34 @@ Namespace iPropertiesController
                             UpdateDisplayediProperties()
                         End If
                     End If
-                    'Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
-                    ''If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    'If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                    '    myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                    '    myiPropsForm.Label10.Text = "Checked In"
-                    '    myiPropsForm.PictureBox1.Show()
-                    '    myiPropsForm.PictureBox2.Hide()
+                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                        myiPropsForm.Label10.Text = "Checked In"
+                        myiPropsForm.PictureBox1.Show()
+                        myiPropsForm.PictureBox2.Hide()
 
-                    '    myiPropsForm.tbPartNumber.ReadOnly = True
-                    '    myiPropsForm.tbDescription.ReadOnly = True
-                    '    myiPropsForm.tbStockNumber.ReadOnly = True
-                    '    myiPropsForm.tbEngineer.ReadOnly = True
-                    'Else
-                    '    myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                    '    myiPropsForm.Label10.Text = "Checked Out"
-                    '    myiPropsForm.PictureBox1.Hide()
-                    '    myiPropsForm.PictureBox2.Show()
+                        myiPropsForm.tbPartNumber.ReadOnly = True
+                        myiPropsForm.tbDescription.ReadOnly = True
+                        myiPropsForm.tbStockNumber.ReadOnly = True
+                        myiPropsForm.tbEngineer.ReadOnly = True
+                    Else
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                        myiPropsForm.Label10.Text = "Checked Out"
+                        myiPropsForm.PictureBox1.Hide()
+                        myiPropsForm.PictureBox2.Show()
 
-                    '    myiPropsForm.tbPartNumber.ReadOnly = False
-                    '    myiPropsForm.tbDescription.ReadOnly = False
-                    '    myiPropsForm.tbStockNumber.ReadOnly = False
-                    '    myiPropsForm.tbEngineer.ReadOnly = False
-                    'End If
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
+                    End If
 
-                    ''End If
-                    'myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                    'myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                    'myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                    'myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                    'myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 End If
             End If
         End Sub
