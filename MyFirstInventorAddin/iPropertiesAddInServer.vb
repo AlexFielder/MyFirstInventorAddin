@@ -121,6 +121,11 @@ Namespace iPropertiesController
                     ElseIf TypeOf (EditObject) Is Document Then
                         Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
                         UpdateDisplayediProperties(selecteddoc)
+                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                     Else
                         'Do nothing more
                     End If
@@ -166,27 +171,33 @@ Namespace iPropertiesController
 
                     'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                            myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                            myiPropsForm.Label10.Text = "Checked In"
-                            myiPropsForm.PictureBox1.Show()
-                            myiPropsForm.PictureBox2.Hide()
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                        myiPropsForm.Label10.Text = "Checked In"
+                        myiPropsForm.PictureBox1.Show()
+                        myiPropsForm.PictureBox2.Hide()
 
-                            myiPropsForm.tbPartNumber.ReadOnly = True
-                            myiPropsForm.tbDescription.ReadOnly = True
-                            myiPropsForm.tbStockNumber.ReadOnly = True
-                            myiPropsForm.tbEngineer.ReadOnly = True
-                        Else
-                            myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                            myiPropsForm.Label10.Text = "Checked Out"
-                            myiPropsForm.PictureBox1.Hide()
-                            myiPropsForm.PictureBox2.Show()
+                        myiPropsForm.tbPartNumber.ReadOnly = True
+                        myiPropsForm.tbDescription.ReadOnly = True
+                        myiPropsForm.tbStockNumber.ReadOnly = True
+                        myiPropsForm.tbEngineer.ReadOnly = True
+                    Else
+                        myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                        myiPropsForm.Label10.Text = "Checked Out"
+                        myiPropsForm.PictureBox1.Hide()
+                        myiPropsForm.PictureBox2.Show()
 
-                            myiPropsForm.tbPartNumber.ReadOnly = False
-                            myiPropsForm.tbDescription.ReadOnly = False
-                            myiPropsForm.tbStockNumber.ReadOnly = False
-                            myiPropsForm.tbEngineer.ReadOnly = False
-                        End If
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
+                    End If
+
                     'End If
+                    myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                    myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 End If
             End If
         End Sub
@@ -351,11 +362,39 @@ Namespace iPropertiesController
                                 UpdateDisplayediProperties(AssyDoc)
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
+
+                            If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                                myiPropsForm.Label10.Text = "Checked In"
+                                myiPropsForm.PictureBox1.Show()
+                                myiPropsForm.PictureBox2.Hide()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                            Else
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                                myiPropsForm.Label10.Text = "Checked Out"
+                                myiPropsForm.PictureBox1.Hide()
+                                myiPropsForm.PictureBox2.Show()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = False
+                                myiPropsForm.tbDescription.ReadOnly = False
+                                myiPropsForm.tbStockNumber.ReadOnly = False
+                                myiPropsForm.tbEngineer.ReadOnly = False
+                            End If
+
                             UpdateDisplayediProperties(AssyDoc)
-                            myiPropsForm.tbPartNumber.ReadOnly = False
-                            myiPropsForm.tbDescription.ReadOnly = False
-                            myiPropsForm.tbStockNumber.ReadOnly = False
-                            myiPropsForm.tbEngineer.ReadOnly = False
+                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                            'myiPropsForm.tbPartNumber.ReadOnly = False
+                            'myiPropsForm.tbDescription.ReadOnly = False
+                            'myiPropsForm.tbStockNumber.ReadOnly = False
+                            'myiPropsForm.tbEngineer.ReadOnly = False
                         End If
                     ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
                         myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
@@ -459,21 +498,22 @@ Namespace iPropertiesController
                 If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
                     'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                     If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                            myiPropsForm.tbPartNumber.ReadOnly = False
-                            myiPropsForm.tbDescription.ReadOnly = False
-                            myiPropsForm.tbStockNumber.ReadOnly = False
-                            myiPropsForm.tbEngineer.ReadOnly = False
-                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                            'log.Info("Mass Updated correctly")
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
+                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        'log.Info("Mass Updated correctly")
 
-                        ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-                            myiPropsForm.tbPartNumber.ReadOnly = False
-                            myiPropsForm.tbDescription.ReadOnly = False
-                            myiPropsForm.tbStockNumber.ReadOnly = False
-                            myiPropsForm.tbEngineer.ReadOnly = False
-                            'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-                            'log.Info("Mass Updated correctly")
-                        End If
+                    ElseIf DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                        myiPropsForm.tbPartNumber.ReadOnly = False
+                        myiPropsForm.tbDescription.ReadOnly = False
+                        myiPropsForm.tbStockNumber.ReadOnly = False
+                        myiPropsForm.tbEngineer.ReadOnly = False
+                        'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+                        'log.Info("Mass Updated correctly")
+                    End If
+
                     'End If
                     UpdateDisplayediProperties()
                     myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
