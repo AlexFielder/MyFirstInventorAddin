@@ -119,13 +119,14 @@ Namespace iPropertiesController
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                         'Do nothing
                     ElseIf TypeOf (EditObject) Is Document Then
+
                         Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
                         UpdateDisplayediProperties(selecteddoc)
-                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbPartNumber.ReadOnly = True
+                        myiPropsForm.tbDescription.ReadOnly = True
+                        myiPropsForm.tbStockNumber.ReadOnly = True
+                        myiPropsForm.tbEngineer.ReadOnly = True
+
                     Else
                         'Do nothing more
                     End If
@@ -167,37 +168,271 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
-                    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
-                    'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
-                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-                        myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                        myiPropsForm.Label10.Text = "Checked In"
-                        myiPropsForm.PictureBox1.Show()
-                        myiPropsForm.PictureBox2.Hide()
+                    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                        Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                        If AssyDoc.SelectSet.Count = 1 Then
+                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                            If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                                Dim selecteddoc As Document = Nothing
+                                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                                selecteddoc = compOcc.Definition.Document
+                                UpdateDisplayediProperties(selecteddoc)
+                                AssyDoc.SelectSet.Select(compOcc)
 
-                        myiPropsForm.tbPartNumber.ReadOnly = True
-                        myiPropsForm.tbDescription.ReadOnly = True
-                        myiPropsForm.tbStockNumber.ReadOnly = True
-                        myiPropsForm.tbEngineer.ReadOnly = True
-                    Else
-                        myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                        myiPropsForm.Label10.Text = "Checked Out"
-                        myiPropsForm.PictureBox1.Hide()
-                        myiPropsForm.PictureBox2.Show()
+                            ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                                Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
+                                Dim spotsize = Nothing
+                                Dim spotdepth = Nothing
+                                Dim cbore = Nothing
+                                Dim cboredepth = Nothing
+                                Dim chamdia = Nothing
+                                Dim holedia = Nothing
 
-                        myiPropsForm.tbPartNumber.ReadOnly = False
-                        myiPropsForm.tbDescription.ReadOnly = False
-                        myiPropsForm.tbStockNumber.ReadOnly = False
-                        myiPropsForm.tbEngineer.ReadOnly = False
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '     cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '       cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                            ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                                Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
+                                Dim spotsize = Nothing
+                                Dim spotdepth = Nothing
+                                Dim cbore = Nothing
+                                Dim cboredepth = Nothing
+                                Dim chamdia = Nothing
+                                Dim holedia = Nothing
+
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '     cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '       cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = holeOcc.Name
+                                myiPropsForm.tbStockNumber.Text = holeOcc.Name
+                                myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                            Else
+                                myiPropsForm.tbPartNumber.ReadOnly = False
+                                myiPropsForm.tbDescription.ReadOnly = False
+                                myiPropsForm.tbStockNumber.ReadOnly = False
+                                myiPropsForm.tbEngineer.ReadOnly = False
+                                UpdateDisplayediProperties(AssyDoc)
+                            End If
+                        ElseIf AssyDoc.SelectSet.Count = 0 Then
+
+                            If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                                myiPropsForm.Label10.Text = "Checked In"
+                                myiPropsForm.PictureBox1.Show()
+                                myiPropsForm.PictureBox2.Hide()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                            Else
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                                myiPropsForm.Label10.Text = "Checked Out"
+                                myiPropsForm.PictureBox1.Hide()
+                                myiPropsForm.PictureBox2.Show()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = False
+                                myiPropsForm.tbDescription.ReadOnly = False
+                                myiPropsForm.tbStockNumber.ReadOnly = False
+                                myiPropsForm.tbEngineer.ReadOnly = False
+                            End If
+
+                            UpdateDisplayediProperties(AssyDoc)
+                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                            'myiPropsForm.tbPartNumber.ReadOnly = False
+                            'myiPropsForm.tbDescription.ReadOnly = False
+                            'myiPropsForm.tbStockNumber.ReadOnly = False
+                            'myiPropsForm.tbEngineer.ReadOnly = False
+                        End If
+                    ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                        Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
+                        If PartDoc.SelectSet.Count = 1 Then
+                            If TypeOf PartDoc.SelectSet(1) Is PartFeature Then
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                                Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
+                                Dim spotsize = Nothing
+                                Dim spotdepth = Nothing
+                                Dim cbore = Nothing
+                                Dim cboredepth = Nothing
+                                Dim chamdia = Nothing
+                                Dim holedia = Nothing
+
+                                'If holeOcc.Tapped Then
+                                '    HoleTap = holeOcc.TapInfo.ThreadDesignation
+                                '    'HoleDia = holeOcc.TapInfo.ThreadType
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    'myiPropsForm.tbDescription.Text = HoleTap & " " & holedia & " " & spotsize & " " &
+                                '    'cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                                '    myiPropsForm.tbStockNumber.Text = "Tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'Else
+                                '    If holeOcc.HoleType = HoleTypeEnum.kSpotFaceHole Then
+                                '        spotsize = "S'FACE Ø" & holeOcc.SpotFaceDiameter.Value
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterBoreHole Then
+                                '        cbore = "C'BORE Ø" & holeOcc.CBoreDiameter.Value
+                                '        cboredepth = holeOcc.CBoreDepth.Value & "DEEP"
+                                '    ElseIf holeOcc.HoleType = HoleTypeEnum.kCounterSinkHole Then
+                                '        chamdia = "C'SINK Ø" & holeOcc.CSinkDiameter.Value
+                                '    End If
+                                '    holedia = "Ø" & holeOcc.HoleDiameter.Value * 10
+                                '    myiPropsForm.tbPartNumber.Text = "This is a HOLE!"
+                                '    'myiPropsForm.tbDescription.Text = holedia & " " & spotsize & " " &
+                                '    '   cbore & " " & cboredepth & chamdia
+                                '    myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                                '    myiPropsForm.tbStockNumber.Text = "Not a tapped hole"
+                                '    myiPropsForm.tbEngineer.Text = "Hole in the head!"
+                                'End If
+                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                            Else
+                                myiPropsForm.tbPartNumber.ReadOnly = False
+                                myiPropsForm.tbDescription.ReadOnly = False
+                                myiPropsForm.tbStockNumber.ReadOnly = False
+                                myiPropsForm.tbEngineer.ReadOnly = False
+                                UpdateDisplayediProperties()
+                            End If
+                        Else
+                            myiPropsForm.tbPartNumber.ReadOnly = False
+                            myiPropsForm.tbDescription.ReadOnly = False
+                            myiPropsForm.tbStockNumber.ReadOnly = False
+                            myiPropsForm.tbEngineer.ReadOnly = False
+                            UpdateDisplayediProperties()
+                        End If
                     End If
+                    'Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
+                    ''If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+                    'If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                    '    myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                    '    myiPropsForm.Label10.Text = "Checked In"
+                    '    myiPropsForm.PictureBox1.Show()
+                    '    myiPropsForm.PictureBox2.Hide()
+
+                    '    myiPropsForm.tbPartNumber.ReadOnly = True
+                    '    myiPropsForm.tbDescription.ReadOnly = True
+                    '    myiPropsForm.tbStockNumber.ReadOnly = True
+                    '    myiPropsForm.tbEngineer.ReadOnly = True
+                    'Else
+                    '    myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                    '    myiPropsForm.Label10.Text = "Checked Out"
+                    '    myiPropsForm.PictureBox1.Hide()
+                    '    myiPropsForm.PictureBox2.Show()
+
+                    '    myiPropsForm.tbPartNumber.ReadOnly = False
+                    '    myiPropsForm.tbDescription.ReadOnly = False
+                    '    myiPropsForm.tbStockNumber.ReadOnly = False
+                    '    myiPropsForm.tbEngineer.ReadOnly = False
                     'End If
-                    myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                    myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                    myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                    myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                    myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+
+                    ''End If
+                    'myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
+                    'myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                    'myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
+                    'myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
+                    'myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 End If
             End If
         End Sub
