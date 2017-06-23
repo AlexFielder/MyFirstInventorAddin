@@ -850,14 +850,15 @@ Namespace iPropertiesController
                 End If
                 'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
                 If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
-                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
-                    Else
-                        myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
-                    End If
+                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
+                Else
+                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
+                End If
 
-                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+
+                If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                         myiPropsForm.btDefer.Show()
                         myiPropsForm.Label8.Show()
                         myiPropsForm.Label7.Show()
@@ -954,23 +955,23 @@ Namespace iPropertiesController
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                         End If
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                             drawnDoc,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
-                                drawnDoc,
-                                PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbEngineer.Text = "Engineer" Then
-                            iProperties.GetorSetStandardiProperty(
+                        myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                             drawnDoc,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
-                                drawnDoc,
-                                PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        End If
-
+                    ElseIf myiPropsForm.tbEngineer.Text = "Engineer" Then
+                        iProperties.GetorSetStandardiProperty(
+                        drawnDoc,
+                        PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                     Else
+                        myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
+                            drawnDoc,
+                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                    End If
+
+                Else
                         'MassProps()
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         'log.Info("Mass Updated correctly")
@@ -1010,23 +1011,23 @@ Namespace iPropertiesController
                                 PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
                         End If
 
-                        If iProperties.GetorSetStandardiProperty(
-                            DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
-                                DocumentToPulliPropValuesFrom,
-                                PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbEngineer.Text = "Engineer" Then
-                            iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
+                        myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbEngineer.Text = "Engineer" Then
+                        iProperties.GetorSetStandardiProperty(
+                            DocumentToPulliPropValuesFrom,
+                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                    Else
+                        myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                        End If
+                    End If
 
-                        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
+                    Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                         Dim kgMass As Decimal = myMass / 1000
