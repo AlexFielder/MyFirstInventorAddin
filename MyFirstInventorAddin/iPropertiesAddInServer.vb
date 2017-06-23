@@ -923,41 +923,41 @@ Namespace iPropertiesController
 
                         myiPropsForm.Label12.Text = MaterialString
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
-                                PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
-                                drawnDoc,
-                                PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbPartNumber.Text = "Part Number" Then
-                            iProperties.GetorSetStandardiProperty(
+                                PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length <> 0 Then
+                        myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbPartNumber.Text = "Part Number" Then
+                        iProperties.GetorSetStandardiProperty(
+                                drawnDoc,
+                                PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                    Else
+                        myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                         End If
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                             drawnDoc,
-                            PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
+                            PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length <> 0 Then
+                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbDescription.Text = "Description" Then
-                            iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbDescription.Text = "Description" Then
+                        iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
+                    Else
+                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
                                 drawnDoc,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                         End If
 
                     If iProperties.GetorSetStandardiProperty(
                             drawnDoc,
-                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
+                            PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length <> 0 Then
                         myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                             drawnDoc,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
@@ -993,27 +993,27 @@ Namespace iPropertiesController
                         myiPropsForm.Label8.Hide()
                         myiPropsForm.btShtMaterial.Hide()
                         myiPropsForm.btShtScale.Hide()
-                        'myiPropsForm.btUpdateAssy.Hide()
+                    'myiPropsForm.btUpdateAssy.Hide()
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(
+                            PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "").Length <> 0 Then
+                        myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbStockNumber.Text = "Stock Number" Then
-                            iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbStockNumber.Text = "Stock Number" Then
+                        iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(
+                    Else
+                        myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
                         End If
 
                     If iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,
-                        PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length > 0 Then
+                        PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "").Length <> 0 Then
                         myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
@@ -1043,34 +1043,34 @@ Namespace iPropertiesController
                         DocumentToPulliPropValuesFrom,
                         PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                                DocumentToPulliPropValuesFrom,
-                               PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
+                               PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "").Length <> 0 Then
+                        myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbPartNumber.Text = "Part Number" Then
-                            iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbPartNumber.Text = "Part Number" Then
+                        iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
+                    Else
+                        myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                         End If
 
-                        If iProperties.GetorSetStandardiProperty(
+                    If iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length > 0 Then
-                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
+                            PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Length <> 0 Then
+                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        ElseIf myiPropsForm.tbDescription.Text = "Description" Then
-                            iProperties.GetorSetStandardiProperty(
+                    ElseIf myiPropsForm.tbDescription.Text = "Description" Then
+                        iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        Else
-                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
+                    Else
+                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
                                 PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                         End If

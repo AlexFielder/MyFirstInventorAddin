@@ -1334,6 +1334,24 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub tbStockNumber_Enter(sender As Object, e As EventArgs) Handles tbStockNumber.Enter
+        If tbStockNumber.Text = "Stock Number" Then
+            tbStockNumber.Clear()
+        End If
+    End Sub
+
+    Private Sub tbDescription_Enter(sender As Object, e As EventArgs) Handles tbDescription.Enter
+        If tbDescription.Text = "description" Then
+            tbDescription.Clear()
+        End If
+    End Sub
+
+    Private Sub tbPartNumber_Enter(sender As Object, e As EventArgs) Handles tbPartNumber.Enter
+        If tbPartNumber.Text = "Part Number" Then
+            tbPartNumber.Clear()
+        End If
+    End Sub
+
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
     '    If RefDoc.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
     '        inventorApp.CommandManager.ControlDefinitions.Item("AssemblyGlobalUpdateCmd").Execute()
