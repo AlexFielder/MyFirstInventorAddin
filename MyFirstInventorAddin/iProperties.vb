@@ -1,6 +1,7 @@
 ﻿Imports Inventor
 
 Namespace iPropertiesController
+
     Public Class iProperties
 
         Public Shared Function GetiPropertyDisplayName(ByVal iProp As Inventor.Property) As String
@@ -42,7 +43,9 @@ Namespace iPropertiesController
             End If
             Return Nothing
         End Function
+
 #Region "Set iProperty Values"
+
 #Region "Get or Set Standard iProperty Values"
 
         ''' <summary>
@@ -132,7 +135,9 @@ Namespace iPropertiesController
                 Return currentvalue
             End If
         End Function
+
 #End Region
+
 #Region "Get or Set Custom iProperty Values"
 
         ''' <summary>
@@ -171,8 +176,11 @@ Namespace iPropertiesController
             End If
             Return customproperty
         End Function
+
 #End Region
 
 #End Region
+
     End Class
+
 End Namespace

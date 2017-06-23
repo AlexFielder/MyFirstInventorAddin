@@ -1,8 +1,6 @@
-﻿Imports System
+﻿Imports System.Drawing
 Imports System.Windows.Forms
-Imports System.Drawing
 Imports Inventor
-
 
 Namespace iPropertiesController
 
@@ -124,7 +122,9 @@ Namespace iPropertiesController
                 Dim bitmap As Bitmap = New Bitmap(PictureToImage(picture))
                 Return System.Drawing.Icon.FromHandle(bitmap.GetHicon())
             End Function
-        End Class
-    End Class
-End Namespace
 
+        End Class
+
+    End Class
+
+End Namespace

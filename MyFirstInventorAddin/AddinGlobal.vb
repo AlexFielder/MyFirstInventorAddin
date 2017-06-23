@@ -34,4 +34,5 @@ Public Class AddinGlobal
         Dim guidAtt As GuidAttribute = CType(GuidAttribute.GetCustomAttribute(t, GetType(GuidAttribute)), GuidAttribute)
         mClassId = "{" & guidAtt.Value & "}"
     End Sub
+
 End Class
