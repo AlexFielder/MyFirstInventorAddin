@@ -59,6 +59,7 @@ Partial Class iPropertiesForm
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
         Me.tbPartNumber = New System.Windows.Forms.TextBox()
         Me.tbDescription = New System.Windows.Forms.TextBox()
+        Me.btExpSat = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -307,27 +308,27 @@ Partial Class iPropertiesForm
         '
         Me.btExpStp.Location = New System.Drawing.Point(3, 216)
         Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(75, 23)
+        Me.btExpStp.Size = New System.Drawing.Size(60, 23)
         Me.btExpStp.TabIndex = 311
-        Me.btExpStp.Text = "Exp. to Step"
+        Me.btExpStp.Text = "Exp STP"
         Me.btExpStp.UseVisualStyleBackColor = True
         '
         'btExpStl
         '
-        Me.btExpStl.Location = New System.Drawing.Point(96, 216)
+        Me.btExpStl.Location = New System.Drawing.Point(137, 216)
         Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(75, 23)
+        Me.btExpStl.Size = New System.Drawing.Size(60, 23)
         Me.btExpStl.TabIndex = 312
-        Me.btExpStl.Text = "Exp. to STL"
+        Me.btExpStl.Text = "Exp STL"
         Me.btExpStl.UseVisualStyleBackColor = True
         '
         'btExpPdf
         '
-        Me.btExpPdf.Location = New System.Drawing.Point(189, 216)
+        Me.btExpPdf.Location = New System.Drawing.Point(204, 216)
         Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(75, 23)
+        Me.btExpPdf.Size = New System.Drawing.Size(60, 23)
         Me.btExpPdf.TabIndex = 313
-        Me.btExpPdf.Text = "Exp. to PDF"
+        Me.btExpPdf.Text = "Exp PDF"
         Me.btExpPdf.UseVisualStyleBackColor = True
         '
         'FileLocation
@@ -346,7 +347,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v3.01"
+        Me.Label13.Text = "iProperties Controller v4.00"
         '
         'tbDrawnBy
         '
@@ -385,6 +386,15 @@ Partial Class iPropertiesForm
         Me.tbDescription.Size = New System.Drawing.Size(191, 45)
         Me.tbDescription.TabIndex = 322
         '
+        'btExpSat
+        '
+        Me.btExpSat.Location = New System.Drawing.Point(70, 216)
+        Me.btExpSat.Name = "btExpSat"
+        Me.btExpSat.Size = New System.Drawing.Size(60, 23)
+        Me.btExpSat.TabIndex = 323
+        Me.btExpSat.Text = "Exp SAT"
+        Me.btExpSat.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -392,6 +402,7 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(270, 315)
+        Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
         Me.Controls.Add(Me.tbPartNumber)
         Me.Controls.Add(Me.tbEngineer)
@@ -475,4 +486,5 @@ Partial Class iPropertiesForm
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
     Friend WithEvents tbPartNumber As Windows.Forms.TextBox
     Friend WithEvents tbDescription As Windows.Forms.TextBox
+    Friend WithEvents btExpSat As Windows.Forms.Button
 End Class
