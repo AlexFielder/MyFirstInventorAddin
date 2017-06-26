@@ -293,6 +293,7 @@ Namespace iPropertiesController
             myiPropsForm.tbEngineer.ReadOnly = isReadonly
             UpdateDisplayediProperties(selecteddoc)
             AssyDoc.SelectSet.Select(compOcc)
+            UpdateFormTextBoxColours()
         End Sub
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
