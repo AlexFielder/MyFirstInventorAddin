@@ -146,7 +146,7 @@ Namespace iPropertiesController
         Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-                    If CommandName = "VaultCheckinTop" Then
+                    If CommandName = "VaultCheckinTop" Or CommandName = "VaultCheckin" Then
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                         If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                             WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
