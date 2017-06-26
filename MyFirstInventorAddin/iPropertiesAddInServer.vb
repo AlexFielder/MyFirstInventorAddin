@@ -29,7 +29,7 @@ Namespace iPropertiesController
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
         Public Shared attribute As GuidAttribute = Nothing
-        Public myiPropsForm As iPropertiesForm = Nothing
+        Public Shared myiPropsForm As iPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
@@ -279,7 +279,7 @@ Namespace iPropertiesController
             End If
         End Sub
 
-        Private Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
+        Public Shared Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
             Dim selecteddoc As Document = Nothing
             Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
             selecteddoc = compOcc.Definition.Document
@@ -579,7 +579,7 @@ Namespace iPropertiesController
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
-        Private Sub UpdateFormTextBoxColours()
+        Private Shared Sub UpdateFormTextBoxColours()
             myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
             myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
             myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
@@ -678,7 +678,7 @@ Namespace iPropertiesController
         '''
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
-        Private Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
+        Private Shared Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
             Try
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
@@ -937,7 +937,7 @@ Namespace iPropertiesController
         ''' there appeared to be three locations so far that had the exact same signature so have refactored to make this method.
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
-        Private Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
+        Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
             If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
 
                 myiPropsForm.Label10.ForeColor = Drawing.Color.Red
