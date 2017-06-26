@@ -147,6 +147,7 @@ Namespace iPropertiesController
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                     If CommandName = "VaultCheckinTop" Then
+                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                         If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                             WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
                             If WhatToDo = vbYes Then
@@ -167,13 +168,14 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
-                    Dim DocumentToPulliPropValuesFrom = Nothing
-                    If Not AddinGlobal.InventorApp.ActiveEditObject Is Nothing Then
-                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                    Else
-                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-                    End If
+                    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+
                     If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
+                        If Not AddinGlobal.InventorApp.ActiveEditObject Is Nothing Then
+                            DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                        Else
+                            DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                        End If
                         Dim AssyDoc As AssemblyDocument = Nothing
                         AssyDoc = DocumentToPulliPropValuesFrom
                         If AssyDoc.SelectSet.Count = 1 Then
@@ -232,6 +234,7 @@ Namespace iPropertiesController
                             'myiPropsForm.tbStockNumber.ReadOnly = False
                             'myiPropsForm.tbEngineer.ReadOnly = False
                         End If
+                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                     ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
                         UpdateFormTextBoxColours()
 
@@ -270,12 +273,17 @@ Namespace iPropertiesController
                             myiPropsForm.tbEngineer.ReadOnly = False
                             UpdateDisplayediProperties(PartDoc)
                         End If
+                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                     End If
 
-                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                    If DocumentToPulliPropValuesFrom.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                    End If
+
+                    'SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                     UpdateFormTextBoxColours()
+                    End If
                 End If
-            End If
         End Sub
 
         Public Shared Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
@@ -939,28 +947,30 @@ Namespace iPropertiesController
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
+
             If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
 
-                myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                myiPropsForm.Label10.Text = "Checked In"
-                myiPropsForm.PictureBox1.Show()
-                myiPropsForm.PictureBox2.Hide()
+                    myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                    myiPropsForm.Label10.Text = "Checked In"
+                    myiPropsForm.PictureBox1.Show()
+                    myiPropsForm.PictureBox2.Hide()
 
-                myiPropsForm.tbPartNumber.ReadOnly = True
-                myiPropsForm.tbDescription.ReadOnly = True
-                myiPropsForm.tbStockNumber.ReadOnly = True
-                myiPropsForm.tbEngineer.ReadOnly = True
-            Else
-                myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                myiPropsForm.Label10.Text = "Checked Out"
-                myiPropsForm.PictureBox1.Hide()
-                myiPropsForm.PictureBox2.Show()
+                    myiPropsForm.tbPartNumber.ReadOnly = True
+                    myiPropsForm.tbDescription.ReadOnly = True
+                    myiPropsForm.tbStockNumber.ReadOnly = True
+                    myiPropsForm.tbEngineer.ReadOnly = True
+                Else
+                    myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                    myiPropsForm.Label10.Text = "Checked Out"
+                    myiPropsForm.PictureBox1.Hide()
+                    myiPropsForm.PictureBox2.Show()
 
-                myiPropsForm.tbPartNumber.ReadOnly = False
-                myiPropsForm.tbDescription.ReadOnly = False
-                myiPropsForm.tbStockNumber.ReadOnly = False
-                myiPropsForm.tbEngineer.ReadOnly = False
-            End If
+                    myiPropsForm.tbPartNumber.ReadOnly = False
+                    myiPropsForm.tbDescription.ReadOnly = False
+                    myiPropsForm.tbStockNumber.ReadOnly = False
+                    myiPropsForm.tbEngineer.ReadOnly = False
+                End If
+
         End Sub
 
         ''' <summary>
