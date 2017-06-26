@@ -163,7 +163,7 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
-        If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, "", "") Then
+        If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "")
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
