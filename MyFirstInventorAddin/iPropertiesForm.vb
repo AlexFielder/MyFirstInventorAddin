@@ -141,7 +141,7 @@ Public Class iPropertiesForm
             Dim AssyDoc As AssemblyDocument = Nothing
             AssyDoc = inventorApp.ActiveDocument
             If AssyDoc.SelectSet.Count = 1 Then
-                Dim compOcc As ComoponentOccurrence = AssyDoc.SelectSet(1)
+                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
                 Dim selecteddoc As Document = compOcc.Definition.Document
                 If Not newPropValue = propname Then
                     UpdateProperties(proptoUpdate, propname, newPropValue, iProp, AssyDoc, selecteddoc)
