@@ -192,6 +192,7 @@ Public Class iPropertiesForm
             'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
+
             'If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             '    'Do Nothing
             'Else
@@ -1110,41 +1111,136 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub tbPartNumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbPartNumber.KeyPress
-        If e.KeyChar = Chr(9) Then
-            tbDescription.Focus()
-        ElseIf e.KeyChar = Chr(13) Then
-            tbPartNumber_Leave(sender, e)
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    tbDescription.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbPartNumber_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    tbDescription.Focus()
+
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbPartNumber_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyChar = Chr(9) Then
+                tbDescription.Focus()
+
+            ElseIf e.KeyChar = Chr(13) Then
+                tbPartNumber_Leave(sender, e)
+            End If
         End If
     End Sub
 
     Private Sub tbStockNumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbStockNumber.KeyPress
-        If e.KeyChar = Chr(9) Then
-            tbEngineer.Focus()
-            'ElseIf e.KeyChar = Chr(33 And 38) Then
-            '    tbDescription.Focus()
-        ElseIf e.KeyChar = Chr(13) Then
-            tbStockNumber_Leave(sender, e)
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    tbEngineer.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbDescription.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbStockNumber_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    tbEngineer.Focus()
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbDescription.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbStockNumber_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyChar = Chr(9) Then
+                tbEngineer.Focus()
+                'ElseIf e.KeyChar = Chr(33 And 38) Then
+                '    tbDescription.Focus()
+            ElseIf e.KeyChar = Chr(13) Then
+                tbStockNumber_Leave(sender, e)
+            End If
         End If
     End Sub
 
     Private Sub tbEngineer_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbEngineer.KeyPress
-        If e.KeyChar = Chr(9) Then
-            btUpdateAll.Focus()
-            'ElseIf e.KeyChar = Chr(33 And 38) Then
-            '    tbStockNumber.Focus()
-        ElseIf e.KeyChar = Chr(13) Then
-            tbEngineer_Leave(sender, e)
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    btUpdateAll.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbStockNumber.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbEngineer_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    btUpdateAll.Focus()
+
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbStockNumber.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbEngineer_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyChar = Chr(9) Then
+                btUpdateAll.Focus()
+
+                'ElseIf e.KeyChar = Chr(33 And 38) Then
+                '    tbStockNumber.Focus()
+            ElseIf e.KeyChar = Chr(13) Then
+                tbEngineer_Leave(sender, e)
+            End If
         End If
     End Sub
 
     Private Sub btUpdateAll_KeyPress(sender As Object, e As KeyPressEventArgs) Handles btUpdateAll.KeyPress
-        If e.KeyChar = Chr(9) Then
-            btUpdateAll_Click(sender, e)
-            'ElseIf e.KeyChar = Chr(33 And 38) Then
-            '    tbEngineer.Focus()
-        ElseIf e.KeyChar = Chr(13) Then
-            btUpdateAll_Click(sender, e)
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    btUpdateAll_Click(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                ElseIf e.KeyChar = Chr(13) Then
+                    btUpdateAll_Click(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    btUpdateAll_Click(sender, e)
+                ElseIf e.KeyChar = Chr(13) Then
+                    btUpdateAll_Click(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyChar = Chr(9) Then
+                btUpdateAll_Click(sender, e)
+            ElseIf e.KeyChar = Chr(13) Then
+                btUpdateAll_Click(sender, e)
+            End If
         End If
+
     End Sub
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
@@ -1265,12 +1361,39 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub tbDescription_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbDescription.KeyPress
-        If e.KeyChar = Chr(9) Then
-            tbStockNumber.Focus()
-            'ElseIf e.KeyChar = Chr(33 And 38) Then
-            '    tbPartNumber.Focus()
-        ElseIf e.KeyChar = Chr(13) Then
-            tbDescription_Leave(sender, e)
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    tbStockNumber.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbPartNumber.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbDescription_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    tbStockNumber.Focus()
+
+                    'ElseIf e.KeyChar = Chr(33 And 38) Then
+                    '    tbPartNumber.Focus()
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbDescription_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyChar = Chr(9) Then
+                tbStockNumber.Focus()
+
+                'ElseIf e.KeyChar = Chr(33 And 38) Then
+                '    tbPartNumber.Focus()
+            ElseIf e.KeyChar = Chr(13) Then
+                tbDescription_Leave(sender, e)
+            End If
         End If
     End Sub
 

@@ -176,7 +176,6 @@ Namespace iPropertiesController
                     If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
                         Dim AssyDoc As AssemblyDocument = Nothing
                         AssyDoc = DocumentToPulliPropValuesFrom
-
                         If AssyDoc.SelectSet.Count = 1 Then
                             UpdateFormTextBoxColours()
                             If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
@@ -280,20 +279,22 @@ Namespace iPropertiesController
         End Sub
 
         Public Shared Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
-            Dim selecteddoc As Document = Nothing
-            Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-            selecteddoc = compOcc.Definition.Document
-            Dim isReadonly As Boolean = False
-            If CheckReadOnly(selecteddoc) Then
-                isReadonly = True
+            If AssyDoc.SelectSet.Count = 1 Then
+                Dim selecteddoc As Document = Nothing
+                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                selecteddoc = compOcc.Definition.Document
+                Dim isReadonly As Boolean = False
+                If CheckReadOnly(selecteddoc) Then
+                    isReadonly = True
+                End If
+                myiPropsForm.tbPartNumber.ReadOnly = isReadonly
+                myiPropsForm.tbDescription.ReadOnly = isReadonly
+                myiPropsForm.tbStockNumber.ReadOnly = isReadonly
+                myiPropsForm.tbEngineer.ReadOnly = isReadonly
+                UpdateDisplayediProperties(selecteddoc)
+                AssyDoc.SelectSet.Select(compOcc)
+                UpdateFormTextBoxColours()
             End If
-            myiPropsForm.tbPartNumber.ReadOnly = isReadonly
-            myiPropsForm.tbDescription.ReadOnly = isReadonly
-            myiPropsForm.tbStockNumber.ReadOnly = isReadonly
-            myiPropsForm.tbEngineer.ReadOnly = isReadonly
-            UpdateDisplayediProperties(selecteddoc)
-            AssyDoc.SelectSet.Select(compOcc)
-            UpdateFormTextBoxColours()
         End Sub
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
