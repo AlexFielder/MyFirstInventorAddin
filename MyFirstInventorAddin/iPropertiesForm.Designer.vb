@@ -334,7 +334,7 @@ Partial Class iPropertiesForm
         '
         'FileLocation
         '
-        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
         Me.FileLocation.Location = New System.Drawing.Point(3, 242)
         Me.FileLocation.Name = "FileLocation"
         Me.FileLocation.Size = New System.Drawing.Size(261, 30)
@@ -399,7 +399,7 @@ Partial Class iPropertiesForm
         '
         'ModelFileLocation
         '
-        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
         Me.ModelFileLocation.Location = New System.Drawing.Point(3, 272)
         Me.ModelFileLocation.Name = "ModelFileLocation"
         Me.ModelFileLocation.Size = New System.Drawing.Size(261, 35)
