@@ -767,18 +767,8 @@ Namespace iPropertiesController
                     MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
                     ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
 
-                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
-                        myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.ModelFileLocation.Text = ModelPath
-                    Else ' use the active edit object in cases where we're editing-in-place
-                        If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
-                            myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                            myiPropsForm.ModelFileLocation.Text = ModelPath
-                        Else
-                            myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                            myiPropsForm.ModelFileLocation.Text = ModelPath
-                        End If
-                    End If
+                    myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.ModelFileLocation.Text = ModelPath
 
                     myiPropsForm.Label12.Text = MaterialString
 

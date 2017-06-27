@@ -1507,14 +1507,8 @@ Public Class iPropertiesForm
         Next
 
         ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+        Process.Start("explorer.exe", ModelPath)
 
-        If inventorApp.ActiveEditObject IsNot Nothing Then
-            Dim directoryPath As String = ModelPath
-            Process.Start("explorer.exe", directoryPath)
-        Else
-            Dim directoryPath As String = ModelPath
-            Process.Start("explorer.exe", directoryPath)
-        End If
         ModelPath = Nothing
     End Sub
 
