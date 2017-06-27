@@ -47,6 +47,7 @@ Public Class iPropertiesForm
                             oView = view
                             Exit For
                         Next
+
                         CurrentPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
                         NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
 
