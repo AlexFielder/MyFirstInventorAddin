@@ -334,10 +334,10 @@ Partial Class iPropertiesForm
         '
         'FileLocation
         '
-        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
+        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.FileLocation.Location = New System.Drawing.Point(3, 242)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(261, 30)
+        Me.FileLocation.Size = New System.Drawing.Size(261, 35)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -349,7 +349,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v5.04"
+        Me.Label13.Text = "iProperties Controller v5.05"
         '
         'tbDrawnBy
         '
@@ -399,8 +399,8 @@ Partial Class iPropertiesForm
         '
         'ModelFileLocation
         '
-        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
-        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 272)
+        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 277)
         Me.ModelFileLocation.Name = "ModelFileLocation"
         Me.ModelFileLocation.Size = New System.Drawing.Size(261, 35)
         Me.ModelFileLocation.TabIndex = 324
@@ -412,7 +412,7 @@ Partial Class iPropertiesForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(270, 309)
+        Me.ClientSize = New System.Drawing.Size(270, 319)
         Me.Controls.Add(Me.ModelFileLocation)
         Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
