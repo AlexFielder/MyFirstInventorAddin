@@ -763,7 +763,9 @@ Namespace iPropertiesController
 
                     MaterialString = iProperties.GetorSetStandardiProperty(
                     drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                    ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+
+                    MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+                    ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
 
                     If Not DocumentToPulliPropValuesFrom Is Nothing Then
                         myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black

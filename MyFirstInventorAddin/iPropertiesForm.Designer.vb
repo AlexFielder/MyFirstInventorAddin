@@ -334,9 +334,10 @@ Partial Class iPropertiesForm
         '
         'FileLocation
         '
+        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.FileLocation.Location = New System.Drawing.Point(3, 242)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(261, 45)
+        Me.FileLocation.Size = New System.Drawing.Size(261, 30)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -398,9 +399,10 @@ Partial Class iPropertiesForm
         '
         'ModelFileLocation
         '
-        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 287)
+        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 272)
         Me.ModelFileLocation.Name = "ModelFileLocation"
-        Me.ModelFileLocation.Size = New System.Drawing.Size(261, 45)
+        Me.ModelFileLocation.Size = New System.Drawing.Size(261, 35)
         Me.ModelFileLocation.TabIndex = 324
         Me.ModelFileLocation.Text = "Model File location"
         '
@@ -410,7 +412,7 @@ Partial Class iPropertiesForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(270, 337)
+        Me.ClientSize = New System.Drawing.Size(270, 309)
         Me.Controls.Add(Me.ModelFileLocation)
         Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
