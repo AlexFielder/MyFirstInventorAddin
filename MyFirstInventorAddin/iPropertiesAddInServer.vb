@@ -126,6 +126,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDescription.ReadOnly = True
                         myiPropsForm.tbStockNumber.ReadOnly = True
                         myiPropsForm.tbEngineer.ReadOnly = True
+                        myiPropsForm.tbRevNo.ReadOnly = True
                     Else
                         'Do nothing more
                     End If
@@ -187,6 +188,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
                                 Dim spotsize = Nothing
                                 Dim spotdepth = Nothing
@@ -204,6 +206,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
                                 Dim spotsize = Nothing
                                 Dim spotdepth = Nothing
@@ -221,6 +224,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
                                 UpdateDisplayediProperties(AssyDoc)
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
@@ -247,6 +251,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
                                 Dim spotsize = Nothing
                                 Dim spotdepth = Nothing
@@ -264,6 +269,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
                                 UpdateDisplayediProperties(PartDoc)
                             End If
                         Else
@@ -271,6 +277,7 @@ Namespace iPropertiesController
                             myiPropsForm.tbDescription.ReadOnly = False
                             myiPropsForm.tbStockNumber.ReadOnly = False
                             myiPropsForm.tbEngineer.ReadOnly = False
+                            myiPropsForm.tbRevNo.ReadOnly = False
                             UpdateDisplayediProperties(PartDoc)
                         End If
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
@@ -299,6 +306,7 @@ Namespace iPropertiesController
                 myiPropsForm.tbDescription.ReadOnly = isReadonly
                 myiPropsForm.tbStockNumber.ReadOnly = isReadonly
                 myiPropsForm.tbEngineer.ReadOnly = isReadonly
+                myiPropsForm.tbRevNo.ReadOnly = isReadonly
                 UpdateDisplayediProperties(selecteddoc)
                 AssyDoc.SelectSet.Select(compOcc)
                 UpdateFormTextBoxColours()
@@ -594,6 +602,7 @@ Namespace iPropertiesController
             myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
             myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
             myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbRevNo.ForeColor = Drawing.Color.Black
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -623,6 +632,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDescription.ReadOnly = False
                         myiPropsForm.tbStockNumber.ReadOnly = False
                         myiPropsForm.tbEngineer.ReadOnly = False
+                        myiPropsForm.tbRevNo.ReadOnly = False
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         'log.Info("Mass Updated correctly")
 
@@ -631,6 +641,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDescription.ReadOnly = False
                         myiPropsForm.tbStockNumber.ReadOnly = False
                         myiPropsForm.tbEngineer.ReadOnly = False
+                        myiPropsForm.tbRevNo.ReadOnly = False
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         'log.Info("Mass Updated correctly")
                     End If
@@ -655,6 +666,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDescription.ReadOnly = False
                         myiPropsForm.tbStockNumber.ReadOnly = False
                         myiPropsForm.tbEngineer.ReadOnly = False
+                        myiPropsForm.tbRevNo.ReadOnly = False
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         'log.Info("Mass Updated correctly")
 
@@ -663,6 +675,7 @@ Namespace iPropertiesController
                         myiPropsForm.tbDescription.ReadOnly = False
                         myiPropsForm.tbStockNumber.ReadOnly = False
                         myiPropsForm.tbEngineer.ReadOnly = False
+                        myiPropsForm.tbRevNo.ReadOnly = False
                         'AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
                         'log.Info("Mass Updated correctly")
                     End If
@@ -819,6 +832,22 @@ Namespace iPropertiesController
                         drawnDoc,
                         PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                     End If
+
+                    If iProperties.GetorSetStandardiProperty(
+                        drawnDoc,
+                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length <> 0 Then
+                        myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(
+                        drawnDoc,
+                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    ElseIf myiPropsForm.tbrevno.Text = "Revision Number" Then
+                        iProperties.GetorSetStandardiProperty(
+                    drawnDoc,
+                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    Else
+                        myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(
+                        drawnDoc,
+                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    End If
                 Else
                     myiPropsForm.Label5.Show()
                     myiPropsForm.tbMass.Show()
@@ -864,6 +893,22 @@ Namespace iPropertiesController
                         myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                    End If
+
+                    If iProperties.GetorSetStandardiProperty(
+                    DocumentToPulliPropValuesFrom,
+                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length <> 0 Then
+                        myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    ElseIf myiPropsForm.tbRevNo.Text = "Rev" Then
+                        iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    Else
+                        myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(
+                            DocumentToPulliPropValuesFrom,
+                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                     End If
 
                     Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(
@@ -966,8 +1011,9 @@ Namespace iPropertiesController
                     myiPropsForm.tbPartNumber.ReadOnly = True
                     myiPropsForm.tbDescription.ReadOnly = True
                     myiPropsForm.tbStockNumber.ReadOnly = True
-                    myiPropsForm.tbEngineer.ReadOnly = True
-                Else
+                myiPropsForm.tbEngineer.ReadOnly = True
+                myiPropsForm.tbRevNo.ReadOnly = True
+            Else
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                     myiPropsForm.Label10.Text = "Checked Out"
                     myiPropsForm.PictureBox1.Hide()
@@ -976,8 +1022,9 @@ Namespace iPropertiesController
                     myiPropsForm.tbPartNumber.ReadOnly = False
                     myiPropsForm.tbDescription.ReadOnly = False
                     myiPropsForm.tbStockNumber.ReadOnly = False
-                    myiPropsForm.tbEngineer.ReadOnly = False
-                End If
+                myiPropsForm.tbEngineer.ReadOnly = False
+                myiPropsForm.tbRevNo.ReadOnly = False
+            End If
 
         End Sub
 

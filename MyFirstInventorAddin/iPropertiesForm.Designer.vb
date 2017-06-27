@@ -61,6 +61,8 @@ Partial Class iPropertiesForm
         Me.tbDescription = New System.Windows.Forms.TextBox()
         Me.btExpSat = New System.Windows.Forms.Button()
         Me.ModelFileLocation = New System.Windows.Forms.Label()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.tbRevNo = New System.Windows.Forms.TextBox()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -184,7 +186,7 @@ Partial Class iPropertiesForm
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(45, 177)
+        Me.Label12.Location = New System.Drawing.Point(48, 177)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(44, 13)
         Me.Label12.TabIndex = 9
@@ -220,7 +222,7 @@ Partial Class iPropertiesForm
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(197, 178)
+        Me.Label10.Location = New System.Drawing.Point(198, 178)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(67, 13)
         Me.Label10.TabIndex = 302
@@ -231,7 +233,7 @@ Partial Class iPropertiesForm
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(183, 178)
+        Me.PictureBox2.Location = New System.Drawing.Point(185, 178)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -243,7 +245,7 @@ Partial Class iPropertiesForm
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(183, 178)
+        Me.PictureBox1.Location = New System.Drawing.Point(185, 178)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
@@ -349,7 +351,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v5.05"
+        Me.Label13.Text = "iProperties Controller v5.06"
         '
         'tbDrawnBy
         '
@@ -406,6 +408,22 @@ Partial Class iPropertiesForm
         Me.ModelFileLocation.TabIndex = 324
         Me.ModelFileLocation.Text = "Model File location"
         '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(3, 62)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(30, 13)
+        Me.Label14.TabIndex = 325
+        Me.Label14.Text = "Rev."
+        '
+        'tbRevNo
+        '
+        Me.tbRevNo.Location = New System.Drawing.Point(35, 59)
+        Me.tbRevNo.Name = "tbRevNo"
+        Me.tbRevNo.Size = New System.Drawing.Size(35, 20)
+        Me.tbRevNo.TabIndex = 326
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -413,6 +431,8 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(270, 319)
+        Me.Controls.Add(Me.tbRevNo)
+        Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.ModelFileLocation)
         Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
@@ -500,4 +520,6 @@ Partial Class iPropertiesForm
     Friend WithEvents tbDescription As Windows.Forms.TextBox
     Friend WithEvents btExpSat As Windows.Forms.Button
     Friend WithEvents ModelFileLocation As Windows.Forms.Label
+    Friend WithEvents Label14 As Windows.Forms.Label
+    Friend WithEvents tbRevNo As Windows.Forms.TextBox
 End Class

@@ -105,7 +105,6 @@ Public Class iPropertiesForm
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
         End If
@@ -189,134 +188,15 @@ Public Class iPropertiesForm
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
-
-            'If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            '    'Do Nothing
-            'Else
-            '    If inventorApp.ActiveEditObject IsNot Nothing Then
-            '        If tbStockNumber.Text = "Stock Number" Then
-            '            Dim iPropPartNum As String =
-            '            iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                                  PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
-            '                                                  "",
-            '                                                  "")
-            '        Else
-            '            Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
-            '                                              tbStockNumber.Text,
-            '                                              "")
-            '            log.Debug(inventorApp.ActiveEditObject.FullFileName + " Stock Number Updated to: " + iPropPartNum)
-            '            UpdateStatusBar("Stock Number updated to " + iPropPartNum)
-            '        End If
-            '    ElseIf inventorApp.ActiveEditObject Is Nothing Then
-            '        If tbStockNumber.Text = "Stock Number" Then
-            '            Dim iPropPartNum As String =
-            '            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                                  PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
-            '                                                  "",
-            '                                                  "")
-            '        Else
-            '            Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties,
-            '                                              tbStockNumber.Text,
-            '                                              "")
-            '            log.Debug(inventorApp.ActiveDocument.FullFileName + " Stock Number Updated to: " + iPropPartNum)
-            '            UpdateStatusBar("Stock Number updated to " + iPropPartNum)
-            '        End If
-            '    End If
-            'End If
-            'End If
         End If
     End Sub
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
-            'If inventorApp.ActiveDocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-
-            '    Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            '    Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-            '    Dim oSheets As Sheets = Nothing
-            '    Dim oViews As DrawingViews = Nothing
-            '    Dim oScale As Double = Nothing
-            '    Dim oViewCount As Integer = 0
-            '    Dim oTitleBlock = oSheet.TitleBlock
-            '    Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-
-            '    Dim oSht As Sheet = oDWG.ActiveSheet
-
-            '    Dim oView As DrawingView = Nothing
-            '    Dim drawnDoc As Document = Nothing
-
-            '    For Each view As DrawingView In oSht.DrawingViews
-            '        oView = view
-            '        Exit For
-            '    Next
-
-            '    drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-            '    If tbEngineer.Text = "Engineer" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(drawnDoc,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '            iProperties.GetorSetStandardiProperty(drawnDoc,
-            '                                                  PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                                  tbEngineer.Text,
-            '                                                  "")
-            '        log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Engineer updated to " + iPropPartNum)
-            '    End If
-
-            'ElseIf inventorApp.ActiveEditObject IsNot Nothing Then
-
-            '    If tbEngineer.Text = "Engineer" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                          PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                          tbEngineer.Text,
-            '                                          "")
-            '        log.Debug(inventorApp.ActiveEditObject.FullFileName + " Engineer Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Engineer updated to " + iPropPartNum)
-            '    End If
-
-            'ElseIf inventorApp.ActiveEditObject Is Nothing Then
-
-            '    If tbEngineer.Text = "Engineer" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-            '                                              tbEngineer.Text,
-            '                                              "")
-            '        log.Debug(inventorApp.ActiveDocument.FullFileName + " Engineer Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Engineer updated to " + iPropPartNum)
-            '    End If
-
-            'End If
-
-            'End If
         End If
     End Sub
 
@@ -339,6 +219,7 @@ Public Class iPropertiesForm
             tbStockNumber_Leave(sender, e)
             tbEngineer_Leave(sender, e)
             tbDrawnBy_Leave(sender, e)
+            tbRevNo_Leave(sender, e)
 
             Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
             Dim kgMass As Decimal = myMass / 1000
@@ -1152,8 +1033,7 @@ Public Class iPropertiesForm
                 If e.KeyChar = Chr(9) Then
                     tbEngineer.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbDescription.Focus()
+
                 ElseIf e.KeyChar = Chr(13) Then
                     tbStockNumber_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
@@ -1161,8 +1041,7 @@ Public Class iPropertiesForm
             Else
                 If e.KeyChar = Chr(9) Then
                     tbEngineer.Focus()
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbDescription.Focus()
+
                 ElseIf e.KeyChar = Chr(13) Then
                     tbStockNumber_Leave(sender, e)
                 End If
@@ -1170,8 +1049,7 @@ Public Class iPropertiesForm
         Else
             If e.KeyChar = Chr(9) Then
                 tbEngineer.Focus()
-                'ElseIf e.KeyChar = Chr(33 And 38) Then
-                '    tbDescription.Focus()
+
             ElseIf e.KeyChar = Chr(13) Then
                 tbStockNumber_Leave(sender, e)
             End If
@@ -1187,8 +1065,7 @@ Public Class iPropertiesForm
                 If e.KeyChar = Chr(9) Then
                     btUpdateAll.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbStockNumber.Focus()
+
                 ElseIf e.KeyChar = Chr(13) Then
                     tbEngineer_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
@@ -1197,8 +1074,6 @@ Public Class iPropertiesForm
                 If e.KeyChar = Chr(9) Then
                     btUpdateAll.Focus()
 
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbStockNumber.Focus()
                 ElseIf e.KeyChar = Chr(13) Then
                     tbEngineer_Leave(sender, e)
                 End If
@@ -1207,8 +1082,6 @@ Public Class iPropertiesForm
             If e.KeyChar = Chr(9) Then
                 btUpdateAll.Focus()
 
-                'ElseIf e.KeyChar = Chr(33 And 38) Then
-                '    tbStockNumber.Focus()
             ElseIf e.KeyChar = Chr(13) Then
                 tbEngineer_Leave(sender, e)
             End If
@@ -1216,8 +1089,6 @@ Public Class iPropertiesForm
             If e.KeyChar = Chr(9) Then
                 tbDrawnBy.Focus()
 
-                'ElseIf e.KeyChar = Chr(33 And 38) Then
-                '    tbStockNumber.Focus()
             ElseIf e.KeyChar = Chr(13) Then
                 tbEngineer_Leave(sender, e)
             End If
@@ -1294,80 +1165,8 @@ Public Class iPropertiesForm
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-            'If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-
-            '    Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            '    Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-            '    Dim oSheets As Sheets = Nothing
-            '    Dim oViews As DrawingViews = Nothing
-            '    Dim oScale As Double = Nothing
-            '    Dim oViewCount As Integer = 0
-            '    Dim oTitleBlock = oSheet.TitleBlock
-            '    Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-
-            '    Dim oSht As Sheet = oDWG.ActiveSheet
-
-            '    Dim oView As DrawingView = Nothing
-            '    Dim drawnDoc As Document = Nothing
-
-            '    For Each view As DrawingView In oSht.DrawingViews
-            '        oView = view
-            '        Exit For
-            '    Next
-
-            '    drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-            '    If tbDescription.Text = "Description" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(drawnDoc,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(drawnDoc,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              tbDescription.Text,
-            '                                              "")
-            '        log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Description updated to " + iPropPartNum)
-            '    End If
-            'ElseIf inventorApp.ActiveEditObject IsNot Nothing Then
-            '    If tbDescription.Text = "Description" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              tbDescription.Text,
-            '                                              "")
-            '        log.Debug(inventorApp.ActiveEditObject.FullFileName + " Description Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Description updated to " + iPropPartNum)
-            '    End If
-            'ElseIf inventorApp.ActiveEditObject Is Nothing Then
-            '    If tbDescription.Text = "Description" Then
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              "",
-            '                                              "")
-            '    Else
-            '        Dim iPropPartNum As String =
-            '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-            '                                              PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties,
-            '                                              tbDescription.Text,
-            '                                              "")
-            '        log.Debug(inventorApp.ActiveDocument.FullFileName + " Description Updated to: " + iPropPartNum)
-            '        UpdateStatusBar("Description updated to " + iPropPartNum)
-            '    End If
-            'End If
-            'End If
         End If
     End Sub
 
@@ -1380,8 +1179,7 @@ Public Class iPropertiesForm
                 If e.KeyChar = Chr(9) Then
                     tbStockNumber.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbPartNumber.Focus()
+
                 ElseIf e.KeyChar = Chr(13) Then
                     tbDescription_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
@@ -1390,8 +1188,6 @@ Public Class iPropertiesForm
                 If e.KeyChar = Chr(9) Then
                     tbStockNumber.Focus()
 
-                    'ElseIf e.KeyChar = Chr(33 And 38) Then
-                    '    tbPartNumber.Focus()
                 ElseIf e.KeyChar = Chr(13) Then
                     tbDescription_Leave(sender, e)
                 End If
@@ -1400,8 +1196,6 @@ Public Class iPropertiesForm
             If e.KeyChar = Chr(9) Then
                 tbStockNumber.Focus()
 
-                'ElseIf e.KeyChar = Chr(33 And 38) Then
-                '    tbPartNumber.Focus()
             ElseIf e.KeyChar = Chr(13) Then
                 tbDescription_Leave(sender, e)
             End If
@@ -1524,6 +1318,131 @@ Public Class iPropertiesForm
             '    tbStockNumber.Focus()
         ElseIf e.KeyChar = Chr(13) Then
             tbDrawnBy_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
+        'If Not inventorApp.ActiveDocument Is Nothing Then
+        '    tbRevNo.ForeColor = Drawing.Color.Black
+        '    CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision Number", tbRevNo.Text)
+        'End If
+
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
+                Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                Dim oSht As Sheet = oDWG.ActiveSheet
+                Dim oView As DrawingView = Nothing
+                Dim drawnDoc As Document = Nothing
+
+
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
+
+                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                tbRevNo.ForeColor = Drawing.Color.Black
+
+                Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(
+                                drawnDoc,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
+                log.Debug(drawnDoc.FullFileName + " Revision Updated to: " + iPropPartNum)
+                UpdateStatusBar("Revision updated to " + iPropPartNum)
+            Else
+                tbRevNo.ForeColor = Drawing.Color.Black
+
+                Dim iPropPartNum As String =
+                    iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropPartNum)
+                UpdateStatusBar("Revision updated to " + iPropPartNum)
+            End If
+        End If
+    End Sub
+
+    Private Sub tbRevNo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbRevNo.KeyPress
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyChar = Chr(9) Then
+                    tbRevNo_Leave(sender, e)
+                    tbStockNumber.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbRevNo_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyChar = Chr(9) Then
+                    tbRevNo_Leave(sender, e)
+                    tbStockNumber.Focus()
+
+                ElseIf e.KeyChar = Chr(13) Then
+                    tbRevNo_Leave(sender, e)
+                End If
+            End If
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
+            If e.KeyChar = Chr(9) Then
+                tbRevNo_Leave(sender, e)
+                tbStockNumber.Focus()
+
+            ElseIf e.KeyChar = Chr(13) Then
+                tbRevNo_Leave(sender, e)
+            End If
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is drawingDocument Then
+            If e.KeyChar = Chr(9) Then
+                tbRevNo_Leave(sender, e)
+                tbEngineer.Focus()
+
+            ElseIf e.KeyChar = Chr(13) Then
+                tbRevNo_Leave(sender, e)
+            End If
+        End If
+    End Sub
+
+    Private Sub tbRevNo_TextChanged(sender As Object, e As EventArgs) Handles tbRevNo.TextChanged
+        tbRevNo.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbPartNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbPartNumber.MouseClick
+        If tbPartNumber.Text = "Part Number" Then
+            tbPartNumber.Clear()
+        End If
+    End Sub
+
+    Private Sub tbDescription_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDescription.MouseClick
+        If tbDescription.Text = "description" Then
+            tbDescription.Clear()
+        End If
+    End Sub
+
+    Private Sub tbStockNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbStockNumber.MouseClick
+        If tbStockNumber.Text = "Stock Number" Then
+            tbStockNumber.Clear()
+        End If
+    End Sub
+
+    Private Sub tbEngineer_MouseClick(sender As Object, e As MouseEventArgs) Handles tbEngineer.MouseClick
+        If tbEngineer.Text = "Engineer" Then
+            tbEngineer.Clear()
+        End If
+    End Sub
+
+    Private Sub tbRevNo_Enter(sender As Object, e As EventArgs) Handles tbRevNo.Enter
+        If tbRevNo.Text = "Revision Number" Then
+            tbRevNo.Clear()
+        End If
+    End Sub
+
+    Private Sub tbRevNo_MouseClick(sender As Object, e As MouseEventArgs) Handles tbRevNo.MouseClick
+        If tbRevNo.Text = "Revision Number" Then
+            tbRevNo.Clear()
         End If
     End Sub
 
