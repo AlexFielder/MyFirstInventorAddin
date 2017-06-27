@@ -33,8 +33,6 @@ Public Class iPropertiesForm
                     If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                         'Do Nothing
                     Else
-                        CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
                         Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         Dim oSht As Sheet = oDrawDoc.ActiveSheet
                         Dim oView As DrawingView = Nothing
@@ -49,6 +47,8 @@ Public Class iPropertiesForm
                             oView = view
                             Exit For
                         Next
+                        CurrentPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
 
                         RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                         RefNewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
@@ -1476,6 +1476,39 @@ Public Class iPropertiesForm
         If tbPartNumber.Text = "Part Number" Then
             tbPartNumber.Clear()
         End If
+    End Sub
+
+    Private Sub ModelFileLocation_MouseHover(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseHover
+        ModelFileLocation.ForeColor = Drawing.Color.Blue
+    End Sub
+
+    Private Sub ModelFileLocation_Click(sender As Object, e As EventArgs) Handles ModelFileLocation.Click
+        Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+        Dim oSht As Sheet = oDWG.ActiveSheet
+
+        Dim oView As DrawingView = Nothing
+        Dim drawnDoc As Document = Nothing
+
+        For Each view As DrawingView In oSht.DrawingViews
+            oView = view
+            Exit For
+        Next
+
+        ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+
+        If inventorApp.ActiveEditObject IsNot Nothing Then
+            Dim directoryPath As String = ModelPath
+            Process.Start("explorer.exe", directoryPath)
+        Else
+            Dim directoryPath As String = ModelPath
+            Process.Start("explorer.exe", directoryPath)
+        End If
+        ModelPath = Nothing
+    End Sub
+
+    Private Sub ModelFileLocation_MouseLeave(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeave
+        ModelFileLocation.ForeColor = Drawing.Color.Black
     End Sub
 
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)

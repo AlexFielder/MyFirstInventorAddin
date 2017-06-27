@@ -714,6 +714,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbDrawnBy.Show()
                     myiPropsForm.btShtMaterial.Show()
                     myiPropsForm.btShtScale.Show()
+                    myiPropsForm.ModelFileLocation.Show()
                     myiPropsForm.Label5.Hide()
                     myiPropsForm.tbMass.Hide()
                     myiPropsForm.Label9.Hide()
@@ -762,6 +763,20 @@ Namespace iPropertiesController
 
                     MaterialString = iProperties.GetorSetStandardiProperty(
                     drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                    ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+
+                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                        myiPropsForm.ModelFileLocation.Text = ModelPath
+                    Else ' use the active edit object in cases where we're editing-in-place
+                        If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                            myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                            myiPropsForm.ModelFileLocation.Text = ModelPath
+                        Else
+                            myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                            myiPropsForm.ModelFileLocation.Text = ModelPath
+                        End If
+                    End If
 
                     myiPropsForm.Label12.Text = MaterialString
 
@@ -825,6 +840,7 @@ Namespace iPropertiesController
                     myiPropsForm.Label8.Hide()
                     myiPropsForm.btShtMaterial.Hide()
                     myiPropsForm.btShtScale.Hide()
+                    myiPropsForm.ModelFileLocation.Hide()
 
                     If iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,

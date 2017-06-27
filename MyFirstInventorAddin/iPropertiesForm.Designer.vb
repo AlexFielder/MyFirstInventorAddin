@@ -60,6 +60,7 @@ Partial Class iPropertiesForm
         Me.tbPartNumber = New System.Windows.Forms.TextBox()
         Me.tbDescription = New System.Windows.Forms.TextBox()
         Me.btExpSat = New System.Windows.Forms.Button()
+        Me.ModelFileLocation = New System.Windows.Forms.Label()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -335,7 +336,7 @@ Partial Class iPropertiesForm
         '
         Me.FileLocation.Location = New System.Drawing.Point(3, 242)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(261, 66)
+        Me.FileLocation.Size = New System.Drawing.Size(261, 45)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -347,7 +348,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v5.01"
+        Me.Label13.Text = "iProperties Controller v5.02"
         '
         'tbDrawnBy
         '
@@ -395,13 +396,22 @@ Partial Class iPropertiesForm
         Me.btExpSat.Text = "Exp SAT"
         Me.btExpSat.UseVisualStyleBackColor = True
         '
+        'ModelFileLocation
+        '
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 287)
+        Me.ModelFileLocation.Name = "ModelFileLocation"
+        Me.ModelFileLocation.Size = New System.Drawing.Size(261, 45)
+        Me.ModelFileLocation.TabIndex = 324
+        Me.ModelFileLocation.Text = "Model File location"
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(270, 315)
+        Me.ClientSize = New System.Drawing.Size(270, 337)
+        Me.Controls.Add(Me.ModelFileLocation)
         Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
         Me.Controls.Add(Me.tbPartNumber)
@@ -487,4 +497,5 @@ Partial Class iPropertiesForm
     Friend WithEvents tbPartNumber As Windows.Forms.TextBox
     Friend WithEvents tbDescription As Windows.Forms.TextBox
     Friend WithEvents btExpSat As Windows.Forms.Button
+    Friend WithEvents ModelFileLocation As Windows.Forms.Label
 End Class
