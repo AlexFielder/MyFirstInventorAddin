@@ -393,6 +393,8 @@ Public Class iPropertiesForm
     Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+            tbDrawnBy.ForeColor = Drawing.Color.Black
+
             Dim iPropPartNum As String =
                     iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                           PropertiesForSummaryInformationEnum.kAuthorSummaryInformation,
@@ -1201,9 +1203,18 @@ Public Class iPropertiesForm
                     tbEngineer_Leave(sender, e)
                 End If
             End If
-        Else
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If e.KeyChar = Chr(9) Then
                 btUpdateAll.Focus()
+
+                'ElseIf e.KeyChar = Chr(33 And 38) Then
+                '    tbStockNumber.Focus()
+            ElseIf e.KeyChar = Chr(13) Then
+                tbEngineer_Leave(sender, e)
+            End If
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
+            If e.KeyChar = Chr(9) Then
+                tbDrawnBy.Focus()
 
                 'ElseIf e.KeyChar = Chr(33 And 38) Then
                 '    tbStockNumber.Focus()
@@ -1509,6 +1520,17 @@ Public Class iPropertiesForm
 
     Private Sub ModelFileLocation_MouseLeave(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeave
         ModelFileLocation.ForeColor = Drawing.Color.Black
+    End Sub
+
+    Private Sub tbDrawnBy_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbDrawnBy.KeyPress
+        If e.KeyChar = Chr(9) Then
+            btUpdateAll.Focus()
+
+            'ElseIf e.KeyChar = Chr(33 And 38) Then
+            '    tbStockNumber.Focus()
+        ElseIf e.KeyChar = Chr(13) Then
+            tbDrawnBy_Leave(sender, e)
+        End If
     End Sub
 
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
