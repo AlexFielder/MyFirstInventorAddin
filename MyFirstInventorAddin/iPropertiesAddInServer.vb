@@ -190,12 +190,6 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.ReadOnly = True
                                 myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
-                                Dim spotsize = Nothing
-                                Dim spotdepth = Nothing
-                                Dim cbore = Nothing
-                                Dim cboredepth = Nothing
-                                Dim chamdia = Nothing
-                                Dim holedia = Nothing
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
@@ -208,12 +202,6 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.ReadOnly = True
                                 myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
-                                Dim spotsize = Nothing
-                                Dim spotdepth = Nothing
-                                Dim cbore = Nothing
-                                Dim cboredepth = Nothing
-                                Dim chamdia = Nothing
-                                Dim holedia = Nothing
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = holeOcc.Name
@@ -229,14 +217,34 @@ Namespace iPropertiesController
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
 
-                            SetFormDisplayOption(AssyDoc)
+                            'SetFormDisplayOption(AssyDoc)
+
+                            If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                                myiPropsForm.Label10.Text = "Checked In"
+                                myiPropsForm.PictureBox1.Show()
+                                myiPropsForm.PictureBox2.Hide()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = True
+                                myiPropsForm.tbDescription.ReadOnly = True
+                                myiPropsForm.tbStockNumber.ReadOnly = True
+                                myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
+                            Else
+                                myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                                myiPropsForm.Label10.Text = "Checked Out"
+                                myiPropsForm.PictureBox1.Hide()
+                                myiPropsForm.PictureBox2.Show()
+
+                                myiPropsForm.tbPartNumber.ReadOnly = False
+                                myiPropsForm.tbDescription.ReadOnly = False
+                                myiPropsForm.tbStockNumber.ReadOnly = False
+                                myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
+                            End If
 
                             UpdateDisplayediProperties(AssyDoc)
                             UpdateFormTextBoxColours()
-                            'myiPropsForm.tbPartNumber.ReadOnly = False
-                            'myiPropsForm.tbDescription.ReadOnly = False
-                            'myiPropsForm.tbStockNumber.ReadOnly = False
-                            'myiPropsForm.tbEngineer.ReadOnly = False
                         End If
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                     ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
@@ -253,12 +261,6 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.ReadOnly = True
                                 myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
-                                Dim spotsize = Nothing
-                                Dim spotdepth = Nothing
-                                Dim cbore = Nothing
-                                Dim cboredepth = Nothing
-                                Dim chamdia = Nothing
-                                Dim holedia = Nothing
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
@@ -348,143 +350,6 @@ Namespace iPropertiesController
         Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    'If Not AddinGlobal.InventorApp.ActiveEditDocument Is Nothing Then
-                    '    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                    '        Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
-                    '        If AssyDoc.SelectSet.Count = 1 Then
-                    '            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                    '            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                    '            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                    '            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                    '            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                    '            If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
-                    '                myiPropsForm.tbPartNumber.ReadOnly = True
-                    '                myiPropsForm.tbDescription.ReadOnly = True
-                    '                myiPropsForm.tbStockNumber.ReadOnly = True
-                    '                myiPropsForm.tbEngineer.ReadOnly = True
-                    '                Dim selecteddoc As Document = Nothing
-                    '                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                    '                selecteddoc = compOcc.Definition.Document
-                    '                UpdateDisplayediProperties(selecteddoc)
-                    '                AssyDoc.SelectSet.Select(compOcc)
-
-                    '            ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
-                    '                myiPropsForm.tbPartNumber.ReadOnly = True
-                    '                myiPropsForm.tbDescription.ReadOnly = True
-                    '                myiPropsForm.tbStockNumber.ReadOnly = True
-                    '                myiPropsForm.tbEngineer.ReadOnly = True
-                    '                Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
-                    '                Dim spotsize = Nothing
-                    '                Dim spotdepth = Nothing
-                    '                Dim cbore = Nothing
-                    '                Dim cboredepth = Nothing
-                    '                Dim chamdia = Nothing
-                    '                Dim holedia = Nothing
-
-                    '                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
-                    '                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
-                    '                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                    '                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
-                    '            ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
-                    '                myiPropsForm.tbPartNumber.ReadOnly = True
-                    '                myiPropsForm.tbDescription.ReadOnly = True
-                    '                myiPropsForm.tbStockNumber.ReadOnly = True
-                    '                myiPropsForm.tbEngineer.ReadOnly = True
-                    '                Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
-                    '                Dim spotsize = Nothing
-                    '                Dim spotdepth = Nothing
-                    '                Dim cbore = Nothing
-                    '                Dim cboredepth = Nothing
-                    '                Dim chamdia = Nothing
-                    '                Dim holedia = Nothing
-
-                    '                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
-                    '                myiPropsForm.tbPartNumber.Text = holeOcc.Name
-                    '                myiPropsForm.tbStockNumber.Text = holeOcc.Name
-                    '                myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
-                    '            Else
-                    '                myiPropsForm.tbPartNumber.ReadOnly = False
-                    '                myiPropsForm.tbDescription.ReadOnly = False
-                    '                myiPropsForm.tbStockNumber.ReadOnly = False
-                    '                myiPropsForm.tbEngineer.ReadOnly = False
-                    '                UpdateDisplayediProperties(AssyDoc)
-                    '            End If
-                    '        ElseIf AssyDoc.SelectSet.Count = 0 Then
-
-                    '            If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
-                    '                myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                    '                myiPropsForm.Label10.Text = "Checked In"
-                    '                myiPropsForm.PictureBox1.Show()
-                    '                myiPropsForm.PictureBox2.Hide()
-
-                    '                'myiPropsForm.tbPartNumber.ReadOnly = True
-                    '                'myiPropsForm.tbDescription.ReadOnly = True
-                    '                'myiPropsForm.tbStockNumber.ReadOnly = True
-                    '                'myiPropsForm.tbEngineer.ReadOnly = True
-                    '            Else
-                    '                myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                    '                myiPropsForm.Label10.Text = "Checked Out"
-                    '                myiPropsForm.PictureBox1.Hide()
-                    '                myiPropsForm.PictureBox2.Show()
-
-                    '                'myiPropsForm.tbPartNumber.ReadOnly = False
-                    '                'myiPropsForm.tbDescription.ReadOnly = False
-                    '                'myiPropsForm.tbStockNumber.ReadOnly = False
-                    '                'myiPropsForm.tbEngineer.ReadOnly = False
-                    '            End If
-                    '            Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
-                    '            UpdateDisplayediProperties(selecteddoc)
-                    '            myiPropsForm.tbPartNumber.ReadOnly = True
-                    '            myiPropsForm.tbDescription.ReadOnly = True
-                    '            myiPropsForm.tbStockNumber.ReadOnly = True
-                    '            myiPropsForm.tbEngineer.ReadOnly = True
-                    '            'UpdateDisplayediProperties(AssyDoc)
-                    '            'myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                    '            'myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                    '            'myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                    '            'myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                    '            'myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                    '            'myiPropsForm.tbPartNumber.ReadOnly = False
-                    '            'myiPropsForm.tbDescription.ReadOnly = False
-                    '            'myiPropsForm.tbStockNumber.ReadOnly = False
-                    '            'myiPropsForm.tbEngineer.ReadOnly = False
-                    '        End If
-                    '    ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
-                    '        myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                    '        myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-                    '        myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-                    '        myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-                    '        myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                    '        Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
-                    '        If PartDoc.SelectSet.Count = 1 Then
-                    '            If TypeOf PartDoc.SelectSet(1) Is PartFeature Then
-                    '                myiPropsForm.tbPartNumber.ReadOnly = True
-                    '                myiPropsForm.tbDescription.ReadOnly = True
-                    '                myiPropsForm.tbStockNumber.ReadOnly = True
-                    '                myiPropsForm.tbEngineer.ReadOnly = True
-                    '                Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
-
-                    '                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
-                    '                myiPropsForm.tbPartNumber.Text = FeatOcc.Name
-                    '                myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                    '                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
-                    '            Else
-                    '                myiPropsForm.tbPartNumber.ReadOnly = False
-                    '                myiPropsForm.tbDescription.ReadOnly = False
-                    '                myiPropsForm.tbStockNumber.ReadOnly = False
-                    '                myiPropsForm.tbEngineer.ReadOnly = False
-                    '                UpdateDisplayediProperties(PartDoc)
-                    '            End If
-                    '        ElseIf PartDoc.SelectSet.Count = 0 Then
-                    '            Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
-                    '            UpdateDisplayediProperties(selecteddoc)
-                    '            myiPropsForm.tbPartNumber.ReadOnly = True
-                    '            myiPropsForm.tbDescription.ReadOnly = True
-                    '            myiPropsForm.tbStockNumber.ReadOnly = True
-                    '            myiPropsForm.tbEngineer.ReadOnly = True
-                    '        End If
-                    '    End If
-                    'Else
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                         Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                         If AssyDoc.SelectSet.Count = 1 Then
@@ -497,13 +362,8 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
-                                Dim spotsize = Nothing
-                                Dim spotdepth = Nothing
-                                Dim cbore = Nothing
-                                Dim cboredepth = Nothing
-                                Dim chamdia = Nothing
-                                Dim holedia = Nothing
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
@@ -514,13 +374,8 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
-                                Dim spotsize = Nothing
-                                Dim spotdepth = Nothing
-                                Dim cbore = Nothing
-                                Dim cboredepth = Nothing
-                                Dim chamdia = Nothing
-                                Dim holedia = Nothing
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = holeOcc.Name
@@ -531,6 +386,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
                                 UpdateDisplayediProperties(AssyDoc)
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
@@ -545,6 +401,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                             Else
                                 myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                                 myiPropsForm.Label10.Text = "Checked Out"
@@ -555,6 +412,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
                             End If
 
                             UpdateDisplayediProperties(AssyDoc)
@@ -569,6 +427,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
+                                myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
 
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
@@ -580,6 +439,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbDescription.ReadOnly = False
                                 myiPropsForm.tbStockNumber.ReadOnly = False
                                 myiPropsForm.tbEngineer.ReadOnly = False
+                                myiPropsForm.tbRevNo.ReadOnly = False
                                 UpdateDisplayediProperties(PartDoc)
                             End If
                         Else
@@ -587,6 +447,7 @@ Namespace iPropertiesController
                             myiPropsForm.tbDescription.ReadOnly = False
                             myiPropsForm.tbStockNumber.ReadOnly = False
                             myiPropsForm.tbEngineer.ReadOnly = False
+                            myiPropsForm.tbRevNo.ReadOnly = False
                             UpdateDisplayediProperties(PartDoc)
                         End If
                     End If
@@ -1000,8 +861,8 @@ Namespace iPropertiesController
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
-
-            If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
 
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                     myiPropsForm.Label10.Text = "Checked In"
@@ -1011,9 +872,9 @@ Namespace iPropertiesController
                     myiPropsForm.tbPartNumber.ReadOnly = True
                     myiPropsForm.tbDescription.ReadOnly = True
                     myiPropsForm.tbStockNumber.ReadOnly = True
-                myiPropsForm.tbEngineer.ReadOnly = True
-                myiPropsForm.tbRevNo.ReadOnly = True
-            Else
+                    myiPropsForm.tbEngineer.ReadOnly = True
+                    myiPropsForm.tbRevNo.ReadOnly = True
+                Else
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                     myiPropsForm.Label10.Text = "Checked Out"
                     myiPropsForm.PictureBox1.Hide()
@@ -1022,8 +883,9 @@ Namespace iPropertiesController
                     myiPropsForm.tbPartNumber.ReadOnly = False
                     myiPropsForm.tbDescription.ReadOnly = False
                     myiPropsForm.tbStockNumber.ReadOnly = False
-                myiPropsForm.tbEngineer.ReadOnly = False
-                myiPropsForm.tbRevNo.ReadOnly = False
+                    myiPropsForm.tbEngineer.ReadOnly = False
+                    myiPropsForm.tbRevNo.ReadOnly = False
+                End If
             End If
 
         End Sub
