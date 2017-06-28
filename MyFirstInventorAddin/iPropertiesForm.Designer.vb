@@ -22,6 +22,7 @@ Partial Class iPropertiesForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(iPropertiesForm))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -63,8 +64,10 @@ Partial Class iPropertiesForm
         Me.ModelFileLocation = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.tbRevNo = New System.Windows.Forms.TextBox()
+        Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -424,6 +427,10 @@ Partial Class iPropertiesForm
         Me.tbRevNo.Size = New System.Drawing.Size(35, 20)
         Me.tbRevNo.TabIndex = 326
         '
+        'ErrorProvider1
+        '
+        Me.ErrorProvider1.ContainerControl = Me
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -477,6 +484,7 @@ Partial Class iPropertiesForm
         Me.Text = "iPropertiesForm"
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -522,4 +530,5 @@ Partial Class iPropertiesForm
     Friend WithEvents ModelFileLocation As Windows.Forms.Label
     Friend WithEvents Label14 As Windows.Forms.Label
     Friend WithEvents tbRevNo As Windows.Forms.TextBox
+    Friend WithEvents ErrorProvider1 As Windows.Forms.ErrorProvider
 End Class

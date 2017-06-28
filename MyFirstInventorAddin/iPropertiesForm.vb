@@ -22,6 +22,20 @@ Public Class iPropertiesForm
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
+
+    ''' <summary>
+    ''' Copied from this thread: https://stackoverflow.com/questions/9489671/check-for-empty-textbox-controls-in-vb-net/9489822#9489822
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub TextBox_Validating(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles tbEngineer.Validating, tbRevNo.Validating, tbDescription.Validating, tbStockNumber.Validating
+        Dim ctl As Control = CType(sender, Control)
+        If ctl.Text = "" Then
+            e.Cancel = True
+            ErrorProvider1.SetError(ctl, "Please enter a value")
+        End If
+    End Sub
+
     Public Sub GetNewFilePaths()
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
@@ -77,6 +91,12 @@ Public Class iPropertiesForm
         Try
             log.Debug("Loading iProperties Form")
             InitializeComponent()
+            'validating code provided by: https://stackoverflow.com/a/9489822/572634
+            For Each c As Control In Me.Controls
+                If TypeOf (c) Is System.Windows.Forms.TextBox Or TypeOf (c) Is ComboBox Then
+                    AddHandler c.Validating, AddressOf Me.TextBox_Validating
+                End If
+            Next
             Me.inventorApp = inventorApp
             Me.value = addinCLS
             Me.localWindow = localWindow
@@ -115,13 +135,6 @@ Public Class iPropertiesForm
         Dim iProp As String = String.Empty
         If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
 
-            'Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            'Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-            'Dim oSheets As Sheets = Nothing
-            'Dim oViews As DrawingViews = Nothing
-            'Dim oScale As Double = Nothing
-            'Dim oViewCount As Integer = 0
-            'Dim oTitleBlock = oSheet.TitleBlock
             Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
             Dim oSht As Sheet = oDWG.ActiveSheet
             Dim oView As DrawingView = Nothing
@@ -221,7 +234,6 @@ Public Class iPropertiesForm
             tbEngineer_Leave(sender, e)
             tbDrawnBy_Leave(sender, e)
             tbRevNo_Leave(sender, e)
-
             Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
             Dim kgMass As Decimal = myMass / 1000
             Dim myMass2 As Decimal = Math.Round(kgMass, 3)
@@ -236,6 +248,10 @@ Public Class iPropertiesForm
             Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
             UpdateStatusBar("iProperties updated")
             'End If
+            ErrorProvider1.Clear()
+            If Me.ValidateChildren() Then
+                ' continue on
+            End If
         End If
     End Sub
 
