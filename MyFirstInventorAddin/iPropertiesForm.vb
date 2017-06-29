@@ -1530,10 +1530,11 @@ Public Class iPropertiesForm
 
             oBOM.StructuredViewEnabled = True
 
-            Dim oStructuredBOMView As BOMView
-            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
+            Dim oStructuredBOMView As BOMView = oBOM.BOMViews.Item("Structured")
             Call oStructuredBOMView.Renumber(1, 1)
             oSht.Update()
+            'Dim oPartsList As PartsList = oDWG.ActiveSheet.PartsLists.Item(1)
+            'oPartsList.Sort("Item", True)
         ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
             Dim doc = AddinGlobal.InventorApp.ActiveDocument
             Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
@@ -1541,8 +1542,7 @@ Public Class iPropertiesForm
 
             oBOM.StructuredViewEnabled = True
 
-            Dim oStructuredBOMView As BOMView
-            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
+            Dim oStructuredBOMView As BOMView = oBOM.BOMViews.Item("Structured")
             Call oStructuredBOMView.Renumber(1, 1)
         End If
     End Sub
