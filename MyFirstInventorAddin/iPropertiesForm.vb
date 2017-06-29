@@ -306,33 +306,78 @@ Public Class iPropertiesForm
 
     Private Sub btITEM_Click(sender As Object, e As EventArgs) Handles btITEM.Click
         Try
-            Dim doc = inventorApp.ActiveDocument
-            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-            Dim oBOM As BOM = oAssyDef.BOM
+            If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+                Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
-            oBOM.StructuredViewEnabled = True
+                Dim oSht As Sheet = oDWG.ActiveSheet
 
-            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+                Dim oView As DrawingView = Nothing
+                Dim drawnDoc As Document = Nothing
 
-            Dim oBOMRow As BOMRow
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
 
-            For Each oBOMRow In oBOMView.BOMRows
-                'Set a reference to the primary ComponentDefinition of the row
-                Dim oCompDef As ComponentDefinition
-                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                Dim CompFileNameOnly As String
-                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Dim doc = drawnDoc
+                Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+                Dim oBOM As BOM = oAssyDef.BOM
 
-                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                oBOM.StructuredViewEnabled = True
 
-                'MessageBox.Show(CompFileNameOnly)
+                Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-                Dim item As String
-                item = oBOMRow.ItemNumber
-                iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-            Next
+                Dim oBOMRow As BOMRow
+
+                For Each oBOMRow In oBOMView.BOMRows
+                    'Set a reference to the primary ComponentDefinition of the row
+                    Dim oCompDef As ComponentDefinition
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+                    iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                Next
+                oSht.Update()
+            ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
+                Dim doc = inventorApp.ActiveDocument
+                Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+                Dim oBOM As BOM = oAssyDef.BOM
+
+                oBOM.StructuredViewEnabled = True
+
+                Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+                Dim oBOMRow As BOMRow
+
+                For Each oBOMRow In oBOMView.BOMRows
+                    'Set a reference to the primary ComponentDefinition of the row
+                    Dim oCompDef As ComponentDefinition
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+                    iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                Next
+            End If
         Catch ex As Exception
             log.Error(ex.Message)
         End Try
@@ -1460,6 +1505,45 @@ Public Class iPropertiesForm
     Private Sub tbRevNo_MouseClick(sender As Object, e As MouseEventArgs) Handles tbRevNo.MouseClick
         If tbRevNo.Text = "Revision Number" Then
             tbRevNo.Clear()
+        End If
+    End Sub
+
+    Private Sub btReNum_Click(sender As Object, e As EventArgs) Handles btReNum.Click
+        If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+            Dim oSht As Sheet = oDWG.ActiveSheet
+
+            Dim oView As DrawingView = Nothing
+            Dim drawnDoc As Document = Nothing
+
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            Dim doc = drawnDoc
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
+
+            oBOM.StructuredViewEnabled = True
+
+            Dim oStructuredBOMView As BOMView
+            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
+            Call oStructuredBOMView.Renumber(1, 1)
+            oSht.Update()
+        ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
+            Dim doc = AddinGlobal.InventorApp.ActiveDocument
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
+
+            oBOM.StructuredViewEnabled = True
+
+            Dim oStructuredBOMView As BOMView
+            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
+            Call oStructuredBOMView.Renumber(1, 1)
         End If
     End Sub
 

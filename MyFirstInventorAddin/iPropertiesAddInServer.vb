@@ -163,12 +163,19 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-                If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
-                    DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                End If
-                If Not DocumentToPulliPropValuesFrom Is Nothing Then
-                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
-                    UpdateFormTextBoxColours()
+                If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
+                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                        UpdateFormTextBoxColours()
+                    End If
+                Else
+                    If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                    End If
+                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                        UpdateFormTextBoxColours()
+                    End If
                 End If
             End If
         End Sub
@@ -482,13 +489,6 @@ Namespace iPropertiesController
                         myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
                     End If
 
-                    Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-                    Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-                    Dim oSheets As Sheets = Nothing
-                    Dim oViews As DrawingViews = Nothing
-                    Dim oScale As Double = Nothing
-                    Dim oViewCount As Integer = 0
-                    Dim oTitleBlock = oSheet.TitleBlock
                     Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
                     Dim oSht As Sheet = oDWG.ActiveSheet
@@ -502,6 +502,18 @@ Namespace iPropertiesController
                     Next
 
                     drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                    If TypeOf drawnDoc Is AssemblyDocument Then
+                        myiPropsForm.btITEM.Show()
+                        myiPropsForm.btReNum.Show()
+                        myiPropsForm.Label11.Show()
+                        myiPropsForm.Label12.Show()
+                    Else
+                        myiPropsForm.btITEM.Hide()
+                        myiPropsForm.btReNum.Hide()
+                        myiPropsForm.Label11.Show()
+                        myiPropsForm.Label12.Show()
+                    End If
 
                     Dim MaterialString As String = String.Empty
 
@@ -590,10 +602,12 @@ Namespace iPropertiesController
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
                     myiPropsForm.btITEM.Show()
+                    myiPropsForm.btReNum.Show()
                     myiPropsForm.Label11.Hide()
                     myiPropsForm.Label12.Hide()
-                Else
+                ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
                     myiPropsForm.btITEM.Hide()
+                    myiPropsForm.btReNum.Hide()
                     myiPropsForm.Label11.Show()
                     myiPropsForm.Label12.Show()
                 End If
