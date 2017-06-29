@@ -603,6 +603,7 @@ Namespace iPropertiesController
                     PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
 
                 'simplified to this:
+                UpdateFormTextBoxColours()
                 SetFormDisplayOption(DocumentToPulliPropValuesFrom)
             Catch ex As Exception
                 log.Error(ex.Message)
