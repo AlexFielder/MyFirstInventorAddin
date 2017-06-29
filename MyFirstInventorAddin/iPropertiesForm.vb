@@ -1530,7 +1530,8 @@ Public Class iPropertiesForm
 
             oBOM.StructuredViewEnabled = True
 
-            Dim oStructuredBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+            Dim oStructuredBOMView As BOMView
+            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
             Call oStructuredBOMView.Renumber(1, 1)
             oSht.Update()
             'Dim oPartsList As PartsList = oDWG.ActiveSheet.PartsLists.Item(1)
@@ -1542,7 +1543,8 @@ Public Class iPropertiesForm
 
             oBOM.StructuredViewEnabled = True
 
-            Dim oStructuredBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+            Dim oStructuredBOMView As BOMView
+            oStructuredBOMView = oBOM.BOMViews.Item("Structured")
             Call oStructuredBOMView.Renumber(1, 1)
         End If
     End Sub
