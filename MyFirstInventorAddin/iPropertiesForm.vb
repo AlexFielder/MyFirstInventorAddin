@@ -699,7 +699,7 @@ Public Class iPropertiesForm
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
             Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
@@ -747,108 +747,112 @@ Public Class iPropertiesForm
 
     Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            'GetNewFilePaths()
-            ' Get the STL translator Add-In.
-            Dim oRev = iProperties.GetorSetStandardiProperty(
-                                inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+            CheckRef = MsgBox("Have you checked and updated the revision number?", vbYesNo, "File Attach")
+            If CheckRef = vbYes Then
+                ' Get the STL translator Add-In.
+                Dim oRev = iProperties.GetorSetStandardiProperty(
+                                    inventorApp.ActiveDocument,
+                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
-            Dim oSTLTranslator As TranslatorAddIn
-            oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
-            If oSTLTranslator Is Nothing Then
-                MsgBox("Could not access STL translator.")
-                Exit Sub
-            End If
+                Dim oSTLTranslator As TranslatorAddIn
+                oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
+                If oSTLTranslator Is Nothing Then
+                    MsgBox("Could not access STL translator.")
+                    Exit Sub
+                End If
 
-            Dim oDoc = inventorApp.ActiveDocument
+                Dim oDoc = inventorApp.ActiveDocument
 
-            Dim oContext As TranslationContext
-            oContext = inventorApp.TransientObjects.CreateTranslationContext
+                Dim oContext As TranslationContext
+                oContext = inventorApp.TransientObjects.CreateTranslationContext
 
-            Dim oOptions As NameValueMap
-            oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                Dim oOptions As NameValueMap
+                oOptions = inventorApp.TransientObjects.CreateNameValueMap
 
-            'Save Copy As Options
-            'Name value Map
-            'ExportUnits = 4
-            'Resolution = 1
-            'AllowMoveMeshNode = False
-            'SurfaceDeviation = 60
-            'NormalDeviation = 14
-            'MaxEdgeLength = 100
-            'AspectRatio = 40
-            'ExportFileStructure = 0
-            'OutputFileType = 0
-            'ExportColor = True
+                'Save Copy As Options
+                'Name value Map
+                'ExportUnits = 4
+                'Resolution = 1
+                'AllowMoveMeshNode = False
+                'SurfaceDeviation = 60
+                'NormalDeviation = 14
+                'MaxEdgeLength = 100
+                'AspectRatio = 40
+                'ExportFileStructure = 0
+                'OutputFileType = 0
+                'ExportColor = True
 
-            If oSTLTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+                If oSTLTranslator.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
 
-                oOptions.Value("ExportUnits") = 5
-                ' Set output file type:
-                '   0 - binary,  1 - ASCII
-                oOptions.Value("OutputFileType") = 0
-                ' Set accuracy.
-                '   2 = Low,  1 = Medium,  0 = High
-                oOptions.Value("Resolution") = 0
-                'oOptions.Value("SurfaceDeviation") = 0.005
-                'oOptions.Value("NormalDeviation") = 10
-                'oOptions.Value("MaxEdgeLength") = 100
-                'oOptions.Value("AspectRatio") = 21.5
-                oOptions.Value("ExportColor") = True
+                    oOptions.Value("ExportUnits") = 5
+                    ' Set output file type:
+                    '   0 - binary,  1 - ASCII
+                    oOptions.Value("OutputFileType") = 0
+                    ' Set accuracy.
+                    '   2 = Low,  1 = Medium,  0 = High
+                    oOptions.Value("Resolution") = 0
+                    'oOptions.Value("SurfaceDeviation") = 0.005
+                    'oOptions.Value("NormalDeviation") = 10
+                    'oOptions.Value("MaxEdgeLength") = 100
+                    'oOptions.Value("AspectRatio") = 21.5
+                    oOptions.Value("ExportColor") = True
 
-                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
 
-                Dim oData As DataMedium
-                oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + "_R" + oRev + ".stl"
+                    Dim oData As DataMedium
+                    oData = inventorApp.TransientObjects.CreateDataMedium
+                    oData.FileName = NewPath + "_R" + oRev + ".stl"
 
-                Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
-                UpdateStatusBar("File saved as STL file")
-                AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
+                    UpdateStatusBar("File saved as STL file")
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
 
-                ' The various names and values for the settings is described below.
-                'ExportUnits
-                '     2 - Inch
-                '     3 - Foot
-                '     4 - Centimeter
-                '     5 - Millimeter
-                '     6 - Meter
-                '     7 - Micron
-                '
-                'AllowMoveMeshNode (True Or False)
-                '
-                'ExportColor (True or False)  (Only used for Binary output file type)
-                '
-                'OutputFileType
-                '     0 - Binary
-                '     1 - ASCII
-                'ExportFileStructure (Only used for assemblies)
-                '     0 - One file
-                '     1 - One file per instance.
-                '
-                'Resolution
-                '     0 - High
-                '     1 - Medium
-                '     2 - Low
-                '     3 - Custom
-                '
-                '*** The following are only used for “Custom” resolution
-                '
-                'SurfaceDeviation
-                '     0 to 100 for a percentage between values computed
-                '     based on the size of the model.
-                'NormalDeviation
-                '     0 to 40 to indicate values 1 to 41
-                'MaxEdgeLength
-                '     0 to 100 for a percentage between values computed
-                '     based on the size of the model.
-                'AspectRatio
-                '     0 to 40 for values between 1.5 to 21.5 in 0.5 increments
+                    ' The various names and values for the settings is described below.
+                    'ExportUnits
+                    '     2 - Inch
+                    '     3 - Foot
+                    '     4 - Centimeter
+                    '     5 - Millimeter
+                    '     6 - Meter
+                    '     7 - Micron
+                    '
+                    'AllowMoveMeshNode (True Or False)
+                    '
+                    'ExportColor (True or False)  (Only used for Binary output file type)
+                    '
+                    'OutputFileType
+                    '     0 - Binary
+                    '     1 - ASCII
+                    'ExportFileStructure (Only used for assemblies)
+                    '     0 - One file
+                    '     1 - One file per instance.
+                    '
+                    'Resolution
+                    '     0 - High
+                    '     1 - Medium
+                    '     2 - Low
+                    '     3 - Custom
+                    '
+                    '*** The following are only used for “Custom” resolution
+                    '
+                    'SurfaceDeviation
+                    '     0 to 100 for a percentage between values computed
+                    '     based on the size of the model.
+                    'NormalDeviation
+                    '     0 to 40 to indicate values 1 to 41
+                    'MaxEdgeLength
+                    '     0 to 100 for a percentage between values computed
+                    '     based on the size of the model.
+                    'AspectRatio
+                    '     0 to 40 for values between 1.5 to 21.5 in 0.5 increments
+                End If
+            Else
+                'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
             Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
             If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
@@ -888,8 +892,8 @@ Public Class iPropertiesForm
                     '   0 - binary,  1 - ASCII
                     oOptions.Value("OutputFileType") = 0
                     ' Set accuracy.
-                    '   2 = High,  1 = Medium,  0 = Low
-                    oOptions.Value("Resolution") = 2
+                    '   2 = Low,  1 = Medium,  0 = High
+                    oOptions.Value("Resolution") = 0
                     'oOptions.Value("SurfaceDeviation") = 0.005
                     'oOptions.Value("NormalDeviation") = 10
                     'oOptions.Value("MaxEdgeLength") = 100
@@ -1293,7 +1297,7 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
             ' Get the SAT translator Add-In.
             Dim oSATTrans As TranslatorAddIn
