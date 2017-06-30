@@ -788,8 +788,8 @@ Public Class iPropertiesForm
                 '   0 - binary,  1 - ASCII
                 oOptions.Value("OutputFileType") = 0
                 ' Set accuracy.
-                '   2 = High,  1 = Medium,  0 = Low
-                oOptions.Value("Resolution") = 2
+                '   2 = Low,  1 = Medium,  0 = High
+                oOptions.Value("Resolution") = 0
                 'oOptions.Value("SurfaceDeviation") = 0.005
                 'oOptions.Value("NormalDeviation") = 10
                 'oOptions.Value("MaxEdgeLength") = 100
@@ -1534,8 +1534,8 @@ Public Class iPropertiesForm
             oStructuredBOMView = oBOM.BOMViews.Item("Structured")
             Call oStructuredBOMView.Renumber(1, 1)
             oSht.Update()
-            'Dim oPartsList As PartsList = oDWG.ActiveSheet.PartsLists.Item(1)
-            'oPartsList.Sort("Item", True)
+            Dim oPartsList As PartsList = oDWG.ActiveSheet.PartsLists.Item(1)
+            oPartsList.Sort("ITEM", True)
         ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
             Dim doc = AddinGlobal.InventorApp.ActiveDocument
             Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
