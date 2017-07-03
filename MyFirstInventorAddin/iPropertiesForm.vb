@@ -648,53 +648,58 @@ Public Class iPropertiesForm
 
     Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            'GetNewFilePaths()
-            ' Get the STEP translator Add-In.
-            Dim oRev = iProperties.GetorSetStandardiProperty(
+            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "File Attach")
+            If CheckRef = vbYes Then
+                'GetNewFilePaths()
+                ' Get the STEP translator Add-In.
+                Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
-            Dim oSTEPTranslator As TranslatorAddIn
-            oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+                Dim oSTEPTranslator As TranslatorAddIn
+                oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
-            If oSTEPTranslator Is Nothing Then
-                MsgBox("Could not access STEP translator.")
-                Exit Sub
-            End If
+                If oSTEPTranslator Is Nothing Then
+                    MsgBox("Could not access STEP translator.")
+                    Exit Sub
+                End If
 
-            Dim oContext As TranslationContext
-            oContext = inventorApp.TransientObjects.CreateTranslationContext
-            Dim oOptions As NameValueMap
-            oOptions = inventorApp.TransientObjects.CreateNameValueMap
-            If oSTEPTranslator.HasSaveCopyAsOptions(inventorApp.ActiveDocument, oContext, oOptions) Then
-                ' Set application protocol.
-                ' 2 = AP 203 - Configuration Controlled Design
-                ' 3 = AP 214 - Automotive Design
-                oOptions.Value("ApplicationProtocolType") = 3
+                Dim oContext As TranslationContext
+                oContext = inventorApp.TransientObjects.CreateTranslationContext
+                Dim oOptions As NameValueMap
+                oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                If oSTEPTranslator.HasSaveCopyAsOptions(inventorApp.ActiveDocument, oContext, oOptions) Then
+                    ' Set application protocol.
+                    ' 2 = AP 203 - Configuration Controlled Design
+                    ' 3 = AP 214 - Automotive Design
+                    oOptions.Value("ApplicationProtocolType") = 3
 
-                ' Other options...
-                'oOptions.Value("Author") = ""
-                'oOptions.Value("Authorization") = ""
-                'oOptions.Value("Description") = ""
-                'oOptions.Value("Organization") = ""
+                    ' Other options...
+                    'oOptions.Value("Author") = ""
+                    'oOptions.Value("Authorization") = ""
+                    'oOptions.Value("Description") = ""
+                    'oOptions.Value("Organization") = ""
 
-                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
 
-                Dim oData As DataMedium
-                oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + "_R" + oRev + ".stp"
+                    Dim oData As DataMedium
+                    oData = inventorApp.TransientObjects.CreateDataMedium
+                    oData.FileName = NewPath + "_R" + oRev + ".stp"
 
-                Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
-                UpdateStatusBar("File saved as Step file")
+                    Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
+                    UpdateStatusBar("File saved as Step file")
 
-                AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
-                'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
-                'If AttachFile = vbYes Then
-                '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
-                '    UpdateStatusBar("File attached")
-                'Else
-                '    'Do Nothing
-                'End If
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                    'If AttachFile = vbYes Then
+                    '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                    '    UpdateStatusBar("File attached")
+                    'Else
+                    '    'Do Nothing
+                    'End If
+                End If
+            Else
+                'Do nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             'GetNewFilePaths()
@@ -747,7 +752,7 @@ Public Class iPropertiesForm
 
     Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            CheckRef = MsgBox("Have you checked and updated the revision number?", vbYesNo, "File Attach")
+            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "File Attach")
             If CheckRef = vbYes Then
                 ' Get the STL translator Add-In.
                 Dim oRev = iProperties.GetorSetStandardiProperty(
@@ -916,98 +921,103 @@ Public Class iPropertiesForm
 
     Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            'GetNewFilePaths()
-            Dim oRev = iProperties.GetorSetStandardiProperty(
+            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "File Attach")
+            If CheckRef = vbYes Then
+                'GetNewFilePaths()
+                Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
-            If Not inventorApp.SoftwareVersion.Major > 20 Then
-                inventorApp.StatusBarText = inventorApp.SoftwareVersion.Major
-                MessageBox.Show("3D PDF export not available in Inventor versions < 2017 release!")
-                Exit Sub
-            End If
-            ' Get the 3D PDF Add-In.
-            Dim oPDFAddIn As ApplicationAddIn
-            Dim oAddin As ApplicationAddIn
-            For Each oAddin In inventorApp.ApplicationAddIns
-                If oAddin.ClassIdString = "{3EE52B28-D6E0-4EA4-8AA6-C2A266DEBB88}" Then
-                    oPDFAddIn = oAddin
-                    Exit For
+                If Not inventorApp.SoftwareVersion.Major > 20 Then
+                    inventorApp.StatusBarText = inventorApp.SoftwareVersion.Major
+                    MessageBox.Show("3D PDF export not available in Inventor versions < 2017 release!")
+                    Exit Sub
                 End If
-            Next
+                ' Get the 3D PDF Add-In.
+                Dim oPDFAddIn As ApplicationAddIn
+                Dim oAddin As ApplicationAddIn
+                For Each oAddin In inventorApp.ApplicationAddIns
+                    If oAddin.ClassIdString = "{3EE52B28-D6E0-4EA4-8AA6-C2A266DEBB88}" Then
+                        oPDFAddIn = oAddin
+                        Exit For
+                    End If
+                Next
 
-            If oPDFAddIn Is Nothing Then
-                MsgBox("Inventor 3D PDF Addin not loaded.")
-                Exit Sub
-            End If
+                If oPDFAddIn Is Nothing Then
+                    MsgBox("Inventor 3D PDF Addin not loaded.")
+                    Exit Sub
+                End If
 
-            Dim oPDFConvertor3D = oPDFAddIn.Automation
+                Dim oPDFConvertor3D = oPDFAddIn.Automation
 
-            'Set a reference to the active document (the document to be published).
-            Dim oDocument As Document = inventorApp.ActiveDocument
+                'Set a reference to the active document (the document to be published).
+                Dim oDocument As Document = inventorApp.ActiveDocument
 
-            If oDocument.FileSaveCounter = 0 Then
-                MsgBox("You must save the document to continue...")
-                Return
-            End If
+                If oDocument.FileSaveCounter = 0 Then
+                    MsgBox("You must save the document to continue...")
+                    Return
+                End If
 
-            ' Create a NameValueMap objectfor all options...
-            Dim oOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
-            Dim STEPFileOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+                ' Create a NameValueMap objectfor all options...
+                Dim oOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+                Dim STEPFileOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
 
-            ' All Possible Options
-            ' Export file name and location...
-            oOptions.Value("FileOutputLocation") = NewPath + "_R" + oRev + ".pdf"
-            ' Export annotations?
-            oOptions.Value("ExportAnnotations") = 1
-            ' Export work features?
-            oOptions.Value("ExportWokFeatures") = 1
-            ' Attach STEP file to 3D PDF?
-            oOptions.Value("GenerateAndAttachSTEPFile") = True
-            ' What quality (high quality takes longer to export)
-            'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
-            oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
-            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
-            'oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
-            ' Limit export to entities in selected view representation(s)
-            oOptions.Value("LimitToEntitiesInDVRs") = True
-            ' Open the 3D PDF when export is complete?
-            oOptions.Value("ViewPDFWhenFinished") = False
+                ' All Possible Options
+                ' Export file name and location...
+                oOptions.Value("FileOutputLocation") = NewPath + "_R" + oRev + ".pdf"
+                ' Export annotations?
+                oOptions.Value("ExportAnnotations") = 1
+                ' Export work features?
+                oOptions.Value("ExportWokFeatures") = 1
+                ' Attach STEP file to 3D PDF?
+                oOptions.Value("GenerateAndAttachSTEPFile") = True
+                ' What quality (high quality takes longer to export)
+                'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
+                oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
+                'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
+                'oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
+                ' Limit export to entities in selected view representation(s)
+                oOptions.Value("LimitToEntitiesInDVRs") = True
+                ' Open the 3D PDF when export is complete?
+                oOptions.Value("ViewPDFWhenFinished") = False
 
-            ' Export all properties?
-            oOptions.Value("ExportAllProperties") = True
-            ' OR - Set the specific properties to export
-            '    Dim sProps(5) As String
-            '    sProps(0) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Title"
-            '    sProps(1) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Keywords"
-            '    sProps(2) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Comments"
-            '    sProps(3) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Description"
-            '    sProps(4) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Stock Number"
-            '    sProps(5) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Revision Number"
+                ' Export all properties?
+                oOptions.Value("ExportAllProperties") = True
+                ' OR - Set the specific properties to export
+                '    Dim sProps(5) As String
+                '    sProps(0) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Title"
+                '    sProps(1) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Keywords"
+                '    sProps(2) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Comments"
+                '    sProps(3) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Description"
+                '    sProps(4) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Stock Number"
+                '    sProps(5) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Revision Number"
 
-            'oOptions.Value("ExportProperties") = sProps
+                'oOptions.Value("ExportProperties") = sProps
 
-            ' Choose the export template based off the current document type
-            If oDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Part Template.pdf"
+                ' Choose the export template based off the current document type
+                If oDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                    oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Part Template.pdf"
+                Else
+                    oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Assembly Template.pdf"
+                End If
+
+                ' Define a file to attach to the exported 3D PDF - note here I have picked an Excel spreadsheet
+                ' You need to use the full path and filename - if it does not exist the file will not be attached.
+                Dim oAttachedFiles As String() = {"C:\FileToAttach.xlsx"}
+                oOptions.Value("AttachedFiles") = oAttachedFiles
+
+                ' Set the design view(s) to export - note here I am exporting only the active design view (view representation)
+                Dim sDesignViews(0) As String
+                sDesignViews(0) = oDocument.ComponentDefinition.RepresentationsManager.ActiveDesignViewRepresentation.Name
+                oOptions.Value("ExportDesignViewRepresentations") = sDesignViews
+
+                'Publish document.
+                Call oPDFConvertor3D.Publish(oDocument, oOptions)
+                UpdateStatusBar("File saved as 3D pdf file")
+                AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
             Else
-                oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Assembly Template.pdf"
+                'Do Nothing
             End If
-
-            ' Define a file to attach to the exported 3D PDF - note here I have picked an Excel spreadsheet
-            ' You need to use the full path and filename - if it does not exist the file will not be attached.
-            Dim oAttachedFiles As String() = {"C:\FileToAttach.xlsx"}
-            oOptions.Value("AttachedFiles") = oAttachedFiles
-
-            ' Set the design view(s) to export - note here I am exporting only the active design view (view representation)
-            Dim sDesignViews(0) As String
-            sDesignViews(0) = oDocument.ComponentDefinition.RepresentationsManager.ActiveDesignViewRepresentation.Name
-            oOptions.Value("ExportDesignViewRepresentations") = sDesignViews
-
-            'Publish document.
-            Call oPDFConvertor3D.Publish(oDocument, oOptions)
-            UpdateStatusBar("File saved as 3D pdf file")
-            AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
         Else
             'GetNewFilePaths()
             ' Get the PDF translator Add-In.
@@ -1270,30 +1280,35 @@ Public Class iPropertiesForm
 
     Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            Dim oRev = iProperties.GetorSetStandardiProperty(
+            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "File Attach")
+            If CheckRef = vbYes Then
+                Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-            ' Get the SAT translator Add-In.
-            Dim oSATTrans As TranslatorAddIn
-            oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
-            If oSATTrans Is Nothing Then
-                MsgBox("Could not access SAT translator.")
-                Exit Sub
-            End If
-            Dim oContext As TranslationContext
-            oContext = inventorApp.TransientObjects.CreateTranslationContext
-            Dim oOptions As NameValueMap
-            oOptions = inventorApp.TransientObjects.CreateNameValueMap
-            If oSATTrans.HasSaveCopyAsOptions(inventorApp.ActiveDocument, oContext, oOptions) Then
-                oOptions.Value("ExportUnits") = 5
-                oOptions.Value("IncludeSketches") = 0
-                oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
-                Dim oData As DataMedium
-                oData = inventorApp.TransientObjects.CreateDataMedium
-                oData.FileName = NewPath + "_R" + oRev + ".sat"
-                Call oSATTrans.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
-                UpdateStatusBar("File saved as Sat file")
-                AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                ' Get the SAT translator Add-In.
+                Dim oSATTrans As TranslatorAddIn
+                oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
+                If oSATTrans Is Nothing Then
+                    MsgBox("Could not access SAT translator.")
+                    Exit Sub
+                End If
+                Dim oContext As TranslationContext
+                oContext = inventorApp.TransientObjects.CreateTranslationContext
+                Dim oOptions As NameValueMap
+                oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                If oSATTrans.HasSaveCopyAsOptions(inventorApp.ActiveDocument, oContext, oOptions) Then
+                    oOptions.Value("ExportUnits") = 5
+                    oOptions.Value("IncludeSketches") = 0
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+                    Dim oData As DataMedium
+                    oData = inventorApp.TransientObjects.CreateDataMedium
+                    oData.FileName = NewPath + "_R" + oRev + ".sat"
+                    Call oSATTrans.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
+                    UpdateStatusBar("File saved as Sat file")
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                End If
+            Else
+                'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             Dim oRev = iProperties.GetorSetStandardiProperty(
