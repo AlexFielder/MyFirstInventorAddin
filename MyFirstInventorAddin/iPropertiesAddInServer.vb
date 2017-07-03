@@ -543,6 +543,13 @@ Namespace iPropertiesController
                     Else
                         myiPropsForm.tbEngineer.Text = stdEngineer
                     End If
+
+                    Dim drawingRev = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    If Not modelrev = drawingRev Then
+                        modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "")
+                    End If
+
                     If Not iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = stdRevNumber Then
                         myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                     Else
