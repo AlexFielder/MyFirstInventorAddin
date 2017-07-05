@@ -706,14 +706,15 @@ Public Class iPropertiesForm
                 'Do nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
-            If CheckRef = vbYes Then
+            If iProperties.GetorSetStandardiProperty(
+                                oDocu,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                            RefDoc,
+                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -756,8 +757,60 @@ Public Class iPropertiesForm
                     End If
                 End If
             Else
-                'Do Nothing
+                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                If CheckRef = vbYes Then
+                    oDocu = inventorApp.ActiveDocument
+                    oDocu.Save2(True)
+                    'GetNewFilePaths()
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                RefDoc,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                        UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
+                    Else
+
+                        ' Get the STEP translator Add-In.
+                        Dim oSTEPTranslator As TranslatorAddIn
+                        oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                        If oSTEPTranslator Is Nothing Then
+                            MsgBox("Could not access STEP translator.")
+                            Exit Sub
+                        End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                        If oSTEPTranslator.HasSaveCopyAsOptions(RefDoc, oContext, oOptions) Then
+                            ' Set application protocol.
+                            ' 2 = AP 203 - Configuration Controlled Design
+                            ' 3 = AP 214 - Automotive Design
+                            oOptions.Value("ApplicationProtocolType") = 3
+
+                            ' Other options...
+                            'oOptions.Value("Author") = ""
+                            'oOptions.Value("Authorization") = ""
+                            'oOptions.Value("Description") = ""
+                            'oOptions.Value("Organization") = ""
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = RefNewPath + "_R" + oRev + ".stp"
+
+                            Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("Part/Assy file saved as Step file")
+                            AttachRefFile(RefDoc, oData.FileName)
+                        End If
+                    End If
+                Else
+                    'Do Nothing
+                End If
             End If
+
         End If
     End Sub
 
@@ -869,14 +922,15 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
-            If CheckRef = vbYes Then
+            If iProperties.GetorSetStandardiProperty(
+                                oDocu,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
-                'GetNewFilePaths()
-                Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    'GetNewFilePaths()
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                    RefDoc,
+                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -935,7 +989,74 @@ Public Class iPropertiesForm
                     End If
                 End If
             Else
-                'Do Nothing
+                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                If CheckRef = vbYes Then
+                    oDocu = inventorApp.ActiveDocument
+                    oDocu.Save2(True)
+                    'GetNewFilePaths()
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                    RefDoc,
+                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                        UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
+                    Else
+                        ' Get the STL translator Add-In.
+                        Dim oSTLTranslator As TranslatorAddIn
+                        oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
+                        If oSTLTranslator Is Nothing Then
+                            MsgBox("Could not access STL translator.")
+                            Exit Sub
+                        End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+
+                        '    Save Copy As Options:
+                        '       Name Value Map:
+                        '               ExportUnits = 4
+                        '               Resolution = 1
+                        '               AllowMoveMeshNode = False
+                        '               SurfaceDeviation = 60
+                        '               NormalDeviation = 14
+                        '               MaxEdgeLength = 100
+                        '               AspectRatio = 40
+                        '               ExportFileStructure = 0
+                        '               OutputFileType = 0
+                        '               ExportColor = True
+
+                        If oSTLTranslator.HasSaveCopyAsOptions(RefDoc, oContext, oOptions) Then
+
+                            oOptions.Value("ExportUnits") = 5
+                            ' Set output file type:
+                            '   0 - binary,  1 - ASCII
+                            oOptions.Value("OutputFileType") = 0
+                            ' Set accuracy.
+                            '   2 = Low,  1 = Medium,  0 = High
+                            oOptions.Value("Resolution") = 0
+                            'oOptions.Value("SurfaceDeviation") = 0.005
+                            'oOptions.Value("NormalDeviation") = 10
+                            'oOptions.Value("MaxEdgeLength") = 100
+                            'oOptions.Value("AspectRatio") = 21.5
+                            oOptions.Value("ExportColor") = True
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = RefNewPath + "_R" + oRev + ".stl"
+
+                            Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("Part/Assy file saved as STL file")
+                            AttachRefFile(RefDoc, oData.FileName)
+                        End If
+                    End If
+                Else
+                    'Do Nothing
+                End If
             End If
         End If
     End Sub
@@ -1043,8 +1164,9 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         Else
-            CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
-            If CheckRef = vbYes Then
+            If iProperties.GetorSetStandardiProperty(
+                                oDocu,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
@@ -1095,7 +1217,60 @@ Public Class iPropertiesForm
                 UpdateStatusBar("File saved as pdf file")
                 AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
             Else
-                'Do Nothing
+                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                If CheckRef = vbYes Then
+                    oDocu = inventorApp.ActiveDocument
+                    oDocu.Save2(True)
+                    'GetNewFilePaths()
+                    ' Get the PDF translator Add-In.
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                        inventorApp.ActiveDocument,
+                                        PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                    Dim PDFAddIn As TranslatorAddIn
+                    PDFAddIn = inventorApp.ApplicationAddIns.ItemById("{0AC6FD96-2F4D-42CE-8BE0-8AEA580399E4}")
+
+                    'Set a reference to the active document (the document to be published).
+                    Dim oDocument As Document
+                    oDocument = inventorApp.ActiveDocument
+
+                    Dim oContext As TranslationContext
+                    oContext = inventorApp.TransientObjects.CreateTranslationContext
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                    ' Create a NameValueMap object
+                    Dim oOptions As NameValueMap
+                    oOptions = inventorApp.TransientObjects.CreateNameValueMap
+
+                    ' Create a DataMedium object
+                    Dim oDataMedium As DataMedium
+                    oDataMedium = inventorApp.TransientObjects.CreateDataMedium
+
+                    ' Check whether the translator has 'SaveCopyAs' options
+                    If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
+
+                        ' Options for drawings...
+
+                        oOptions.Value("All_Color_AS_Black") = 1
+
+                        'oOptions.Value("Remove_Line_Weights") = 0
+                        'oOptions.Value("Vector_Resolution") = 400
+                        'oOptions.Value("Sheet_Range") = kPrintAllSheets
+                        'oOptions.Value("Custom_Begin_Sheet") = 2
+                        'oOptions.Value("Custom_End_Sheet") = 4
+
+                    End If
+
+                    'Set the destination file name
+                    oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
+
+                    'Publish document.
+                    Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
+                    UpdateStatusBar("File saved as pdf file")
+                    AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                Else
+                    'Do Nothing
+                End If
             End If
         End If
     End Sub
@@ -1345,8 +1520,9 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
-            If CheckRef = vbYes Then
+            If iProperties.GetorSetStandardiProperty(
+                                oDocu,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 Dim oRev = iProperties.GetorSetStandardiProperty(
@@ -1375,7 +1551,38 @@ Public Class iPropertiesForm
                     AttachRefFile(RefDoc, oData.FileName)
                 End If
             Else
-                'Do Nothing
+                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                If CheckRef = vbYes Then
+                    oDocu = inventorApp.ActiveDocument
+                    oDocu.Save2(True)
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                    RefDoc,
+                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    ' Get the SAT translator Add-In.
+                    Dim oSATTrans As TranslatorAddIn
+                    oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
+                    If oSATTrans Is Nothing Then
+                        MsgBox("Could not access SAT translator.")
+                        Exit Sub
+                    End If
+                    Dim oContext As TranslationContext
+                    oContext = inventorApp.TransientObjects.CreateTranslationContext
+                    Dim oOptions As NameValueMap
+                    oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                    If oSATTrans.HasSaveCopyAsOptions(RefDoc, oContext, oOptions) Then
+                        oOptions.Value("ExportUnits") = 5
+                        oOptions.Value("IncludeSketches") = 0
+                        oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+                        Dim oData As DataMedium
+                        oData = inventorApp.TransientObjects.CreateDataMedium
+                        oData.FileName = RefNewPath + "_R" + oRev + ".sat"
+                        Call oSATTrans.SaveCopyAs(RefDoc, oContext, oOptions, oData)
+                        UpdateStatusBar("Part/Assy file saved as Sat file")
+                        AttachRefFile(RefDoc, oData.FileName)
+                    End If
+                Else
+                    'Do Nothing
+                End If
             End If
         End If
 
