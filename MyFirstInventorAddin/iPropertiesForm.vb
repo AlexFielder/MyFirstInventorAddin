@@ -706,9 +706,9 @@ Public Class iPropertiesForm
                 'Do nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            If iProperties.GetorSetStandardiProperty(
+            If Not iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
@@ -922,9 +922,9 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            If iProperties.GetorSetStandardiProperty(
+            If Not iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
@@ -1164,9 +1164,9 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         Else
-            If iProperties.GetorSetStandardiProperty(
+            If Not iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
@@ -1520,9 +1520,9 @@ Public Class iPropertiesForm
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            If iProperties.GetorSetStandardiProperty(
+            If Not iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 Dim oRev = iProperties.GetorSetStandardiProperty(
