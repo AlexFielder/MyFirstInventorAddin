@@ -707,7 +707,7 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             If iProperties.GetorSetStandardiProperty(
-                                oDocu,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
@@ -923,12 +923,12 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             If iProperties.GetorSetStandardiProperty(
-                                oDocu,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
-                    'GetNewFilePaths()
-                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                'GetNewFilePaths()
+                Dim oRev = iProperties.GetorSetStandardiProperty(
                                     RefDoc,
                                     PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
@@ -1165,7 +1165,7 @@ Public Class iPropertiesForm
             End If
         Else
             If iProperties.GetorSetStandardiProperty(
-                                oDocu,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
@@ -1521,7 +1521,7 @@ Public Class iPropertiesForm
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
             If iProperties.GetorSetStandardiProperty(
-                                oDocu,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "").Length > 0 Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
