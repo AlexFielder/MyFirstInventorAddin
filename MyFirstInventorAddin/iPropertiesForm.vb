@@ -22,20 +22,6 @@ Public Class iPropertiesForm
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
-
-    ''' <summary>
-    ''' Copied from this thread: https://stackoverflow.com/questions/9489671/check-for-empty-textbox-controls-in-vb-net/9489822#9489822
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Private Sub TextBox_Validating(sender As System.Object, e As System.ComponentModel.CancelEventArgs) Handles tbEngineer.Validating, tbRevNo.Validating, tbDescription.Validating, tbStockNumber.Validating
-        Dim ctl As Control = CType(sender, Control)
-        If ctl.Text = "" Then
-            e.Cancel = True
-            ErrorProvider1.SetError(ctl, "Please enter a value")
-        End If
-    End Sub
-
     Public Sub GetNewFilePaths()
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
@@ -91,12 +77,7 @@ Public Class iPropertiesForm
         Try
             log.Debug("Loading iProperties Form")
             InitializeComponent()
-            'validating code provided by: https://stackoverflow.com/a/9489822/572634
-            For Each c As Control In Me.Controls
-                If TypeOf (c) Is System.Windows.Forms.TextBox Or TypeOf (c) Is ComboBox Then
-                    AddHandler c.Validating, AddressOf Me.TextBox_Validating
-                End If
-            Next
+
             Me.inventorApp = inventorApp
             Me.value = addinCLS
             Me.localWindow = localWindow
@@ -1464,6 +1445,7 @@ Public Class iPropertiesForm
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
+            tbDescription.SelectionStart = 0
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
         End If
     End Sub
@@ -1475,6 +1457,7 @@ Public Class iPropertiesForm
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyChar = Chr(9) Then
+                    tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
@@ -1484,6 +1467,7 @@ Public Class iPropertiesForm
                 End If
             Else
                 If e.KeyChar = Chr(9) Then
+                    tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
 
                 ElseIf e.KeyChar = Chr(13) Then
@@ -1492,6 +1476,7 @@ Public Class iPropertiesForm
             End If
         Else
             If e.KeyChar = Chr(9) Then
+                tbDescription.SelectionStart = 0
                 tbStockNumber.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
@@ -1740,7 +1725,7 @@ Public Class iPropertiesForm
             ElseIf e.KeyChar = Chr(13) Then
                 tbRevNo_Leave(sender, e)
             End If
-        ElseIf TypeOf (inventorApp.ActiveDocument) Is drawingDocument Then
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
             If e.KeyChar = Chr(9) Then
                 tbRevNo_Leave(sender, e)
                 tbEngineer.Focus()
