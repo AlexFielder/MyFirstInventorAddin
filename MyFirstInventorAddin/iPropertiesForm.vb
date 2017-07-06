@@ -131,6 +131,36 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub UpdateAllCommon()
+        'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+        inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+        'try these and see if they fire or not!
+        tbPartNumber_Leave(sender, e)
+        tbDescription_Leave(sender, e)
+        tbStockNumber_Leave(sender, e)
+        tbEngineer_Leave(sender, e)
+        tbDrawnBy_Leave(sender, e)
+        tbRevNo_Leave(sender, e)
+        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+        Dim kgMass As Decimal = myMass / 1000
+        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+        tbMass.Text = myMass2 & " kg"
+        log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+
+        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+        tbDensity.Text = myDensity2 & " g/cm^3"
+        log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+
+        Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+        UpdateStatusBar("iProperties updated")
+        'End If
+        ErrorProvider1.Clear()
+        If Me.ValidateChildren() Then
+            ' continue on
+        End If
+    End Sub
+
     Private Sub CheckForDefaultAndUpdate(ByVal proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, ByVal propname As String, ByVal newPropValue As String)
         Dim iProp As String = String.Empty
         If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
@@ -226,32 +256,18 @@ Public Class iPropertiesForm
         'Next
 
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-            inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-            'try these and see if they fire or not!
-            tbPartNumber_Leave(sender, e)
-            tbDescription_Leave(sender, e)
-            tbStockNumber_Leave(sender, e)
-            tbEngineer_Leave(sender, e)
-            tbDrawnBy_Leave(sender, e)
-            tbRevNo_Leave(sender, e)
-            Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-            Dim kgMass As Decimal = myMass / 1000
-            Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-            tbMass.Text = myMass2 & " kg"
-            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
-
-            Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-            Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-            tbDensity.Text = myDensity2 & " g/cm^3"
-            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
-
-            Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-            UpdateStatusBar("iProperties updated")
-            'End If
-            ErrorProvider1.Clear()
-            If Me.ValidateChildren() Then
-                ' continue on
+            If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+                Dim assydoc As Document = Nothing
+                assydoc = inventorApp.ActiveDocument
+                If assydoc.SelectSet.Count = 1 Then
+                    Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                    UpdateAllCommon()
+                    assydoc.SelectSet.Select(compOcc)
+                Else
+                    UpdateAllCommon()
+                End If
+            Else
+                UpdateAllCommon()
             End If
         End If
     End Sub
@@ -1601,7 +1617,7 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub tbDescription_Enter(sender As Object, e As EventArgs) Handles tbDescription.Enter
-        If tbDescription.Text = "description" Then
+        If tbDescription.Text = "Description" Then
             tbDescription.Clear()
         End If
     End Sub
