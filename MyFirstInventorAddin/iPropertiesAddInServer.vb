@@ -168,6 +168,25 @@ Namespace iPropertiesController
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                         UpdateFormTextBoxColours()
                     End If
+                ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
+                    Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                    If AssyDoc.SelectSet.Count = 1 Then
+                        Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                        DocumentToPulliPropValuesFrom = compOcc.Definition.Document
+                        If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                            DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                        ElseIf Not DocumentToPulliPropValuesFrom Is Nothing Then
+                            SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                            UpdateFormTextBoxColours()
+                        End If
+                    Else
+                        If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                            DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                        ElseIf Not DocumentToPulliPropValuesFrom Is Nothing Then
+                            SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                            UpdateFormTextBoxColours()
+                        End If
+                    End If
                 Else
                     If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
@@ -638,7 +657,6 @@ Namespace iPropertiesController
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                     myiPropsForm.Label10.Text = "Checked In"
                     myiPropsForm.PictureBox1.Show()
