@@ -294,7 +294,12 @@ Namespace iPropertiesController
                                 UpdateDisplayediProperties(AssyDoc)
                             End If
                         ElseIf AssyDoc.SelectSet.Count = 0 Then
-
+                            If AddinGlobal.InventorApp.ActiveEditDocument Is Nothing Then
+                                AssyDoc = AddinGlobal.InventorApp.ActiveDocument
+                            Else
+                                AssyDoc = AddinGlobal.InventorApp.ActiveEditDocument
+                            End If
+                            ShowOccurrenceProperties(AssyDoc)
                             If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
                                 myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                                 myiPropsForm.Label10.Text = "Checked In"
@@ -318,7 +323,6 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.ReadOnly = False
                                 myiPropsForm.tbRevNo.ReadOnly = False
                             End If
-
                             UpdateDisplayediProperties(AssyDoc)
                             UpdateFormTextBoxColours()
                         End If
