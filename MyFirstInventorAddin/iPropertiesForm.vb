@@ -1747,7 +1747,7 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub tbDescription_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDescription.MouseClick
-        If tbDescription.Text = "description" Then
+        If tbDescription.Text = "Description" Then
             tbDescription.Clear()
         End If
     End Sub
