@@ -254,7 +254,7 @@ Namespace iPropertiesController
         Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                    If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                         Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                         If AssyDoc.SelectSet.Count = 1 Then
                             UpdateFormTextBoxColours()
@@ -326,7 +326,7 @@ Namespace iPropertiesController
                             UpdateDisplayediProperties(AssyDoc)
                             UpdateFormTextBoxColours()
                         End If
-                    ElseIf (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
+                    ElseIf (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
                         UpdateFormTextBoxColours()
                         Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
                         If PartDoc.SelectSet.Count = 1 Then
