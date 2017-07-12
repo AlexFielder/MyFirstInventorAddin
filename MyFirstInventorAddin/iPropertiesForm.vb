@@ -107,6 +107,10 @@ Public Class iPropertiesForm
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
+            'If tbPartNumber.Text = "" Then
+            '    tbPartNumber.Text = "Part Number"
+            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+            'End If
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
         End If
@@ -214,6 +218,10 @@ Public Class iPropertiesForm
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
+            'If tbStockNumber.Text = "" Then
+            '    tbStockNumber.Text = "Stock Number"
+            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+            'End If
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
@@ -221,6 +229,10 @@ Public Class iPropertiesForm
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
+            'If tbEngineer.Text = "" Then
+            '    tbEngineer.Text = "Engineer"
+            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+            'End If
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
         End If
@@ -1444,6 +1456,10 @@ Public Class iPropertiesForm
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
+            'If tbDescription.Text = "" Then
+            '    tbDescription.Text = "Description"
+            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            'End If
             tbDescription.ForeColor = Drawing.Color.Black
             tbDescription.SelectionStart = 0
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
