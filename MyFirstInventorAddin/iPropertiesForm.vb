@@ -1833,6 +1833,15 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub btCopyPN_Click(sender As Object, e As EventArgs) Handles btCopyPN.Click
+        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If tbPartNumber.Text.Length > 0 Then
+                tbStockNumber.Text = tbPartNumber.Text
+                tbStockNumber_Leave(sender, e)
+            End If
+        End If
+    End Sub
+
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
     '    If RefDoc.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
     '        inventorApp.CommandManager.ControlDefinitions.Item("AssemblyGlobalUpdateCmd").Execute()

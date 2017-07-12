@@ -495,6 +495,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbDensity.Hide()
                     myiPropsForm.Label3.Hide()
                     myiPropsForm.tbStockNumber.Hide()
+                    myiPropsForm.btCopyPN.Hide()
 
                     myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,

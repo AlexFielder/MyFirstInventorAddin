@@ -66,6 +66,7 @@ Partial Class iPropertiesForm
         Me.tbRevNo = New System.Windows.Forms.TextBox()
         Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
         Me.btReNum = New System.Windows.Forms.Button()
+        Me.btCopyPN = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -355,7 +356,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(97, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v9.04"
+        Me.Label13.Text = "iProperties Controller v9.10"
         '
         'tbDrawnBy
         '
@@ -441,6 +442,15 @@ Partial Class iPropertiesForm
         Me.btReNum.Text = "BoM #"
         Me.btReNum.UseVisualStyleBackColor = True
         '
+        'btCopyPN
+        '
+        Me.btCopyPN.Location = New System.Drawing.Point(192, 55)
+        Me.btCopyPN.Name = "btCopyPN"
+        Me.btCopyPN.Size = New System.Drawing.Size(87, 23)
+        Me.btCopyPN.TabIndex = 328
+        Me.btCopyPN.Text = "Copy Part No."
+        Me.btCopyPN.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -448,6 +458,8 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(282, 296)
+        Me.Controls.Add(Me.Label8)
+        Me.Controls.Add(Me.btCopyPN)
         Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.btReNum)
         Me.Controls.Add(Me.tbRevNo)
@@ -474,7 +486,6 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbEngineer)
-        Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
@@ -543,4 +554,5 @@ Partial Class iPropertiesForm
     Friend WithEvents tbRevNo As Windows.Forms.TextBox
     Friend WithEvents ErrorProvider1 As Windows.Forms.ErrorProvider
     Friend WithEvents btReNum As Windows.Forms.Button
+    Friend WithEvents btCopyPN As Windows.Forms.Button
 End Class
