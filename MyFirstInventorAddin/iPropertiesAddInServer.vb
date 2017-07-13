@@ -599,6 +599,7 @@ Namespace iPropertiesController
                     myiPropsForm.btShtMaterial.Hide()
                     myiPropsForm.btShtScale.Hide()
                     myiPropsForm.ModelFileLocation.Hide()
+                    myiPropsForm.btCopyPN.Show()
 
                     If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "") = stdStockNumber Then
                         myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
