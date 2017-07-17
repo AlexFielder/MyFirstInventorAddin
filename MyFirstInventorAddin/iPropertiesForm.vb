@@ -1717,7 +1717,7 @@ Public Class iPropertiesForm
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyChar = Chr(9) Then
                     tbRevNo_Leave(sender, e)
-                    tbStockNumber.Focus()
+                    btUpdateAll.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
                 ElseIf e.KeyChar = Chr(13) Then
@@ -1727,7 +1727,7 @@ Public Class iPropertiesForm
             Else
                 If e.KeyChar = Chr(9) Then
                     tbRevNo_Leave(sender, e)
-                    tbStockNumber.Focus()
+                    btUpdateAll.Focus()
 
                 ElseIf e.KeyChar = Chr(13) Then
                     tbRevNo_Leave(sender, e)
@@ -1736,7 +1736,7 @@ Public Class iPropertiesForm
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If e.KeyChar = Chr(9) Then
                 tbRevNo_Leave(sender, e)
-                tbStockNumber.Focus()
+                btUpdateAll.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
                 tbRevNo_Leave(sender, e)
@@ -1744,7 +1744,7 @@ Public Class iPropertiesForm
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
             If e.KeyChar = Chr(9) Then
                 tbRevNo_Leave(sender, e)
-                tbEngineer.Focus()
+                btUpdateAll.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
                 tbRevNo_Leave(sender, e)
