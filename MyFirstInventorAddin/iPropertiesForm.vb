@@ -216,6 +216,15 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
+        Dim insertText = symbol
+        Dim insertPos As Integer = textbox.SelectionStart
+
+        textbox.Text = textbox.Text.Insert(insertPos, insertText)
+        textbox.Focus()
+        textbox.Select(insertPos + insertText.Length, 0)
+    End Sub
+
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             'If tbStockNumber.Text = "" Then
@@ -589,62 +598,38 @@ Public Class iPropertiesForm
         Return Nothing
     End Function
 
-    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
-        Dim insertText = "Ø"
-        Dim insertPos As Integer = tbEngineer.SelectionStart
-        Dim focusPoint = insertPos + insertText.Length
-        If tbEngineer.Text = "Engineer" Then
-            tbEngineer.Text = insertText
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        Else
-            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDiaEng_Click(sender As Object, e As EventArgs) Handles btDiaEng.Click
+        'Dim insertText = "Ø"
+        'Dim insertPos As Integer = tbEngineer.SelectionStart
+        'Dim focusPoint = insertPos + insertText.Length
+        'If tbEngineer.Text = "Engineer" Then
+        '    tbEngineer.Text = insertText
+        '    tbEngineer.Focus()
+        '    tbEngineer.Select(insertPos + insertText.Length, 0)
+        'Else
+        '    tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+        '    tbEngineer.Focus()
+        '    tbEngineer.Select(insertPos + insertText.Length, 0)
+        'End If
+        SendSymbol(tbEngineer, "Ø")
     End Sub
 
-    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
-        Dim insertText = "°"
-        Dim insertPos As Integer = tbEngineer.SelectionStart
-        If tbEngineer.Text = "Engineer" Then
-            tbEngineer.Text = insertText
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        Else
-            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDegEng_Click(sender As Object, e As EventArgs) Handles btDegEng.Click
+        'Dim insertText = "°"
+        'Dim insertPos As Integer = tbEngineer.SelectionStart
+        'If tbEngineer.Text = "Engineer" Then
+        '    tbEngineer.Text = insertText
+        '    tbEngineer.Focus()
+        '    tbEngineer.Select(insertPos + insertText.Length, 0)
+        'Else
+        '    tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
+        '    tbEngineer.Focus()
+        '    tbEngineer.Select(insertPos + insertText.Length, 0)
+        'End If
+        SendSymbol(tbEngineer, "°")
     End Sub
 
-    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
-        Dim insertText = "°"
-        Dim insertPos As Integer = tbDescription.SelectionStart
-        If tbDescription.Text = "Description" Then
-            tbDescription.Text = insertText
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        Else
-            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        End If
-    End Sub
 
-    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
-        Dim insertText = "Ø"
-        Dim insertPos As Integer = tbDescription.SelectionStart
-        If tbDescription.Text = "Description" Then
-            tbDescription.Text = insertText
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        Else
-            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        End If
-    End Sub
 
     Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
         AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
@@ -1840,6 +1825,37 @@ Public Class iPropertiesForm
                 tbStockNumber_Leave(sender, e)
             End If
         End If
+    End Sub
+
+    Private Sub btDiaDes_Click(sender As Object, e As EventArgs) Handles btDiaDes.Click
+        'Dim insertText = "Ø"
+        'Dim insertPos As Integer = tbDescription.SelectionStart
+        'Dim focusPoint = insertPos + insertText.Length
+        'If tbDescription.Text = "Description" Then
+        '    tbDescription.Text = insertText
+        '    tbDescription.Focus()
+        '    tbDescription.Select(insertPos + insertText.Length, 0)
+        'Else
+        '    tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+        '    tbDescription.Focus()
+        '    tbDescription.Select(insertPos + insertText.Length, 0)
+        'End If
+        SendSymbol(tbDescription, "Ø")
+    End Sub
+
+    Private Sub btDegDes_Click(sender As Object, e As EventArgs) Handles btDegDes.Click
+        'Dim insertText = "°"
+        'Dim insertPos As Integer = tbDescription.SelectionStart
+        'If tbDescription.Text = "Description" Then
+        '    tbDescription.Text = insertText
+        '    tbDescription.Focus()
+        '    tbDescription.Select(insertPos + insertText.Length, 0)
+        'Else
+        '    tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
+        '    tbDescription.Focus()
+        '    tbDescription.Select(insertPos + insertText.Length, 0)
+        'End If
+        SendSymbol(tbDescription, "°")
     End Sub
 
     'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
