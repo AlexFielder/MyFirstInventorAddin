@@ -4,18 +4,6 @@ Imports iPropertiesController.iPropertiesController
 Imports log4net
 
 Public Class iPropertiesForm
-
-    'Dim rs As New Resizer
-
-    'Private Sub iPropertiesForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    '    rs.FindAllControls(Me)
-
-    'End Sub
-
-    'Private Sub iPropertiesForm_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-    '    rs.ResizeAllControls(Me)
-    'End Sub
-
     Private inventorApp As Inventor.Application
     Private localWindow As DockableWindow
     Private value As String
@@ -37,12 +25,6 @@ Public Class iPropertiesForm
                         Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         Dim oSht As Sheet = oDrawDoc.ActiveSheet
                         Dim oView As DrawingView = Nothing
-                        'Dim RefDoc As Document = Nothing
-
-                        'For i As Integer = 1 To oSht.DrawingViews.Count
-                        '    oView = oSht.DrawingViews(i)
-                        '    Exit For
-                        'Next
 
                         For Each view As DrawingView In oSht.DrawingViews
                             oView = view
@@ -108,10 +90,6 @@ Public Class iPropertiesForm
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbPartNumber.Text = "" Then
-            '    tbPartNumber.Text = "Part Number"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-            'End If
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
         End If
@@ -228,10 +206,6 @@ Public Class iPropertiesForm
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbStockNumber.Text = "" Then
-            '    tbStockNumber.Text = "Stock Number"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
-            'End If
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
@@ -239,24 +213,12 @@ Public Class iPropertiesForm
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbEngineer.Text = "" Then
-            '    tbEngineer.Text = "Engineer"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-            'End If
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
         End If
     End Sub
 
     Private Sub btUpdateAll_Click(sender As Object, e As EventArgs) Handles btUpdateAll.Click
-
-        'need to decide whether or not to leave our textbox.leave events as they are or change all to be driven by
-        'clicking this button.
-        'If we do change, we need to error check the one time for activedocument and filename.length
-
-        'For Each TxtBox As Windows.Forms.TextBox In Me.Controls
-        '    ' this may or may not work because of the different types available within the controls collection.
-        'Next
 
         If Not inventorApp.ActiveDocument Is Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
@@ -299,9 +261,7 @@ Public Class iPropertiesForm
     Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.ValueChanged
         If Not iPropertiesAddInServer.CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
             If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = DateTimePicker1.Value Then
-                'If Not inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value Then
-                'should work but not implemented
-                'iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, DateTimePicker1.Value, "")
+
                 inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value
                 UpdateStatusBar("Creation date updated to " + DateTimePicker1.Value)
             End If
@@ -310,7 +270,7 @@ Public Class iPropertiesForm
 
     Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+
             tbDrawnBy.ForeColor = Drawing.Color.Black
 
             Dim iPropPartNum As String =
@@ -320,7 +280,7 @@ Public Class iPropertiesForm
                                                           "")
             log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropPartNum)
             UpdateStatusBar("Author updated to " + iPropPartNum)
-            'End If
+
         End If
     End Sub
 
@@ -449,9 +409,7 @@ Public Class iPropertiesForm
             oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
             i = 1
-            'For Each oSheet In oDrawDoc.Sheets
-            'i = i + 1
-            'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+
             oTitleBlock = oSheet.TitleBlock
             oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
             For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
@@ -460,7 +418,6 @@ Public Class iPropertiesForm
                         oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                 End Select
             Next
-            'Next
 
             If oPromptEntry = "<Material>" Then
                 oPromptText = "Engineer"
@@ -470,10 +427,6 @@ Public Class iPropertiesForm
                 oPromptText = oPromptEntry
             End If
 
-            'For i As Integer = 1 To oSht.DrawingViews.Count
-            '    oView = oSht.DrawingViews(i)
-            '    Exit For
-            'Next
 
             For Each view As DrawingView In oSht.DrawingViews
                 oView = view
@@ -529,9 +482,7 @@ Public Class iPropertiesForm
         oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
         i = 1
-        'For Each oSheet In oDrawDoc.Sheets
-        'i = i + 1
-        'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+
         oTitleBlock = oSheet.TitleBlock
         oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
         For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
@@ -540,7 +491,6 @@ Public Class iPropertiesForm
                     oPromptEntry = oTitleBlock.GetResultText(oTextBox)
             End Select
         Next
-        'Next
 
         If oPromptEntry = "<Scale>" Then
             oPromptText = "Scale from view"
@@ -552,8 +502,6 @@ Public Class iPropertiesForm
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
-        'Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
-        'Dim scaleString As String = scaleTextBox.Text
 
         For Each viewX As DrawingView In oSheet.DrawingViews
             If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
@@ -600,37 +548,20 @@ Public Class iPropertiesForm
     End Function
 
     Private Sub btDiaEng_Click(sender As Object, e As EventArgs) Handles btDiaEng.Click
-        'Dim insertText = "Ø"
-        'Dim insertPos As Integer = tbEngineer.SelectionStart
-        'Dim focusPoint = insertPos + insertText.Length
-        'If tbEngineer.Text = "Engineer" Then
-        '    tbEngineer.Text = insertText
-        '    tbEngineer.Focus()
-        '    tbEngineer.Select(insertPos + insertText.Length, 0)
-        'Else
-        '    tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-        '    tbEngineer.Focus()
-        '    tbEngineer.Select(insertPos + insertText.Length, 0)
-        'End If
         SendSymbol(tbEngineer, "Ø")
     End Sub
 
     Private Sub btDegEng_Click(sender As Object, e As EventArgs) Handles btDegEng.Click
-        'Dim insertText = "°"
-        'Dim insertPos As Integer = tbEngineer.SelectionStart
-        'If tbEngineer.Text = "Engineer" Then
-        '    tbEngineer.Text = insertText
-        '    tbEngineer.Focus()
-        '    tbEngineer.Select(insertPos + insertText.Length, 0)
-        'Else
-        '    tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-        '    tbEngineer.Focus()
-        '    tbEngineer.Select(insertPos + insertText.Length, 0)
-        'End If
         SendSymbol(tbEngineer, "°")
     End Sub
 
+    Private Sub btDiaDes_Click(sender As Object, e As EventArgs) Handles btDiaDes.Click
+        SendSymbol(tbDescription, "Ø")
+    End Sub
 
+    Private Sub btDegDes_Click(sender As Object, e As EventArgs) Handles btDegDes.Click
+        SendSymbol(tbDescription, "°")
+    End Sub
 
     Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
         AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
@@ -1445,12 +1376,12 @@ Public Class iPropertiesForm
             If ButtonPushed = True Then
                 tbDescription.ForeColor = Drawing.Color.Black
                 CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+                ButtonPushed = False
             Else
                 tbDescription.ForeColor = Drawing.Color.Black
                 tbDescription.SelectionStart = 0
                 CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             End If
-            ButtonPushed = False
         End If
     End Sub
 
@@ -1823,14 +1754,19 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub btDiaDes_Click(sender As Object, e As EventArgs) Handles btDiaDes.Click
+    Private Sub btDiaDes_MouseEnter(sender As Object, e As EventArgs) Handles btDiaDes.MouseEnter
         ButtonPushed = True
-        SendSymbol(tbDescription, "Ø")
     End Sub
 
-    Private Sub btDegDes_Click(sender As Object, e As EventArgs) Handles btDegDes.Click
-        ButtonPushed = True
-        SendSymbol(tbDescription, "°")
+    Private Sub btDiaDes_MouseLeave(sender As Object, e As EventArgs) Handles btDiaDes.MouseLeave
+        ButtonPushed = False
     End Sub
 
+    Private Sub btDegDes_MouseEnter(sender As Object, e As EventArgs) Handles btDegDes.MouseEnter
+        ButtonPushed = True
+    End Sub
+
+    Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
+        ButtonPushed = False
+    End Sub
 End Class
