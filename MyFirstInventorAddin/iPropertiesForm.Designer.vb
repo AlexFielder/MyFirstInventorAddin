@@ -338,7 +338,7 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v10.00"
+        Me.Label13.Text = "iProperties Controller v10.01"
         '
         'tbDrawnBy
         '
