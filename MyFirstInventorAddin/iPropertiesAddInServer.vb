@@ -498,8 +498,14 @@ Namespace iPropertiesController
                     myiPropsForm.btCopyPN.Hide()
 
                     myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
-                        DocumentToPulliPropValuesFrom,
-                        PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+                            DocumentToPulliPropValuesFrom,
+                            PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+
+                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                        myiPropsForm.tbDrawnBy.ReadOnly = True
+                    Else
+                        myiPropsForm.tbDrawnBy.ReadOnly = False
+                    End If
 
                     If iProperties.GetorSetStandardiProperty(
                         DocumentToPulliPropValuesFrom,
@@ -593,6 +599,7 @@ Namespace iPropertiesController
                     myiPropsForm.btShtMaterial.Hide()
                     myiPropsForm.btShtScale.Hide()
                     myiPropsForm.ModelFileLocation.Hide()
+                    myiPropsForm.btCopyPN.Show()
 
                     If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "") = stdStockNumber Then
                         myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")

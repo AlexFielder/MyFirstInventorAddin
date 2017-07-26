@@ -46,10 +46,8 @@ Partial Class iPropertiesForm
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btShtMaterial = New System.Windows.Forms.Button()
         Me.btShtScale = New System.Windows.Forms.Button()
-        Me.Button6 = New System.Windows.Forms.Button()
-        Me.Button7 = New System.Windows.Forms.Button()
-        Me.Button8 = New System.Windows.Forms.Button()
-        Me.Button9 = New System.Windows.Forms.Button()
+        Me.btDiaEng = New System.Windows.Forms.Button()
+        Me.btDegEng = New System.Windows.Forms.Button()
         Me.btExpStp = New System.Windows.Forms.Button()
         Me.btExpStl = New System.Windows.Forms.Button()
         Me.btExpPdf = New System.Windows.Forms.Button()
@@ -67,6 +65,8 @@ Partial Class iPropertiesForm
         Me.ErrorProvider1 = New System.Windows.Forms.ErrorProvider(Me.components)
         Me.btReNum = New System.Windows.Forms.Button()
         Me.btCopyPN = New System.Windows.Forms.Button()
+        Me.btDegDes = New System.Windows.Forms.Button()
+        Me.btDiaDes = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -276,41 +276,23 @@ Partial Class iPropertiesForm
         Me.btShtScale.Text = "Sht Scale"
         Me.btShtScale.UseVisualStyleBackColor = True
         '
-        'Button6
+        'btDiaEng
         '
-        Me.Button6.Location = New System.Drawing.Point(35, 78)
-        Me.Button6.Name = "Button6"
-        Me.Button6.Size = New System.Drawing.Size(16, 23)
-        Me.Button6.TabIndex = 307
-        Me.Button6.Text = "Ø"
-        Me.Button6.UseVisualStyleBackColor = True
+        Me.btDiaEng.Location = New System.Drawing.Point(35, 78)
+        Me.btDiaEng.Name = "btDiaEng"
+        Me.btDiaEng.Size = New System.Drawing.Size(16, 23)
+        Me.btDiaEng.TabIndex = 307
+        Me.btDiaEng.Text = "Ø"
+        Me.btDiaEng.UseVisualStyleBackColor = True
         '
-        'Button7
+        'btDegEng
         '
-        Me.Button7.Location = New System.Drawing.Point(52, 78)
-        Me.Button7.Name = "Button7"
-        Me.Button7.Size = New System.Drawing.Size(16, 23)
-        Me.Button7.TabIndex = 308
-        Me.Button7.Text = "°"
-        Me.Button7.UseVisualStyleBackColor = True
-        '
-        'Button8
-        '
-        Me.Button8.Location = New System.Drawing.Point(52, 32)
-        Me.Button8.Name = "Button8"
-        Me.Button8.Size = New System.Drawing.Size(16, 23)
-        Me.Button8.TabIndex = 310
-        Me.Button8.Text = "°"
-        Me.Button8.UseVisualStyleBackColor = True
-        '
-        'Button9
-        '
-        Me.Button9.Location = New System.Drawing.Point(35, 32)
-        Me.Button9.Name = "Button9"
-        Me.Button9.Size = New System.Drawing.Size(16, 23)
-        Me.Button9.TabIndex = 309
-        Me.Button9.Text = "Ø"
-        Me.Button9.UseVisualStyleBackColor = True
+        Me.btDegEng.Location = New System.Drawing.Point(52, 78)
+        Me.btDegEng.Name = "btDegEng"
+        Me.btDegEng.Size = New System.Drawing.Size(16, 23)
+        Me.btDegEng.TabIndex = 308
+        Me.btDegEng.Text = "°"
+        Me.btDegEng.UseVisualStyleBackColor = True
         '
         'btExpStp
         '
@@ -354,9 +336,9 @@ Partial Class iPropertiesForm
         Me.Label13.Font = New System.Drawing.Font("Arial", 6.0!)
         Me.Label13.Location = New System.Drawing.Point(82, 0)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(97, 10)
+        Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v9.10"
+        Me.Label13.Text = "iProperties Controller v10.00"
         '
         'tbDrawnBy
         '
@@ -391,7 +373,6 @@ Partial Class iPropertiesForm
         Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbDescription.Location = New System.Drawing.Point(73, 34)
         Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal
         Me.tbDescription.Size = New System.Drawing.Size(205, 19)
         Me.tbDescription.TabIndex = 322
         '
@@ -451,6 +432,24 @@ Partial Class iPropertiesForm
         Me.btCopyPN.Text = "Copy Part No."
         Me.btCopyPN.UseVisualStyleBackColor = True
         '
+        'btDegDes
+        '
+        Me.btDegDes.Location = New System.Drawing.Point(52, 32)
+        Me.btDegDes.Name = "btDegDes"
+        Me.btDegDes.Size = New System.Drawing.Size(16, 23)
+        Me.btDegDes.TabIndex = 330
+        Me.btDegDes.Text = "°"
+        Me.btDegDes.UseVisualStyleBackColor = True
+        '
+        'btDiaDes
+        '
+        Me.btDiaDes.Location = New System.Drawing.Point(35, 32)
+        Me.btDiaDes.Name = "btDiaDes"
+        Me.btDiaDes.Size = New System.Drawing.Size(16, 23)
+        Me.btDiaDes.TabIndex = 329
+        Me.btDiaDes.Text = "Ø"
+        Me.btDiaDes.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -458,6 +457,8 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(282, 296)
+        Me.Controls.Add(Me.btDegDes)
+        Me.Controls.Add(Me.btDiaDes)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.btCopyPN)
         Me.Controls.Add(Me.btShtMaterial)
@@ -473,8 +474,6 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.btExpPdf)
         Me.Controls.Add(Me.btExpStl)
         Me.Controls.Add(Me.btExpStp)
-        Me.Controls.Add(Me.Button8)
-        Me.Controls.Add(Me.Button9)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btUpdateAll)
@@ -490,8 +489,8 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
         Me.Controls.Add(Me.tbDensity)
-        Me.Controls.Add(Me.Button7)
-        Me.Controls.Add(Me.Button6)
+        Me.Controls.Add(Me.btDegEng)
+        Me.Controls.Add(Me.btDiaEng)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.tbDrawnBy)
@@ -534,10 +533,8 @@ Partial Class iPropertiesForm
     Friend WithEvents PictureBox2 As Windows.Forms.PictureBox
     Friend WithEvents btShtMaterial As Windows.Forms.Button
     Friend WithEvents btShtScale As Windows.Forms.Button
-    Friend WithEvents Button6 As Windows.Forms.Button
-    Friend WithEvents Button7 As Windows.Forms.Button
-    Friend WithEvents Button8 As Windows.Forms.Button
-    Friend WithEvents Button9 As Windows.Forms.Button
+    Friend WithEvents btDiaEng As Windows.Forms.Button
+    Friend WithEvents btDegEng As Windows.Forms.Button
     Friend WithEvents btExpStp As Windows.Forms.Button
     Friend WithEvents btExpStl As Windows.Forms.Button
     Friend WithEvents btExpPdf As Windows.Forms.Button
@@ -555,4 +552,6 @@ Partial Class iPropertiesForm
     Friend WithEvents ErrorProvider1 As Windows.Forms.ErrorProvider
     Friend WithEvents btReNum As Windows.Forms.Button
     Friend WithEvents btCopyPN As Windows.Forms.Button
+    Friend WithEvents btDegDes As Windows.Forms.Button
+    Friend WithEvents btDiaDes As Windows.Forms.Button
 End Class

@@ -4,21 +4,10 @@ Imports iPropertiesController.iPropertiesController
 Imports log4net
 
 Public Class iPropertiesForm
-
-    'Dim rs As New Resizer
-
-    'Private Sub iPropertiesForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-    '    rs.FindAllControls(Me)
-
-    'End Sub
-
-    'Private Sub iPropertiesForm_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-    '    rs.ResizeAllControls(Me)
-    'End Sub
-
     Private inventorApp As Inventor.Application
     Private localWindow As DockableWindow
     Private value As String
+    Public ButtonPushed As Boolean = False
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesForm))
 
@@ -36,12 +25,6 @@ Public Class iPropertiesForm
                         Dim oDrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         Dim oSht As Sheet = oDrawDoc.ActiveSheet
                         Dim oView As DrawingView = Nothing
-                        'Dim RefDoc As Document = Nothing
-
-                        'For i As Integer = 1 To oSht.DrawingViews.Count
-                        '    oView = oSht.DrawingViews(i)
-                        '    Exit For
-                        'Next
 
                         For Each view As DrawingView In oSht.DrawingViews
                             oView = view
@@ -107,10 +90,6 @@ Public Class iPropertiesForm
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbPartNumber.Text = "" Then
-            '    tbPartNumber.Text = "Part Number"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-            'End If
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
         End If
@@ -216,12 +195,17 @@ Public Class iPropertiesForm
         End If
     End Sub
 
+    Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
+        Dim insertText = symbol
+        Dim insertPos As Integer = textbox.SelectionStart
+
+        textbox.Text = textbox.Text.Insert(insertPos, insertText)
+        textbox.Focus()
+        textbox.Select(insertPos + insertText.Length, 0)
+    End Sub
+
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbStockNumber.Text = "" Then
-            '    tbStockNumber.Text = "Stock Number"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
-            'End If
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
@@ -229,24 +213,12 @@ Public Class iPropertiesForm
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbEngineer.Text = "" Then
-            '    tbEngineer.Text = "Engineer"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-            'End If
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
         End If
     End Sub
 
     Private Sub btUpdateAll_Click(sender As Object, e As EventArgs) Handles btUpdateAll.Click
-
-        'need to decide whether or not to leave our textbox.leave events as they are or change all to be driven by
-        'clicking this button.
-        'If we do change, we need to error check the one time for activedocument and filename.length
-
-        'For Each TxtBox As Windows.Forms.TextBox In Me.Controls
-        '    ' this may or may not work because of the different types available within the controls collection.
-        'Next
 
         If Not inventorApp.ActiveDocument Is Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
@@ -289,9 +261,7 @@ Public Class iPropertiesForm
     Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.ValueChanged
         If Not iPropertiesAddInServer.CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
             If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = DateTimePicker1.Value Then
-                'If Not inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value Then
-                'should work but not implemented
-                'iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, DateTimePicker1.Value, "")
+
                 inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value
                 UpdateStatusBar("Creation date updated to " + DateTimePicker1.Value)
             End If
@@ -300,7 +270,7 @@ Public Class iPropertiesForm
 
     Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+
             tbDrawnBy.ForeColor = Drawing.Color.Black
 
             Dim iPropPartNum As String =
@@ -310,7 +280,7 @@ Public Class iPropertiesForm
                                                           "")
             log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropPartNum)
             UpdateStatusBar("Author updated to " + iPropPartNum)
-            'End If
+
         End If
     End Sub
 
@@ -439,9 +409,7 @@ Public Class iPropertiesForm
             oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
             i = 1
-            'For Each oSheet In oDrawDoc.Sheets
-            'i = i + 1
-            'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+
             oTitleBlock = oSheet.TitleBlock
             oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
             For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
@@ -450,7 +418,6 @@ Public Class iPropertiesForm
                         oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                 End Select
             Next
-            'Next
 
             If oPromptEntry = "<Material>" Then
                 oPromptText = "Engineer"
@@ -460,10 +427,6 @@ Public Class iPropertiesForm
                 oPromptText = oPromptEntry
             End If
 
-            'For i As Integer = 1 To oSht.DrawingViews.Count
-            '    oView = oSht.DrawingViews(i)
-            '    Exit For
-            'Next
 
             For Each view As DrawingView In oSht.DrawingViews
                 oView = view
@@ -519,9 +482,7 @@ Public Class iPropertiesForm
         oCurrentSheet = oDrawDoc.ActiveSheet.Name
 
         i = 1
-        'For Each oSheet In oDrawDoc.Sheets
-        'i = i + 1
-        'inventorApp.ActiveDocument.Sheets.Item(i).Activate
+
         oTitleBlock = oSheet.TitleBlock
         oTextBoxes = oTitleBlock.Definition.Sketch.TextBoxes
         For Each oTextBox In oTitleBlock.Definition.Sketch.TextBoxes
@@ -530,7 +491,6 @@ Public Class iPropertiesForm
                     oPromptEntry = oTitleBlock.GetResultText(oTextBox)
             End Select
         Next
-        'Next
 
         If oPromptEntry = "<Scale>" Then
             oPromptText = "Scale from view"
@@ -542,8 +502,6 @@ Public Class iPropertiesForm
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
-        'Dim scaleTextBox As Inventor.TextBox = GetScaleTextBox(oTitleBlock.Definition)
-        'Dim scaleString As String = scaleTextBox.Text
 
         For Each viewX As DrawingView In oSheet.DrawingViews
             If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
@@ -589,61 +547,20 @@ Public Class iPropertiesForm
         Return Nothing
     End Function
 
-    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
-        Dim insertText = "Ø"
-        Dim insertPos As Integer = tbEngineer.SelectionStart
-        Dim focusPoint = insertPos + insertText.Length
-        If tbEngineer.Text = "Engineer" Then
-            tbEngineer.Text = insertText
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        Else
-            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDiaEng_Click(sender As Object, e As EventArgs) Handles btDiaEng.Click
+        SendSymbol(tbEngineer, "Ø")
     End Sub
 
-    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
-        Dim insertText = "°"
-        Dim insertPos As Integer = tbEngineer.SelectionStart
-        If tbEngineer.Text = "Engineer" Then
-            tbEngineer.Text = insertText
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        Else
-            tbEngineer.Text = tbEngineer.Text.Insert(insertPos, insertText)
-            tbEngineer.Focus()
-            tbEngineer.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDegEng_Click(sender As Object, e As EventArgs) Handles btDegEng.Click
+        SendSymbol(tbEngineer, "°")
     End Sub
 
-    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
-        Dim insertText = "°"
-        Dim insertPos As Integer = tbDescription.SelectionStart
-        If tbDescription.Text = "Description" Then
-            tbDescription.Text = insertText
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        Else
-            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDiaDes_Click(sender As Object, e As EventArgs) Handles btDiaDes.Click
+        SendSymbol(tbDescription, "Ø")
     End Sub
 
-    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
-        Dim insertText = "Ø"
-        Dim insertPos As Integer = tbDescription.SelectionStart
-        If tbDescription.Text = "Description" Then
-            tbDescription.Text = insertText
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        Else
-            tbDescription.Text = tbDescription.Text.Insert(insertPos, insertText)
-            tbDescription.Focus()
-            tbDescription.Select(insertPos + insertText.Length, 0)
-        End If
+    Private Sub btDegDes_Click(sender As Object, e As EventArgs) Handles btDegDes.Click
+        SendSymbol(tbDescription, "°")
     End Sub
 
     Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
@@ -1456,13 +1373,15 @@ Public Class iPropertiesForm
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            'If tbDescription.Text = "" Then
-            '    tbDescription.Text = "Description"
-            '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-            'End If
-            tbDescription.ForeColor = Drawing.Color.Black
-            tbDescription.SelectionStart = 0
-            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            If ButtonPushed = True Then
+                tbDescription.ForeColor = Drawing.Color.Black
+                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+                ButtonPushed = False
+            Else
+                tbDescription.ForeColor = Drawing.Color.Black
+                tbDescription.SelectionStart = 0
+                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            End If
         End If
     End Sub
 
@@ -1660,19 +1579,12 @@ Public Class iPropertiesForm
         If e.KeyChar = Chr(9) Then
             btUpdateAll.Focus()
 
-            'ElseIf e.KeyChar = Chr(33 And 38) Then
-            '    tbStockNumber.Focus()
         ElseIf e.KeyChar = Chr(13) Then
             tbDrawnBy_Leave(sender, e)
         End If
     End Sub
 
     Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
-        'If Not inventorApp.ActiveDocument Is Nothing Then
-        '    tbRevNo.ForeColor = Drawing.Color.Black
-        '    CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision Number", tbRevNo.Text)
-        'End If
-
         If Not inventorApp.ActiveDocument Is Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
                 Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
@@ -1717,7 +1629,7 @@ Public Class iPropertiesForm
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyChar = Chr(9) Then
                     tbRevNo_Leave(sender, e)
-                    tbStockNumber.Focus()
+                    btUpdateAll.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
                 ElseIf e.KeyChar = Chr(13) Then
@@ -1727,7 +1639,7 @@ Public Class iPropertiesForm
             Else
                 If e.KeyChar = Chr(9) Then
                     tbRevNo_Leave(sender, e)
-                    tbStockNumber.Focus()
+                    btUpdateAll.Focus()
 
                 ElseIf e.KeyChar = Chr(13) Then
                     tbRevNo_Leave(sender, e)
@@ -1736,7 +1648,7 @@ Public Class iPropertiesForm
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If e.KeyChar = Chr(9) Then
                 tbRevNo_Leave(sender, e)
-                tbStockNumber.Focus()
+                btUpdateAll.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
                 tbRevNo_Leave(sender, e)
@@ -1744,7 +1656,7 @@ Public Class iPropertiesForm
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
             If e.KeyChar = Chr(9) Then
                 tbRevNo_Leave(sender, e)
-                tbEngineer.Focus()
+                btUpdateAll.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
                 tbRevNo_Leave(sender, e)
@@ -1842,160 +1754,19 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    'Private Sub btUpdateAssy_Click(sender As Object, e As EventArgs)
-    '    If RefDoc.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-    '        inventorApp.CommandManager.ControlDefinitions.Item("AssemblyGlobalUpdateCmd").Execute()
-    '        inventorApp.CommandManager.ControlDefinitions.Item("AppGlobalUpdateWrapperCmd").Execute()
-    '    Else
-    '        UpdateStatusBar("Can't update a part!! Come on, you know this!")
-    '    End If
-    'End Sub
+    Private Sub btDiaDes_MouseEnter(sender As Object, e As EventArgs) Handles btDiaDes.MouseEnter
+        ButtonPushed = True
+    End Sub
+
+    Private Sub btDiaDes_MouseLeave(sender As Object, e As EventArgs) Handles btDiaDes.MouseLeave
+        ButtonPushed = False
+    End Sub
+
+    Private Sub btDegDes_MouseEnter(sender As Object, e As EventArgs) Handles btDegDes.MouseEnter
+        ButtonPushed = True
+    End Sub
+
+    Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
+        ButtonPushed = False
+    End Sub
 End Class
-
-'-------------------------------------------------------------------------------
-' Resizer
-' This class is used to dynamically resize and reposition all controls on a form.
-' Container controls are processed recursively so that all controls on the form
-' are handled.
-'
-' Usage:
-'  Resizing functionality requires only three lines of code on a form:
-'
-'  1. Create a form-level reference to the Resize class:
-'     Dim myResizer as Resizer
-'
-'  2. In the Form_Load event, call the  Resizer class FIndAllControls method:
-'     myResizer.FindAllControls(Me)
-'
-'  3. In the Form_Resize event, call the  Resizer class ResizeAllControls method:
-'     myResizer.ResizeAllControls(Me)
-'
-'-------------------------------------------------------------------------------
-'Public Class Resizer
-
-'    '----------------------------------------------------------
-'    ' ControlInfo
-'    ' Structure of original state of all processed controls
-'    '----------------------------------------------------------
-'    Private Structure ControlInfo
-'        Public name As String
-'        Public parentName As String
-'        Public leftOffsetPercent As Double
-'        Public topOffsetPercent As Double
-'        Public heightPercent As Double
-'        Public originalHeight As Integer
-'        Public originalWidth As Integer
-'        Public widthPercent As Double
-'        Public originalFontSize As Single
-'    End Structure
-
-'    '-------------------------------------------------------------------------
-'    ' ctrlDict
-'    ' Dictionary of (control name, control info) for all processed controls
-'    '-------------------------------------------------------------------------
-'    Private ctrlDict As Dictionary(Of String, ControlInfo) = New Dictionary(Of String, ControlInfo)
-
-'    '----------------------------------------------------------------------------------------
-'    ' FindAllControls
-'    ' Recursive function to process all controls contained in the initially passed
-'    ' control container and store it in the Control dictionary
-'    '----------------------------------------------------------------------------------------
-'    Public Sub FindAllControls(thisCtrl As Control)
-
-'        '-- If the current control has a parent, store all original relative position
-'        '-- and size information in the dictionary.
-'        '-- Recursively call FindAllControls for each control contained in the
-'        '-- current Control
-'        For Each ctl As Control In thisCtrl.Controls
-'            Try
-'                If Not IsNothing(ctl.Parent) Then
-'                    Dim parentHeight = ctl.Parent.Height
-'                    Dim parentWidth = ctl.Parent.Width
-
-'                    Dim c As New ControlInfo
-'                    c.name = ctl.Name
-'                    c.parentName = ctl.Parent.Name
-'                    c.topOffsetPercent = Convert.ToDouble(ctl.Top) / Convert.ToDouble(parentHeight)
-'                    c.leftOffsetPercent = Convert.ToDouble(ctl.Left) / Convert.ToDouble(parentWidth)
-'                    c.heightPercent = Convert.ToDouble(ctl.Height) / Convert.ToDouble(parentHeight)
-'                    c.widthPercent = Convert.ToDouble(ctl.Width) / Convert.ToDouble(parentWidth)
-'                    c.originalFontSize = ctl.Font.Size
-'                    c.originalHeight = ctl.Height
-'                    c.originalWidth = ctl.Width
-'                    ctrlDict.Add(c.name, c)
-'                End If
-
-'            Catch ex As Exception
-'                Debug.Print(ex.Message)
-'            End Try
-
-'            If ctl.Controls.Count > 0 Then
-'                FindAllControls(ctl)
-'            End If
-
-'        Next '-- For Each
-
-'    End Sub
-
-'    '----------------------------------------------------------------------------------------
-'    ' ResizeAllControls
-'    ' Recursive function to resize and reposition all controls contained in the Control
-'    ' dictionary
-'    '----------------------------------------------------------------------------------------
-'    Public Sub ResizeAllControls(thisCtrl As Control)
-
-'        Dim fontRatioW As Single
-'        Dim fontRatioH As Single
-'        Dim fontRatio As Single
-'        Dim f As Font
-
-'        '-- Resize and reposition all controls in the passed control
-'        For Each ctl As Control In thisCtrl.Controls
-'            Try
-'                If Not IsNothing(ctl.Parent) Then
-'                    Dim parentHeight = ctl.Parent.Height
-'                    Dim parentWidth = ctl.Parent.Width
-
-'                    Dim c As New ControlInfo
-
-'                    Dim ret As Boolean = False
-'                    Try
-'                        '-- Get the current control's info from the control info dictionary
-'                        ret = ctrlDict.TryGetValue(ctl.Name, c)
-
-'                        '-- If found, adjust the current control based on control relative
-'                        '-- size and position information stored in the dictionary
-'                        If (ret) Then
-'                            '-- Size
-'                            ctl.Width = Int(parentWidth * c.widthPercent)
-'                            ctl.Height = Int(parentHeight * c.heightPercent)
-
-'                            '-- Position
-'                            ctl.Top = Int(parentHeight * c.topOffsetPercent)
-'                            ctl.Left = Int(parentWidth * c.leftOffsetPercent)
-
-'                            '-- Font
-'                            f = ctl.Font
-'                            fontRatioW = ctl.Width / c.originalWidth
-'                            fontRatioH = ctl.Height / c.originalHeight
-'                            fontRatio = (fontRatioW +
-'                            fontRatioH) / 2 '-- average change in control Height and Width
-'                            ctl.Font = New Font(f.FontFamily,
-'                            c.originalFontSize * fontRatio, f.Style)
-
-'                        End If
-'                    Catch
-'                    End Try
-'                End If
-'            Catch ex As Exception
-'            End Try
-
-'            '-- Recursive call for controls contained in the current control
-'            If ctl.Controls.Count > 0 Then
-'                ResizeAllControls(ctl)
-'            End If
-
-'        Next '-- For Each
-'    End Sub
-
-'End Class
