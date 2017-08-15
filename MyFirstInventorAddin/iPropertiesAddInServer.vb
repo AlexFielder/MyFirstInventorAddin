@@ -204,15 +204,11 @@ Namespace iPropertiesController
                 Dim selecteddoc As Document = Nothing
                 Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
                 selecteddoc = compOcc.Definition.Document
-                'Dim isReadonly As Boolean = False
-                'If CheckReadOnly(selecteddoc) Then
-                '    isReadonly = True
-                'End If
-                'myiPropsForm.tbPartNumber.ReadOnly = isReadonly
-                'myiPropsForm.tbDescription.ReadOnly = isReadonly
-                'myiPropsForm.tbStockNumber.ReadOnly = isReadonly
-                'myiPropsForm.tbEngineer.ReadOnly = isReadonly
-                'myiPropsForm.tbRevNo.ReadOnly = isReadonly
+                'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
+                'Dim selectedVirtdoc As Document = Nothing
+                'selectedVirtdoc = VirtualDef.Document
+
+                'UpdateDisplayediProperties(selectedVirtdoc)
                 UpdateDisplayediProperties(selecteddoc)
                 AssyDoc.SelectSet.Select(compOcc)
                 UpdateFormTextBoxColours()
@@ -458,28 +454,6 @@ Namespace iPropertiesController
                         myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
                     End If
                 End If
-
-                'standard properties that all documents have
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "") = stdPartNumber Then
-                '    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbPartNumber.Text = stdPartNumber
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "") = stdDescription Then
-                '    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbDescription.Text = stdDescription
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "") = stdEngineer Then
-                '    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbEngineer.Text = stdEngineer
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = stdRevNumber Then
-                '    myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-                'Else
-                '    myiPropsForm.tbRevNo.Text = stdRevNumber
-                'End If
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                     myiPropsForm.btDefer.Show()
