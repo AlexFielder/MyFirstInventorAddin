@@ -203,15 +203,32 @@ Namespace iPropertiesController
             If AssyDoc.SelectSet.Count = 1 Then
                 Dim selecteddoc As Document = Nothing
                 Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                selecteddoc = compOcc.Definition.Document
-                'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
-                'Dim selectedVirtdoc As Document = Nothing
-                'selectedVirtdoc = VirtualDef.Document
+                Dim def As ComponentDefinition
+                def = compOcc.Definition
+                If TypeOf def Is VirtualComponentDefinition Then
+                    Dim virtualDef As VirtualComponentDefinition
+                    virtualDef = def
+                    selecteddoc = virtualDef.Document
 
-                'UpdateDisplayediProperties(selectedVirtdoc)
-                UpdateDisplayediProperties(selecteddoc)
-                AssyDoc.SelectSet.Select(compOcc)
-                UpdateFormTextBoxColours()
+                    UpdateDisplayediProperties(selecteddoc)
+                    AssyDoc.SelectSet.Select(compOcc)
+                    UpdateFormTextBoxColours()
+                Else
+                    selecteddoc = compOcc.Definition.Document
+
+                    UpdateDisplayediProperties(selecteddoc)
+                    AssyDoc.SelectSet.Select(compOcc)
+                    UpdateFormTextBoxColours()
+                End If
+                'selecteddoc = compOcc.Definition.Document
+                '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
+                '    'Dim selectedVirtdoc As Document = Nothing
+                '    'selectedVirtdoc = VirtualDef.Document
+
+                '    'UpdateDisplayediProperties(selectedVirtdoc)
+                '    UpdateDisplayediProperties(selecteddoc)
+                '    AssyDoc.SelectSet.Select(compOcc)
+                '    UpdateFormTextBoxColours()
             End If
         End Sub
 
