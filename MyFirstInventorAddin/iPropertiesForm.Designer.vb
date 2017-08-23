@@ -449,7 +449,7 @@ Partial Class iPropertiesForm
         'btCheckIn
         '
         Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
-        Me.btCheckIn.Location = New System.Drawing.Point(224, 7)
+        Me.btCheckIn.Location = New System.Drawing.Point(253, 7)
         Me.btCheckIn.Name = "btCheckIn"
         Me.btCheckIn.Size = New System.Drawing.Size(25, 25)
         Me.btCheckIn.TabIndex = 332

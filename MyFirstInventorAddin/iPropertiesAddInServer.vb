@@ -318,6 +318,8 @@ Namespace iPropertiesController
                                 myiPropsForm.Label10.Text = "Checked In"
                                 myiPropsForm.PictureBox1.Show()
                                 myiPropsForm.PictureBox2.Hide()
+                                myiPropsForm.btCheckIn.Hide()
+                                myiPropsForm.btCheckOut.Show()
 
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
@@ -329,6 +331,8 @@ Namespace iPropertiesController
                                 myiPropsForm.Label10.Text = "Checked Out"
                                 myiPropsForm.PictureBox1.Hide()
                                 myiPropsForm.PictureBox2.Show()
+                                myiPropsForm.btCheckIn.Show()
+                                myiPropsForm.btCheckOut.Hide()
 
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
@@ -664,6 +668,8 @@ Namespace iPropertiesController
                     myiPropsForm.Label10.Text = "Checked In"
                     myiPropsForm.PictureBox1.Show()
                     myiPropsForm.PictureBox2.Hide()
+                    myiPropsForm.btCheckIn.Hide()
+                    myiPropsForm.btCheckOut.Show()
 
                     myiPropsForm.tbPartNumber.ReadOnly = True
                     myiPropsForm.tbDescription.ReadOnly = True
@@ -675,6 +681,8 @@ Namespace iPropertiesController
                     myiPropsForm.Label10.Text = "Checked Out"
                     myiPropsForm.PictureBox1.Hide()
                     myiPropsForm.PictureBox2.Show()
+                    myiPropsForm.btCheckIn.Show()
+                    myiPropsForm.btCheckOut.Hide()
 
                     myiPropsForm.tbPartNumber.ReadOnly = False
                     myiPropsForm.tbDescription.ReadOnly = False
