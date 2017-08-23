@@ -1770,4 +1770,131 @@ Public Class iPropertiesForm
     Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
         ButtonPushed = False
     End Sub
+
+    Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
+        'define the active document as an assembly file
+        Dim oAsmDoc As AssemblyDocument
+        oAsmDoc = inventorApp.ActiveDocument
+        'oAsmName = oAsmDoc.FileName 'without extension
+
+        oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
+
+        If inventorApp.ActiveDocument.DocumentType <> DocumentTypeEnum.kAssemblyDocumentObject Then
+            MessageBox.Show("Please run this rule from the assembly file.", "iLogic")
+            Exit Sub
+        End If
+        'get user input
+        RUsure = MessageBox.Show(
+        "This will create a STEP file for all components." _
+        & vbLf & " " _
+        & vbLf & "Are you sure you want to create STEP Drawings for all of the assembly components?" _
+        & vbLf & "This could take a while.", "Batch Output STEPs ", MessageBoxButtons.YesNo)
+        If RUsure = vbNo Then
+            Return
+        Else
+        End If
+        '- - - - - - - - - - - - -STEP setup - - - - - - - - - - - -
+        'oPath = oAsmDoc.Path
+        ''get STEP target folder path
+        'oFolder = oPath & "\" & oAsmName & " STEP Files"
+        ''Check for the step folder and create it if it does not exist
+        'If Not System.IO.Directory.Exists(oFolder) Then
+        '    System.IO.Directory.CreateDirectory(oFolder)
+        'End If
+
+
+        ''- - - - - - - - - - - - -Assembly - - - - - - - - - - - -
+        'oAsmDoc.Document.SaveAs(oFolder & "\" & oAsmName & (".stp"), True)
+
+        '- - - - - - - - - - - - -Components - - - - - - - - - - - -
+        'look at the files referenced by the assembly
+        Dim oRefDocs As DocumentsEnumerator
+        oRefDocs = oAsmDoc.AllReferencedDocuments
+        Dim oRefDoc As Document
+        Dim oRev = iProperties.GetorSetStandardiProperty(
+                            inventorApp.ActiveDocument,
+                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+        'work the referenced models
+        oDocu = inventorApp.ActiveDocument
+        oDocu.Save2(True)
+        For Each oRefDoc In oRefDocs
+            If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+
+                'GetNewFilePaths()
+                ' Get the STEP translator Add-In.
+
+                Dim oSTEPTranslator As TranslatorAddIn
+                oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                If oSTEPTranslator Is Nothing Then
+                    MsgBox("Could not access STEP translator.")
+                    Exit Sub
+                End If
+
+                Dim oContext As TranslationContext
+                oContext = inventorApp.TransientObjects.CreateTranslationContext
+                Dim oOptions As NameValueMap
+                oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                    ' Set application protocol.
+                    ' 2 = AP 203 - Configuration Controlled Design
+                    ' 3 = AP 214 - Automotive Design
+                    oOptions.Value("ApplicationProtocolType") = 3
+
+                    ' Other options...
+                    'oOptions.Value("Author") = ""
+                    'oOptions.Value("Authorization") = ""
+                    'oOptions.Value("Description") = ""
+                    'oOptions.Value("Organization") = ""
+
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                    Dim oData As DataMedium
+                    oData = inventorApp.TransientObjects.CreateDataMedium
+                    oData.FileName = NewPath + "_R" + oRev + ".stp"
+
+                    Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                    UpdateStatusBar("File saved as Step file")
+
+                    AttachRefFile(oRefDoc, oData.FileName)
+                    'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                    'If AttachFile = vbYes Then
+                    '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                    '    UpdateStatusBar("File attached")
+                    'Else
+                    '    'Do Nothing
+                    'End If
+                End If
+            Else
+                UpdateStatusBar("File skipped because it's read-only")
+            End If
+        Next
+
+    End Sub
+
+    Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
+        ' Get the CommandManager object. 
+        Dim oCommandMgr As CommandManager
+        oCommandMgr = inventorApp.CommandManager
+
+        ' Get control definition for the line command. 
+        Dim oControlDef As ControlDefinition
+        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
+        ' Execute the command. 
+        Call oControlDef.Execute()
+    End Sub
+
+    Private Sub btCheckOut_Click(sender As Object, e As EventArgs) Handles btCheckOut.Click
+        ' Get the CommandManager object. 
+        Dim oCommandMgr As CommandManager
+        oCommandMgr = inventorApp.CommandManager
+
+        ' Get control definition for the line command. 
+        Dim oControlDef As ControlDefinition
+        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckOutTop")
+        ' Execute the command. 
+        Call oControlDef.Execute()
+    End Sub
 End Class

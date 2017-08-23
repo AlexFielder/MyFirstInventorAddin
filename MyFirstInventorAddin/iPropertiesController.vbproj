@@ -169,6 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Installer\Installer.iss" />
+    <None Include="Resources\CHECKOUT.png" />
+    <None Include="Resources\CHECKIN.png" />
     <None Include="Resources\green_button_tick.png" />
     <None Include="Resources\white_button.png" />
   </ItemGroup>

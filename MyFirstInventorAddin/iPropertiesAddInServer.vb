@@ -207,7 +207,7 @@ Namespace iPropertiesController
                 def = compOcc.Definition
                 If TypeOf def Is VirtualComponentDefinition Then
                     Dim virtualDef As VirtualComponentDefinition
-                    virtualDef = def
+                    virtualDef = compOcc.Definition
                     selecteddoc = virtualDef.Document
 
                     UpdateDisplayediProperties(selecteddoc)
