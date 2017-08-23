@@ -1875,26 +1875,84 @@ Public Class iPropertiesForm
     End Sub
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
-        ' Get the CommandManager object. 
-        Dim oCommandMgr As CommandManager
-        oCommandMgr = inventorApp.CommandManager
+        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                        ' Get the CommandManager object. 
+                        Dim oCommandMgr As CommandManager
+                        oCommandMgr = inventorApp.CommandManager
 
-        ' Get control definition for the line command. 
-        Dim oControlDef As ControlDefinition
-        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
-        ' Execute the command. 
-        Call oControlDef.Execute()
+                        ' Get control definition for the line command. 
+                        Dim oControlDef As ControlDefinition
+                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
+                        ' Execute the command. 
+                        Call oControlDef.Execute()
+                    End If
+                Else
+                    ' Get the CommandManager object. 
+                    Dim oCommandMgr As CommandManager
+                    oCommandMgr = inventorApp.CommandManager
+
+                    ' Get control definition for the line command. 
+                    Dim oControlDef As ControlDefinition
+                    oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
+                    ' Execute the command. 
+                    Call oControlDef.Execute()
+                End If
+            Else
+                ' Get the CommandManager object. 
+                Dim oCommandMgr As CommandManager
+                oCommandMgr = inventorApp.CommandManager
+
+                ' Get control definition for the line command. 
+                Dim oControlDef As ControlDefinition
+                oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
+                ' Execute the command. 
+                Call oControlDef.Execute()
+            End If
+        End If
     End Sub
 
     Private Sub btCheckOut_Click(sender As Object, e As EventArgs) Handles btCheckOut.Click
-        ' Get the CommandManager object. 
-        Dim oCommandMgr As CommandManager
-        oCommandMgr = inventorApp.CommandManager
+        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                        ' Get the CommandManager object. 
+                        Dim oCommandMgr As CommandManager
+                        oCommandMgr = inventorApp.CommandManager
 
-        ' Get control definition for the line command. 
-        Dim oControlDef As ControlDefinition
-        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckOutTop")
-        ' Execute the command. 
-        Call oControlDef.Execute()
+                        ' Get control definition for the line command. 
+                        Dim oControlDef As ControlDefinition
+                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckout")
+                        ' Execute the command. 
+                        Call oControlDef.Execute()
+                    End If
+                Else
+                    ' Get the CommandManager object. 
+                    Dim oCommandMgr As CommandManager
+                    oCommandMgr = inventorApp.CommandManager
+
+                    ' Get control definition for the line command. 
+                    Dim oControlDef As ControlDefinition
+                    oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckoutTop")
+                    ' Execute the command. 
+                    Call oControlDef.Execute()
+                End If
+            Else
+                ' Get the CommandManager object. 
+                Dim oCommandMgr As CommandManager
+                oCommandMgr = inventorApp.CommandManager
+
+                ' Get control definition for the line command. 
+                Dim oControlDef As ControlDefinition
+                oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckoutTop")
+                ' Execute the command. 
+                Call oControlDef.Execute()
+            End If
+        End If
     End Sub
 End Class
