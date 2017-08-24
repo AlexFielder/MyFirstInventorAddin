@@ -1858,7 +1858,7 @@ Public Class iPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    AttachRefFile(oRefDoc, oData.FileName)
+                    AttachRefFile(oAsmDoc, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
