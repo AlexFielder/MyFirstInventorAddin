@@ -70,6 +70,7 @@ Partial Class iPropertiesForm
         Me.btCheckIn = New System.Windows.Forms.Button()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.btViewNames = New System.Windows.Forms.Button()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -314,9 +315,9 @@ Partial Class iPropertiesForm
         Me.Label13.Font = New System.Drawing.Font("Arial", 6.0!)
         Me.Label13.Location = New System.Drawing.Point(82, 0)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(100, 10)
+        Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v11.00"
+        Me.Label13.Text = "iProperties Controller v12.00"
         '
         'tbDrawnBy
         '
@@ -480,6 +481,15 @@ Partial Class iPropertiesForm
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
         '
+        'btViewNames
+        '
+        Me.btViewNames.Location = New System.Drawing.Point(201, 7)
+        Me.btViewNames.Name = "btViewNames"
+        Me.btViewNames.Size = New System.Drawing.Size(50, 23)
+        Me.btViewNames.TabIndex = 334
+        Me.btViewNames.Text = "Views"
+        Me.btViewNames.UseVisualStyleBackColor = True
+        '
         'iPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -487,6 +497,7 @@ Partial Class iPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(282, 296)
+        Me.Controls.Add(Me.btViewNames)
         Me.Controls.Add(Me.btCheckOut)
         Me.Controls.Add(Me.btCheckIn)
         Me.Controls.Add(Me.btPipes)
@@ -590,4 +601,5 @@ Partial Class iPropertiesForm
     Friend WithEvents btPipes As Windows.Forms.Button
     Friend WithEvents btCheckOut As Windows.Forms.Button
     Friend WithEvents btCheckIn As Windows.Forms.Button
+    Friend WithEvents btViewNames As Windows.Forms.Button
 End Class

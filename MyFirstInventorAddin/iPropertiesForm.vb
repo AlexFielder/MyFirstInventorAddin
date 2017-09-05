@@ -327,7 +327,10 @@ Public Class iPropertiesForm
 
                     Dim item As String
                     item = oBOMRow.ItemNumber
-                    iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    iProperties.GetorSetStandardiProperty(
+                            oCompDef.Document,
+                            PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
                 Next
                 oSht.Update()
             ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
@@ -356,7 +359,10 @@ Public Class iPropertiesForm
 
                     Dim item As String
                     item = oBOMRow.ItemNumber
-                    iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    iProperties.GetorSetStandardiProperty(
+                            oCompDef.Document,
+                            PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
                 Next
             End If
         Catch ex As Exception
@@ -1528,24 +1534,28 @@ Public Class iPropertiesForm
     Private Sub tbEngineer_Enter(sender As Object, e As EventArgs) Handles tbEngineer.Enter
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Clear()
+            tbEngineer.Focus()
         End If
     End Sub
 
     Private Sub tbStockNumber_Enter(sender As Object, e As EventArgs) Handles tbStockNumber.Enter
         If tbStockNumber.Text = "Stock Number" Then
             tbStockNumber.Clear()
+            tbStockNumber.Focus()
         End If
     End Sub
 
     Private Sub tbDescription_Enter(sender As Object, e As EventArgs) Handles tbDescription.Enter
         If tbDescription.Text = "Description" Then
             tbDescription.Clear()
+            tbDescription.Focus()
         End If
     End Sub
 
     Private Sub tbPartNumber_Enter(sender As Object, e As EventArgs) Handles tbPartNumber.Enter
         If tbPartNumber.Text = "Part Number" Then
             tbPartNumber.Clear()
+            tbPartNumber.Focus()
         End If
     End Sub
 
@@ -1672,36 +1682,42 @@ Public Class iPropertiesForm
     Private Sub tbPartNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbPartNumber.MouseClick
         If tbPartNumber.Text = "Part Number" Then
             tbPartNumber.Clear()
+            tbPartNumber.Focus()
         End If
     End Sub
 
     Private Sub tbDescription_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDescription.MouseClick
         If tbDescription.Text = "Description" Then
             tbDescription.Clear()
+            tbDescription.Focus()
         End If
     End Sub
 
     Private Sub tbStockNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbStockNumber.MouseClick
         If tbStockNumber.Text = "Stock Number" Then
             tbStockNumber.Clear()
+            tbStockNumber.Focus()
         End If
     End Sub
 
     Private Sub tbEngineer_MouseClick(sender As Object, e As MouseEventArgs) Handles tbEngineer.MouseClick
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Clear()
+            tbEngineer.Focus()
         End If
     End Sub
 
     Private Sub tbRevNo_Enter(sender As Object, e As EventArgs) Handles tbRevNo.Enter
         If tbRevNo.Text = "Revision Number" Then
             tbRevNo.Clear()
+            tbRevNo.Focus()
         End If
     End Sub
 
     Private Sub tbRevNo_MouseClick(sender As Object, e As MouseEventArgs) Handles tbRevNo.MouseClick
         If tbRevNo.Text = "Revision Number" Then
             tbRevNo.Clear()
+            tbRevNo.Focus()
         End If
     End Sub
 
@@ -1954,5 +1970,34 @@ Public Class iPropertiesForm
                 Call oControlDef.Execute()
             End If
         End If
+    End Sub
+
+    Private Sub btViewNames_Click(sender As Object, e As EventArgs) Handles btViewNames.Click
+        Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
+        Dim oSheet As Sheet = oDrawDoc.ActiveSheet
+        Dim oSheets As Sheets = Nothing
+        Dim oView As DrawingView = Nothing
+        Dim oViews As DrawingViews = Nothing
+        Dim oLabel As String = "DETAIL OF ITEM "
+
+        For Each oView In oSheet.DrawingViews
+            If Not oView.ParentView Is Nothing Then
+                'we're working on a child view and should get the parent view as an object
+            Else
+                If oView.IsFlatPatternView Then
+                    oView.Name() = "FLAT PATTERN"
+                    oView.ShowLabel() = True
+                Else
+                    'Dim oModel As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    'Dim invCustom As PropertySet
+                    'invCustom = oModel.PropertySets.Item("Inventor User Defined Properties")
+                    'Dim oProp As [Property] = invCustom.Item("<#ITEM>")
+                    'Dim propValue = oProp.Value
+
+                    oView.Name() = oLabel
+                    oView.ShowLabel() = True
+                End If
+            End If
+        Next
     End Sub
 End Class
