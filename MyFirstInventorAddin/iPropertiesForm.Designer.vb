@@ -124,7 +124,7 @@ Partial Class iPropertiesForm
         'btUpdateAll
         '
         Me.btUpdateAll.AccessibleDescription = " up"
-        Me.btUpdateAll.Location = New System.Drawing.Point(201, 124)
+        Me.btUpdateAll.Location = New System.Drawing.Point(199, 124)
         Me.btUpdateAll.Name = "btUpdateAll"
         Me.btUpdateAll.Size = New System.Drawing.Size(78, 23)
         Me.btUpdateAll.TabIndex = 200
@@ -241,16 +241,16 @@ Partial Class iPropertiesForm
         '
         Me.btShtMaterial.Location = New System.Drawing.Point(3, 124)
         Me.btShtMaterial.Name = "btShtMaterial"
-        Me.btShtMaterial.Size = New System.Drawing.Size(75, 23)
+        Me.btShtMaterial.Size = New System.Drawing.Size(72, 23)
         Me.btShtMaterial.TabIndex = 305
         Me.btShtMaterial.Text = "Sht Material"
         Me.btShtMaterial.UseVisualStyleBackColor = True
         '
         'btShtScale
         '
-        Me.btShtScale.Location = New System.Drawing.Point(103, 124)
+        Me.btShtScale.Location = New System.Drawing.Point(74, 124)
         Me.btShtScale.Name = "btShtScale"
-        Me.btShtScale.Size = New System.Drawing.Size(75, 23)
+        Me.btShtScale.Size = New System.Drawing.Size(62, 23)
         Me.btShtScale.TabIndex = 306
         Me.btShtScale.Text = "Sht Scale"
         Me.btShtScale.UseVisualStyleBackColor = True
@@ -483,9 +483,9 @@ Partial Class iPropertiesForm
         '
         'btViewNames
         '
-        Me.btViewNames.Location = New System.Drawing.Point(189, 7)
+        Me.btViewNames.Location = New System.Drawing.Point(135, 124)
         Me.btViewNames.Name = "btViewNames"
-        Me.btViewNames.Size = New System.Drawing.Size(65, 25)
+        Me.btViewNames.Size = New System.Drawing.Size(65, 23)
         Me.btViewNames.TabIndex = 334
         Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
