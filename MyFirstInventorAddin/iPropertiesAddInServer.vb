@@ -491,6 +491,7 @@ Namespace iPropertiesController
                     myiPropsForm.Label3.Hide()
                     myiPropsForm.tbStockNumber.Hide()
                     myiPropsForm.btCopyPN.Hide()
+                    myiPropsForm.btViewNames.Show()
 
                     myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -595,6 +596,7 @@ Namespace iPropertiesController
                     myiPropsForm.btShtScale.Hide()
                     myiPropsForm.ModelFileLocation.Hide()
                     myiPropsForm.btCopyPN.Show()
+                    myiPropsForm.btViewNames.Hide()
 
                     If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "") = stdStockNumber Then
                         myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")

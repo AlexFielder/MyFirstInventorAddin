@@ -483,11 +483,11 @@ Partial Class iPropertiesForm
         '
         'btViewNames
         '
-        Me.btViewNames.Location = New System.Drawing.Point(201, 7)
+        Me.btViewNames.Location = New System.Drawing.Point(189, 7)
         Me.btViewNames.Name = "btViewNames"
-        Me.btViewNames.Size = New System.Drawing.Size(50, 23)
+        Me.btViewNames.Size = New System.Drawing.Size(65, 25)
         Me.btViewNames.TabIndex = 334
-        Me.btViewNames.Text = "Views"
+        Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
         '
         'iPropertiesForm
