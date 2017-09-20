@@ -1979,6 +1979,7 @@ Public Class iPropertiesForm
         Dim oView As DrawingView = Nothing
         Dim oViews As DrawingViews = Nothing
         Dim oLabel As String = "DETAIL OF ITEM "
+        Dim isoLabel As String = "ISOMETRIC VIEW"
 
         For Each oView In oSheet.DrawingViews
             If Not oView.ParentView Is Nothing Then
@@ -1987,13 +1988,7 @@ Public Class iPropertiesForm
                 If oView.IsFlatPatternView Then
                     oView.Name() = "FLAT PATTERN"
                     oView.ShowLabel() = True
-                Else
-                    'Dim oModel As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                    'Dim invCustom As PropertySet
-                    'invCustom = oModel.PropertySets.Item("Inventor User Defined Properties")
-                    'Dim oProp As [Property] = invCustom.Item("<#ITEM>")
-                    'Dim propValue = oProp.Value
-
+                ElseIf oview.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                     oView.Name() = oLabel
                     oView.ShowLabel() = True
                 End If
