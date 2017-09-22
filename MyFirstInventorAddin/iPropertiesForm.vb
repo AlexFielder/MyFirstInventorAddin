@@ -1387,8 +1387,8 @@ Public Class iPropertiesForm
             Else
                 tbDescription.ForeColor = Drawing.Color.Black
                 tbDescription.SelectionStart = 0
-                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-            End If
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+        End If
         End If
     End Sub
 
@@ -1986,7 +1986,7 @@ Public Class iPropertiesForm
                 'we're working on a child view and should get the parent view as an object
             Else
                 If oView.IsFlatPatternView Then
-                    oView.Name() = "FLAT PATTERN"
+                    oView.Name() = "FLAT PATTERN OF ITEM "
                     oView.ShowLabel() = True
                 ElseIf oview.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                     oView.Name() = oLabel
