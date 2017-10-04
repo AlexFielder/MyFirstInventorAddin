@@ -376,6 +376,25 @@ Namespace iPropertiesController
                             UpdateDisplayediProperties(PartDoc)
                         End If
                     Else
+                        'If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                        '    'Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument.ReferencedDocument
+
+                        '    Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+                        '    Dim AssyDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveEditDocument
+
+
+                        '    If AssyDoc.SelectSet.Count = 1 Then
+                        '        If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                        '            ShowOccurrenceProperties(AssyDoc)
+                        '        Else
+                        '            UpdateFormTextBoxColours()
+                        '            UpdateDisplayediProperties(DrawDoc)
+                        '        End If
+                        '    Else
+                        '        UpdateFormTextBoxColours()
+                        '        UpdateDisplayediProperties(DrawDoc)
+                        '    End If
                         Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         UpdateFormTextBoxColours()
                         UpdateDisplayediProperties(DrawDoc)

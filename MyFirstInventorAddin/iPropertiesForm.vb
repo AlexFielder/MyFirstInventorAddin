@@ -1386,8 +1386,8 @@ Public Class iPropertiesForm
                 ButtonPushed = False
             Else
                 tbDescription.ForeColor = Drawing.Color.Black
-                tbDescription.SelectionStart = 0
-            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+                'tbDescription.SelectionStart = 0
+                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
         End If
         End If
     End Sub
@@ -1399,7 +1399,7 @@ Public Class iPropertiesForm
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyChar = Chr(9) Then
-                    tbDescription.SelectionStart = 0
+                    'tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
@@ -1409,7 +1409,7 @@ Public Class iPropertiesForm
                 End If
             Else
                 If e.KeyChar = Chr(9) Then
-                    tbDescription.SelectionStart = 0
+                    'tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
 
                 ElseIf e.KeyChar = Chr(13) Then
@@ -1418,7 +1418,7 @@ Public Class iPropertiesForm
             End If
         Else
             If e.KeyChar = Chr(9) Then
-                tbDescription.SelectionStart = 0
+                'tbDescription.SelectionStart = 0
                 tbStockNumber.Focus()
 
             ElseIf e.KeyChar = Chr(13) Then
