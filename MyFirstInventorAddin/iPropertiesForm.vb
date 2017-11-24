@@ -89,40 +89,35 @@ Public Class iPropertiesForm
 
     End Sub
 
-    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
-            tbPartNumber.ForeColor = Drawing.Color.Black
-            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
-        End If
-    End Sub
-
     Private Sub UpdateAllCommon()
-        'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-        inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
-        'try these and see if they fire or not!
-        tbPartNumber_Leave(sender, e)
-        tbDescription_Leave(sender, e)
-        tbStockNumber_Leave(sender, e)
-        tbEngineer_Leave(sender, e)
-        tbDrawnBy_Leave(sender, e)
-        tbRevNo_Leave(sender, e)
-        Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-        Dim kgMass As Decimal = myMass / 1000
-        Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-        tbMass.Text = myMass2 & " kg"
-        log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
+            inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
+            'try these and see if they fire or not!
+            tbPartNumber_Leave(sender, e)
+            tbDescription_Leave(sender, e)
+            tbStockNumber_Leave(sender, e)
+            tbEngineer_Leave(sender, e)
+            tbDrawnBy_Leave(sender, e)
+            tbRevNo_Leave(sender, e)
+            Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+            Dim kgMass As Decimal = myMass / 1000
+            Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+            tbMass.Text = myMass2 & " kg"
+            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
 
-        Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-        Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-        tbDensity.Text = myDensity2 & " g/cm^3"
-        log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+            Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+            Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+            tbDensity.Text = myDensity2 & " g/cm^3"
+            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
 
-        Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-        UpdateStatusBar("iProperties updated")
-        'End If
-        ErrorProvider1.Clear()
-        If Me.ValidateChildren() Then
-            ' continue on
+            Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+            UpdateStatusBar("iProperties updated")
+            'End If
+            ErrorProvider1.Clear()
+            If Me.ValidateChildren() Then
+                ' continue on
+            End If
         End If
     End Sub
 
@@ -162,6 +157,10 @@ Public Class iPropertiesForm
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If inventorApp.ActiveEditObject IsNot Nothing Then
+                If Not newPropValue = propname Then
+                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                End If
+            ElseIf inventorApp.ActiveDocument IsNot Nothing Then
                 If Not newPropValue = propname Then
                     UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
                 End If
@@ -1386,9 +1385,9 @@ Public Class iPropertiesForm
                 ButtonPushed = False
             Else
                 tbDescription.ForeColor = Drawing.Color.Black
-                'tbDescription.SelectionStart = 0
+                tbDescription.SelectionStart = 0
                 CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-        End If
+            End If
         End If
     End Sub
 
@@ -1399,7 +1398,7 @@ Public Class iPropertiesForm
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyChar = Chr(9) Then
-                    'tbDescription.SelectionStart = 0
+                    tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
@@ -1409,7 +1408,7 @@ Public Class iPropertiesForm
                 End If
             Else
                 If e.KeyChar = Chr(9) Then
-                    'tbDescription.SelectionStart = 0
+                    tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
 
                 ElseIf e.KeyChar = Chr(13) Then
@@ -1771,21 +1770,21 @@ Public Class iPropertiesForm
         End If
     End Sub
 
-    Private Sub btDiaDes_MouseEnter(sender As Object, e As EventArgs) Handles btDiaDes.MouseEnter
-        ButtonPushed = True
-    End Sub
+    'Private Sub btDiaDes_MouseEnter(sender As Object, e As EventArgs) Handles btDiaDes.MouseEnter
+    '    ButtonPushed = True
+    'End Sub
 
-    Private Sub btDiaDes_MouseLeave(sender As Object, e As EventArgs) Handles btDiaDes.MouseLeave
-        ButtonPushed = False
-    End Sub
+    'Private Sub btDiaDes_MouseLeave(sender As Object, e As EventArgs) Handles btDiaDes.MouseLeave
+    '    ButtonPushed = False
+    'End Sub
 
-    Private Sub btDegDes_MouseEnter(sender As Object, e As EventArgs) Handles btDegDes.MouseEnter
-        ButtonPushed = True
-    End Sub
+    'Private Sub btDegDes_MouseEnter(sender As Object, e As EventArgs) Handles btDegDes.MouseEnter
+    '    ButtonPushed = True
+    'End Sub
 
-    Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
-        ButtonPushed = False
-    End Sub
+    'Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
+    '    ButtonPushed = False
+    'End Sub
 
     Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
@@ -1994,5 +1993,12 @@ Public Class iPropertiesForm
                 End If
             End If
         Next
+    End Sub
+
+    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            tbPartNumber.ForeColor = Drawing.Color.Black
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
+        End If
     End Sub
 End Class
