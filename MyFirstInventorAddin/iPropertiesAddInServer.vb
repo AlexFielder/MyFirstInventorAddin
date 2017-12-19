@@ -2,6 +2,7 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+'Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
 
@@ -29,7 +30,7 @@ Namespace iPropertiesController
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
         Public Shared attribute As GuidAttribute = Nothing
-        Public Shared myiPropsForm As iPropertiesForm = Nothing
+        Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
@@ -103,7 +104,7 @@ Namespace iPropertiesController
                     AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
-                    myiPropsForm = New iPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
+                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
                     Window = localWindow
 
                 End If
@@ -652,6 +653,7 @@ Namespace iPropertiesController
                     Else
                         myiPropsForm.tbRevNo.Text = stdRevNumber
                     End If
+
                 End If
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class iPropertiesForm
+Partial Class IPropertiesForm
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,7 +23,7 @@ Partial Class iPropertiesForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(iPropertiesForm))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(IPropertiesForm))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -127,7 +127,7 @@ Partial Class iPropertiesForm
         Me.btUpdateAll.Location = New System.Drawing.Point(199, 124)
         Me.btUpdateAll.Name = "btUpdateAll"
         Me.btUpdateAll.Size = New System.Drawing.Size(78, 23)
-        Me.btUpdateAll.TabIndex = 200
+        Me.btUpdateAll.TabIndex = 7
         Me.btUpdateAll.Text = "Update iProp"
         Me.btUpdateAll.UseVisualStyleBackColor = True
         '
@@ -146,7 +146,7 @@ Partial Class iPropertiesForm
         Me.Label8.Location = New System.Drawing.Point(3, 60)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
-        Me.Label8.TabIndex = 107
+        Me.Label8.TabIndex = 3
         Me.Label8.Text = "Defer Drawing Updates"
         '
         'btDefer
@@ -317,43 +317,57 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v12.07"
+        Me.Label13.Text = "iProperties Controller v13.10"
         '
         'tbDrawnBy
         '
+        Me.tbDrawnBy.AcceptsReturn = True
+        Me.tbDrawnBy.AcceptsTab = True
         Me.tbDrawnBy.Location = New System.Drawing.Point(73, 102)
         Me.tbDrawnBy.Name = "tbDrawnBy"
         Me.tbDrawnBy.Size = New System.Drawing.Size(116, 20)
-        Me.tbDrawnBy.TabIndex = 7
+        Me.tbDrawnBy.TabIndex = 5
+        Me.tbDrawnBy.TabStop = False
         '
         'tbEngineer
         '
+        Me.tbEngineer.AcceptsReturn = True
+        Me.tbEngineer.AcceptsTab = True
         Me.tbEngineer.Location = New System.Drawing.Point(73, 79)
         Me.tbEngineer.Name = "tbEngineer"
         Me.tbEngineer.Size = New System.Drawing.Size(206, 20)
-        Me.tbEngineer.TabIndex = 319
+        Me.tbEngineer.TabIndex = 4
+        Me.tbEngineer.TabStop = False
         '
         'tbStockNumber
         '
+        Me.tbStockNumber.AcceptsReturn = True
+        Me.tbStockNumber.AcceptsTab = True
         Me.tbStockNumber.Location = New System.Drawing.Point(73, 56)
         Me.tbStockNumber.Name = "tbStockNumber"
         Me.tbStockNumber.Size = New System.Drawing.Size(116, 20)
-        Me.tbStockNumber.TabIndex = 320
+        Me.tbStockNumber.TabIndex = 3
+        Me.tbStockNumber.TabStop = False
         '
         'tbPartNumber
         '
+        Me.tbPartNumber.AcceptsReturn = True
+        Me.tbPartNumber.AcceptsTab = True
         Me.tbPartNumber.Location = New System.Drawing.Point(73, 11)
         Me.tbPartNumber.Name = "tbPartNumber"
         Me.tbPartNumber.Size = New System.Drawing.Size(116, 20)
-        Me.tbPartNumber.TabIndex = 321
+        Me.tbPartNumber.TabIndex = 1
+        Me.tbPartNumber.TabStop = False
         '
         'tbDescription
         '
+        Me.tbDescription.AcceptsTab = True
         Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbDescription.Location = New System.Drawing.Point(73, 34)
         Me.tbDescription.Name = "tbDescription"
         Me.tbDescription.Size = New System.Drawing.Size(205, 19)
-        Me.tbDescription.TabIndex = 322
+        Me.tbDescription.TabIndex = 2
+        Me.tbDescription.TabStop = False
         '
         'btExpSat
         '
@@ -384,10 +398,13 @@ Partial Class iPropertiesForm
         '
         'tbRevNo
         '
+        Me.tbRevNo.AcceptsReturn = True
+        Me.tbRevNo.AcceptsTab = True
         Me.tbRevNo.Location = New System.Drawing.Point(246, 102)
         Me.tbRevNo.Name = "tbRevNo"
         Me.tbRevNo.Size = New System.Drawing.Size(32, 20)
-        Me.tbRevNo.TabIndex = 326
+        Me.tbRevNo.TabIndex = 6
+        Me.tbRevNo.TabStop = False
         '
         'ErrorProvider1
         '
@@ -490,7 +507,7 @@ Partial Class iPropertiesForm
         Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
         '
-        'iPropertiesForm
+        'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -544,7 +561,7 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-        Me.Name = "iPropertiesForm"
+        Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
         Me.Text = "iPropertiesForm"
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
