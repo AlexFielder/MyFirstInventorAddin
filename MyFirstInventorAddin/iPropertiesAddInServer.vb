@@ -2,6 +2,7 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+'Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
 
@@ -29,7 +30,7 @@ Namespace iPropertiesController
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
         Public Shared attribute As GuidAttribute = Nothing
-        Public Shared myiPropsForm As iPropertiesForm = Nothing
+        Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
@@ -103,7 +104,7 @@ Namespace iPropertiesController
                     AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
-                    myiPropsForm = New iPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
+                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
                     Window = localWindow
 
                 End If
@@ -203,19 +204,32 @@ Namespace iPropertiesController
             If AssyDoc.SelectSet.Count = 1 Then
                 Dim selecteddoc As Document = Nothing
                 Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                selecteddoc = compOcc.Definition.Document
-                'Dim isReadonly As Boolean = False
-                'If CheckReadOnly(selecteddoc) Then
-                '    isReadonly = True
-                'End If
-                'myiPropsForm.tbPartNumber.ReadOnly = isReadonly
-                'myiPropsForm.tbDescription.ReadOnly = isReadonly
-                'myiPropsForm.tbStockNumber.ReadOnly = isReadonly
-                'myiPropsForm.tbEngineer.ReadOnly = isReadonly
-                'myiPropsForm.tbRevNo.ReadOnly = isReadonly
-                UpdateDisplayediProperties(selecteddoc)
-                AssyDoc.SelectSet.Select(compOcc)
-                UpdateFormTextBoxColours()
+                Dim def As ComponentDefinition
+                def = compOcc.Definition
+                If TypeOf def Is VirtualComponentDefinition Then
+                    Dim virtualDef As VirtualComponentDefinition
+                    virtualDef = compOcc.Definition
+                    selecteddoc = virtualDef.Document
+
+                    UpdateDisplayediProperties(selecteddoc)
+                    AssyDoc.SelectSet.Select(compOcc)
+                    UpdateFormTextBoxColours()
+                Else
+                    selecteddoc = compOcc.Definition.Document
+
+                    UpdateDisplayediProperties(selecteddoc)
+                    AssyDoc.SelectSet.Select(compOcc)
+                    UpdateFormTextBoxColours()
+                End If
+                'selecteddoc = compOcc.Definition.Document
+                '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
+                '    'Dim selectedVirtdoc As Document = Nothing
+                '    'selectedVirtdoc = VirtualDef.Document
+
+                '    'UpdateDisplayediProperties(selectedVirtdoc)
+                '    UpdateDisplayediProperties(selecteddoc)
+                '    AssyDoc.SelectSet.Select(compOcc)
+                '    UpdateFormTextBoxColours()
             End If
         End Sub
 
@@ -305,6 +319,8 @@ Namespace iPropertiesController
                                 myiPropsForm.Label10.Text = "Checked In"
                                 myiPropsForm.PictureBox1.Show()
                                 myiPropsForm.PictureBox2.Hide()
+                                myiPropsForm.btCheckIn.Hide()
+                                myiPropsForm.btCheckOut.Show()
 
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
@@ -316,6 +332,8 @@ Namespace iPropertiesController
                                 myiPropsForm.Label10.Text = "Checked Out"
                                 myiPropsForm.PictureBox1.Hide()
                                 myiPropsForm.PictureBox2.Show()
+                                myiPropsForm.btCheckIn.Show()
+                                myiPropsForm.btCheckOut.Hide()
 
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
@@ -359,6 +377,25 @@ Namespace iPropertiesController
                             UpdateDisplayediProperties(PartDoc)
                         End If
                     Else
+                        'If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                        '    'Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument.ReferencedDocument
+
+                        '    Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+
+                        '    Dim AssyDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveEditDocument
+
+
+                        '    If AssyDoc.SelectSet.Count = 1 Then
+                        '        If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                        '            ShowOccurrenceProperties(AssyDoc)
+                        '        Else
+                        '            UpdateFormTextBoxColours()
+                        '            UpdateDisplayediProperties(DrawDoc)
+                        '        End If
+                        '    Else
+                        '        UpdateFormTextBoxColours()
+                        '        UpdateDisplayediProperties(DrawDoc)
+                        '    End If
                         Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         UpdateFormTextBoxColours()
                         UpdateDisplayediProperties(DrawDoc)
@@ -459,28 +496,6 @@ Namespace iPropertiesController
                     End If
                 End If
 
-                'standard properties that all documents have
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "") = stdPartNumber Then
-                '    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbPartNumber.Text = stdPartNumber
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "") = stdDescription Then
-                '    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbDescription.Text = stdDescription
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "") = stdEngineer Then
-                '    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                'Else
-                '    myiPropsForm.tbEngineer.Text = stdEngineer
-                'End If
-                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = stdRevNumber Then
-                '    myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-                'Else
-                '    myiPropsForm.tbRevNo.Text = stdRevNumber
-                'End If
-
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                     myiPropsForm.btDefer.Show()
                     myiPropsForm.Label8.Show()
@@ -496,6 +511,7 @@ Namespace iPropertiesController
                     myiPropsForm.Label3.Hide()
                     myiPropsForm.tbStockNumber.Hide()
                     myiPropsForm.btCopyPN.Hide()
+                    myiPropsForm.btViewNames.Show()
 
                     myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -600,6 +616,7 @@ Namespace iPropertiesController
                     myiPropsForm.btShtScale.Hide()
                     myiPropsForm.ModelFileLocation.Hide()
                     myiPropsForm.btCopyPN.Show()
+                    myiPropsForm.btViewNames.Hide()
 
                     If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "") = stdStockNumber Then
                         myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
@@ -636,6 +653,7 @@ Namespace iPropertiesController
                     Else
                         myiPropsForm.tbRevNo.Text = stdRevNumber
                     End If
+
                 End If
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
@@ -673,6 +691,8 @@ Namespace iPropertiesController
                     myiPropsForm.Label10.Text = "Checked In"
                     myiPropsForm.PictureBox1.Show()
                     myiPropsForm.PictureBox2.Hide()
+                    myiPropsForm.btCheckIn.Hide()
+                    myiPropsForm.btCheckOut.Show()
 
                     myiPropsForm.tbPartNumber.ReadOnly = True
                     myiPropsForm.tbDescription.ReadOnly = True
@@ -684,6 +704,8 @@ Namespace iPropertiesController
                     myiPropsForm.Label10.Text = "Checked Out"
                     myiPropsForm.PictureBox1.Hide()
                     myiPropsForm.PictureBox2.Show()
+                    myiPropsForm.btCheckIn.Show()
+                    myiPropsForm.btCheckOut.Hide()
 
                     myiPropsForm.tbPartNumber.ReadOnly = False
                     myiPropsForm.tbDescription.ReadOnly = False

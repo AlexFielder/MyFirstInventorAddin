@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class iPropertiesForm
+Partial Class IPropertiesForm
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,7 +23,7 @@ Partial Class iPropertiesForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(iPropertiesForm))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(IPropertiesForm))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -42,8 +42,6 @@ Partial Class iPropertiesForm
         Me.Label7 = New System.Windows.Forms.Label()
         Me.btITEM = New System.Windows.Forms.Button()
         Me.Label10 = New System.Windows.Forms.Label()
-        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btShtMaterial = New System.Windows.Forms.Button()
         Me.btShtScale = New System.Windows.Forms.Button()
         Me.btDiaEng = New System.Windows.Forms.Button()
@@ -67,9 +65,15 @@ Partial Class iPropertiesForm
         Me.btCopyPN = New System.Windows.Forms.Button()
         Me.btDegDes = New System.Windows.Forms.Button()
         Me.btDiaDes = New System.Windows.Forms.Button()
+        Me.btPipes = New System.Windows.Forms.Button()
+        Me.btCheckOut = New System.Windows.Forms.Button()
+        Me.btCheckIn = New System.Windows.Forms.Button()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.btViewNames = New System.Windows.Forms.Button()
+        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -120,10 +124,10 @@ Partial Class iPropertiesForm
         'btUpdateAll
         '
         Me.btUpdateAll.AccessibleDescription = " up"
-        Me.btUpdateAll.Location = New System.Drawing.Point(201, 124)
+        Me.btUpdateAll.Location = New System.Drawing.Point(199, 124)
         Me.btUpdateAll.Name = "btUpdateAll"
         Me.btUpdateAll.Size = New System.Drawing.Size(78, 23)
-        Me.btUpdateAll.TabIndex = 200
+        Me.btUpdateAll.TabIndex = 7
         Me.btUpdateAll.Text = "Update iProp"
         Me.btUpdateAll.UseVisualStyleBackColor = True
         '
@@ -142,7 +146,7 @@ Partial Class iPropertiesForm
         Me.Label8.Location = New System.Drawing.Point(3, 60)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(118, 13)
-        Me.Label8.TabIndex = 107
+        Me.Label8.TabIndex = 3
         Me.Label8.Text = "Defer Drawing Updates"
         '
         'btDefer
@@ -233,45 +237,20 @@ Partial Class iPropertiesForm
         Me.Label10.TabIndex = 302
         Me.Label10.Text = "Checked in?"
         '
-        'PictureBox2
-        '
-        Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
-        Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(199, 173)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox2.TabIndex = 304
-        Me.PictureBox2.TabStop = False
-        '
-        'PictureBox1
-        '
-        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
-        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(199, 173)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox1.TabIndex = 303
-        Me.PictureBox1.TabStop = False
-        '
         'btShtMaterial
         '
         Me.btShtMaterial.Location = New System.Drawing.Point(3, 124)
         Me.btShtMaterial.Name = "btShtMaterial"
-        Me.btShtMaterial.Size = New System.Drawing.Size(75, 23)
+        Me.btShtMaterial.Size = New System.Drawing.Size(72, 23)
         Me.btShtMaterial.TabIndex = 305
         Me.btShtMaterial.Text = "Sht Material"
         Me.btShtMaterial.UseVisualStyleBackColor = True
         '
         'btShtScale
         '
-        Me.btShtScale.Location = New System.Drawing.Point(103, 124)
+        Me.btShtScale.Location = New System.Drawing.Point(74, 124)
         Me.btShtScale.Name = "btShtScale"
-        Me.btShtScale.Size = New System.Drawing.Size(75, 23)
+        Me.btShtScale.Size = New System.Drawing.Size(62, 23)
         Me.btShtScale.TabIndex = 306
         Me.btShtScale.Text = "Sht Scale"
         Me.btShtScale.UseVisualStyleBackColor = True
@@ -296,29 +275,29 @@ Partial Class iPropertiesForm
         '
         'btExpStp
         '
-        Me.btExpStp.Location = New System.Drawing.Point(3, 190)
+        Me.btExpStp.Location = New System.Drawing.Point(59, 190)
         Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(60, 23)
+        Me.btExpStp.Size = New System.Drawing.Size(50, 23)
         Me.btExpStp.TabIndex = 311
-        Me.btExpStp.Text = "Exp STP"
+        Me.btExpStp.Text = "X STP"
         Me.btExpStp.UseVisualStyleBackColor = True
         '
         'btExpStl
         '
-        Me.btExpStl.Location = New System.Drawing.Point(147, 190)
+        Me.btExpStl.Location = New System.Drawing.Point(172, 190)
         Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(60, 23)
+        Me.btExpStl.Size = New System.Drawing.Size(50, 23)
         Me.btExpStl.TabIndex = 312
-        Me.btExpStl.Text = "Exp STL"
+        Me.btExpStl.Text = "X STL"
         Me.btExpStl.UseVisualStyleBackColor = True
         '
         'btExpPdf
         '
-        Me.btExpPdf.Location = New System.Drawing.Point(218, 190)
+        Me.btExpPdf.Location = New System.Drawing.Point(228, 190)
         Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(60, 23)
+        Me.btExpPdf.Size = New System.Drawing.Size(50, 23)
         Me.btExpPdf.TabIndex = 313
-        Me.btExpPdf.Text = "Exp PDF"
+        Me.btExpPdf.Text = "X PDF"
         Me.btExpPdf.UseVisualStyleBackColor = True
         '
         'FileLocation
@@ -338,51 +317,65 @@ Partial Class iPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v10.00"
+        Me.Label13.Text = "iProperties Controller v13.10"
         '
         'tbDrawnBy
         '
+        Me.tbDrawnBy.AcceptsReturn = True
+        Me.tbDrawnBy.AcceptsTab = True
         Me.tbDrawnBy.Location = New System.Drawing.Point(73, 102)
         Me.tbDrawnBy.Name = "tbDrawnBy"
         Me.tbDrawnBy.Size = New System.Drawing.Size(116, 20)
-        Me.tbDrawnBy.TabIndex = 7
+        Me.tbDrawnBy.TabIndex = 5
+        Me.tbDrawnBy.TabStop = False
         '
         'tbEngineer
         '
+        Me.tbEngineer.AcceptsReturn = True
+        Me.tbEngineer.AcceptsTab = True
         Me.tbEngineer.Location = New System.Drawing.Point(73, 79)
         Me.tbEngineer.Name = "tbEngineer"
         Me.tbEngineer.Size = New System.Drawing.Size(206, 20)
-        Me.tbEngineer.TabIndex = 319
+        Me.tbEngineer.TabIndex = 4
+        Me.tbEngineer.TabStop = False
         '
         'tbStockNumber
         '
+        Me.tbStockNumber.AcceptsReturn = True
+        Me.tbStockNumber.AcceptsTab = True
         Me.tbStockNumber.Location = New System.Drawing.Point(73, 56)
         Me.tbStockNumber.Name = "tbStockNumber"
         Me.tbStockNumber.Size = New System.Drawing.Size(116, 20)
-        Me.tbStockNumber.TabIndex = 320
+        Me.tbStockNumber.TabIndex = 3
+        Me.tbStockNumber.TabStop = False
         '
         'tbPartNumber
         '
+        Me.tbPartNumber.AcceptsReturn = True
+        Me.tbPartNumber.AcceptsTab = True
         Me.tbPartNumber.Location = New System.Drawing.Point(73, 11)
         Me.tbPartNumber.Name = "tbPartNumber"
         Me.tbPartNumber.Size = New System.Drawing.Size(116, 20)
-        Me.tbPartNumber.TabIndex = 321
+        Me.tbPartNumber.TabIndex = 1
+        Me.tbPartNumber.TabStop = False
         '
         'tbDescription
         '
+        Me.tbDescription.AcceptsTab = True
         Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbDescription.Location = New System.Drawing.Point(73, 34)
         Me.tbDescription.Name = "tbDescription"
         Me.tbDescription.Size = New System.Drawing.Size(205, 19)
-        Me.tbDescription.TabIndex = 322
+        Me.tbDescription.TabIndex = 2
+        Me.tbDescription.TabStop = False
         '
         'btExpSat
         '
-        Me.btExpSat.Location = New System.Drawing.Point(74, 190)
+        Me.btExpSat.Location = New System.Drawing.Point(115, 190)
         Me.btExpSat.Name = "btExpSat"
-        Me.btExpSat.Size = New System.Drawing.Size(60, 23)
+        Me.btExpSat.Size = New System.Drawing.Size(50, 23)
         Me.btExpSat.TabIndex = 323
-        Me.btExpSat.Text = "Exp SAT"
+        Me.btExpSat.Text = "X SAT"
         Me.btExpSat.UseVisualStyleBackColor = True
         '
         'ModelFileLocation
@@ -405,10 +398,13 @@ Partial Class iPropertiesForm
         '
         'tbRevNo
         '
+        Me.tbRevNo.AcceptsReturn = True
+        Me.tbRevNo.AcceptsTab = True
         Me.tbRevNo.Location = New System.Drawing.Point(246, 102)
         Me.tbRevNo.Name = "tbRevNo"
         Me.tbRevNo.Size = New System.Drawing.Size(32, 20)
-        Me.tbRevNo.TabIndex = 326
+        Me.tbRevNo.TabIndex = 6
+        Me.tbRevNo.TabStop = False
         '
         'ErrorProvider1
         '
@@ -450,13 +446,78 @@ Partial Class iPropertiesForm
         Me.btDiaDes.Text = "Ø"
         Me.btDiaDes.UseVisualStyleBackColor = True
         '
-        'iPropertiesForm
+        'btPipes
+        '
+        Me.btPipes.Location = New System.Drawing.Point(3, 190)
+        Me.btPipes.Name = "btPipes"
+        Me.btPipes.Size = New System.Drawing.Size(50, 23)
+        Me.btPipes.TabIndex = 331
+        Me.btPipes.Text = "PIPES"
+        Me.btPipes.UseVisualStyleBackColor = True
+        '
+        'btCheckOut
+        '
+        Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
+        Me.btCheckOut.Location = New System.Drawing.Point(253, 7)
+        Me.btCheckOut.Name = "btCheckOut"
+        Me.btCheckOut.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckOut.TabIndex = 333
+        Me.btCheckOut.UseVisualStyleBackColor = True
+        '
+        'btCheckIn
+        '
+        Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
+        Me.btCheckIn.Location = New System.Drawing.Point(253, 7)
+        Me.btCheckIn.Name = "btCheckIn"
+        Me.btCheckIn.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckIn.TabIndex = 332
+        Me.btCheckIn.UseVisualStyleBackColor = True
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
+        Me.PictureBox2.ImageLocation = ""
+        Me.PictureBox2.Location = New System.Drawing.Point(199, 173)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox2.TabIndex = 304
+        Me.PictureBox2.TabStop = False
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
+        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(199, 173)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox1.TabIndex = 303
+        Me.PictureBox1.TabStop = False
+        '
+        'btViewNames
+        '
+        Me.btViewNames.Location = New System.Drawing.Point(135, 124)
+        Me.btViewNames.Name = "btViewNames"
+        Me.btViewNames.Size = New System.Drawing.Size(65, 23)
+        Me.btViewNames.TabIndex = 334
+        Me.btViewNames.Text = "View Labs"
+        Me.btViewNames.UseVisualStyleBackColor = True
+        '
+        'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(282, 296)
+        Me.Controls.Add(Me.btViewNames)
+        Me.Controls.Add(Me.btCheckOut)
+        Me.Controls.Add(Me.btCheckIn)
+        Me.Controls.Add(Me.btPipes)
         Me.Controls.Add(Me.btDegDes)
         Me.Controls.Add(Me.btDiaDes)
         Me.Controls.Add(Me.Label8)
@@ -500,12 +561,12 @@ Partial Class iPropertiesForm
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-        Me.Name = "iPropertiesForm"
+        Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
         Me.Text = "iPropertiesForm"
+        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -554,4 +615,8 @@ Partial Class iPropertiesForm
     Friend WithEvents btCopyPN As Windows.Forms.Button
     Friend WithEvents btDegDes As Windows.Forms.Button
     Friend WithEvents btDiaDes As Windows.Forms.Button
+    Friend WithEvents btPipes As Windows.Forms.Button
+    Friend WithEvents btCheckOut As Windows.Forms.Button
+    Friend WithEvents btCheckIn As Windows.Forms.Button
+    Friend WithEvents btViewNames As Windows.Forms.Button
 End Class
