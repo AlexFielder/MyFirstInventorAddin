@@ -286,7 +286,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                 myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                                myiPropsForm.tbDescription.Text = FeatOcc.FeatureDimensions.ToString
                             ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
@@ -346,7 +346,7 @@ Namespace iPropertiesController
                         End If
                     ElseIf (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
                         UpdateFormTextBoxColours()
-                        Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveDocument
+                        Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveEditDocument
                         If PartDoc.SelectSet.Count = 1 Then
                             If TypeOf PartDoc.SelectSet(1) Is PartFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
@@ -359,7 +359,8 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                 myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                                myiPropsForm.tbDescription.Text = FeatOcc.FeatureDimensions.ToString
+
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False

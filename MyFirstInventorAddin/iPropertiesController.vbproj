@@ -180,7 +180,7 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)MyFirstInventorAddin.X.manifest" -outputresource:"$(TargetPath)";#2
 if "$(ConfigurationName)"=="Debug" (
-robocopy "C:\Users\jsmith\Documents\Visual Studio 2017\Projects\MyFirstInventorAddin\MyFirstInventorAddin\bin\Debug" C:\ProgramData\Autodesk\ApplicationPlugins\iPropertiesController /COPY:DAT
+robocopy "C:\Users\jsmith\Documents\Visual Studio 2017\Projects\MyFirstInventorAddin\MyFirstInventorAddin\bin\Debug" "C:\ProgramData\Autodesk\Inventor Addins\iPropertiesController" /COPY:DAT
 if not exist "C:\Logs" mkdir "C:\Logs"
 )
 if "$(ConfigurationName)"=="Release" (

@@ -102,18 +102,56 @@ Public Class IPropertiesForm
             tbEngineer_Leave(sender, e)
             tbDrawnBy_Leave(sender, e)
             tbRevNo_Leave(sender, e)
-            Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-            Dim kgMass As Decimal = myMass / 1000
-            Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-            tbMass.Text = myMass2 & " kg"
-            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
 
-            Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-            Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-            tbDensity.Text = myDensity2 & " g/cm^3"
-            log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+            If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+                Dim AssyDoc As AssemblyDocument = Nothing
+                AssyDoc = inventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                    Dim selecteddoc As Document = compOcc.Definition.Document
 
-            Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                    Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                    Dim kgMass As Decimal = myMass / 1000
+                    Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                    tbMass.Text = myMass2 & " kg"
+                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbMass.Text)
+
+                    Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                    Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                    tbDensity.Text = myDensity2 & " g/cm^3"
+                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbDensity.Text)
+
+                    Label12.Text = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+
+                    AssyDoc.SelectSet.Select(compOcc)
+                Else
+                    Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                    Dim kgMass As Decimal = myMass / 1000
+                    Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                    tbMass.Text = myMass2 & " kg"
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+
+                    Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                    Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                    tbDensity.Text = myDensity2 & " g/cm^3"
+                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+
+                    Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                End If
+            Else
+                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                Dim kgMass As Decimal = myMass / 1000
+                Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                tbMass.Text = myMass2 & " kg"
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+
+                Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                tbDensity.Text = myDensity2 & " g/cm^3"
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+
+                Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+            End If
             UpdateStatusBar("iProperties updated")
             'End If
             ErrorProvider1.Clear()
@@ -287,88 +325,84 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btITEM_Click(sender As Object, e As EventArgs) Handles btITEM.Click
-        Try
-            If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-                Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+        If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
-                Dim oSht As Sheet = oDWG.ActiveSheet
+            Dim oSht As Sheet = oDWG.ActiveSheet
 
-                Dim oView As DrawingView = Nothing
-                Dim drawnDoc As Document = Nothing
+            Dim oView As DrawingView = Nothing
+            Dim drawnDoc As Document = Nothing
 
-                For Each view As DrawingView In oSht.DrawingViews
-                    oView = view
-                    Exit For
-                Next
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
 
-                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim doc = drawnDoc
-                Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-                Dim oBOM As BOM = oAssyDef.BOM
+            Dim doc = drawnDoc
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
 
-                oBOM.StructuredViewEnabled = True
+            oBOM.StructuredViewEnabled = True
 
-                Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-                Dim oBOMRow As BOMRow
+            Dim oBOMRow As BOMRow
 
-                For Each oBOMRow In oBOMView.BOMRows
-                    'Set a reference to the primary ComponentDefinition of the row
-                    Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+            For Each oBOMRow In oBOMView.BOMRows
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
 
-                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                    Dim CompFileNameOnly As String
-                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                Dim CompFileNameOnly As String
+                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                    'MessageBox.Show(CompFileNameOnly)
+                'MessageBox.Show(CompFileNameOnly)
 
-                    Dim item As String
-                    item = oBOMRow.ItemNumber
-                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                    iProperties.GetorSetStandardiProperty(
+                Dim item As String
+                item = oBOMRow.ItemNumber
+                'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                iProperties.GetorSetStandardiProperty(
                             oCompDef.Document,
                             PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
-                Next
-                oSht.Update()
-            ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
-                Dim doc = inventorApp.ActiveDocument
-                Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-                Dim oBOM As BOM = oAssyDef.BOM
+            Next
+            oSht.Update()
+        ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
+            Dim doc = inventorApp.ActiveEditDocument
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
 
-                oBOM.StructuredViewEnabled = True
+            oBOM.StructuredViewEnabled = True
 
-                Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-                Dim oBOMRow As BOMRow
+            Dim oBOMRow As BOMRow
 
-                For Each oBOMRow In oBOMView.BOMRows
-                    'Set a reference to the primary ComponentDefinition of the row
-                    Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+            For Each oBOMRow In oBOMView.BOMRows
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
 
-                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                    Dim CompFileNameOnly As String
-                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                Dim CompFileNameOnly As String
+                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                    'MessageBox.Show(CompFileNameOnly)
+                'MessageBox.Show(CompFileNameOnly)
 
-                    Dim item As String
-                    item = oBOMRow.ItemNumber
-                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                    iProperties.GetorSetStandardiProperty(
+                Dim item As String
+                item = oBOMRow.ItemNumber
+                'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                iProperties.GetorSetStandardiProperty(
                             oCompDef.Document,
                             PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
-                Next
-            End If
-        Catch ex As Exception
-            log.Error(ex.Message)
-        End Try
+            Next
+        End If
         UpdateStatusBar("BOM item numbers copied to #ITEM")
     End Sub
 
@@ -1280,32 +1314,28 @@ Public Class IPropertiesForm
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
                 If e.KeyValue = Keys.Tab Then
-                    btUpdateAll.Focus()
+                    tbRevNo.Focus()
                     assydoc.SelectSet.Select(compOcc)
-
                 ElseIf e.KeyValue = Keys.Return Then
                     tbEngineer_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
                 If e.KeyValue = Keys.Tab Then
-                    btUpdateAll.Focus()
-
+                    tbRevNo.Focus()
                 ElseIf e.KeyValue = Keys.Return Then
                     tbEngineer_Leave(sender, e)
                 End If
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If e.KeyValue = Keys.Tab Then
-                btUpdateAll.Focus()
-
+                tbRevNo.Focus()
             ElseIf e.KeyValue = Keys.Return Then
                 tbEngineer_Leave(sender, e)
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
             If e.KeyValue = Keys.Tab Then
                 tbDrawnBy.Focus()
-
             ElseIf e.KeyValue = Keys.Return Then
                 tbEngineer_Leave(sender, e)
             End If
@@ -1318,24 +1348,17 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
-                    btUpdateAll_Click(sender, e)
-                    assydoc.SelectSet.Select(compOcc)
-                ElseIf e.KeyValue = Keys.Return Then
+                If e.KeyValue = Keys.Tab Or Keys.Return Then
                     btUpdateAll_Click(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
-                    btUpdateAll_Click(sender, e)
-                ElseIf e.KeyValue = Keys.Return Then
+                If e.KeyValue = Keys.Tab Or Keys.Return Then
                     btUpdateAll_Click(sender, e)
                 End If
             End If
         Else
-            If e.KeyValue = Keys.Tab Then
-                btUpdateAll_Click(sender, e)
-            ElseIf e.KeyValue = Keys.Return Then
+            If e.KeyValue = Keys.Tab Or Keys.Return Then
                 btUpdateAll_Click(sender, e)
             End If
         End If
@@ -1962,7 +1985,14 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btCopyPN_KeyUp(sender As Object, e As KeyEventArgs) Handles btCopyPN.KeyUp
-
+        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If e.KeyValue = Keys.Return Then
+                If tbPartNumber.Text.Length > 0 Then
+                    tbStockNumber.Text = tbPartNumber.Text
+                    tbStockNumber_Leave(sender, e)
+                End If
+            End If
+        End If
     End Sub
 
     Private Sub tbDescription_KeyUp(sender As Object, e As KeyEventArgs) Handles tbDescription.KeyUp
@@ -1991,7 +2021,7 @@ Public Class IPropertiesForm
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
             If e.KeyValue = Keys.Tab Then
-                'tbDescription.SelectionStart = 0
+                tbDescription.SelectionStart = 0
                 tbStockNumber.Focus()
 
             ElseIf e.KeyValue = Keys.Return Then
@@ -1999,7 +2029,7 @@ Public Class IPropertiesForm
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
             If e.KeyValue = Keys.Tab Then
-                'tbDescription.SelectionStart = 0
+                tbDescription.SelectionStart = 0
                 tbEngineer.Focus()
 
             ElseIf e.KeyValue = Keys.Return Then
@@ -2010,8 +2040,7 @@ Public Class IPropertiesForm
 
     Private Sub tbDrawnBy_KeyUp(sender As Object, e As KeyEventArgs) Handles tbDrawnBy.KeyUp
         If e.KeyValue = Keys.Tab Then
-            btUpdateAll.Focus()
-
+            tbRevNo.Focus()
         ElseIf e.KeyValue = Keys.Return Then
             tbDrawnBy_Leave(sender, e)
         End If
