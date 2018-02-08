@@ -85,7 +85,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +178,9 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)MyFirstInventorAddin.X.manifest" -outputresource:"$(TargetPath)";#2
+    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)IPropertiesController.X.manifest" -outputresource:"$(TargetPath)";#2
 if "$(ConfigurationName)"=="Debug" (
-robocopy "C:\Users\jsmith\Documents\Visual Studio 2017\Projects\MyFirstInventorAddin\MyFirstInventorAddin\bin\Debug" "C:\ProgramData\Autodesk\Inventor Addins\iPropertiesController" /COPY:DAT
+XCopy "$(TargetDir)*.*" "C:\ProgramData\Autodesk\Inventor Addins\$(ProjectName)\*.*" /Y /R
 if not exist "C:\Logs" mkdir "C:\Logs"
 )
 if "$(ConfigurationName)"=="Release" (
