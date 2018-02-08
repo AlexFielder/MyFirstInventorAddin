@@ -351,24 +351,28 @@ Public Class IPropertiesForm
             Dim oBOMRow As BOMRow
 
             For Each oBOMRow In oBOMView.BOMRows
+
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
-                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                Dim CompFileNameOnly As String
-                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Else
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                'MessageBox.Show(CompFileNameOnly)
+                    'MessageBox.Show(CompFileNameOnly)
 
-                Dim item As String
-                item = oBOMRow.ItemNumber
-                'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                iProperties.GetorSetStandardiProperty(
-                            oCompDef.Document,
-                            PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    iProperties.GetorSetStandardiProperty(
+                                oCompDef.Document,
+                                PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+                End If
             Next
             oSht.Update()
         ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
@@ -383,24 +387,28 @@ Public Class IPropertiesForm
             Dim oBOMRow As BOMRow
 
             For Each oBOMRow In oBOMView.BOMRows
+
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
-                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                Dim CompFileNameOnly As String
-                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+                Else
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
 
-                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                'MessageBox.Show(CompFileNameOnly)
+                    'MessageBox.Show(CompFileNameOnly)
 
-                Dim item As String
-                item = oBOMRow.ItemNumber
-                'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                iProperties.GetorSetStandardiProperty(
-                            oCompDef.Document,
-                            PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
+                    iProperties.GetorSetStandardiProperty(
+                                oCompDef.Document,
+                                PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+                End If
             Next
         End If
         UpdateStatusBar("BOM item numbers copied to #ITEM")
