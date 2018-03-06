@@ -2053,4 +2053,14 @@ Public Class IPropertiesForm
             tbDrawnBy_Leave(sender, e)
         End If
     End Sub
+
+    Private Sub tbPartNumber_MouseHover(sender As Object, e As EventArgs) Handles tbPartNumber.MouseHover
+        Dim partText As String = tbPartNumber.Text
+        ToolTip1.Show(partText, tbPartNumber)
+    End Sub
+
+    Private Sub tbDescription_MouseHover(sender As Object, e As EventArgs) Handles tbDescription.MouseHover
+        Dim descText As String = tbDescription.Text
+        ToolTip1.Show(descText, tbDescription)
+    End Sub
 End Class
