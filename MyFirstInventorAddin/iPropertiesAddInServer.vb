@@ -31,6 +31,7 @@ Namespace iPropertiesController
         Private thisAssemblyPath As String = String.Empty
         Public Shared attribute As GuidAttribute = Nothing
         Public Shared myiPropsForm As IPropertiesForm = Nothing
+        Public WithEvents ExportOptions As ExportForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
@@ -681,6 +682,94 @@ Namespace iPropertiesController
             End Try
         End Sub
 
+        Public Shared Sub btExpDWF(sender As Object, e As EventArgs)
+            Dim oDocu As Document = Nothing
+
+            If AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                If CheckRef = vbYes Then
+                    oDocu = AddinGlobal.InventorApp.ActiveDocument
+                    oDocu.Save2(True)
+                    ' Get the STL translator Add-In.
+                    Dim oRev = iProperties.GetorSetStandardiProperty(
+                                            AddinGlobal.InventorApp.ActiveDocument,
+                                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                    ' Get the DWF translator Add-In.
+                    Dim DWFAddIn As TranslatorAddIn
+                    DWFAddIn = AddinGlobal.InventorApp.ApplicationAddIns.ItemById("{0AC6FD95-2F4D-42CE-8BE0-8AEA580399E4}")
+
+                    'Set a reference to the active document (the document to be published).
+                    Dim oDoc = AddinGlobal.InventorApp.ActiveDocument
+
+                    Dim oContext = AddinGlobal.InventorApp.TransientObjects.CreateTranslationContext
+                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                    ' Create a NameValueMap object
+                    Dim oOptions As NameValueMap
+                    oOptions = AddinGlobal.InventorApp.TransientObjects.CreateNameValueMap
+
+                    ' Create a DataMedium object
+                    Dim oDataMedium As DataMedium
+                    oDataMedium = AddinGlobal.InventorApp.TransientObjects.CreateDataMedium
+
+                    ' Check whether the translator has 'SaveCopyAs' options
+                    If DWFAddIn.HasSaveCopyAsOptions(oDoc, oContext, oOptions) Then
+
+                        oOptions.Value("Launch_Viewer") = 1
+
+                        ' Other options...
+                        'oOptions.Value("Publish_All_Component_Props") = 1
+                        'oOptions.Value("Publish_All_Physical_Props") = 1
+                        'oOptions.Value("Password") = 0
+
+                        If TypeOf oDoc Is DrawingDocument Then
+
+                            ' Drawing options
+                            oOptions.Value("Publish_Mode") = kCustomDWFPublish
+                            oOptions.Value("Publish_All_Sheets") = 1
+
+                            ' The specified sheets will be ignored if
+                            ' the option "Publish_All_Sheets" is True (1)
+                            Dim oSheets As NameValueMap
+                            oSheets = AddinGlobal.InventorApp.TransientObjects.CreateNameValueMap
+
+                            ' Publish the first sheet AND its 3D model
+                            Dim oSheet1Options As NameValueMap
+                            oSheet1Options = AddinGlobal.InventorApp.TransientObjects.CreateNameValueMap
+
+                            oSheet1Options.Add("Name", "Sheet:1")
+                            oSheet1Options.Add("3DModel", True)
+                            oSheets.Value("Sheet1") = oSheet1Options
+
+                            ' Publish the third sheet but NOT its 3D model
+                            Dim oSheet3Options As NameValueMap
+                            oSheet3Options = AddinGlobal.InventorApp.TransientObjects.CreateNameValueMap
+
+                            oSheet3Options.Add("Name", "Sheet:3")
+                            oSheet3Options.Add("3DModel", False)
+
+                            oSheets.Value("Sheet2") = oSheet3Options
+
+                            'Set the sheet options object in the oOptions NameValueMap
+                            oOptions.Value("Sheets") = oSheets
+                        End If
+
+                    End If
+
+                    Dim oData As DataMedium
+                    oData = AddinGlobal.InventorApp.TransientObjects.CreateDataMedium
+                    oData.FileName = RefNewPath + "_R" + oRev + ".dwf"
+
+                    DWFAddIn.SaveCopyAs(RefDoc, oContext, oOptions, oData)
+                    UpdateStatusBar("Part/Assy file saved as DWF file")
+                Else
+                    CloseIt = False
+                End If
+
+            End If
+            CloseIt
+        End Sub
         ''' <summary>
         ''' there appeared to be three locations so far that had the exact same signature so have refactored to make this method.
         ''' </summary>

@@ -9,6 +9,7 @@ Public Class IPropertiesForm
     Private localWindow As DockableWindow
     Private value As String
     Public ButtonPushed As Boolean = False
+    Private ExportOptions As ExportForm = New ExportForm
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
@@ -68,7 +69,7 @@ Public Class IPropertiesForm
             Me.value = addinCLS
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "My Add-in Dock")
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller")
             myDockableWindow.AddChild(Me.Handle)
 
             If Not myDockableWindow.IsCustomized = True Then
@@ -354,7 +355,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -390,7 +391,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -623,7 +624,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
+    Public Sub btExpStp(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -679,6 +680,7 @@ Public Class IPropertiesForm
                     'End If
                 End If
             Else
+                ExportOptions.CloseIt()
                 'Do nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -783,14 +785,16 @@ Public Class IPropertiesForm
                         End If
                     End If
                 Else
+                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
 
         End If
+        ExportOptions.CloseIt()
     End Sub
 
-    Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
+    Public Sub btExpStl(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1037,7 +1041,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
+    Public Sub btExpPdf(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1137,6 +1141,7 @@ Public Class IPropertiesForm
                 UpdateStatusBar("File saved as 3D pdf file")
                 AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
             Else
+                ExportOptions.CloseIt()
                 'Do Nothing
             End If
         Else
@@ -1245,10 +1250,12 @@ Public Class IPropertiesForm
                     UpdateStatusBar("File saved as pdf file")
                     AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
                 Else
+                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
         End If
+        ExportOptions.CloseIt()
     End Sub
 
     Private Sub tbPartNumber_KeyUp(sender As Object, e As KeyEventArgs) Handles tbPartNumber.KeyUp
@@ -1425,7 +1432,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
+    Public Sub btExpSat(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1458,6 +1465,7 @@ Public Class IPropertiesForm
                     AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
                 End If
             Else
+                ExportOptions.CloseIt()
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -1522,11 +1530,12 @@ Public Class IPropertiesForm
                         AttachRefFile(RefDoc, oData.FileName)
                     End If
                 Else
+                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
         End If
-
+        ExportOptions.CloseIt()
     End Sub
 
     Private Sub tbEngineer_Enter(sender As Object, e As EventArgs) Handles tbEngineer.Enter
@@ -1776,7 +1785,7 @@ Public Class IPropertiesForm
     '    ButtonPushed = False
     'End Sub
 
-    Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
+    Public Sub btPipes(sender As Object, e As EventArgs)
         'define the active document as an assembly file
         Dim oAsmDoc As AssemblyDocument
         oAsmDoc = inventorApp.ActiveDocument
@@ -1876,7 +1885,7 @@ Public Class IPropertiesForm
                 UpdateStatusBar("File skipped because it's read-only")
             End If
         Next
-
+        ExportOptions.CloseIt()
     End Sub
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
@@ -2063,4 +2072,11 @@ Public Class IPropertiesForm
         Dim descText As String = tbDescription.Text
         ToolTip1.Show(descText, tbDescription)
     End Sub
+
+    Private Sub btExpOptions_Click(sender As Object, e As EventArgs) Handles btExpOptions.Click
+        ExportOptions.Show()
+    End Sub
+
 End Class
+
+
