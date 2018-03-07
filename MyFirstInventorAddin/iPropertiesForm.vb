@@ -45,14 +45,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
-        Dim oleReference As ReferencedOLEFileDescriptor
-        oleReference = odoc.ReferencedOLEFileDescriptors _
-                    .Add(selectedfile, OLEDocumentTypeEnum.kOLEDocumentLinkObject)
-        oleReference.BrowserVisible = True
-        oleReference.Visible = False
-        oleReference.DisplayName = System.IO.Path.GetFileName(selectedfile)
-    End Sub
+
 
     Public CurrentPath As String = String.Empty
     Public NewPath As String = String.Empty
@@ -614,15 +607,7 @@ Public Class IPropertiesForm
         SendSymbol(tbDescription, "°")
     End Sub
 
-    Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
-        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
-        If AttachFile = vbYes Then
-            AddReferences(ActiveDoc, RefFile)
-            UpdateStatusBar("File attached")
-        Else
-            'Do Nothing
-        End If
-    End Sub
+
 
     Public Sub btExpStp(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
@@ -670,7 +655,7 @@ Public Class IPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
@@ -731,7 +716,7 @@ Public Class IPropertiesForm
 
                         Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as Step file")
-                        AttachRefFile(RefDoc, oData.FileName)
+                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                     End If
                 End If
             Else
@@ -781,7 +766,7 @@ Public Class IPropertiesForm
 
                             Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                             UpdateStatusBar("Part/Assy file saved as Step file")
-                            AttachRefFile(RefDoc, oData.FileName)
+                            iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                         End If
                     End If
                 Else
@@ -857,7 +842,7 @@ Public Class IPropertiesForm
 
                     Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as STL file")
-                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
 
                     ' The various names and values for the settings is described below.
                     'ExportUnits
@@ -965,7 +950,7 @@ Public Class IPropertiesForm
 
                         Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as STL file")
-                        AttachRefFile(RefDoc, oData.FileName)
+                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                     End If
                 End If
             Else
@@ -1031,7 +1016,7 @@ Public Class IPropertiesForm
 
                             Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                             UpdateStatusBar("Part/Assy file saved as STL file")
-                            AttachRefFile(RefDoc, oData.FileName)
+                            iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                         End If
                     End If
                 Else
@@ -1139,7 +1124,7 @@ Public Class IPropertiesForm
                 'Publish document.
                 Call oPDFConvertor3D.Publish(oDocument, oOptions)
                 UpdateStatusBar("File saved as 3D pdf file")
-                AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
+                iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
             Else
                 ExportOptions.CloseIt()
                 'Do Nothing
@@ -1196,7 +1181,7 @@ Public Class IPropertiesForm
                 'Publish document.
                 Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
                 UpdateStatusBar("File saved as pdf file")
-                AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
             Else
                 CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
@@ -1248,7 +1233,7 @@ Public Class IPropertiesForm
                     'Publish document.
                     Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
                     UpdateStatusBar("File saved as pdf file")
-                    AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
                 Else
                     ExportOptions.CloseIt()
                     'Do Nothing
@@ -1462,7 +1447,7 @@ Public Class IPropertiesForm
                     oData.FileName = NewPath + "_R" + oRev + ".sat"
                     Call oSATTrans.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Sat file")
-                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
                 End If
             Else
                 ExportOptions.CloseIt()
@@ -1497,7 +1482,7 @@ Public Class IPropertiesForm
                     oData.FileName = RefNewPath + "_R" + oRev + ".sat"
                     Call oSATTrans.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as Sat file")
-                    AttachRefFile(RefDoc, oData.FileName)
+                    iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                 End If
             Else
                 CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1527,7 +1512,7 @@ Public Class IPropertiesForm
                         oData.FileName = RefNewPath + "_R" + oRev + ".sat"
                         Call oSATTrans.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as Sat file")
-                        AttachRefFile(RefDoc, oData.FileName)
+                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
                     End If
                 Else
                     ExportOptions.CloseIt()
@@ -1872,7 +1857,7 @@ Public Class IPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    AttachRefFile(oAsmDoc, oData.FileName)
+                    iPropertiesAddInServer.AttachRefFile(oAsmDoc, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
