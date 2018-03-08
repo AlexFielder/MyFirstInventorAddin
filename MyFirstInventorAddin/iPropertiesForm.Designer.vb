@@ -66,8 +66,11 @@ Partial Class IPropertiesForm
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btViewNames = New System.Windows.Forms.Button()
+<<<<<<< HEAD
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btExpOptions = New System.Windows.Forms.Button()
+=======
+>>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -174,7 +177,7 @@ Partial Class IPropertiesForm
         '
         'tbDensity
         '
-        Me.tbDensity.Location = New System.Drawing.Point(74, 125)
+        Me.tbDensity.Location = New System.Drawing.Point(73, 125)
         Me.tbDensity.Name = "tbDensity"
         Me.tbDensity.ReadOnly = True
         Me.tbDensity.Size = New System.Drawing.Size(116, 20)
@@ -289,7 +292,11 @@ Partial Class IPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
+<<<<<<< HEAD
         Me.Label13.Text = "iProperties Controller v13.21"
+=======
+        Me.Label13.Text = "iProperties Controller v13.15"
+>>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
         '
         'tbDrawnBy
         '
@@ -327,7 +334,7 @@ Partial Class IPropertiesForm
         Me.tbPartNumber.AcceptsTab = True
         Me.tbPartNumber.Location = New System.Drawing.Point(74, 10)
         Me.tbPartNumber.Name = "tbPartNumber"
-        Me.tbPartNumber.Size = New System.Drawing.Size(173, 20)
+        Me.tbPartNumber.Size = New System.Drawing.Size(116, 20)
         Me.tbPartNumber.TabIndex = 1
         Me.tbPartNumber.TabStop = False
         '
@@ -461,6 +468,7 @@ Partial Class IPropertiesForm
         Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
         '
+<<<<<<< HEAD
         'ToolTip1
         '
         Me.ToolTip1.AutomaticDelay = 250
@@ -474,6 +482,8 @@ Partial Class IPropertiesForm
         Me.btExpOptions.Text = "Export Options"
         Me.btExpOptions.UseVisualStyleBackColor = True
         '
+=======
+>>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -505,12 +515,14 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
+        Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbEngineer)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
+        Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.btDegEng)
         Me.Controls.Add(Me.btDiaEng)
         Me.Controls.Add(Me.Label3)
@@ -521,8 +533,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
-        Me.Controls.Add(Me.btShtScale)
-        Me.Controls.Add(Me.tbDensity)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
@@ -577,6 +587,9 @@ Partial Class IPropertiesForm
     Friend WithEvents btCheckOut As Windows.Forms.Button
     Friend WithEvents btCheckIn As Windows.Forms.Button
     Friend WithEvents btViewNames As Windows.Forms.Button
+<<<<<<< HEAD
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
     Friend WithEvents btExpOptions As Windows.Forms.Button
+=======
+>>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
 End Class

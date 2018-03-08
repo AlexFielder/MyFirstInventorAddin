@@ -2047,6 +2047,7 @@ Public Class IPropertiesForm
             tbDrawnBy_Leave(sender, e)
         End If
     End Sub
+<<<<<<< HEAD
 
     Private Sub tbPartNumber_MouseHover(sender As Object, e As EventArgs) Handles tbPartNumber.MouseHover
         Dim partText As String = tbPartNumber.Text
@@ -2062,6 +2063,8 @@ Public Class IPropertiesForm
         ExportOptions.Show()
     End Sub
 
+=======
+>>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
 End Class
 
 
