@@ -46,6 +46,9 @@ Partial Class IPropertiesForm
         Me.btShtScale = New System.Windows.Forms.Button()
         Me.btDiaEng = New System.Windows.Forms.Button()
         Me.btDegEng = New System.Windows.Forms.Button()
+        Me.btExpStp = New System.Windows.Forms.Button()
+        Me.btExpStl = New System.Windows.Forms.Button()
+        Me.btExpPdf = New System.Windows.Forms.Button()
         Me.FileLocation = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.tbDrawnBy = New System.Windows.Forms.TextBox()
@@ -53,6 +56,7 @@ Partial Class IPropertiesForm
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
         Me.tbPartNumber = New System.Windows.Forms.TextBox()
         Me.tbDescription = New System.Windows.Forms.TextBox()
+        Me.btExpSat = New System.Windows.Forms.Button()
         Me.ModelFileLocation = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.tbRevNo = New System.Windows.Forms.TextBox()
@@ -61,16 +65,13 @@ Partial Class IPropertiesForm
         Me.btCopyPN = New System.Windows.Forms.Button()
         Me.btDegDes = New System.Windows.Forms.Button()
         Me.btDiaDes = New System.Windows.Forms.Button()
+        Me.btPipes = New System.Windows.Forms.Button()
         Me.btCheckOut = New System.Windows.Forms.Button()
         Me.btCheckIn = New System.Windows.Forms.Button()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btViewNames = New System.Windows.Forms.Button()
-<<<<<<< HEAD
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.btExpOptions = New System.Windows.Forms.Button()
-=======
->>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -177,10 +178,10 @@ Partial Class IPropertiesForm
         '
         'tbDensity
         '
-        Me.tbDensity.Location = New System.Drawing.Point(73, 125)
+        Me.tbDensity.Location = New System.Drawing.Point(74, 125)
         Me.tbDensity.Name = "tbDensity"
         Me.tbDensity.ReadOnly = True
-        Me.tbDensity.Size = New System.Drawing.Size(116, 20)
+        Me.tbDensity.Size = New System.Drawing.Size(115, 20)
         Me.tbDensity.TabIndex = 8
         '
         'Label11
@@ -275,6 +276,33 @@ Partial Class IPropertiesForm
         Me.btDegEng.Text = "°"
         Me.btDegEng.UseVisualStyleBackColor = True
         '
+        'btExpStp
+        '
+        Me.btExpStp.Location = New System.Drawing.Point(59, 190)
+        Me.btExpStp.Name = "btExpStp"
+        Me.btExpStp.Size = New System.Drawing.Size(50, 23)
+        Me.btExpStp.TabIndex = 311
+        Me.btExpStp.Text = "X STP"
+        Me.btExpStp.UseVisualStyleBackColor = True
+        '
+        'btExpStl
+        '
+        Me.btExpStl.Location = New System.Drawing.Point(174, 190)
+        Me.btExpStl.Name = "btExpStl"
+        Me.btExpStl.Size = New System.Drawing.Size(50, 23)
+        Me.btExpStl.TabIndex = 312
+        Me.btExpStl.Text = "X STL"
+        Me.btExpStl.UseVisualStyleBackColor = True
+        '
+        'btExpPdf
+        '
+        Me.btExpPdf.Location = New System.Drawing.Point(230, 190)
+        Me.btExpPdf.Name = "btExpPdf"
+        Me.btExpPdf.Size = New System.Drawing.Size(50, 23)
+        Me.btExpPdf.TabIndex = 313
+        Me.btExpPdf.Text = "X PDF"
+        Me.btExpPdf.UseVisualStyleBackColor = True
+        '
         'FileLocation
         '
         Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
@@ -292,11 +320,7 @@ Partial Class IPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-<<<<<<< HEAD
-        Me.Label13.Text = "iProperties Controller v13.21"
-=======
-        Me.Label13.Text = "iProperties Controller v13.15"
->>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
+        Me.Label13.Text = "iProperties Controller v13.20"
         '
         'tbDrawnBy
         '
@@ -332,21 +356,30 @@ Partial Class IPropertiesForm
         '
         Me.tbPartNumber.AcceptsReturn = True
         Me.tbPartNumber.AcceptsTab = True
-        Me.tbPartNumber.Location = New System.Drawing.Point(74, 10)
+        Me.tbPartNumber.Location = New System.Drawing.Point(74, 11)
         Me.tbPartNumber.Name = "tbPartNumber"
-        Me.tbPartNumber.Size = New System.Drawing.Size(116, 20)
+        Me.tbPartNumber.Size = New System.Drawing.Size(173, 20)
         Me.tbPartNumber.TabIndex = 1
         Me.tbPartNumber.TabStop = False
         '
         'tbDescription
         '
         Me.tbDescription.AcceptsTab = True
-        Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
-        Me.tbDescription.Location = New System.Drawing.Point(74, 33)
+        Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.tbDescription.Location = New System.Drawing.Point(74, 34)
         Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.Size = New System.Drawing.Size(205, 20)
+        Me.tbDescription.Size = New System.Drawing.Size(205, 19)
         Me.tbDescription.TabIndex = 2
         Me.tbDescription.TabStop = False
+        '
+        'btExpSat
+        '
+        Me.btExpSat.Location = New System.Drawing.Point(116, 190)
+        Me.btExpSat.Name = "btExpSat"
+        Me.btExpSat.Size = New System.Drawing.Size(50, 23)
+        Me.btExpSat.TabIndex = 323
+        Me.btExpSat.Text = "X SAT"
+        Me.btExpSat.UseVisualStyleBackColor = True
         '
         'ModelFileLocation
         '
@@ -416,6 +449,15 @@ Partial Class IPropertiesForm
         Me.btDiaDes.Text = "Ø"
         Me.btDiaDes.UseVisualStyleBackColor = True
         '
+        'btPipes
+        '
+        Me.btPipes.Location = New System.Drawing.Point(3, 190)
+        Me.btPipes.Name = "btPipes"
+        Me.btPipes.Size = New System.Drawing.Size(50, 23)
+        Me.btPipes.TabIndex = 331
+        Me.btPipes.Text = "PIPES"
+        Me.btPipes.UseVisualStyleBackColor = True
+        '
         'btCheckOut
         '
         Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
@@ -468,22 +510,10 @@ Partial Class IPropertiesForm
         Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
         '
-<<<<<<< HEAD
         'ToolTip1
         '
         Me.ToolTip1.AutomaticDelay = 250
         '
-        'btExpOptions
-        '
-        Me.btExpOptions.Location = New System.Drawing.Point(74, 194)
-        Me.btExpOptions.Name = "btExpOptions"
-        Me.btExpOptions.Size = New System.Drawing.Size(130, 22)
-        Me.btExpOptions.TabIndex = 335
-        Me.btExpOptions.Text = "Export Options"
-        Me.btExpOptions.UseVisualStyleBackColor = True
-        '
-=======
->>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -491,10 +521,10 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 296)
-        Me.Controls.Add(Me.btExpOptions)
         Me.Controls.Add(Me.btViewNames)
         Me.Controls.Add(Me.btCheckOut)
         Me.Controls.Add(Me.btCheckIn)
+        Me.Controls.Add(Me.btPipes)
         Me.Controls.Add(Me.btDegDes)
         Me.Controls.Add(Me.btDiaDes)
         Me.Controls.Add(Me.Label8)
@@ -504,10 +534,14 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.tbRevNo)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.ModelFileLocation)
+        Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
         Me.Controls.Add(Me.tbPartNumber)
         Me.Controls.Add(Me.btITEM)
         Me.Controls.Add(Me.FileLocation)
+        Me.Controls.Add(Me.btExpPdf)
+        Me.Controls.Add(Me.btExpStl)
+        Me.Controls.Add(Me.btExpStp)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btUpdateAll)
@@ -515,14 +549,12 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbEngineer)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
-        Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.btDegEng)
         Me.Controls.Add(Me.btDiaEng)
         Me.Controls.Add(Me.Label3)
@@ -533,6 +565,8 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.Label11)
+        Me.Controls.Add(Me.btShtScale)
+        Me.Controls.Add(Me.tbDensity)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
@@ -569,6 +603,9 @@ Partial Class IPropertiesForm
     Friend WithEvents btShtScale As Windows.Forms.Button
     Friend WithEvents btDiaEng As Windows.Forms.Button
     Friend WithEvents btDegEng As Windows.Forms.Button
+    Friend WithEvents btExpStp As Windows.Forms.Button
+    Friend WithEvents btExpStl As Windows.Forms.Button
+    Friend WithEvents btExpPdf As Windows.Forms.Button
     Friend WithEvents FileLocation As Windows.Forms.Label
     Friend WithEvents Label13 As Windows.Forms.Label
     Friend WithEvents tbDrawnBy As Windows.Forms.TextBox
@@ -576,6 +613,7 @@ Partial Class IPropertiesForm
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
     Friend WithEvents tbPartNumber As Windows.Forms.TextBox
     Friend WithEvents tbDescription As Windows.Forms.TextBox
+    Friend WithEvents btExpSat As Windows.Forms.Button
     Friend WithEvents ModelFileLocation As Windows.Forms.Label
     Friend WithEvents Label14 As Windows.Forms.Label
     Friend WithEvents tbRevNo As Windows.Forms.TextBox
@@ -584,12 +622,9 @@ Partial Class IPropertiesForm
     Friend WithEvents btCopyPN As Windows.Forms.Button
     Friend WithEvents btDegDes As Windows.Forms.Button
     Friend WithEvents btDiaDes As Windows.Forms.Button
+    Friend WithEvents btPipes As Windows.Forms.Button
     Friend WithEvents btCheckOut As Windows.Forms.Button
     Friend WithEvents btCheckIn As Windows.Forms.Button
     Friend WithEvents btViewNames As Windows.Forms.Button
-<<<<<<< HEAD
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
-    Friend WithEvents btExpOptions As Windows.Forms.Button
-=======
->>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
 End Class

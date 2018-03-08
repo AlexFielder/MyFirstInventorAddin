@@ -9,7 +9,6 @@ Public Class IPropertiesForm
     Private localWindow As DockableWindow
     Private value As String
     Public ButtonPushed As Boolean = False
-    Private ExportOptions As ExportForm = New ExportForm
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
@@ -45,7 +44,14 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-
+    Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
+        Dim oleReference As ReferencedOLEFileDescriptor
+        oleReference = odoc.ReferencedOLEFileDescriptors _
+                    .Add(selectedfile, OLEDocumentTypeEnum.kOLEDocumentLinkObject)
+        oleReference.BrowserVisible = True
+        oleReference.Visible = False
+        oleReference.DisplayName = System.IO.Path.GetFileName(selectedfile)
+    End Sub
 
     Public CurrentPath As String = String.Empty
     Public NewPath As String = String.Empty
@@ -62,7 +68,7 @@ Public Class IPropertiesForm
             Me.value = addinCLS
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller")
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "My Add-in Dock")
             myDockableWindow.AddChild(Me.Handle)
 
             If Not myDockableWindow.IsCustomized = True Then
@@ -348,7 +354,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -384,7 +390,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -607,9 +613,17 @@ Public Class IPropertiesForm
         SendSymbol(tbDescription, "°")
     End Sub
 
+    Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
+        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+        If AttachFile = vbYes Then
+            AddReferences(ActiveDoc, RefFile)
+            UpdateStatusBar("File attached")
+        Else
+            'Do Nothing
+        End If
+    End Sub
 
-
-    Public Sub btExpStp(sender As Object, e As EventArgs)
+    Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -655,7 +669,7 @@ Public Class IPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
@@ -665,7 +679,6 @@ Public Class IPropertiesForm
                     'End If
                 End If
             Else
-                ExportOptions.CloseIt()
                 'Do nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -716,7 +729,7 @@ Public Class IPropertiesForm
 
                         Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as Step file")
-                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                        AttachRefFile(RefDoc, oData.FileName)
                     End If
                 End If
             Else
@@ -766,20 +779,18 @@ Public Class IPropertiesForm
 
                             Call oSTEPTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                             UpdateStatusBar("Part/Assy file saved as Step file")
-                            iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                            AttachRefFile(RefDoc, oData.FileName)
                         End If
                     End If
                 Else
-                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
 
         End If
-        ExportOptions.CloseIt()
     End Sub
 
-    Public Sub btExpStl(sender As Object, e As EventArgs)
+    Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -842,7 +853,7 @@ Public Class IPropertiesForm
 
                     Call oSTLTranslator.SaveCopyAs(oDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as STL file")
-                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
 
                     ' The various names and values for the settings is described below.
                     'ExportUnits
@@ -950,7 +961,7 @@ Public Class IPropertiesForm
 
                         Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as STL file")
-                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                        AttachRefFile(RefDoc, oData.FileName)
                     End If
                 End If
             Else
@@ -1016,7 +1027,7 @@ Public Class IPropertiesForm
 
                             Call oSTLTranslator.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                             UpdateStatusBar("Part/Assy file saved as STL file")
-                            iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                            AttachRefFile(RefDoc, oData.FileName)
                         End If
                     End If
                 Else
@@ -1026,7 +1037,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Public Sub btExpPdf(sender As Object, e As EventArgs)
+    Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1124,9 +1135,8 @@ Public Class IPropertiesForm
                 'Publish document.
                 Call oPDFConvertor3D.Publish(oDocument, oOptions)
                 UpdateStatusBar("File saved as 3D pdf file")
-                iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
+                AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
             Else
-                ExportOptions.CloseIt()
                 'Do Nothing
             End If
         Else
@@ -1181,7 +1191,7 @@ Public Class IPropertiesForm
                 'Publish document.
                 Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
                 UpdateStatusBar("File saved as pdf file")
-                iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
             Else
                 CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
@@ -1233,14 +1243,12 @@ Public Class IPropertiesForm
                     'Publish document.
                     Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
                     UpdateStatusBar("File saved as pdf file")
-                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                    AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
                 Else
-                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
         End If
-        ExportOptions.CloseIt()
     End Sub
 
     Private Sub tbPartNumber_KeyUp(sender As Object, e As KeyEventArgs) Handles tbPartNumber.KeyUp
@@ -1417,7 +1425,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Public Sub btExpSat(sender As Object, e As EventArgs)
+    Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1447,10 +1455,9 @@ Public Class IPropertiesForm
                     oData.FileName = NewPath + "_R" + oRev + ".sat"
                     Call oSATTrans.SaveCopyAs(inventorApp.ActiveDocument, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Sat file")
-                    iPropertiesAddInServer.AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
+                    AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
                 End If
             Else
-                ExportOptions.CloseIt()
                 'Do Nothing
             End If
         ElseIf inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -1482,7 +1489,7 @@ Public Class IPropertiesForm
                     oData.FileName = RefNewPath + "_R" + oRev + ".sat"
                     Call oSATTrans.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("Part/Assy file saved as Sat file")
-                    iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                    AttachRefFile(RefDoc, oData.FileName)
                 End If
             Else
                 CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1512,15 +1519,14 @@ Public Class IPropertiesForm
                         oData.FileName = RefNewPath + "_R" + oRev + ".sat"
                         Call oSATTrans.SaveCopyAs(RefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("Part/Assy file saved as Sat file")
-                        iPropertiesAddInServer.AttachRefFile(RefDoc, oData.FileName)
+                        AttachRefFile(RefDoc, oData.FileName)
                     End If
                 Else
-                    ExportOptions.CloseIt()
                     'Do Nothing
                 End If
             End If
         End If
-        ExportOptions.CloseIt()
+
     End Sub
 
     Private Sub tbEngineer_Enter(sender As Object, e As EventArgs) Handles tbEngineer.Enter
@@ -1770,7 +1776,7 @@ Public Class IPropertiesForm
     '    ButtonPushed = False
     'End Sub
 
-    Public Sub btPipes(sender As Object, e As EventArgs)
+    Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
         Dim oAsmDoc As AssemblyDocument
         oAsmDoc = inventorApp.ActiveDocument
@@ -1857,7 +1863,7 @@ Public Class IPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    iPropertiesAddInServer.AttachRefFile(oAsmDoc, oData.FileName)
+                    AttachRefFile(oAsmDoc, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
@@ -1870,7 +1876,7 @@ Public Class IPropertiesForm
                 UpdateStatusBar("File skipped because it's read-only")
             End If
         Next
-        ExportOptions.CloseIt()
+
     End Sub
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
@@ -2047,7 +2053,6 @@ Public Class IPropertiesForm
             tbDrawnBy_Leave(sender, e)
         End If
     End Sub
-<<<<<<< HEAD
 
     Private Sub tbPartNumber_MouseHover(sender As Object, e As EventArgs) Handles tbPartNumber.MouseHover
         Dim partText As String = tbPartNumber.Text
@@ -2058,13 +2063,4 @@ Public Class IPropertiesForm
         Dim descText As String = tbDescription.Text
         ToolTip1.Show(descText, tbDescription)
     End Sub
-
-    Private Sub btExpOptions_Click(sender As Object, e As EventArgs) Handles btExpOptions.Click
-        ExportOptions.Show()
-    End Sub
-
-=======
->>>>>>> parent of 0c1b43b... added mouse hover tooltip. Version 13.20
 End Class
-
-
