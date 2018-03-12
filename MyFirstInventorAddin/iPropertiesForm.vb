@@ -5,8 +5,9 @@ Imports log4net
 
 Public Class IPropertiesForm
     'Inherits Form
-    Private inventorApp As Inventor.Application
+    Public inventorApp As Inventor.Application
     Private localWindow As DockableWindow
+    Private ExportOptions As ExportForm = New ExportForm
     Private value As String
     Public ButtonPushed As Boolean = False
 
@@ -44,6 +45,11 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Public CurrentPath As String = String.Empty
+    Public NewPath As String = String.Empty
+    Public RefNewPath As String = String.Empty
+    Public RefDoc As Document = Nothing
+
     Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
         Dim oleReference As ReferencedOLEFileDescriptor
         oleReference = odoc.ReferencedOLEFileDescriptors _
@@ -53,10 +59,7 @@ Public Class IPropertiesForm
         oleReference.DisplayName = System.IO.Path.GetFileName(selectedfile)
     End Sub
 
-    Public CurrentPath As String = String.Empty
-    Public NewPath As String = String.Empty
-    Public RefNewPath As String = String.Empty
-    Public RefDoc As Document = Nothing
+
 
     Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
@@ -354,7 +357,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -390,7 +393,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -623,7 +626,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
+    Public Sub btExpStp_Click()
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -790,7 +793,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
+    Private Sub btExpStl_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1037,7 +1040,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
+    Public Sub btExpPdf_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1425,7 +1428,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
+    Private Sub btExpSat_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -1776,7 +1779,7 @@ Public Class IPropertiesForm
     '    ButtonPushed = False
     'End Sub
 
-    Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
+    Private Sub btPipes_Click(sender As Object, e As EventArgs)
         'define the active document as an assembly file
         Dim oAsmDoc As AssemblyDocument
         oAsmDoc = inventorApp.ActiveDocument
@@ -2062,5 +2065,9 @@ Public Class IPropertiesForm
     Private Sub tbDescription_MouseHover(sender As Object, e As EventArgs) Handles tbDescription.MouseHover
         Dim descText As String = tbDescription.Text
         ToolTip1.Show(descText, tbDescription)
+    End Sub
+
+    Private Sub btExptOptions_Click(sender As Object, e As EventArgs) Handles btExptOptions.Click
+        ExportOptions.Show()
     End Sub
 End Class

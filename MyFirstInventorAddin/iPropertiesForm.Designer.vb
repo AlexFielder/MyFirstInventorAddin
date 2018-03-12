@@ -46,9 +46,6 @@ Partial Class IPropertiesForm
         Me.btShtScale = New System.Windows.Forms.Button()
         Me.btDiaEng = New System.Windows.Forms.Button()
         Me.btDegEng = New System.Windows.Forms.Button()
-        Me.btExpStp = New System.Windows.Forms.Button()
-        Me.btExpStl = New System.Windows.Forms.Button()
-        Me.btExpPdf = New System.Windows.Forms.Button()
         Me.FileLocation = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.tbDrawnBy = New System.Windows.Forms.TextBox()
@@ -56,7 +53,6 @@ Partial Class IPropertiesForm
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
         Me.tbPartNumber = New System.Windows.Forms.TextBox()
         Me.tbDescription = New System.Windows.Forms.TextBox()
-        Me.btExpSat = New System.Windows.Forms.Button()
         Me.ModelFileLocation = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.tbRevNo = New System.Windows.Forms.TextBox()
@@ -65,13 +61,13 @@ Partial Class IPropertiesForm
         Me.btCopyPN = New System.Windows.Forms.Button()
         Me.btDegDes = New System.Windows.Forms.Button()
         Me.btDiaDes = New System.Windows.Forms.Button()
-        Me.btPipes = New System.Windows.Forms.Button()
+        Me.btViewNames = New System.Windows.Forms.Button()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.btExptOptions = New System.Windows.Forms.Button()
         Me.btCheckOut = New System.Windows.Forms.Button()
         Me.btCheckIn = New System.Windows.Forms.Button()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.btViewNames = New System.Windows.Forms.Button()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -276,33 +272,6 @@ Partial Class IPropertiesForm
         Me.btDegEng.Text = "°"
         Me.btDegEng.UseVisualStyleBackColor = True
         '
-        'btExpStp
-        '
-        Me.btExpStp.Location = New System.Drawing.Point(59, 190)
-        Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(50, 23)
-        Me.btExpStp.TabIndex = 311
-        Me.btExpStp.Text = "X STP"
-        Me.btExpStp.UseVisualStyleBackColor = True
-        '
-        'btExpStl
-        '
-        Me.btExpStl.Location = New System.Drawing.Point(174, 190)
-        Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(50, 23)
-        Me.btExpStl.TabIndex = 312
-        Me.btExpStl.Text = "X STL"
-        Me.btExpStl.UseVisualStyleBackColor = True
-        '
-        'btExpPdf
-        '
-        Me.btExpPdf.Location = New System.Drawing.Point(230, 190)
-        Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(50, 23)
-        Me.btExpPdf.TabIndex = 313
-        Me.btExpPdf.Text = "X PDF"
-        Me.btExpPdf.UseVisualStyleBackColor = True
-        '
         'FileLocation
         '
         Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
@@ -320,7 +289,7 @@ Partial Class IPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v13.20"
+        Me.Label13.Text = "iProperties Controller v13.21"
         '
         'tbDrawnBy
         '
@@ -371,15 +340,6 @@ Partial Class IPropertiesForm
         Me.tbDescription.Size = New System.Drawing.Size(205, 19)
         Me.tbDescription.TabIndex = 2
         Me.tbDescription.TabStop = False
-        '
-        'btExpSat
-        '
-        Me.btExpSat.Location = New System.Drawing.Point(116, 190)
-        Me.btExpSat.Name = "btExpSat"
-        Me.btExpSat.Size = New System.Drawing.Size(50, 23)
-        Me.btExpSat.TabIndex = 323
-        Me.btExpSat.Text = "X SAT"
-        Me.btExpSat.UseVisualStyleBackColor = True
         '
         'ModelFileLocation
         '
@@ -449,14 +409,27 @@ Partial Class IPropertiesForm
         Me.btDiaDes.Text = "Ø"
         Me.btDiaDes.UseVisualStyleBackColor = True
         '
-        'btPipes
+        'btViewNames
         '
-        Me.btPipes.Location = New System.Drawing.Point(3, 190)
-        Me.btPipes.Name = "btPipes"
-        Me.btPipes.Size = New System.Drawing.Size(50, 23)
-        Me.btPipes.TabIndex = 331
-        Me.btPipes.Text = "PIPES"
-        Me.btPipes.UseVisualStyleBackColor = True
+        Me.btViewNames.Location = New System.Drawing.Point(137, 124)
+        Me.btViewNames.Name = "btViewNames"
+        Me.btViewNames.Size = New System.Drawing.Size(65, 23)
+        Me.btViewNames.TabIndex = 334
+        Me.btViewNames.Text = "View Labs"
+        Me.btViewNames.UseVisualStyleBackColor = True
+        '
+        'ToolTip1
+        '
+        Me.ToolTip1.AutomaticDelay = 250
+        '
+        'btExptOptions
+        '
+        Me.btExptOptions.Location = New System.Drawing.Point(74, 191)
+        Me.btExptOptions.Name = "btExptOptions"
+        Me.btExptOptions.Size = New System.Drawing.Size(128, 22)
+        Me.btExptOptions.TabIndex = 335
+        Me.btExptOptions.Text = "Export Options"
+        Me.btExptOptions.UseVisualStyleBackColor = True
         '
         'btCheckOut
         '
@@ -501,19 +474,6 @@ Partial Class IPropertiesForm
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
         '
-        'btViewNames
-        '
-        Me.btViewNames.Location = New System.Drawing.Point(137, 124)
-        Me.btViewNames.Name = "btViewNames"
-        Me.btViewNames.Size = New System.Drawing.Size(65, 23)
-        Me.btViewNames.TabIndex = 334
-        Me.btViewNames.Text = "View Labs"
-        Me.btViewNames.UseVisualStyleBackColor = True
-        '
-        'ToolTip1
-        '
-        Me.ToolTip1.AutomaticDelay = 250
-        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -521,10 +481,10 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 296)
+        Me.Controls.Add(Me.btExptOptions)
         Me.Controls.Add(Me.btViewNames)
         Me.Controls.Add(Me.btCheckOut)
         Me.Controls.Add(Me.btCheckIn)
-        Me.Controls.Add(Me.btPipes)
         Me.Controls.Add(Me.btDegDes)
         Me.Controls.Add(Me.btDiaDes)
         Me.Controls.Add(Me.Label8)
@@ -534,14 +494,10 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.tbRevNo)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.ModelFileLocation)
-        Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
         Me.Controls.Add(Me.tbPartNumber)
         Me.Controls.Add(Me.btITEM)
         Me.Controls.Add(Me.FileLocation)
-        Me.Controls.Add(Me.btExpPdf)
-        Me.Controls.Add(Me.btExpStl)
-        Me.Controls.Add(Me.btExpStp)
         Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.btUpdateAll)
@@ -603,9 +559,6 @@ Partial Class IPropertiesForm
     Friend WithEvents btShtScale As Windows.Forms.Button
     Friend WithEvents btDiaEng As Windows.Forms.Button
     Friend WithEvents btDegEng As Windows.Forms.Button
-    Friend WithEvents btExpStp As Windows.Forms.Button
-    Friend WithEvents btExpStl As Windows.Forms.Button
-    Friend WithEvents btExpPdf As Windows.Forms.Button
     Friend WithEvents FileLocation As Windows.Forms.Label
     Friend WithEvents Label13 As Windows.Forms.Label
     Friend WithEvents tbDrawnBy As Windows.Forms.TextBox
@@ -613,7 +566,6 @@ Partial Class IPropertiesForm
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
     Friend WithEvents tbPartNumber As Windows.Forms.TextBox
     Friend WithEvents tbDescription As Windows.Forms.TextBox
-    Friend WithEvents btExpSat As Windows.Forms.Button
     Friend WithEvents ModelFileLocation As Windows.Forms.Label
     Friend WithEvents Label14 As Windows.Forms.Label
     Friend WithEvents tbRevNo As Windows.Forms.TextBox
@@ -622,9 +574,9 @@ Partial Class IPropertiesForm
     Friend WithEvents btCopyPN As Windows.Forms.Button
     Friend WithEvents btDegDes As Windows.Forms.Button
     Friend WithEvents btDiaDes As Windows.Forms.Button
-    Friend WithEvents btPipes As Windows.Forms.Button
     Friend WithEvents btCheckOut As Windows.Forms.Button
     Friend WithEvents btCheckIn As Windows.Forms.Button
     Friend WithEvents btViewNames As Windows.Forms.Button
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
+    Friend WithEvents btExptOptions As Windows.Forms.Button
 End Class

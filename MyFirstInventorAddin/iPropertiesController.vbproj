@@ -98,6 +98,12 @@
     <Compile Include="AddinGlobal.vb" />
     <Compile Include="AssemblyInfo.vb" />
     <Compile Include="ButtonActions.vb" />
+    <Compile Include="ExportForm.Designer.vb">
+      <DependentUpon>ExportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ExportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InventorButton.vb" />
     <Compile Include="iProperties.vb" />
     <Compile Include="iPropertiesForm.Designer.vb">
@@ -155,6 +161,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ExportForm.resx">
+      <DependentUpon>ExportForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="iPropertiesForm.resx">
       <DependentUpon>iPropertiesForm.vb</DependentUpon>
     </EmbeddedResource>
