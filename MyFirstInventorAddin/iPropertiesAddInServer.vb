@@ -481,7 +481,7 @@ Namespace iPropertiesController
                 Dim stdDescription As String = "Description"
                 Dim stdEngineer As String = "Engineer"
                 Dim stdRevNumber As String = "Revision Number"
-                myiPropsForm.textComments.Text = "Comments"
+                Dim stdComments As String = "Comments"
 
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
@@ -501,17 +501,27 @@ Namespace iPropertiesController
                     End If
                 End If
 
-                If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "") = "Comments" Then
-                    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
-                                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                              myiPropsForm.textComments.Text,
-                                                              "")
+                If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "") = stdComments Then
+                    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 Else
+                    myiPropsForm.textComments.Text = stdComments
                     iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
                                                               PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                              String.Empty,
-                                                              "")
+                                                                  String.Empty,
+                                                                  "")
                 End If
+
+                'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "") = "Comments" Then
+                '    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                '                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                '                                              myiPropsForm.textComments.Text,
+                '                                              "")
+                'Else
+                '    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                '                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                '                                              String.Empty,
+                '                                              "")
+                'End If
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                     myiPropsForm.btDefer.Show()

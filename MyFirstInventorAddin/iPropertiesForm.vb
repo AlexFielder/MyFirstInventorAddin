@@ -2076,17 +2076,23 @@ Public Class IPropertiesForm
     'End Sub
 
     Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
-
-        If Not textComments.Text = "Comments" Then
-            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                       textComments.Text,
-                                                       "")
-        Else
+        If textComments.Text = "" Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                        PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
                                                        String.Empty,
                                                        "")
+        Else
+            If Not textComments.Text = "Comments" Then
+                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                           PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                           textComments.Text,
+                                                           "")
+            Else
+                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                       String.Empty,
+                                                       "")
+            End If
         End If
     End Sub
 
@@ -2098,8 +2104,8 @@ Public Class IPropertiesForm
 
     Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
         If textComments.Text = "Comments" Then
-            tbRevNo.Clear()
-            tbRevNo.Focus()
+            textComments.Clear()
+            textComments.Focus()
         End If
     End Sub
 
