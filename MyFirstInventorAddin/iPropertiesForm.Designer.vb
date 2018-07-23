@@ -322,7 +322,7 @@ Partial Class IPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v14.02"
+        Me.Label13.Text = "iProperties Controller v14.03"
         '
         'tbDrawnBy
         '
@@ -358,7 +358,7 @@ Partial Class IPropertiesForm
         '
         Me.tbPartNumber.AcceptsReturn = True
         Me.tbPartNumber.AcceptsTab = True
-        Me.tbPartNumber.Location = New System.Drawing.Point(74, 11)
+        Me.tbPartNumber.Location = New System.Drawing.Point(74, 10)
         Me.tbPartNumber.Name = "tbPartNumber"
         Me.tbPartNumber.Size = New System.Drawing.Size(173, 20)
         Me.tbPartNumber.TabIndex = 1
@@ -366,11 +366,12 @@ Partial Class IPropertiesForm
         '
         'tbDescription
         '
+        Me.tbDescription.AcceptsReturn = True
         Me.tbDescription.AcceptsTab = True
-        Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.tbDescription.Location = New System.Drawing.Point(74, 34)
+        Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+        Me.tbDescription.Location = New System.Drawing.Point(74, 33)
         Me.tbDescription.Name = "tbDescription"
-        Me.tbDescription.Size = New System.Drawing.Size(205, 19)
+        Me.tbDescription.Size = New System.Drawing.Size(205, 20)
         Me.tbDescription.TabIndex = 2
         Me.tbDescription.TabStop = False
         '
@@ -522,6 +523,7 @@ Partial Class IPropertiesForm
         Me.textComments.Location = New System.Drawing.Point(3, 214)
         Me.textComments.Multiline = True
         Me.textComments.Name = "textComments"
+        Me.textComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.textComments.Size = New System.Drawing.Size(277, 38)
         Me.textComments.TabIndex = 335
         '

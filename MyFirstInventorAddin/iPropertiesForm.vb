@@ -69,7 +69,8 @@ Public Class IPropertiesForm
             Me.value = addinCLS
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "My Add-in Dock")
+            Dim addinName As String = Label13.Text
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", addinName)
             myDockableWindow.AddChild(Me.Handle)
 
             If Not myDockableWindow.IsCustomized = True Then
@@ -103,6 +104,8 @@ Public Class IPropertiesForm
             tbEngineer_Leave(sender, e)
             tbDrawnBy_Leave(sender, e)
             tbRevNo_Leave(sender, e)
+            textComments_Leave(sender, e)
+            tbNotes_Leave(sender, e)
 
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
                 Dim AssyDoc As AssemblyDocument = Nothing
@@ -2068,14 +2071,14 @@ Public Class IPropertiesForm
         ToolTip1.Show(descText, tbDescription)
     End Sub
 
-    Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
-        If Not inventorApp.ActiveDocument Is Nothing Then
-            inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
-            'Sleep(1000)
-            'SendKeys.Send("{RIGHT}")
-            Microsoft.VisualBasic.ChrW(Keys.Right)
-        End If
-    End Sub
+    'Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
+    '    If Not inventorApp.ActiveDocument Is Nothing Then
+    '        inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
+    '        'Sleep(1000)
+    '        'SendKeys.Send("{RIGHT}")
+    '        Microsoft.VisualBasic.ChrW(Keys.Right)
+    '    End If
+    'End Sub
 
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
         ' Get the active part document.
@@ -2123,18 +2126,28 @@ Public Class IPropertiesForm
         'End If
     End Sub
 
-    'Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
-    '    If e.KeyValue = Keys.Return Then
-    '        textComments_Leave(sender, e)
-    '    End If
-    'End Sub
+    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
+        If e.KeyValue = Keys.Return Then
+            textComments_Leave(sender, e)
+        End If
+    End Sub
 
-    'Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
-    '    If textComments.Text = "Comments" Then
-    '        textComments.Clear()
-    '        textComments.Focus()
-    '    End If
-    'End Sub
+    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
+        If textComments.Text = "Comments" Then
+            textComments.Clear()
+            textComments.Focus()
+        End If
+    End Sub
+
+    Private Sub textComments_MouseHover(sender As Object, e As EventArgs) Handles textComments.MouseHover
+        Dim hovText As String = "Comments"
+        ToolTip1.Show(hovText, textComments)
+    End Sub
+
+    Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseHover
+        Dim hovText As String = "Notes"
+        ToolTip1.Show(hovText, tbNotes)
+    End Sub
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function
