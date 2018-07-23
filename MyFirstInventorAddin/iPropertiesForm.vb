@@ -2068,48 +2068,78 @@ Public Class IPropertiesForm
         ToolTip1.Show(descText, tbDescription)
     End Sub
 
-    'Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
-    '    If Not inventorApp.ActiveDocument Is Nothing Then
-    '        inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
-    '        'Sleep(1000)
-    '        'SendKeys.Send("{RIGHT}")
-    '        Microsoft.VisualBasic.ChrW(Keys.Right)
+    Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
+            'Sleep(1000)
+            'SendKeys.Send("{RIGHT}")
+            Microsoft.VisualBasic.ChrW(Keys.Right)
+        End If
+    End Sub
+
+    Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
+        ' Get the active part document.
+        Dim invPartDoc As Document = inventorApp.ActiveDocument
+
+
+        ' Get the custom property set.
+        Dim invCustomPropertySet As PropertySet
+        invCustomPropertySet = invPartDoc.PropertySets.Item("Inventor User Defined Properties")
+
+        Dim strNotes As String = tbNotes.Text
+
+        On Error Resume Next
+        Dim notesProperty As [Property]
+        notesProperty = invCustomPropertySet.Item("Notes")
+        If Err.Number <> 0 Then
+            ' Failed to get the property, which means it doesn't exist
+            ' so we'll create it.
+            Call invCustomPropertySet.Add(strNotes, "Notes")
+        Else
+            ' Got the property so update the value.
+            notesProperty.value = strNotes
+        End If
+    End Sub
+
+    Private Sub tbNotes_KeyUp(sender As Object, e As KeyEventArgs) Handles tbNotes.KeyUp
+        If e.KeyValue = Keys.Return Then
+            tbNotes_Leave(sender, e)
+        End If
+    End Sub
+
+    'Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
+    '    If textComments.Text = String.Empty Then
+    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+    '                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+    '                                                   String.Empty,
+    '                                                   "")
+    '    End If
+    '    If Not textComments.Text = "Comments" Then
+    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+    '                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+    '                                                       textComments.Text,
+    '                                                       "")
+    '    Else
+    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+    '                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+    '                                                   String.Empty,
+    '                                                   "")
+    '    End If
+
+    'End Sub
+
+    'Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
+    '    If e.KeyValue = Keys.Return Then
+    '        textComments_Leave(sender, e)
     '    End If
     'End Sub
 
-    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
-        If textComments.Text = String.Empty Then
-            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                       String.Empty,
-                                                       "")
-        End If
-        If Not textComments.Text = "Comments" Then
-            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                           PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                           textComments.Text,
-                                                           "")
-        Else
-            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                       String.Empty,
-                                                       "")
-        End If
-
-    End Sub
-
-    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
-        If e.KeyValue = Keys.Return Then
-            textComments_Leave(sender, e)
-        End If
-    End Sub
-
-    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
-        If textComments.Text = "Comments" Then
-            textComments.Clear()
-            textComments.Focus()
-        End If
-    End Sub
+    'Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
+    '    If textComments.Text = "Comments" Then
+    '        textComments.Clear()
+    '        textComments.Focus()
+    '    End If
+    'End Sub
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function
