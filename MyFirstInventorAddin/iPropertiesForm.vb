@@ -9,6 +9,7 @@ Public Class IPropertiesForm
     Private localWindow As DockableWindow
     Private value As String
     Public ButtonPushed As Boolean = False
+    Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
@@ -614,7 +615,8 @@ Public Class IPropertiesForm
     End Sub
 
     Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
-        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+        FileNameHere = System.IO.Path.GetFileName(RefFile)
+        AttachFile = MsgBox(FileNameHere & " File exported, attach it to main file as reference?", vbYesNo, "File Attach")
         If AttachFile = vbYes Then
             AddReferences(ActiveDoc, RefFile)
             UpdateStatusBar("File attached")
@@ -1820,8 +1822,8 @@ Public Class IPropertiesForm
                             inventorApp.ActiveDocument,
                             PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
         'work the referenced models
-        oDocu = inventorApp.ActiveDocument
-        oDocu.Save2(True)
+        'oDocu = inventorApp.ActiveDocument
+        oAsmDoc.Save2(True)
         For Each oRefDoc In oRefDocs
             If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
                 NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
@@ -1846,7 +1848,7 @@ Public Class IPropertiesForm
                     ' Set application protocol.
                     ' 2 = AP 203 - Configuration Controlled Design
                     ' 3 = AP 214 - Automotive Design
-                    oOptions.Value("ApplicationProtocolType") = 3
+                    oOptions.Value("ApplicationProtocolType") = 4
 
                     ' Other options...
                     'oOptions.Value("Author") = ""
@@ -2063,4 +2065,44 @@ Public Class IPropertiesForm
         Dim descText As String = tbDescription.Text
         ToolTip1.Show(descText, tbDescription)
     End Sub
+
+    'Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
+    '    If Not inventorApp.ActiveDocument Is Nothing Then
+    '        inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
+    '        'Sleep(1000)
+    '        'SendKeys.Send("{RIGHT}")
+    '        Microsoft.VisualBasic.ChrW(Keys.Right)
+    '    End If
+    'End Sub
+
+    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
+
+        If Not textComments.Text = "Comments" Then
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                       textComments.Text,
+                                                       "")
+        Else
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                       String.Empty,
+                                                       "")
+        End If
+    End Sub
+
+    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
+        If e.KeyValue = Keys.Return Then
+            textComments_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
+        If textComments.Text = "Comments" Then
+            tbRevNo.Clear()
+            tbRevNo.Focus()
+        End If
+    End Sub
+
+    'Public Shared Function GetFileName(path As String) As String
+    'End Function
 End Class

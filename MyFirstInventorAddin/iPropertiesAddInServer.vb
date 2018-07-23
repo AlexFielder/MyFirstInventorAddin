@@ -164,6 +164,7 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                myiPropsForm.textComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                     If Not DocumentToPulliPropValuesFrom Is Nothing Then
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
@@ -275,30 +276,31 @@ Namespace iPropertiesController
 
                             If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
                                 ShowOccurrenceProperties(AssyDoc)
-                            ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
+                            ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeatureProxy Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
                                 myiPropsForm.tbRevNo.ReadOnly = True
                                 Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
+                                Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
 
-                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbEngineer.Text = "Reading Part Hole Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                 myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                myiPropsForm.tbDescription.Text = FeatOcc.FeatureDimensions.ToString
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
                             ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
                                 myiPropsForm.tbPartNumber.ReadOnly = True
                                 myiPropsForm.tbDescription.ReadOnly = True
                                 myiPropsForm.tbStockNumber.ReadOnly = True
                                 myiPropsForm.tbEngineer.ReadOnly = True
                                 myiPropsForm.tbRevNo.ReadOnly = True
-                                Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
+                                Dim holeOcc As PartFeature = AssyDoc.SelectSet(1)
 
-                                myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
+                                myiPropsForm.tbEngineer.Text = "Reading Assembly Hole Properties"
                                 myiPropsForm.tbPartNumber.Text = holeOcc.Name
                                 myiPropsForm.tbStockNumber.Text = holeOcc.Name
-                                myiPropsForm.tbDescription.Text = holeOcc.ExtendedName
+                                myiPropsForm.tbDescription.Text = "Hole at assy level, cannot show details :("
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
                                 myiPropsForm.tbDescription.ReadOnly = False
@@ -359,7 +361,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                 myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                 myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                myiPropsForm.tbDescription.Text = FeatOcc.FeatureDimensions.ToString
+                                myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
 
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
@@ -479,11 +481,13 @@ Namespace iPropertiesController
                 Dim stdDescription As String = "Description"
                 Dim stdEngineer As String = "Engineer"
                 Dim stdRevNumber As String = "Revision Number"
+                myiPropsForm.textComments.Text = "Comments"
 
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                     DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 End If
                 'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+
                 If Not DocumentToPulliPropValuesFrom Is Nothing Then
                     myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
                     myiPropsForm.FileLocation.Text = DocumentToPulliPropValuesFrom.FullFileName
@@ -495,6 +499,18 @@ Namespace iPropertiesController
                         myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
                         myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
                     End If
+                End If
+
+                If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "") = "Comments" Then
+                    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                              myiPropsForm.textComments.Text,
+                                                              "")
+                Else
+                    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                              String.Empty,
+                                                              "")
                 End If
 
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then

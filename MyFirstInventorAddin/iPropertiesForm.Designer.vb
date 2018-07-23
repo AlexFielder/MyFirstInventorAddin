@@ -72,6 +72,7 @@ Partial Class IPropertiesForm
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btViewNames = New System.Windows.Forms.Button()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.textComments = New System.Windows.Forms.TextBox()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -306,7 +307,7 @@ Partial Class IPropertiesForm
         'FileLocation
         '
         Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.FileLocation.Location = New System.Drawing.Point(3, 216)
+        Me.FileLocation.Location = New System.Drawing.Point(3, 284)
         Me.FileLocation.Name = "FileLocation"
         Me.FileLocation.Size = New System.Drawing.Size(273, 35)
         Me.FileLocation.TabIndex = 314
@@ -320,7 +321,7 @@ Partial Class IPropertiesForm
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(101, 10)
         Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v13.20"
+        Me.Label13.Text = "iProperties Controller v14.01"
         '
         'tbDrawnBy
         '
@@ -384,7 +385,7 @@ Partial Class IPropertiesForm
         'ModelFileLocation
         '
         Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 251)
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 319)
         Me.ModelFileLocation.Name = "ModelFileLocation"
         Me.ModelFileLocation.Size = New System.Drawing.Size(273, 35)
         Me.ModelFileLocation.TabIndex = 324
@@ -514,13 +515,23 @@ Partial Class IPropertiesForm
         '
         Me.ToolTip1.AutomaticDelay = 250
         '
+        'textComments
+        '
+        Me.textComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
+        Me.textComments.Location = New System.Drawing.Point(3, 214)
+        Me.textComments.Multiline = True
+        Me.textComments.Name = "textComments"
+        Me.textComments.Size = New System.Drawing.Size(277, 70)
+        Me.textComments.TabIndex = 335
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(285, 296)
+        Me.ClientSize = New System.Drawing.Size(285, 362)
+        Me.Controls.Add(Me.textComments)
         Me.Controls.Add(Me.btViewNames)
         Me.Controls.Add(Me.btCheckOut)
         Me.Controls.Add(Me.btCheckIn)
@@ -627,4 +638,5 @@ Partial Class IPropertiesForm
     Friend WithEvents btCheckIn As Windows.Forms.Button
     Friend WithEvents btViewNames As Windows.Forms.Button
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
+    Friend WithEvents textComments As Windows.Forms.TextBox
 End Class
