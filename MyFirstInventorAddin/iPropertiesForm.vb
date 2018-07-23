@@ -69,7 +69,7 @@ Public Class IPropertiesForm
             Me.value = addinCLS
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim addinName As String = Label13.Text
+            Dim addinName As String = lbAddinName.Text
             Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", addinName)
             myDockableWindow.AddChild(Me.Handle)
 
@@ -2110,7 +2110,7 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
+    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
         'If textComments.Text = String.Empty Then
         '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
         '                                          PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
@@ -2120,28 +2120,28 @@ Public Class IPropertiesForm
         'ElseIf Not textComments.Text = "" Then
         iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                  textComments.Text,
+                                                  tbComments.Text,
                                                   "",
                                                   True)
         'End If
     End Sub
 
-    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
+    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles tbComments.KeyUp
         If e.KeyValue = Keys.Return Then
             textComments_Leave(sender, e)
         End If
     End Sub
 
-    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles textComments.Enter
-        If textComments.Text = "Comments" Then
-            textComments.Clear()
-            textComments.Focus()
+    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles tbComments.Enter
+        If tbComments.Text = "Comments" Then
+            tbComments.Clear()
+            tbComments.Focus()
         End If
     End Sub
 
-    Private Sub textComments_MouseHover(sender As Object, e As EventArgs) Handles textComments.MouseHover
+    Private Sub textComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
         Dim hovText As String = "Comments"
-        ToolTip1.Show(hovText, textComments)
+        ToolTip1.Show(hovText, tbComments)
     End Sub
 
     Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseHover

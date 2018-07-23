@@ -50,7 +50,7 @@ Partial Class IPropertiesForm
         Me.btExpStl = New System.Windows.Forms.Button()
         Me.btExpPdf = New System.Windows.Forms.Button()
         Me.FileLocation = New System.Windows.Forms.Label()
-        Me.Label13 = New System.Windows.Forms.Label()
+        Me.lbAddinName = New System.Windows.Forms.Label()
         Me.tbDrawnBy = New System.Windows.Forms.TextBox()
         Me.tbEngineer = New System.Windows.Forms.TextBox()
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
@@ -72,7 +72,7 @@ Partial Class IPropertiesForm
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btViewNames = New System.Windows.Forms.Button()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.textComments = New System.Windows.Forms.TextBox()
+        Me.tbComments = New System.Windows.Forms.TextBox()
         Me.tbNotes = New System.Windows.Forms.TextBox()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -314,15 +314,15 @@ Partial Class IPropertiesForm
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
-        'Label13
+        'lbAddinName
         '
-        Me.Label13.AutoSize = True
-        Me.Label13.Font = New System.Drawing.Font("Arial", 6.0!)
-        Me.Label13.Location = New System.Drawing.Point(82, 0)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(101, 10)
-        Me.Label13.TabIndex = 315
-        Me.Label13.Text = "iProperties Controller v14.03"
+        Me.lbAddinName.AutoSize = True
+        Me.lbAddinName.Font = New System.Drawing.Font("Arial", 6.0!)
+        Me.lbAddinName.Location = New System.Drawing.Point(82, 0)
+        Me.lbAddinName.Name = "lbAddinName"
+        Me.lbAddinName.Size = New System.Drawing.Size(101, 10)
+        Me.lbAddinName.TabIndex = 315
+        Me.lbAddinName.Text = "iProperties Controller v14.03"
         '
         'tbDrawnBy
         '
@@ -517,15 +517,15 @@ Partial Class IPropertiesForm
         '
         Me.ToolTip1.AutomaticDelay = 250
         '
-        'textComments
+        'tbComments
         '
-        Me.textComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.textComments.Location = New System.Drawing.Point(3, 214)
-        Me.textComments.Multiline = True
-        Me.textComments.Name = "textComments"
-        Me.textComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.textComments.Size = New System.Drawing.Size(277, 38)
-        Me.textComments.TabIndex = 335
+        Me.tbComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.tbComments.Location = New System.Drawing.Point(3, 214)
+        Me.tbComments.Multiline = True
+        Me.tbComments.Name = "tbComments"
+        Me.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.tbComments.Size = New System.Drawing.Size(277, 38)
+        Me.tbComments.TabIndex = 335
         '
         'tbNotes
         '
@@ -546,7 +546,7 @@ Partial Class IPropertiesForm
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 370)
         Me.Controls.Add(Me.tbNotes)
-        Me.Controls.Add(Me.textComments)
+        Me.Controls.Add(Me.tbComments)
         Me.Controls.Add(Me.btViewNames)
         Me.Controls.Add(Me.btCheckOut)
         Me.Controls.Add(Me.btCheckIn)
@@ -576,7 +576,7 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.Label10)
-        Me.Controls.Add(Me.Label13)
+        Me.Controls.Add(Me.lbAddinName)
         Me.Controls.Add(Me.tbEngineer)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label4)
@@ -633,7 +633,7 @@ Partial Class IPropertiesForm
     Friend WithEvents btExpStl As Windows.Forms.Button
     Friend WithEvents btExpPdf As Windows.Forms.Button
     Friend WithEvents FileLocation As Windows.Forms.Label
-    Friend WithEvents Label13 As Windows.Forms.Label
+    Friend WithEvents lbAddinName As Windows.Forms.Label
     Friend WithEvents tbDrawnBy As Windows.Forms.TextBox
     Friend WithEvents tbEngineer As Windows.Forms.TextBox
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
@@ -653,6 +653,6 @@ Partial Class IPropertiesForm
     Friend WithEvents btCheckIn As Windows.Forms.Button
     Friend WithEvents btViewNames As Windows.Forms.Button
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
-    Friend WithEvents textComments As Windows.Forms.TextBox
+    Friend WithEvents tbComments As Windows.Forms.TextBox
     Friend WithEvents tbNotes As Windows.Forms.TextBox
 End Class
