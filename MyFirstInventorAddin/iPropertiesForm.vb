@@ -238,11 +238,13 @@ Public Class IPropertiesForm
 
     Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
         Dim insertText = symbol
+
+        'textbox.SelectedText = insertText
         Dim insertPos As Integer = textbox.SelectionStart
 
         textbox.Text = textbox.Text.Insert(insertPos, insertText)
         textbox.Focus()
-        textbox.Select(insertPos + insertText.Length, 0)
+        textbox.SelectionStart = insertPos + insertText.Length
     End Sub
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
@@ -2076,24 +2078,24 @@ Public Class IPropertiesForm
     'End Sub
 
     Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
-        If textComments.Text = "" Then
+        If textComments.Text = String.Empty Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                        PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
                                                        String.Empty,
                                                        "")
-        Else
-            If Not textComments.Text = "Comments" Then
-                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+        End If
+        If Not textComments.Text = "Comments" Then
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                            PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
                                                            textComments.Text,
                                                            "")
-            Else
-                iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+        Else
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                        PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
                                                        String.Empty,
                                                        "")
-            End If
         End If
+
     End Sub
 
     Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
