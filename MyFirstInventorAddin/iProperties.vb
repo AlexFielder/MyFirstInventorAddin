@@ -61,7 +61,7 @@ Namespace iPropertiesController
                                                          Optional ByRef propertyTypeStr As String = "",
                                                          Optional ByVal IsUpdating As Boolean = False) As String
             Dim invProjProperties As PropertySet = DocToUpdate.PropertySets.Item("{32853F0F-3444-11D1-9E93-0060B03C1CA6}")
-            Dim currentvalue As String = String.Empty
+            Dim currentvalue As String = invProjProperties.ItemByPropId(iPropertyTypeEnum).Value
             If IsUpdating Then
                 invProjProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
                 Return newpropertyvalue
