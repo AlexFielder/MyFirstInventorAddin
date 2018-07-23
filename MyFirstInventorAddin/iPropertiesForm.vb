@@ -213,7 +213,7 @@ Public Class IPropertiesForm
 
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, "", "") Then
-            iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "")
+            iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "", True)
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -221,7 +221,7 @@ Public Class IPropertiesForm
 
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, "", "") Then
-            iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "")
+            iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "", True)
             log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -229,7 +229,7 @@ Public Class IPropertiesForm
 
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, AssyDoc As AssemblyDocument, selecteddoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, "", "") Then
-            iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "")
+            iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "", True)
             log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
@@ -2097,7 +2097,7 @@ Public Class IPropertiesForm
             Call invCustomPropertySet.Add(strNotes, "Notes")
         Else
             ' Got the property so update the value.
-            notesProperty.value = strNotes
+            notesProperty.Value = strNotes
         End If
     End Sub
 
@@ -2107,26 +2107,21 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    'Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
-    '    If textComments.Text = String.Empty Then
-    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-    '                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-    '                                                   String.Empty,
-    '                                                   "")
-    '    End If
-    '    If Not textComments.Text = "Comments" Then
-    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-    '                                                       PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-    '                                                       textComments.Text,
-    '                                                       "")
-    '    Else
-    '        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-    '                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-    '                                                   String.Empty,
-    '                                                   "")
-    '    End If
-
-    'End Sub
+    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles textComments.Leave
+        'If textComments.Text = String.Empty Then
+        '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+        '                                          PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+        '                                          String.Empty,
+        '                                          "",
+        '                                          True)
+        'ElseIf Not textComments.Text = "" Then
+        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                  PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
+                                                  textComments.Text,
+                                                  "",
+                                                  True)
+        'End If
+    End Sub
 
     'Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles textComments.KeyUp
     '    If e.KeyValue = Keys.Return Then

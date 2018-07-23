@@ -522,7 +522,6 @@ Partial Class IPropertiesForm
         Me.textComments.Location = New System.Drawing.Point(3, 214)
         Me.textComments.Multiline = True
         Me.textComments.Name = "textComments"
-        Me.textComments.ReadOnly = True
         Me.textComments.Size = New System.Drawing.Size(277, 38)
         Me.textComments.TabIndex = 335
         '
