@@ -416,6 +416,8 @@ Namespace iPropertiesController
             myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
             myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
             myiPropsForm.tbRevNo.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbComments.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbNotes.ForeColor = Drawing.Color.Black
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -515,7 +517,7 @@ Namespace iPropertiesController
             'If Not iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "") = "Comments" Then
             '    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
             '                                              PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-            '                                              myiPropsForm.textComments.Text,
+            '                                              myiPropsForm.tbComments.Text,
             '                                              "")
             'Else
             '    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,

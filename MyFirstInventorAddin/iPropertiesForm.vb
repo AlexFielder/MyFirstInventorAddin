@@ -8,7 +8,6 @@ Public Class IPropertiesForm
     Private inventorApp As Inventor.Application
     Private localWindow As DockableWindow
     Private value As String
-    Public ButtonPushed As Boolean = False
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
 
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
@@ -104,7 +103,7 @@ Public Class IPropertiesForm
             tbEngineer_Leave(sender, e)
             tbDrawnBy_Leave(sender, e)
             tbRevNo_Leave(sender, e)
-            textComments_Leave(sender, e)
+            tbComments_Leave(sender, e)
             tbNotes_Leave(sender, e)
 
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
@@ -360,7 +359,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -396,7 +395,7 @@ Public Class IPropertiesForm
 
                 'Set a reference to the primary ComponentDefinition of the row
                 Dim oCompDef As ComponentDefinition
-                    oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
                 If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
                 Else
@@ -1418,17 +1417,18 @@ Public Class IPropertiesForm
         tbDescription.ForeColor = Drawing.Color.Red
     End Sub
 
+    Private Sub tbComments_TextChanged(sender As Object, e As EventArgs) Handles tbComments.TextChanged
+        tbComments.ForeColor = Drawing.Color.Red
+    End Sub
+
+    Private Sub tbNotes_TextChanged(sender As Object, e As EventArgs) Handles tbNotes.TextChanged
+        tbNotes.ForeColor = Drawing.Color.Red
+    End Sub
+
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            If ButtonPushed = True Then
-                tbDescription.ForeColor = Drawing.Color.Black
-                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-                ButtonPushed = False
-            Else
-                tbDescription.ForeColor = Drawing.Color.Black
-                tbDescription.SelectionStart = 0
-                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-            End If
+            tbDescription.ForeColor = Drawing.Color.Black
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
         End If
     End Sub
 
@@ -1767,22 +1767,6 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    'Private Sub btDiaDes_MouseEnter(sender As Object, e As EventArgs) Handles btDiaDes.MouseEnter
-    '    ButtonPushed = True
-    'End Sub
-
-    'Private Sub btDiaDes_MouseLeave(sender As Object, e As EventArgs) Handles btDiaDes.MouseLeave
-    '    ButtonPushed = False
-    'End Sub
-
-    'Private Sub btDegDes_MouseEnter(sender As Object, e As EventArgs) Handles btDegDes.MouseEnter
-    '    ButtonPushed = True
-    'End Sub
-
-    'Private Sub btDegDes_MouseLeave(sender As Object, e As EventArgs) Handles btDegDes.MouseLeave
-    '    ButtonPushed = False
-    'End Sub
-
     Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
         Dim oAsmDoc As AssemblyDocument
@@ -2071,36 +2055,30 @@ Public Class IPropertiesForm
         ToolTip1.Show(descText, tbDescription)
     End Sub
 
-    'Private Sub textComments_DoubleClick(sender As Object, e As EventArgs) Handles textComments.DoubleClick
-    '    If Not inventorApp.ActiveDocument Is Nothing Then
-    '        inventorApp.CommandManager.ControlDefinitions.Item("PartiPropertiesCmd").Execute()
-    '        'Sleep(1000)
-    '        'SendKeys.Send("{RIGHT}")
-    '        Microsoft.VisualBasic.ChrW(Keys.Right)
-    '    End If
-    'End Sub
-
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
-        ' Get the active part document.
-        Dim invPartDoc As Document = inventorApp.ActiveDocument
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            ' Get the active part document.
+            Dim invPartDoc As Document = inventorApp.ActiveDocument
 
 
-        ' Get the custom property set.
-        Dim invCustomPropertySet As PropertySet
-        invCustomPropertySet = invPartDoc.PropertySets.Item("Inventor User Defined Properties")
+            ' Get the custom property set.
+            Dim invCustomPropertySet As PropertySet
+            invCustomPropertySet = invPartDoc.PropertySets.Item("Inventor User Defined Properties")
 
-        Dim strNotes As String = tbNotes.Text
+            Dim strNotes As String = tbNotes.Text
 
-        On Error Resume Next
-        Dim notesProperty As [Property]
-        notesProperty = invCustomPropertySet.Item("Notes")
-        If Err.Number <> 0 Then
-            ' Failed to get the property, which means it doesn't exist
-            ' so we'll create it.
-            Call invCustomPropertySet.Add(strNotes, "Notes")
-        Else
-            ' Got the property so update the value.
-            notesProperty.Value = strNotes
+            On Error Resume Next
+            Dim notesProperty As [Property]
+            notesProperty = invCustomPropertySet.Item("Notes")
+            If Err.Number <> 0 Then
+                ' Failed to get the property, which means it doesn't exist
+                ' so we'll create it.
+                Call invCustomPropertySet.Add(strNotes, "Notes")
+            Else
+                ' Got the property so update the value.
+                notesProperty.Value = strNotes
+            End If
+            tbNotes.ForeColor = Drawing.Color.Black
         End If
     End Sub
 
@@ -2110,36 +2088,31 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub textComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
-        'If textComments.Text = String.Empty Then
-        '    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-        '                                          PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-        '                                          String.Empty,
-        '                                          "",
-        '                                          True)
-        'ElseIf Not textComments.Text = "" Then
-        iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+    Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                   PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
                                                   tbComments.Text,
                                                   "",
                                                   True)
-        'End If
-    End Sub
-
-    Private Sub textComments_KeyUp(sender As Object, e As KeyEventArgs) Handles tbComments.KeyUp
-        If e.KeyValue = Keys.Return Then
-            textComments_Leave(sender, e)
+            tbComments.ForeColor = Drawing.Color.Black
         End If
     End Sub
 
-    Private Sub textComments_Enter(sender As Object, e As EventArgs) Handles tbComments.Enter
+    Private Sub tbComments_KeyUp(sender As Object, e As KeyEventArgs) Handles tbComments.KeyUp
+        If e.KeyValue = Keys.Return Then
+            tbComments_Leave(sender, e)
+        End If
+    End Sub
+
+    Private Sub tbComments_Enter(sender As Object, e As EventArgs) Handles tbComments.Enter
         If tbComments.Text = "Comments" Then
             tbComments.Clear()
             tbComments.Focus()
         End If
     End Sub
 
-    Private Sub textComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
+    Private Sub tbComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
         Dim hovText As String = "Comments"
         ToolTip1.Show(hovText, tbComments)
     End Sub
