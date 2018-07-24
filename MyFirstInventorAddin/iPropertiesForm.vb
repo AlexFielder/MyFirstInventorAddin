@@ -2110,6 +2110,8 @@ Public Class IPropertiesForm
             tbComments.Clear()
             tbComments.Focus()
         End If
+        Dim hovText As String = "Comments"
+        ToolTip1.Show(hovText, tbComments)
     End Sub
 
     Private Sub tbComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
@@ -2118,6 +2120,11 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseHover
+        Dim hovText As String = "Notes"
+        ToolTip1.Show(hovText, tbNotes)
+    End Sub
+
+    Private Sub tbNotes_Enter(sender As Object, e As EventArgs) Handles tbNotes.Enter
         Dim hovText As String = "Notes"
         ToolTip1.Show(hovText, tbNotes)
     End Sub
