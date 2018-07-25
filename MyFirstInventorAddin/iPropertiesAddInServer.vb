@@ -125,6 +125,9 @@ Namespace iPropertiesController
             myiPropsForm.tbRevNo.Text = String.Empty
             myiPropsForm.tbComments.Text = String.Empty
             myiPropsForm.tbNotes.Text = String.Empty
+            myiPropsForm.Label12.Text = String.Empty
+            myiPropsForm.FileLocation.Text = String.Empty
+            myiPropsForm.ModelFileLocation.Text = String.Empty
         End Sub
 
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
