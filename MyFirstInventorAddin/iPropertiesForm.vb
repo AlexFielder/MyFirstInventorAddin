@@ -2025,12 +2025,13 @@ Public Class IPropertiesForm
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
                 Dim oView As DrawingView = Nothing
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
                 For Each view As DrawingView In oSht.DrawingViews
                     oView = view
                     Exit For
                 Next
+
+                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
                 Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
 
