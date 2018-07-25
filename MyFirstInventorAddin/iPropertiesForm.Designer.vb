@@ -322,7 +322,7 @@ Partial Class IPropertiesForm
         Me.lbAddinName.Name = "lbAddinName"
         Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
         Me.lbAddinName.TabIndex = 315
-        Me.lbAddinName.Text = "v14.21"
+        Me.lbAddinName.Text = "v14.25"
         Me.lbAddinName.Visible = False
         '
         'tbDrawnBy

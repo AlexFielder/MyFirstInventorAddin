@@ -171,7 +171,7 @@ Public Class IPropertiesForm
             'Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
             'Dim oSht As Sheet = oDWG.ActiveSheet
             'Dim oView As DrawingView = Nothing
-            'Dim drawnDoc As Document = Nothing
+            Dim drawnDoc As Document = Nothing
 
 
             'For Each view As DrawingView In oSht.DrawingViews
@@ -179,14 +179,14 @@ Public Class IPropertiesForm
             '    Exit For
             'Next
 
-            'drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            drawnDoc = inventorApp.ActiveDocument
 
-            'If Not newPropValue = propname Then
-            '    UpdateProperties(proptoUpdate, propname, newPropValue, iProp, drawnDoc)
-            'End If
             If Not newPropValue = propname Then
-                UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                UpdateProperties(proptoUpdate, propname, newPropValue, iProp, drawnDoc)
             End If
+            'If Not newPropValue = propname Then
+            '    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+            'End If
 
         ElseIf TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
                 Dim AssyDoc As AssemblyDocument = Nothing
@@ -265,6 +265,22 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
+
+            If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+                Dim oSht As Sheet = oDWG.ActiveSheet
+                Dim oView As DrawingView = Nothing
+
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
+                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                Dim drawingEng As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                Dim iProp As String = String.Empty
+                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", drawingEng, iProp, drawnDoc)
+            End If
         End If
     End Sub
 
@@ -1430,11 +1446,13 @@ Public Class IPropertiesForm
         tbNotes.ForeColor = Drawing.Color.Red
     End Sub
 
-    Public Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
+    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                Dim iProp As String = String.Empty
+
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
                 Dim oView As DrawingView = Nothing
@@ -1446,7 +1464,8 @@ Public Class IPropertiesForm
                 Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
                 Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawingDesc, "")
+
+                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
             End If
         End If
     End Sub
@@ -1997,7 +2016,7 @@ Public Class IPropertiesForm
         Next
     End Sub
 
-    Public Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
+    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
@@ -2014,7 +2033,9 @@ Public Class IPropertiesForm
                 Next
 
                 Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawingPN, "")
+
+                Dim iProp As String = String.Empty
+                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
             End If
         End If
     End Sub

@@ -119,26 +119,39 @@ Namespace iPropertiesController
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             'If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
             '    If CommandName = "DrawingBaseViewCmd" Then
-            '        Dim oDWG As DrawingDocument = addinglobal.inventorApp.ActiveDocument
-            '        Dim oSht As Sheet = oDWG.ActiveSheet
-            '        Dim oView As DrawingView = Nothing
+            '        If myiPropsForm.tbDescription.Text = String.Empty And myiPropsForm.tbPartNumber.Text = String.Empty And myiPropsForm.tbEngineer.Text = String.Empty Then
+            '            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+            '            Dim oSht As Sheet = oDWG.ActiveSheet
+            '            Dim oView As DrawingView = Nothing
 
-            '        For Each view As DrawingView In oSht.DrawingViews
-            '            oView = view
-            '            Exit For
-            '        Next
-            '        Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            '            For Each view As DrawingView In oSht.DrawingViews
+            '                oView = view
+            '                Exit For
+            '            Next
+            '            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            '        Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            '            Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            '            Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+            '            Dim drawDocEng As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
 
-            '        myiPropsForm.tbDescription.Text = drawDocDesc
-            '        Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+            '            myiPropsForm.tbDescription.Text = drawDocDesc
 
-            '        myiPropsForm.tbPartNumber.Text = drawDocPN
 
-            '        myiPropsForm.tbDescription_Leave(sender, e)
-            '        myiPropsForm.tbPartNumber_Leave(sender, e)
-            '    End If
+            '            myiPropsForm.tbPartNumber.Text = drawDocPN
+            '            myiPropsForm.tbEngineer.Text = drawDocEng
+
+            '            Dim iProp As String = String.Empty
+            '            If Not drawDocDesc = String.Empty Then
+            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, AddinGlobal.InventorApp.ActiveDocument)
+            '            End If
+            '            If Not drawDocPN = String.Empty Then
+            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, AddinGlobal.InventorApp.ActiveDocument)
+            '            End If
+            '            If Not drawDocEng = String.Empty Then
+            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", drawingEng, iProp, AddinGlobal.InventorApp.ActiveDocument)
+            '            End If
+            '        End If
+            '        End If
             'End If
         End Sub
 
@@ -662,6 +675,8 @@ Namespace iPropertiesController
                             myiPropsForm.ModelFileLocation.Text = ModelPath
 
                             myiPropsForm.Label12.Text = MaterialString
+
+                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                         End If
                     End If
                 End If
@@ -669,8 +684,6 @@ Namespace iPropertiesController
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
@@ -762,6 +775,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbRevNo.ReadOnly = True
                     myiPropsForm.tbComments.ReadOnly = True
                     myiPropsForm.tbNotes.ReadOnly = True
+                    myiPropsForm.tbDrawnBy.ReadOnly = True
                 Else
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                     myiPropsForm.Label10.Text = "Checked Out"
@@ -777,6 +791,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbRevNo.ReadOnly = False
                     myiPropsForm.tbComments.ReadOnly = False
                     myiPropsForm.tbNotes.ReadOnly = False
+                    myiPropsForm.tbDrawnBy.ReadOnly = False
                 End If
             End If
 
