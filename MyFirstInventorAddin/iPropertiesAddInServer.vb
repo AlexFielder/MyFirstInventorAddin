@@ -66,7 +66,7 @@ Namespace iPropertiesController
                 AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
 
                 AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
-                'AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
+                AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
@@ -114,6 +114,28 @@ Namespace iPropertiesController
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
+            If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+                If CommandName = "DrawingBaseViewCmd" Then
+                    Dim oDWG As DrawingDocument = addinglobal.inventorApp.ActiveDocument
+                    Dim oSht As Sheet = oDWG.ActiveSheet
+                    Dim oView As DrawingView = Nothing
+
+                    For Each view As DrawingView In oSht.DrawingViews
+                        oView = view
+                        Exit For
+                    Next
+                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                    Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawDocDesc, "")
+
+                    Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawDocPN, "")
+                End If
+            End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
