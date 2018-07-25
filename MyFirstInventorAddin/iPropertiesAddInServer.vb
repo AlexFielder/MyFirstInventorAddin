@@ -521,6 +521,17 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                myiPropsForm.tbDescription.Text = String.Empty
+                myiPropsForm.tbPartNumber.Text = String.Empty
+                myiPropsForm.tbStockNumber.Text = String.Empty
+                myiPropsForm.tbEngineer.Text = String.Empty
+                myiPropsForm.tbDrawnBy.Text = String.Empty
+                myiPropsForm.tbRevNo.Text = String.Empty
+                myiPropsForm.tbComments.Text = String.Empty
+                myiPropsForm.tbNotes.Text = String.Empty
+                myiPropsForm.Label12.Text = String.Empty
+                myiPropsForm.FileLocation.Text = String.Empty
+                myiPropsForm.ModelFileLocation.Text = String.Empty
                 UpdateDisplayediProperties()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -619,7 +630,9 @@ Namespace iPropertiesController
                             Exit For
                         Next
 
-                        drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                        If Not oView Is Nothing Then
+                            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                        End If
 
                         If TypeOf drawnDoc Is AssemblyDocument Then
                             myiPropsForm.btITEM.Show()
