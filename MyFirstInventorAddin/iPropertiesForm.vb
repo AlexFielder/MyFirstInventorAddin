@@ -1430,7 +1430,7 @@ Public Class IPropertiesForm
         tbNotes.ForeColor = Drawing.Color.Red
     End Sub
 
-    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
+    Public Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
@@ -1997,7 +1997,7 @@ Public Class IPropertiesForm
         Next
     End Sub
 
-    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
+    Public Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)

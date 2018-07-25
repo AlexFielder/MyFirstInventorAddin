@@ -117,27 +117,29 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
-            If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-                If CommandName = "DrawingBaseViewCmd" Then
-                    Dim oDWG As DrawingDocument = addinglobal.inventorApp.ActiveDocument
-                    Dim oSht As Sheet = oDWG.ActiveSheet
-                    Dim oView As DrawingView = Nothing
+            'If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+            '    If CommandName = "DrawingBaseViewCmd" Then
+            '        Dim oDWG As DrawingDocument = addinglobal.inventorApp.ActiveDocument
+            '        Dim oSht As Sheet = oDWG.ActiveSheet
+            '        Dim oView As DrawingView = Nothing
 
-                    For Each view As DrawingView In oSht.DrawingViews
-                        oView = view
-                        Exit For
-                    Next
-                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            '        For Each view As DrawingView In oSht.DrawingViews
+            '            oView = view
+            '            Exit For
+            '        Next
+            '        Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                    Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawDocDesc, "")
-                    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            '        Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
-                    Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                    iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawDocPN, "")
-                    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                End If
-            End If
+            '        myiPropsForm.tbDescription.Text = drawDocDesc
+            '        Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+
+            '        myiPropsForm.tbPartNumber.Text = drawDocPN
+
+            '        myiPropsForm.tbDescription_Leave(sender, e)
+            '        myiPropsForm.tbPartNumber_Leave(sender, e)
+            '    End If
+            'End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
