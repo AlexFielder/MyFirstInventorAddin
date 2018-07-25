@@ -69,7 +69,7 @@ Public Class IPropertiesForm
             Me.localWindow = localWindow
             Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
             Dim addinName As String = lbAddinName.Text
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", addinName)
+            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
             myDockableWindow.AddChild(Me.Handle)
 
             If Not myDockableWindow.IsCustomized = True Then
@@ -168,48 +168,53 @@ Public Class IPropertiesForm
         Dim iProp As String = String.Empty
         If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
 
-            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            Dim oSht As Sheet = oDWG.ActiveSheet
-            Dim oView As DrawingView = Nothing
-            Dim drawnDoc As Document = Nothing
+            'Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+            'Dim oSht As Sheet = oDWG.ActiveSheet
+            'Dim oView As DrawingView = Nothing
+            'Dim drawnDoc As Document = Nothing
 
 
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
+            'For Each view As DrawingView In oSht.DrawingViews
+            '    oView = view
+            '    Exit For
+            'Next
 
-            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            'drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            'If Not newPropValue = propname Then
+            '    UpdateProperties(proptoUpdate, propname, newPropValue, iProp, drawnDoc)
+            'End If
             If Not newPropValue = propname Then
-                UpdateProperties(proptoUpdate, propname, newPropValue, iProp, drawnDoc)
+                UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
             End If
+
         ElseIf TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
-            Dim AssyDoc As AssemblyDocument = Nothing
-            AssyDoc = inventorApp.ActiveDocument
-            If AssyDoc.SelectSet.Count = 1 Then
-                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                Dim selecteddoc As Document = compOcc.Definition.Document
-                If Not newPropValue = propname Then
-                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp, AssyDoc, selecteddoc)
+                Dim AssyDoc As AssemblyDocument = Nothing
+                AssyDoc = inventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                    Dim selecteddoc As Document = compOcc.Definition.Document
+                    If Not newPropValue = propname Then
+                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp, AssyDoc, selecteddoc)
+                    End If
+                    AssyDoc.SelectSet.Select(compOcc)
+                ElseIf AssyDoc.SelectSet.Count = 0 Then
+                    If Not newPropValue = propname Then
+                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                    End If
                 End If
-                AssyDoc.SelectSet.Select(compOcc)
-            ElseIf AssyDoc.SelectSet.Count = 0 Then
-                If Not newPropValue = propname Then
-                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+            ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
+                If inventorApp.ActiveEditObject IsNot Nothing Then
+                    If Not newPropValue = propname Then
+                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                    End If
+                ElseIf inventorApp.ActiveDocument IsNot Nothing Then
+                    If Not newPropValue = propname Then
+                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                    End If
                 End If
-            End If
-        ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
-            If inventorApp.ActiveEditObject IsNot Nothing Then
-                If Not newPropValue = propname Then
-                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-                End If
-            ElseIf inventorApp.ActiveDocument IsNot Nothing Then
-                If Not newPropValue = propname Then
-                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-                End If
-            End If
-        ElseIf TypeOf (inventorApp.ActiveDocument) Is PresentationDocument Then
-            Throw New NotImplementedException
+            ElseIf TypeOf (inventorApp.ActiveDocument) Is PresentationDocument Then
+                Throw New NotImplementedException
         End If
     End Sub
 
@@ -1429,6 +1434,19 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+
+            Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+            Dim oSht As Sheet = oDWG.ActiveSheet
+            Dim oView As DrawingView = Nothing
+
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawingDesc, "")
         End If
     End Sub
 
@@ -1594,36 +1612,38 @@ Public Class IPropertiesForm
     Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
-                Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
                 Dim oView As DrawingView = Nothing
-                Dim drawnDoc As Document = Nothing
-
 
                 For Each view As DrawingView In oSht.DrawingViews
                     oView = view
                     Exit For
                 Next
-
-                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
+                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
                 tbRevNo.ForeColor = Drawing.Color.Black
 
-                Dim iPropPartNum As String =
-                    iProperties.GetorSetStandardiProperty(
-                                drawnDoc,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
-                log.Debug(drawnDoc.FullFileName + " Revision Updated to: " + iPropPartNum)
-                UpdateStatusBar("Revision updated to " + iPropPartNum)
-            Else
-                tbRevNo.ForeColor = Drawing.Color.Black
-
-                Dim iPropPartNum As String =
+                Dim drawingRev As String =
                     iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropPartNum)
-                UpdateStatusBar("Revision updated to " + iPropPartNum)
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
+                UpdateStatusBar("Revision updated to " + drawingRev)
+
+
+                Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                If Not modelrev = drawingRev Then
+                    modelrev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "")
+                End If
+            Else
+                tbRevNo.ForeColor = Drawing.Color.Black
+
+                Dim iPropRev As String =
+                    iProperties.GetorSetStandardiProperty(
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
+                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
+                UpdateStatusBar("Revision updated to " + iPropRev)
             End If
         End If
     End Sub
@@ -1980,6 +2000,19 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
+
+            Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+            Dim oSht As Sheet = oDWG.ActiveSheet
+            Dim oView As DrawingView = Nothing
+            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+            iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawingPN, "")
         End If
     End Sub
 
@@ -2062,14 +2095,12 @@ Public Class IPropertiesForm
 
 
             ' Get the custom property set.
-            Dim invCustomPropertySet As PropertySet
-            invCustomPropertySet = invPartDoc.PropertySets.Item("Inventor User Defined Properties")
+            Dim invCustomPropertySet As PropertySet = inventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
 
             Dim strNotes As String = tbNotes.Text
 
             On Error Resume Next
-            Dim notesProperty As [Property]
-            notesProperty = invCustomPropertySet.Item("Notes")
+            Dim notesProperty As [Property] = invCustomPropertySet.Item("Notes")
             If Err.Number <> 0 Then
                 ' Failed to get the property, which means it doesn't exist
                 ' so we'll create it.
