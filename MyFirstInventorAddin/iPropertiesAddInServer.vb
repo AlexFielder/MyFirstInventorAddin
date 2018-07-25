@@ -131,9 +131,11 @@ Namespace iPropertiesController
 
                     Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                     iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawDocDesc, "")
+                    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
                     Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                     iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawDocPN, "")
+                    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
                 End If
             End If
         End Sub
@@ -632,32 +634,33 @@ Namespace iPropertiesController
 
                         If Not oView Is Nothing Then
                             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                        End If
 
-                        If TypeOf drawnDoc Is AssemblyDocument Then
-                            myiPropsForm.btITEM.Show()
-                            myiPropsForm.btReNum.Show()
-                            myiPropsForm.Label11.Show()
-                            myiPropsForm.Label12.Show()
 
-                            MaterialString = "See BoM"
-                        Else
-                            myiPropsForm.btITEM.Hide()
-                            myiPropsForm.btReNum.Hide()
-                            myiPropsForm.Label11.Show()
-                            myiPropsForm.Label12.Show()
+                            If TypeOf drawnDoc Is AssemblyDocument Then
+                                myiPropsForm.btITEM.Show()
+                                myiPropsForm.btReNum.Show()
+                                myiPropsForm.Label11.Show()
+                                myiPropsForm.Label12.Show()
 
-                            MaterialString = iProperties.GetorSetStandardiProperty(
+                                MaterialString = "See BoM"
+                            Else
+                                myiPropsForm.btITEM.Hide()
+                                myiPropsForm.btReNum.Hide()
+                                myiPropsForm.Label11.Show()
+                                myiPropsForm.Label12.Show()
+
+                                MaterialString = iProperties.GetorSetStandardiProperty(
                             drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                            End If
+
+                            MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+                            ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+
+                            myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                            myiPropsForm.ModelFileLocation.Text = ModelPath
+
+                            myiPropsForm.Label12.Text = MaterialString
                         End If
-
-                        MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
-                        ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-
-                        myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                        myiPropsForm.ModelFileLocation.Text = ModelPath
-
-                        myiPropsForm.Label12.Text = MaterialString
                     End If
                 End If
 
