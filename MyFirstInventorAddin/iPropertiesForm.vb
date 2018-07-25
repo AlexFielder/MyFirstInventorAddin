@@ -1434,19 +1434,20 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+                Dim oSht As Sheet = oDWG.ActiveSheet
+                Dim oView As DrawingView = Nothing
 
-            Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
-            Dim oSht As Sheet = oDWG.ActiveSheet
-            Dim oView As DrawingView = Nothing
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
+                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
-            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-            Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-            iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawingDesc, "")
+                Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, drawingDesc, "")
+            End If
         End If
     End Sub
 
@@ -2001,18 +2002,20 @@ Public Class IPropertiesForm
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
 
-            Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
-            Dim oSht As Sheet = oDWG.ActiveSheet
-            Dim oView As DrawingView = Nothing
-            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+                Dim oSht As Sheet = oDWG.ActiveSheet
+                Dim oView As DrawingView = Nothing
+                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
 
-            Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-            iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawingPN, "")
+                Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, drawingPN, "")
+            End If
         End If
     End Sub
 
