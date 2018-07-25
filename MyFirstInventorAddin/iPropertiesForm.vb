@@ -2090,25 +2090,9 @@ Public Class IPropertiesForm
 
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            ' Get the active part document.
-            Dim invPartDoc As Document = inventorApp.ActiveDocument
-
-
-            ' Get the custom property set.
-            Dim invCustomPropertySet As PropertySet = inventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
-
-            Dim strNotes As String = tbNotes.Text
-
-            On Error Resume Next
-            Dim notesProperty As [Property] = invCustomPropertySet.Item("Notes")
-            If Err.Number <> 0 Then
-                ' Failed to get the property, which means it doesn't exist
-                ' so we'll create it.
-                Call invCustomPropertySet.Add(strNotes, "Notes")
-            Else
-                ' Got the property so update the value.
-                notesProperty.Value = strNotes
-            End If
+            iProperties.GetorSetStandardiProperty(
+                     inventorApp.ActiveDocument,
+                     PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
             tbNotes.ForeColor = Drawing.Color.Black
         End If
     End Sub
