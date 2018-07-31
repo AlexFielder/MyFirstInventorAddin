@@ -629,6 +629,7 @@ Namespace iPropertiesController
                         myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
                     End If
                 Else
+
                     myiPropsForm.tbDrawnBy.ReadOnly = False
 
                     If iProperties.GetorSetStandardiProperty(
@@ -750,7 +751,7 @@ Namespace iPropertiesController
 
             'simplified to this:
             UpdateFormTextBoxColours()
-                SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+            SetFormDisplayOption(DocumentToPulliPropValuesFrom)
 
         End Sub
 
@@ -760,7 +761,7 @@ Namespace iPropertiesController
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                If CheckReadOnly(DocumentToPulliPropValuesFrom) = True Then
                     myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                     myiPropsForm.Label10.Text = "Checked In"
                     myiPropsForm.PictureBox1.Show()
