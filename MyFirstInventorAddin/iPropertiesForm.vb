@@ -189,33 +189,50 @@ Public Class IPropertiesForm
             'End If
 
         ElseIf TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
-                Dim AssyDoc As AssemblyDocument = Nothing
-                AssyDoc = inventorApp.ActiveDocument
-                If AssyDoc.SelectSet.Count = 1 Then
-                    Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                    Dim selecteddoc As Document = compOcc.Definition.Document
-                    If Not newPropValue = propname Then
-                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp, AssyDoc, selecteddoc)
-                    End If
-                    AssyDoc.SelectSet.Select(compOcc)
-                ElseIf AssyDoc.SelectSet.Count = 0 Then
-                    If Not newPropValue = propname Then
-                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-                    End If
+            Dim AssyDoc As AssemblyDocument = Nothing
+            AssyDoc = inventorApp.ActiveDocument
+            If AssyDoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                Dim selecteddoc As Document = compOcc.Definition.Document
+                If Not newPropValue = propname Then
+                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp, AssyDoc, selecteddoc)
                 End If
-            ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
-                If inventorApp.ActiveEditObject IsNot Nothing Then
-                    If Not newPropValue = propname Then
-                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-                    End If
-                ElseIf inventorApp.ActiveDocument IsNot Nothing Then
-                    If Not newPropValue = propname Then
-                        UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-                    End If
+                AssyDoc.SelectSet.Select(compOcc)
+            ElseIf AssyDoc.SelectSet.Count = 0 Then
+                If Not newPropValue = propname Then
+                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
                 End If
-            ElseIf TypeOf (inventorApp.ActiveDocument) Is PresentationDocument Then
-                Throw New NotImplementedException
+            End If
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
+            If inventorApp.ActiveEditObject IsNot Nothing Then
+                If Not newPropValue = propname Then
+                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                End If
+            ElseIf inventorApp.ActiveDocument IsNot Nothing Then
+                If Not newPropValue = propname Then
+                    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
+                End If
+            End If
+        ElseIf TypeOf (inventorApp.ActiveDocument) Is PresentationDocument Then
+            Throw New NotImplementedException
         End If
+    End Sub
+
+    Private Sub CheckForDefaultAndUpdate(ByVal sumtoUpdate As PropertiesForSummaryInformationEnum, ByVal propname As String, ByVal newPropValue As String)
+        Dim iProp As String = String.Empty
+
+
+        If inventorApp.ActiveEditObject IsNot Nothing Then
+            If Not newPropValue = propname Then
+                UpdateProperties(sumtoUpdate, propname, newPropValue, iProp)
+            End If
+        ElseIf inventorApp.ActiveDocument IsNot Nothing Then
+            If Not newPropValue = propname Then
+                UpdateProperties(sumtoUpdate, propname, newPropValue, iProp)
+            End If
+        End If
+
+
     End Sub
 
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
@@ -240,6 +257,14 @@ Public Class IPropertiesForm
             log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
+        End If
+    End Sub
+
+    Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
+        If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, "", "") Then
+            iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, newPropValue, "", True)
+            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
 
@@ -339,13 +364,13 @@ Public Class IPropertiesForm
 
             tbDrawnBy.ForeColor = Drawing.Color.Black
 
-            Dim iPropPartNum As String =
-                    iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                          PropertiesForSummaryInformationEnum.kAuthorSummaryInformation,
-                                                          tbDrawnBy.Text,
-                                                          "")
-            log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropPartNum)
-            UpdateStatusBar("Author updated to " + iPropPartNum)
+            CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", tbDrawnBy.Text)
+            'Dim drawntext As String = tbDrawnBy.Text
+
+            'Dim iPropDrawn As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, drawntext, "")
+
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropDrawn)
+            'UpdateStatusBar("Author updated to " + iPropDrawn)
 
         End If
     End Sub
