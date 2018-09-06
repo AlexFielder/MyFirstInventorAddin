@@ -268,6 +268,14 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
+        If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, "", "") Then
+            iProp = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, newPropValue, "", True)
+            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            UpdateStatusBar(propname + " updated to " + iProp)
+        End If
+    End Sub
+
     Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
         Dim insertText = symbol
 
@@ -382,16 +390,16 @@ Public Class IPropertiesForm
             Dim oSht As Sheet = oDWG.ActiveSheet
 
             Dim oView As DrawingView = Nothing
-            Dim drawnDoc As Document = Nothing
+            Dim drDoc As Document = Nothing
 
             For Each view As DrawingView In oSht.DrawingViews
                 oView = view
                 Exit For
             Next
 
-            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            drDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-            Dim doc = drawnDoc
+            Dim doc = drDoc
             Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
             Dim oBOM As BOM = oAssyDef.BOM
 
@@ -419,10 +427,10 @@ Public Class IPropertiesForm
 
                     Dim item As String
                     item = oBOMRow.ItemNumber
-                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                    iProperties.GetorSetStandardiProperty(
-                                oCompDef.Document,
-                                PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+
+                    Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
                 End If
             Next
             oSht.Update()
@@ -455,10 +463,10 @@ Public Class IPropertiesForm
 
                     Dim item As String
                     item = oBOMRow.ItemNumber
-                    'iProperties.SetorCreateCustomiProperty(oCompDef.Document, "#ITEM", item)
-                    iProperties.GetorSetStandardiProperty(
-                                oCompDef.Document,
-                                PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, item, "")
+
+                    Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, drawnDoc)
                 End If
             Next
         End If
@@ -1667,11 +1675,10 @@ Public Class IPropertiesForm
                 Next
                 Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
                 tbRevNo.ForeColor = Drawing.Color.Black
+                Dim drawingRev As String = tbRevNo.Text
 
-                Dim drawingRev As String =
-                    iProperties.GetorSetStandardiProperty(
-                                inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
+                Dim iProp As String = String.Empty
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp, drawnDoc)
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
@@ -1683,10 +1690,12 @@ Public Class IPropertiesForm
             Else
                 tbRevNo.ForeColor = Drawing.Color.Black
 
-                Dim iPropRev As String =
-                    iProperties.GetorSetStandardiProperty(
-                                inventorApp.ActiveDocument,
-                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, tbRevNo.Text, "")
+                Dim iPropRev As String = tbRevNo.Text
+
+                Dim iProp As String = String.Empty
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp)
+
+
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
                 UpdateStatusBar("Revision updated to " + iPropRev)
             End If
