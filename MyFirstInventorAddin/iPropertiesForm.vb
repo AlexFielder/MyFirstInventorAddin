@@ -168,25 +168,13 @@ Public Class IPropertiesForm
         Dim iProp As String = String.Empty
         If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
 
-            'Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
-            'Dim oSht As Sheet = oDWG.ActiveSheet
-            'Dim oView As DrawingView = Nothing
             Dim drawnDoc As Document = Nothing
-
-
-            'For Each view As DrawingView In oSht.DrawingViews
-            '    oView = view
-            '    Exit For
-            'Next
 
             drawnDoc = inventorApp.ActiveDocument
 
             If Not newPropValue = propname Then
                 UpdateProperties(proptoUpdate, propname, newPropValue, iProp, drawnDoc)
             End If
-            'If Not newPropValue = propname Then
-            '    UpdateProperties(proptoUpdate, propname, newPropValue, iProp)
-            'End If
 
         ElseIf TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
             Dim AssyDoc As AssemblyDocument = Nothing
@@ -279,7 +267,6 @@ Public Class IPropertiesForm
     Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
         Dim insertText = symbol
 
-        'textbox.SelectedText = insertText
         Dim insertPos As Integer = textbox.SelectionStart
 
         textbox.Text = textbox.Text.Insert(insertPos, insertText)
@@ -373,12 +360,6 @@ Public Class IPropertiesForm
             tbDrawnBy.ForeColor = Drawing.Color.Black
 
             CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", tbDrawnBy.Text)
-            'Dim drawntext As String = tbDrawnBy.Text
-
-            'Dim iPropDrawn As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, drawntext, "")
-
-            'log.Debug(inventorApp.ActiveDocument.FullFileName + " Author Updated to: " + iPropDrawn)
-            'UpdateStatusBar("Author updated to " + iPropDrawn)
 
         End If
     End Sub
@@ -1881,9 +1862,7 @@ Public Class IPropertiesForm
         Dim oRefDocs As DocumentsEnumerator
         oRefDocs = oAsmDoc.AllReferencedDocuments
         Dim oRefDoc As Document
-        Dim oRev = iProperties.GetorSetStandardiProperty(
-                            inventorApp.ActiveDocument,
-                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+        Dim oRev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
         'work the referenced models
         'oDocu = inventorApp.ActiveDocument
         oAsmDoc.Save2(True)
@@ -2149,9 +2128,7 @@ Public Class IPropertiesForm
 
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            iProperties.GetorSetStandardiProperty(
-                     inventorApp.ActiveDocument,
-                     PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
             tbNotes.ForeColor = Drawing.Color.Black
         End If
     End Sub
@@ -2164,11 +2141,7 @@ Public Class IPropertiesForm
 
     Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
-            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
-                                                  PropertiesForSummaryInformationEnum.kCommentsSummaryInformation,
-                                                  tbComments.Text,
-                                                  "",
-                                                  True)
+            iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, tbComments.Text, "", True)
             tbComments.ForeColor = Drawing.Color.Black
         End If
     End Sub
