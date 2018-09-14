@@ -74,6 +74,8 @@ Partial Class IPropertiesForm
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.tbComments = New System.Windows.Forms.TextBox()
         Me.tbNotes = New System.Windows.Forms.TextBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label15 = New System.Windows.Forms.Label()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -322,7 +324,7 @@ Partial Class IPropertiesForm
         Me.lbAddinName.Name = "lbAddinName"
         Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
         Me.lbAddinName.TabIndex = 315
-        Me.lbAddinName.Text = "v14.30"
+        Me.lbAddinName.Text = "v14.33"
         Me.lbAddinName.Visible = False
         '
         'tbDrawnBy
@@ -521,23 +523,41 @@ Partial Class IPropertiesForm
         'tbComments
         '
         Me.tbComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.tbComments.Location = New System.Drawing.Point(3, 207)
+        Me.tbComments.Location = New System.Drawing.Point(42, 206)
         Me.tbComments.Multiline = True
         Me.tbComments.Name = "tbComments"
         Me.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.tbComments.Size = New System.Drawing.Size(277, 38)
+        Me.tbComments.Size = New System.Drawing.Size(238, 39)
         Me.tbComments.TabIndex = 335
         '
         'tbNotes
         '
         Me.tbNotes.AcceptsReturn = True
         Me.tbNotes.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.tbNotes.Location = New System.Drawing.Point(3, 246)
+        Me.tbNotes.Location = New System.Drawing.Point(42, 246)
         Me.tbNotes.Multiline = True
         Me.tbNotes.Name = "tbNotes"
         Me.tbNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.tbNotes.Size = New System.Drawing.Size(277, 39)
+        Me.tbNotes.Size = New System.Drawing.Size(238, 39)
         Me.tbNotes.TabIndex = 336
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(3, 209)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(33, 13)
+        Me.Label13.TabIndex = 337
+        Me.Label13.Text = "Cmts:"
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(3, 248)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(38, 13)
+        Me.Label15.TabIndex = 338
+        Me.Label15.Text = "Notes:"
         '
         'IPropertiesForm
         '
@@ -546,6 +566,8 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 361)
+        Me.Controls.Add(Me.Label15)
+        Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbNotes)
         Me.Controls.Add(Me.tbComments)
         Me.Controls.Add(Me.btViewNames)
@@ -656,4 +678,6 @@ Partial Class IPropertiesForm
     Friend WithEvents ToolTip1 As Windows.Forms.ToolTip
     Friend WithEvents tbComments As Windows.Forms.TextBox
     Friend WithEvents tbNotes As Windows.Forms.TextBox
+    Friend WithEvents Label15 As Windows.Forms.Label
+    Friend WithEvents Label13 As Windows.Forms.Label
 End Class

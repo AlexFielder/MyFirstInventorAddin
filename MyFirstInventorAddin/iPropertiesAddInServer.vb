@@ -117,42 +117,7 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
-            'If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-            '    If CommandName = "DrawingBaseViewCmd" Then
-            '        If myiPropsForm.tbDescription.Text = String.Empty And myiPropsForm.tbPartNumber.Text = String.Empty And myiPropsForm.tbEngineer.Text = String.Empty Then
-            '            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-            '            Dim oSht As Sheet = oDWG.ActiveSheet
-            '            Dim oView As DrawingView = Nothing
 
-            '            For Each view As DrawingView In oSht.DrawingViews
-            '                oView = view
-            '                Exit For
-            '            Next
-            '            Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-            '            Dim drawDocDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-            '            Dim drawDocPN As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-            '            Dim drawDocEng As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-
-            '            myiPropsForm.tbDescription.Text = drawDocDesc
-
-
-            '            myiPropsForm.tbPartNumber.Text = drawDocPN
-            '            myiPropsForm.tbEngineer.Text = drawDocEng
-
-            '            Dim iProp As String = String.Empty
-            '            If Not drawDocDesc = String.Empty Then
-            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, AddinGlobal.InventorApp.ActiveDocument)
-            '            End If
-            '            If Not drawDocPN = String.Empty Then
-            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, AddinGlobal.InventorApp.ActiveDocument)
-            '            End If
-            '            If Not drawDocEng = String.Empty Then
-            '                myiPropsForm.UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", drawingEng, iProp, AddinGlobal.InventorApp.ActiveDocument)
-            '            End If
-            '        End If
-            '        End If
-            'End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -173,22 +138,16 @@ Namespace iPropertiesController
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-                        'Do nothing
+                        UpdateDisplayediProperties()
                     ElseIf TypeOf (EditObject) Is Document Then
                         Dim selecteddoc As Document = AddinGlobal.InventorApp.ActiveEditObject
                         UpdateDisplayediProperties(selecteddoc)
                     Else
-                        'Do nothing more
+                        UpdateDisplayediProperties()
                     End If
                 End If
             End If
         End Sub
-
-        'Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
-        '    If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
-        '        CommandName = "VaultCheckinTop"
-        '    End If
-        'End Sub
 
         Public Shared Sub UpdateStatusBar(ByVal Message As String)
             AddinGlobal.InventorApp.StatusBarText = Message

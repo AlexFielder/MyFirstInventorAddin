@@ -278,6 +278,7 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
+
         End If
     End Sub
 
@@ -301,6 +302,7 @@ Public Class IPropertiesForm
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", drawingEng, iProp, drawnDoc)
             End If
+
         End If
     End Sub
 
@@ -1481,6 +1483,7 @@ Public Class IPropertiesForm
 
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
             End If
+
         End If
     End Sub
 
@@ -1664,9 +1667,9 @@ Public Class IPropertiesForm
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
 
-                Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "", True)
                 If Not modelrev = drawingRev Then
-                    modelrev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "")
+                    modelrev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
                 End If
             Else
                 tbRevNo.ForeColor = Drawing.Color.Black
@@ -2051,6 +2054,7 @@ Public Class IPropertiesForm
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
             End If
+
         End If
     End Sub
 
@@ -2162,12 +2166,12 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
-        Dim hovText As String = "Comments"
+        Dim hovText As String = tbComments.Text
         ToolTip1.Show(hovText, tbComments)
     End Sub
 
     Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseHover
-        Dim hovText As String = "Notes"
+        Dim hovText As String = tbNotes.Text
         ToolTip1.Show(hovText, tbNotes)
     End Sub
 
