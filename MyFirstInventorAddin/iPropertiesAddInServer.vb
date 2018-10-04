@@ -280,6 +280,13 @@ Namespace iPropertiesController
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
+        ''' <summary>
+        ''' This method is what helps us capture properties from selected items.
+        ''' It works fine in Parts and Drawings, but not currently Assemblies.
+        ''' </summary>
+        ''' <param name="BeforeOrAfter"></param>
+        ''' <param name="Context"></param>
+        ''' <param name="HandlingCode"></param>
         Private Sub m_DocumentEvents_OnChangeSelectSet(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
