@@ -56,21 +56,14 @@ Namespace iPropertiesController
         ''' <param name="newpropertyvalue"></param>
         ''' <returns></returns>
         Public Shared Function GetorSetStandardiProperty(ByVal DocToUpdate As Inventor.Document,
-                                                     ByVal iPropertyTypeEnum As PropertiesForDesignTrackingPropertiesEnum,
-                                                     Optional ByRef newpropertyvalue As String = "",
-                                                     Optional ByRef propertyTypeStr As String = "") As String
+                                                         ByVal iPropertyTypeEnum As PropertiesForDesignTrackingPropertiesEnum,
+                                                         Optional ByRef newpropertyvalue As String = "",
+                                                         Optional ByRef propertyTypeStr As String = "",
+                                                         Optional ByVal IsUpdating As Boolean = False) As String
             Dim invProjProperties As PropertySet = DocToUpdate.PropertySets.Item("{32853F0F-3444-11D1-9E93-0060B03C1CA6}")
-            Dim currentvalue As String = String.Empty
-            If Not newpropertyvalue = String.Empty Then
+            Dim currentvalue As String = invProjProperties.ItemByPropId(iPropertyTypeEnum).Value
+            If IsUpdating Then
                 invProjProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
-            Else
-                currentvalue = invProjProperties.ItemByPropId(iPropertyTypeEnum).Value
-                newpropertyvalue = GetiPropertyDisplayName(invProjProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If propertyTypeStr = String.Empty Then
-                propertyTypeStr = GetiPropertyTypeString(invProjProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If currentvalue = String.Empty Then
                 Return newpropertyvalue
             Else
                 Return currentvalue
@@ -86,21 +79,14 @@ Namespace iPropertiesController
         ''' <param name="newpropertyvalue"></param>
         ''' <returns></returns>
         Public Shared Function GetorSetStandardiProperty(ByVal DocToUpdate As Inventor.Document,
-                                                     ByVal iPropertyTypeEnum As PropertiesForDocSummaryInformationEnum,
-                                                     Optional ByRef newpropertyvalue As String = "",
-                                                     Optional ByRef propertyTypeStr As String = "") As String
+                                                         ByVal iPropertyTypeEnum As PropertiesForDocSummaryInformationEnum,
+                                                         Optional ByRef newpropertyvalue As String = "",
+                                                         Optional ByRef propertyTypeStr As String = "",
+                                                         Optional ByVal IsUpdating As Boolean = False) As String
             Dim invDocSummaryProperties As PropertySet = DocToUpdate.PropertySets.Item("{D5CDD502-2E9C-101B-9397-08002B2CF9AE}")
-            Dim currentvalue As String = String.Empty
-            If Not newpropertyvalue = String.Empty Then
+            Dim currentvalue As String = invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum).Value
+            If IsUpdating Then
                 invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
-            Else
-                currentvalue = invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum).Value
-                newpropertyvalue = GetiPropertyDisplayName(invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If propertyTypeStr = String.Empty Then
-                propertyTypeStr = GetiPropertyTypeString(invDocSummaryProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If currentvalue = String.Empty Then
                 Return newpropertyvalue
             Else
                 Return currentvalue
@@ -115,21 +101,14 @@ Namespace iPropertiesController
         ''' <param name="newpropertyvalue"></param>
         ''' <returns></returns>
         Public Shared Function GetorSetStandardiProperty(ByVal DocToUpdate As Inventor.Document,
-                                                     ByVal iPropertyTypeEnum As PropertiesForSummaryInformationEnum,
-                                                     Optional ByRef newpropertyvalue As String = "",
-                                                     Optional ByRef propertyTypeStr As String = "") As String
+                                                         ByVal iPropertyTypeEnum As PropertiesForSummaryInformationEnum,
+                                                         Optional ByRef newpropertyvalue As String = "",
+                                                         Optional ByRef propertyTypeStr As String = "",
+                                                         Optional ByVal IsUpdating As Boolean = False) As String
             Dim invSummaryiProperties As PropertySet = DocToUpdate.PropertySets.Item("{F29F85E0-4FF9-1068-AB91-08002B27B3D9}")
-            Dim currentvalue As String = String.Empty
-            If Not newpropertyvalue = String.Empty Then
+            Dim currentvalue As String = invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value
+            If IsUpdating Then
                 invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
-            Else
-                currentvalue = invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value
-                newpropertyvalue = GetiPropertyDisplayName(invSummaryiProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If propertyTypeStr = String.Empty Then
-                propertyTypeStr = GetiPropertyTypeString(invSummaryiProperties.ItemByPropId(iPropertyTypeEnum))
-            End If
-            If currentvalue = String.Empty Then
                 Return newpropertyvalue
             Else
                 Return currentvalue
