@@ -302,6 +302,7 @@ Namespace iPropertiesController
                 _inChangeSelectSetHandler = True
                 Try
                     If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+
                         If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                             Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                             If AssyDoc.SelectSet.Count = 1 Then
@@ -408,6 +409,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
 
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartShowDimensionsCtxCmd").Execute()
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
                                     myiPropsForm.tbDescription.ReadOnly = False
