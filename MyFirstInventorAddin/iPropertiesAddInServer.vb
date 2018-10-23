@@ -342,10 +342,7 @@ Namespace iPropertiesController
 
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
                                     AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
-<<<<<<< HEAD
 
-=======
->>>>>>> master
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
                                     myiPropsForm.tbDescription.ReadOnly = False
