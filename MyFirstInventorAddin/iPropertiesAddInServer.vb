@@ -338,6 +338,9 @@ Namespace iPropertiesController
                                     myiPropsForm.tbPartNumber.Text = holeOcc.Name
                                     myiPropsForm.tbStockNumber.Text = holeOcc.Name
                                     myiPropsForm.tbDescription.Text = "Hole at assy level, cannot show details :("
+
+                                ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
                                     myiPropsForm.tbDescription.ReadOnly = False
