@@ -324,7 +324,11 @@ Partial Class IPropertiesForm
         Me.lbAddinName.Name = "lbAddinName"
         Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
         Me.lbAddinName.TabIndex = 315
+<<<<<<< HEAD
         Me.lbAddinName.Text = "v14.40"
+=======
+        Me.lbAddinName.Text = "v14.36"
+>>>>>>> parent of 1b94e1c... Did I actually change anything? Not sure, but was attempting to make something better... I don't know anymore!
         Me.lbAddinName.Visible = False
         '
         'tbDrawnBy
