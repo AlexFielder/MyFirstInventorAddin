@@ -308,7 +308,7 @@ Partial Class IPropertiesForm
         Me.lbAddinName.Name = "lbAddinName"
         Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
         Me.lbAddinName.TabIndex = 315
-        Me.lbAddinName.Text = "v14.45"
+        Me.lbAddinName.Text = "v14.46"
         Me.lbAddinName.Visible = False
         '
         'tbDrawnBy
@@ -405,7 +405,7 @@ Partial Class IPropertiesForm
         '
         'btReNum
         '
-        Me.btReNum.Location = New System.Drawing.Point(171, 140)
+        Me.btReNum.Location = New System.Drawing.Point(174, 140)
         Me.btReNum.Name = "btReNum"
         Me.btReNum.Size = New System.Drawing.Size(50, 23)
         Me.btReNum.TabIndex = 327
