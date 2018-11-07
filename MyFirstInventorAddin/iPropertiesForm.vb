@@ -333,13 +333,13 @@ Public Class IPropertiesForm
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
                     'DrawingSettings.DeferUpdates = False
-                    Label8.ForeColor = Drawing.Color.Green
-                    Label8.Text = "Drawing Updates Not Deferred"
+                    btDefer.BackColor = Drawing.Color.Green
+                    btDefer.Text = "Drawing Updates Not Deferred"
                     UpdateStatusBar("Drawing updates are no longer deferred")
                 ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                    Label8.ForeColor = Drawing.Color.Red
-                    Label8.Text = "Drawing Updates Deferred"
+                    btDefer.BackColor = Drawing.Color.Red
+                    btDefer.Text = "Drawing Updates Deferred"
                     UpdateStatusBar("Drawing updates are now deferred")
                 End If
             End If
@@ -467,7 +467,7 @@ Public Class IPropertiesForm
 
     Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.Enter
         Clipboard.SetText(tbDensity.Text)
-        UpdateStatusBar("Density copied to clipboard")
+        UpdateStatusBar("Density copied to ")
     End Sub
 
     Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.MouseClick
@@ -2178,6 +2178,11 @@ Public Class IPropertiesForm
     Private Sub tbNotes_Enter(sender As Object, e As EventArgs) Handles tbNotes.Enter
         Dim hovText As String = "Notes"
         ToolTip1.Show(hovText, tbNotes)
+    End Sub
+
+    Private Sub btClipToday_Click(sender As Object, e As EventArgs) Handles btClipToday.Click
+        Dim oDate As Object = Today
+        Clipboard.SetText(oDate)
     End Sub
 
     'Public Shared Function GetFileName(path As String) As String

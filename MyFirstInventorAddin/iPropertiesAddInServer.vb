@@ -162,8 +162,8 @@ Namespace iPropertiesController
                             WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
                             If WhatToDo = vbYes Then
                                 AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                                myiPropsForm.Label8.ForeColor = Drawing.Color.Red
-                                myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                                myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                                myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                                 UpdateStatusBar("Updates are now Deferred")
                                 MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
                             Else
@@ -341,7 +341,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbDescription.Text = "Hole at assy level, cannot show details :("
 
 
-                                ElseIf TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
+                                ElseIf TypeOf AssyDoc.SelectSet(1) Is ExtrudeFeature Or TypeOf AssyDoc.SelectSet(1) Is CutFeature Or TypeOf AssyDoc.SelectSet(1) Is HoleFeature Or TypeOf AssyDoc.SelectSet(1) Is BossFeature Or TypeOf AssyDoc.SelectSet(1) Is SweepFeature Or TypeOf AssyDoc.SelectSet(1) Is LoftFeature Or TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
                                     AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
 
 
@@ -363,8 +363,8 @@ Namespace iPropertiesController
                                 End If
                                 ShowOccurrenceProperties(AssyDoc)
                                 If CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
-                                    myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                                    myiPropsForm.Label10.Text = "Checked In"
+                                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                                    'myiPropsForm.Label10.Text = "Checked In"
                                     myiPropsForm.PictureBox1.Show()
                                     myiPropsForm.PictureBox2.Hide()
                                     myiPropsForm.btCheckIn.Hide()
@@ -378,8 +378,8 @@ Namespace iPropertiesController
                                     myiPropsForm.tbComments.ReadOnly = True
                                     myiPropsForm.tbNotes.ReadOnly = True
                                 Else
-                                    myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                                    myiPropsForm.Label10.Text = "Checked Out"
+                                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                                    'myiPropsForm.Label10.Text = "Checked Out"
                                     myiPropsForm.PictureBox1.Hide()
                                     myiPropsForm.PictureBox2.Show()
                                     myiPropsForm.btCheckIn.Show()
@@ -577,7 +577,6 @@ Namespace iPropertiesController
 
             If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                 myiPropsForm.btDefer.Show()
-                myiPropsForm.Label8.Show()
                 myiPropsForm.Label7.Show()
                 myiPropsForm.tbDrawnBy.Show()
                 myiPropsForm.btShtMaterial.Show()
@@ -608,13 +607,13 @@ Namespace iPropertiesController
                     If iProperties.GetorSetStandardiProperty(
                                           DocumentToPulliPropValuesFrom,
                                           PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                        myiPropsForm.Label8.ForeColor = Drawing.Color.Red
-                        myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                        myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                     ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                        myiPropsForm.Label8.ForeColor = Drawing.Color.Green
-                        myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Green
+                        myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
                     End If
                 Else
 
@@ -623,13 +622,13 @@ Namespace iPropertiesController
                     If iProperties.GetorSetStandardiProperty(
                       DocumentToPulliPropValuesFrom,
                       PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                        myiPropsForm.Label8.ForeColor = Drawing.Color.Red
-                        myiPropsForm.Label8.Text = "Drawing Updates Deferred"
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                        myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                     ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                        myiPropsForm.Label8.ForeColor = Drawing.Color.Green
-                        myiPropsForm.Label8.Text = "Drawing Updates Not Deferred"
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Green
+                        myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
 
                         For Each view As DrawingView In oSht.DrawingViews
                             oView = view
@@ -686,7 +685,6 @@ Namespace iPropertiesController
                 myiPropsForm.Label7.Hide()
                 myiPropsForm.tbDrawnBy.Hide()
                 myiPropsForm.btDefer.Hide()
-                myiPropsForm.Label8.Hide()
                 myiPropsForm.btShtMaterial.Hide()
                 myiPropsForm.btShtScale.Hide()
                 myiPropsForm.ModelFileLocation.Hide()
@@ -750,8 +748,8 @@ Namespace iPropertiesController
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) = True Then
-                    myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                    myiPropsForm.Label10.Text = "Checked In"
+                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                    'myiPropsForm.Label10.Text = "Checked In"
                     myiPropsForm.PictureBox1.Show()
                     myiPropsForm.PictureBox2.Hide()
                     myiPropsForm.btCheckIn.Hide()
@@ -766,8 +764,8 @@ Namespace iPropertiesController
                     myiPropsForm.tbNotes.ReadOnly = True
                     myiPropsForm.tbDrawnBy.ReadOnly = True
                 Else
-                    myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                    myiPropsForm.Label10.Text = "Checked Out"
+                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                    'myiPropsForm.Label10.Text = "Checked Out"
                     myiPropsForm.PictureBox1.Hide()
                     myiPropsForm.PictureBox2.Show()
                     myiPropsForm.btCheckIn.Show()

@@ -31,7 +31,6 @@ Partial Class IPropertiesForm
         Me.Label5 = New System.Windows.Forms.Label()
         Me.btUpdateAll = New System.Windows.Forms.Button()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
         Me.btDefer = New System.Windows.Forms.Button()
         Me.tbMass = New System.Windows.Forms.TextBox()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -41,7 +40,6 @@ Partial Class IPropertiesForm
         Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.btITEM = New System.Windows.Forms.Button()
-        Me.Label10 = New System.Windows.Forms.Label()
         Me.btShtMaterial = New System.Windows.Forms.Button()
         Me.btShtScale = New System.Windows.Forms.Button()
         Me.btDiaEng = New System.Windows.Forms.Button()
@@ -76,6 +74,7 @@ Partial Class IPropertiesForm
         Me.tbNotes = New System.Windows.Forms.TextBox()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
+        Me.btClipToday = New System.Windows.Forms.Button()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -145,22 +144,16 @@ Partial Class IPropertiesForm
         Me.Label6.TabIndex = 106
         Me.Label6.Text = "Drawn Date:"
         '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(3, 53)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(118, 13)
-        Me.Label8.TabIndex = 3
-        Me.Label8.Text = "Defer Drawing Updates"
-        '
         'btDefer
         '
-        Me.btDefer.Location = New System.Drawing.Point(193, 48)
+        Me.btDefer.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
+        Me.btDefer.ForeColor = System.Drawing.Color.White
+        Me.btDefer.ImageAlign = System.Drawing.ContentAlignment.TopRight
+        Me.btDefer.Location = New System.Drawing.Point(46, 48)
         Me.btDefer.Name = "btDefer"
-        Me.btDefer.Size = New System.Drawing.Size(87, 23)
+        Me.btDefer.Size = New System.Drawing.Size(187, 23)
         Me.btDefer.TabIndex = 201
-        Me.btDefer.Text = "Defer Switch"
+        Me.btDefer.Text = "Defer Updates Button"
         Me.btDefer.UseVisualStyleBackColor = True
         '
         'tbMass
@@ -234,15 +227,6 @@ Partial Class IPropertiesForm
         Me.btITEM.TabIndex = 202
         Me.btITEM.Text = "#ITEM"
         Me.btITEM.UseVisualStyleBackColor = True
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(212, 166)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(67, 13)
-        Me.Label10.TabIndex = 302
-        Me.Label10.Text = "Checked in?"
         '
         'btShtMaterial
         '
@@ -324,7 +308,7 @@ Partial Class IPropertiesForm
         Me.lbAddinName.Name = "lbAddinName"
         Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
         Me.lbAddinName.TabIndex = 315
-        Me.lbAddinName.Text = "v14.42"
+        Me.lbAddinName.Text = "v14.45"
         Me.lbAddinName.Visible = False
         '
         'tbDrawnBy
@@ -363,7 +347,7 @@ Partial Class IPropertiesForm
         Me.tbPartNumber.AcceptsTab = True
         Me.tbPartNumber.Location = New System.Drawing.Point(74, 3)
         Me.tbPartNumber.Name = "tbPartNumber"
-        Me.tbPartNumber.Size = New System.Drawing.Size(173, 20)
+        Me.tbPartNumber.Size = New System.Drawing.Size(156, 20)
         Me.tbPartNumber.TabIndex = 1
         Me.tbPartNumber.TabStop = False
         '
@@ -487,7 +471,7 @@ Partial Class IPropertiesForm
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(199, 166)
+        Me.PictureBox2.Location = New System.Drawing.Point(236, 7)
         Me.PictureBox2.Name = "PictureBox2"
         Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
@@ -499,7 +483,7 @@ Partial Class IPropertiesForm
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(199, 166)
+        Me.PictureBox1.Location = New System.Drawing.Point(236, 7)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
@@ -559,6 +543,15 @@ Partial Class IPropertiesForm
         Me.Label15.TabIndex = 338
         Me.Label15.Text = "Notes:"
         '
+        'btClipToday
+        '
+        Me.btClipToday.Location = New System.Drawing.Point(193, 162)
+        Me.btClipToday.Name = "btClipToday"
+        Me.btClipToday.Size = New System.Drawing.Size(87, 22)
+        Me.btClipToday.TabIndex = 339
+        Me.btClipToday.Text = "Copy Today"
+        Me.btClipToday.UseVisualStyleBackColor = True
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -566,6 +559,9 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 361)
+        Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.btDefer)
+        Me.Controls.Add(Me.btClipToday)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbNotes)
@@ -576,8 +572,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.btPipes)
         Me.Controls.Add(Me.btDegDes)
         Me.Controls.Add(Me.btDiaDes)
-        Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.btCopyPN)
         Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.btReNum)
         Me.Controls.Add(Me.tbRevNo)
@@ -596,12 +590,9 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.btUpdateAll)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.lbAddinName)
         Me.Controls.Add(Me.tbEngineer)
-        Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
         Me.Controls.Add(Me.btDegEng)
@@ -616,6 +607,7 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.tbDensity)
+        Me.Controls.Add(Me.btCopyPN)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
@@ -635,7 +627,6 @@ Partial Class IPropertiesForm
     Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents btUpdateAll As Windows.Forms.Button
     Friend WithEvents Label6 As Windows.Forms.Label
-    Friend WithEvents Label8 As Windows.Forms.Label
     Friend WithEvents btDefer As Windows.Forms.Button
     Friend WithEvents tbMass As Windows.Forms.TextBox
     Friend WithEvents Label9 As Windows.Forms.Label
@@ -645,7 +636,6 @@ Partial Class IPropertiesForm
     Friend WithEvents DateTimePicker1 As Windows.Forms.DateTimePicker
     Friend WithEvents Label7 As Windows.Forms.Label
     Friend WithEvents btITEM As Windows.Forms.Button
-    Friend WithEvents Label10 As Windows.Forms.Label
     Friend WithEvents PictureBox1 As Windows.Forms.PictureBox
     Friend WithEvents PictureBox2 As Windows.Forms.PictureBox
     Friend WithEvents btShtMaterial As Windows.Forms.Button
@@ -680,4 +670,5 @@ Partial Class IPropertiesForm
     Friend WithEvents tbNotes As Windows.Forms.TextBox
     Friend WithEvents Label15 As Windows.Forms.Label
     Friend WithEvents Label13 As Windows.Forms.Label
+    Friend WithEvents btClipToday As Windows.Forms.Button
 End Class
