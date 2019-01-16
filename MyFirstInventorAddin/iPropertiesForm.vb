@@ -1666,11 +1666,8 @@ Public Class IPropertiesForm
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
+                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
 
-                Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "", True)
-                If Not modelrev = drawingRev Then
-                    modelrev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
-                End If
             Else
                 tbRevNo.ForeColor = Drawing.Color.Black
 
