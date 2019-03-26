@@ -181,6 +181,26 @@ Namespace iPropertiesController
                 myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
                     If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                        Dim oSht As Sheet = oDWG.ActiveSheet
+                        Dim oView As DrawingView = Nothing
+                        Dim drawnDoc As Document = Nothing
+
+                        For Each view As DrawingView In oSht.DrawingViews
+                            oView = view
+                            Exit For
+                        Next
+                        If Not oView Is Nothing Then
+                            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                            revno = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                            modrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                            If revno > modrev Then
+                                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, revno, "", True)
+                            End If
+                        End If
+
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                         UpdateFormTextBoxColours()
                     End If

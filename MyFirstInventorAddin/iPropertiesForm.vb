@@ -1652,12 +1652,14 @@ Public Class IPropertiesForm
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
                 Dim oView As DrawingView = Nothing
+                Dim drawnDoc As Document = Nothing
 
                 For Each view As DrawingView In oSht.DrawingViews
                     oView = view
                     Exit For
                 Next
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                 tbRevNo.ForeColor = Drawing.Color.Black
                 Dim drawingRev As String = tbRevNo.Text
 
