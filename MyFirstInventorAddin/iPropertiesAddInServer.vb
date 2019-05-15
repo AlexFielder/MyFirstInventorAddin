@@ -567,7 +567,7 @@ Namespace iPropertiesController
         '''
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
-        Private Shared Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
+        Public Shared Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
 
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                 DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument

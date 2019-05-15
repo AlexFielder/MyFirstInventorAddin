@@ -44,6 +44,16 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Private Sub GetTheStuffs()
+        tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+
+        tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+        tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+        tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+    End Sub
+
     Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
         Dim oleReference As ReferencedOLEFileDescriptor
         oleReference = odoc.ReferencedOLEFileDescriptors _
@@ -226,7 +236,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "", True)
-            inventorApp.ActiveDocument.Save2(True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -235,7 +246,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "", True)
-            inventorApp.ActiveDocument.Save2(True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties(inventorApp.ActiveEditObject)
             log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -244,7 +256,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, AssyDoc As AssemblyDocument, selecteddoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "", True)
-            inventorApp.ActiveDocument.Save2(True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties(selecteddoc)
             log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
@@ -254,7 +267,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, newPropValue, "", True)
-            inventorApp.ActiveDocument.Save2(True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -263,7 +277,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, newPropValue, "", True)
-            inventorApp.ActiveDocument.Save2(True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
