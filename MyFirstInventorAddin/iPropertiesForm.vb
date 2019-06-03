@@ -1844,16 +1844,17 @@ Public Class IPropertiesForm
 
     Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
+        If Not inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+            MessageBox.Show("Please run this rule from the assembly file.", "Vikoma Notice")
+            Exit Sub
+        End If
+
         Dim oAsmDoc As AssemblyDocument
         oAsmDoc = inventorApp.ActiveDocument
         'oAsmName = oAsmDoc.FileName 'without extension
 
         oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
 
-        If inventorApp.ActiveDocument.DocumentType <> DocumentTypeEnum.kAssemblyDocumentObject Then
-            MessageBox.Show("Please run this rule from the assembly file.", "iLogic")
-            Exit Sub
-        End If
         'get user input
         RUsure = MessageBox.Show(
         "This will create a STEP file for all components." _
@@ -2022,6 +2023,8 @@ Public Class IPropertiesForm
                 ' Execute the command. 
                 Call oControlDef.Execute()
             End If
+            Me.btCheckOut.Hide()
+            Me.btCheckIn.Show()
         End If
     End Sub
 
