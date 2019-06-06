@@ -2,6 +2,7 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+Imports System.Windows.Forms
 'Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
@@ -29,6 +30,7 @@ Namespace iPropertiesController
 
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
+        Public thisVersion As Version = Nothing
         Public Shared attribute As GuidAttribute = Nothing
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
@@ -46,6 +48,12 @@ Namespace iPropertiesController
         Public Sub Activate(ByVal addInSiteObject As ApplicationAddInSite, ByVal firstTime As Boolean) Implements ApplicationAddInServer.Activate
             ' Initialize AddIn members.
             AddinGlobal.InventorApp = addInSiteObject.Application
+            'new versioning display method borrowed from here: https://stackoverflow.com/a/826850/572634
+            thisVersion = Assembly.GetExecutingAssembly().GetName().Version
+            Dim buildDate As DateTime = New DateTime(2000, 1, 1).AddDays(thisVersion.Build).AddSeconds(thisVersion.Revision * 2)
+            AddinGlobal.DisplayableVersion = $"{thisVersion} ({buildDate})"
+
+            Dim uiMgr As UserInterfaceManager = AddinGlobal.InventorApp.UserInterfaceManager
             attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
             Try
 
@@ -106,8 +114,29 @@ Namespace iPropertiesController
                     AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
-                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, attribute.Value, localWindow)
-                    Window = localWindow
+                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp)
+                    'custom sizing
+                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.size.Width * 0.7) - 2 * myiPropsForm.margin - myiPropsForm.tbDrawnBy.Location.X
+                    myiPropsForm.Show()
+                    Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
+                    Window.AddChild(myiPropsForm.Handle)
+
+                    If Not Window.IsCustomized = True Then
+                        'myDockableWindow.DockingState = DockingStateEnum.kFloat
+                        Window.DockingState = DockingStateEnum.kDockLastKnown
+                    Else
+                        Window.DockingState = DockingStateEnum.kFloat
+                    End If
+
+                    Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+                    Window.ShowVisibilityCheckBox = True
+                    Window.ShowTitleBar = True
+                    Window.SetMinimumSize(361, 285)
+                    myiPropsForm.Dock = DockStyle.Fill
+                    Window.Visible = True
+                    'localWindow = myDockableWindow
+                    AddinGlobal.DockableList.Add(Window)
+                    'Window = localWindow
 
                 End If
                 log.Info("Loaded My First Inventor Add-in")
@@ -175,7 +204,7 @@ Namespace iPropertiesController
             End If
         End Sub
 
-        Private Sub m_ApplicationEvents_OnActivateView(ViewObject As View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+        Private Sub m_ApplicationEvents_OnActivateView(ViewObject As Inventor.View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")

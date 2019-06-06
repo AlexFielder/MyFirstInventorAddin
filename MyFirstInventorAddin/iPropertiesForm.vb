@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Drawing
+Imports System.Windows.Forms
 Imports Inventor
 Imports iPropertiesController.iPropertiesController
 Imports log4net
@@ -6,10 +7,11 @@ Imports log4net
 Public Class IPropertiesForm
     'Inherits Form
     Private inventorApp As Inventor.Application
-    Private localWindow As DockableWindow
+    'Private localWindow As DockableWindow
     Private value As String
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
-
+    Public margin As Integer = 5
+    Public size As Size = Me.ClientSize
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
     Public Sub GetNewFilePaths()
@@ -68,7 +70,7 @@ Public Class IPropertiesForm
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
-    Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+    Public Sub New(ByVal inventorApp As Inventor.Application) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
             log.Debug("Loading iProperties Form")
             InitializeComponent()
@@ -76,25 +78,24 @@ Public Class IPropertiesForm
             'Me.KeyPreview = True
             Me.inventorApp = inventorApp
             Me.value = addinCLS
-            Me.localWindow = localWindow
-            Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim addinName As String = lbAddinName.Text
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
-            myDockableWindow.AddChild(Me.Handle)
+            'Me.localWindow = localWindow
+            lbAddinName.Text = "v" + AddinGlobal.DisplayableVersion
+            'Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
+            'myDockableWindow.AddChild(Me.Handle)
 
-            If Not myDockableWindow.IsCustomized = True Then
-                'myDockableWindow.DockingState = DockingStateEnum.kFloat
-                myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
-            Else
-                myDockableWindow.DockingState = DockingStateEnum.kFloat
-            End If
+            'If Not myDockableWindow.IsCustomized = True Then
+            '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
+            '    myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
+            'Else
+            '    myDockableWindow.DockingState = DockingStateEnum.kFloat
+            'End If
 
-            myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+            'myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
 
-            Me.Dock = DockStyle.Fill
-            Me.Visible = True
-            localWindow = myDockableWindow
-            AddinGlobal.DockableList.Add(myDockableWindow)
+            'Me.Dock = DockStyle.Fill
+            'Me.Visible = True
+            'localWindow = myDockableWindow
+            'AddinGlobal.DockableList.Add(myDockableWindow)
         Catch ex As Exception
             log.Error(ex.Message)
         End Try
@@ -467,7 +468,7 @@ Public Class IPropertiesForm
 
                     Dim iProp As String = String.Empty
                     Dim DrawnDoc = oCompDef.Document
-                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, drawnDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
                 End If
             Next
         End If
@@ -475,8 +476,10 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbMass_Enter(sender As Object, e As EventArgs) Handles tbMass.Enter
-        Clipboard.SetText(tbMass.Text)
-        UpdateStatusBar("Mass copied to clipboard")
+        If Not tbMass.Text.Length = 0 Then
+            Clipboard.SetText(tbMass.Text)
+            UpdateStatusBar("Mass copied to clipboard")
+        End If
     End Sub
 
     Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.MouseClick
@@ -484,8 +487,10 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.Enter
-        Clipboard.SetText(tbDensity.Text)
-        UpdateStatusBar("Density copied to ")
+        If Not tbDensity.Text.Length = 0 Then
+            Clipboard.SetText(tbDensity.Text)
+            UpdateStatusBar("Density copied to ")
+        End If
     End Sub
 
     Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.MouseClick
@@ -1439,8 +1444,10 @@ Public Class IPropertiesForm
             Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
             Process.Start("explorer.exe", directoryPath)
         Else
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+                Process.Start("explorer.exe", directoryPath)
+            End If
         End If
     End Sub
 

@@ -315,6 +315,8 @@ Partial Class IPropertiesForm
         '
         Me.tbDrawnBy.AcceptsReturn = True
         Me.tbDrawnBy.AcceptsTab = True
+        Me.tbDrawnBy.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbDrawnBy.Location = New System.Drawing.Point(74, 95)
         Me.tbDrawnBy.Name = "tbDrawnBy"
         Me.tbDrawnBy.Size = New System.Drawing.Size(116, 20)
@@ -325,6 +327,8 @@ Partial Class IPropertiesForm
         '
         Me.tbEngineer.AcceptsReturn = True
         Me.tbEngineer.AcceptsTab = True
+        Me.tbEngineer.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbEngineer.Location = New System.Drawing.Point(74, 72)
         Me.tbEngineer.Name = "tbEngineer"
         Me.tbEngineer.Size = New System.Drawing.Size(205, 20)
@@ -345,6 +349,8 @@ Partial Class IPropertiesForm
         '
         Me.tbPartNumber.AcceptsReturn = True
         Me.tbPartNumber.AcceptsTab = True
+        Me.tbPartNumber.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbPartNumber.Location = New System.Drawing.Point(74, 3)
         Me.tbPartNumber.Name = "tbPartNumber"
         Me.tbPartNumber.Size = New System.Drawing.Size(156, 20)
@@ -355,6 +361,8 @@ Partial Class IPropertiesForm
         '
         Me.tbDescription.AcceptsReturn = True
         Me.tbDescription.AcceptsTab = True
+        Me.tbDescription.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.tbDescription.Location = New System.Drawing.Point(74, 26)
         Me.tbDescription.Name = "tbDescription"
@@ -393,6 +401,8 @@ Partial Class IPropertiesForm
         '
         Me.tbRevNo.AcceptsReturn = True
         Me.tbRevNo.AcceptsTab = True
+        Me.tbRevNo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbRevNo.Location = New System.Drawing.Point(247, 95)
         Me.tbRevNo.Name = "tbRevNo"
         Me.tbRevNo.Size = New System.Drawing.Size(32, 20)
@@ -506,6 +516,8 @@ Partial Class IPropertiesForm
         '
         'tbComments
         '
+        Me.tbComments.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbComments.Location = New System.Drawing.Point(42, 206)
         Me.tbComments.Multiline = True
@@ -517,6 +529,8 @@ Partial Class IPropertiesForm
         'tbNotes
         '
         Me.tbNotes.AcceptsReturn = True
+        Me.tbNotes.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbNotes.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbNotes.Location = New System.Drawing.Point(42, 246)
         Me.tbNotes.Multiline = True
