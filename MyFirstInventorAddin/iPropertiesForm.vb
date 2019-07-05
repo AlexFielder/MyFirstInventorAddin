@@ -2051,7 +2051,10 @@ Public Class IPropertiesForm
                 If oView.IsFlatPatternView Then
                     oView.Name() = "FLAT PATTERN OF ITEM "
                     oView.ShowLabel() = True
-                ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject _
+                Or oView.ReferencedFile.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+                    'assembly object added but it currently also pulls in the main assembly too.
+                    'Need to find a way to not show the name label of the main referenced doc.
                     oView.Name() = oLabel
                     oView.ShowLabel() = True
                 End If
