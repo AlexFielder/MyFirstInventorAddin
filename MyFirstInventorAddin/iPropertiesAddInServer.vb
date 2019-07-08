@@ -51,7 +51,7 @@ Namespace iPropertiesController
             'new versioning display method borrowed from here: https://stackoverflow.com/a/826850/572634
             thisVersion = Assembly.GetExecutingAssembly().GetName().Version
             Dim buildDate As DateTime = New DateTime(2000, 1, 1).AddDays(thisVersion.Build).AddSeconds(thisVersion.Revision * 2)
-            AddinGlobal.DisplayableVersion = $"{thisVersion} ({buildDate})"
+            AddinGlobal.DisplayableVersion = $"{thisVersion}"
 
             Dim uiMgr As UserInterfaceManager = AddinGlobal.InventorApp.UserInterfaceManager
             attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
