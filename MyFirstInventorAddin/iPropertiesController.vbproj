@@ -181,8 +181,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>rmdir /Q /S "C:\ProgramData\Autodesk\Inventor Addins\$(ProjectName)\"
-call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)IPropertiesController.X.manifest" -outputresource:"$(TargetPath)";#2
+    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)IPropertiesController.X.manifest" -outputresource:"$(TargetPath)";#2
 if "$(ConfigurationName)"=="Debug" (
 XCopy "$(TargetDir)*.*" "C:\ProgramData\Autodesk\Inventor Addins\$(ProjectName)\*.*" /Y /R
 if not exist "C:\Logs" mkdir "C:\Logs"
