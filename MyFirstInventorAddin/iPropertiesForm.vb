@@ -79,7 +79,6 @@ Public Class IPropertiesForm
             Me.inventorApp = inventorApp
             Me.value = addinCLS
             'Me.localWindow = localWindow
-            lbAddinName.Text = "v" + AddinGlobal.DisplayableVersion
             'Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
             'myDockableWindow.AddChild(Me.Handle)
 

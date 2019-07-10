@@ -48,7 +48,6 @@ Partial Class IPropertiesForm
         Me.btExpStl = New System.Windows.Forms.Button()
         Me.btExpPdf = New System.Windows.Forms.Button()
         Me.FileLocation = New System.Windows.Forms.Label()
-        Me.lbAddinName = New System.Windows.Forms.Label()
         Me.tbDrawnBy = New System.Windows.Forms.TextBox()
         Me.tbEngineer = New System.Windows.Forms.TextBox()
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
@@ -299,17 +298,6 @@ Partial Class IPropertiesForm
         Me.FileLocation.Size = New System.Drawing.Size(273, 35)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
-        '
-        'lbAddinName
-        '
-        Me.lbAddinName.AutoSize = True
-        Me.lbAddinName.Font = New System.Drawing.Font("Arial", 6.0!)
-        Me.lbAddinName.Location = New System.Drawing.Point(3, -2)
-        Me.lbAddinName.Name = "lbAddinName"
-        Me.lbAddinName.Size = New System.Drawing.Size(26, 10)
-        Me.lbAddinName.TabIndex = 315
-        Me.lbAddinName.Text = "v14.58"
-        Me.lbAddinName.Visible = False
         '
         'tbDrawnBy
         '
@@ -605,7 +593,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.lbAddinName)
         Me.Controls.Add(Me.tbEngineer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
@@ -660,7 +647,6 @@ Partial Class IPropertiesForm
     Friend WithEvents btExpStl As Windows.Forms.Button
     Friend WithEvents btExpPdf As Windows.Forms.Button
     Friend WithEvents FileLocation As Windows.Forms.Label
-    Friend WithEvents lbAddinName As Windows.Forms.Label
     Friend WithEvents tbDrawnBy As Windows.Forms.TextBox
     Friend WithEvents tbEngineer As Windows.Forms.TextBox
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
