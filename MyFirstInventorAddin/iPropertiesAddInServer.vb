@@ -694,7 +694,8 @@ Namespace iPropertiesController
                                 myiPropsForm.Label11.Show()
                                 myiPropsForm.Label12.Show()
 
-                                MaterialString = "See BoM"
+
+                                MaterialString = "See BOM"
                             Else
                                 myiPropsForm.btITEM.Hide()
                                 myiPropsForm.btReNum.Hide()
@@ -712,6 +713,7 @@ Namespace iPropertiesController
                             myiPropsForm.ModelFileLocation.Text = ModelPath
 
                             myiPropsForm.Label12.Text = MaterialString
+                            myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDesignerDesignTrackingProperties, "", "")
 
                             myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                         End If
@@ -751,7 +753,7 @@ Namespace iPropertiesController
                 Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                 myiPropsForm.tbDensity.Text = myDensity2 & " g/cm^3"
                 myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-
+                myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDesignerDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
 

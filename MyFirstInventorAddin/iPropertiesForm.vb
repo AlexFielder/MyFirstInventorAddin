@@ -1440,12 +1440,59 @@ Public Class IPropertiesForm
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
         If inventorApp.ActiveEditObject IsNot Nothing Then
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
+            If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                    Dim def As ComponentDefinition
+                    def = compOcc.Definition
+                    selecteddoc = compOcc.Definition.Document
+                    'Dim directoryPath As String = System.IO.Path.GetDirectoryName(selecteddoc.FullDocumentName)
+                    'Process.Start("explorer.exe", directoryPath)
+                    Dim Fpath As String = System.IO.Path.GetFullPath(selecteddoc.FulldocumentName)
+                    Dim FilePath As String = "/select,""" & Fpath & """"
+                    Process.Start("explorer.exe", FilePath)
+                Else
+                    ' Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    'Process.Start("explorer.exe", directoryPath)
+                    Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    Dim FilePath As String = "/select,""" & Fpath & """"
+                    Process.Start("explorer.exe", FilePath)
+                End If
+            Else
+                ' Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                'Process.Start("explorer.exe", directoryPath)
+                Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                Dim FilePath As String = "/select,""" & Fpath & """"
+                Process.Start("explorer.exe", FilePath)
+            End If
         Else
             If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-                Process.Start("explorer.exe", directoryPath)
+                If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                    Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                    If AssyDoc.SelectSet.Count = 1 Then
+                        Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                        Dim def As ComponentDefinition
+                        def = compOcc.Definition
+                        selecteddoc = compOcc.Definition.Document
+                        'Dim directoryPath As String = System.IO.Path.GetDirectoryName(selecteddoc.FullDocumentName)
+                        Dim Fpath As String = System.IO.Path.GetFullPath(selecteddoc.FulldocumentName)
+                        Dim FilePath As String = "/select,""" & Fpath & """"
+                        Process.Start("explorer.exe", FilePath)
+                    Else
+                        Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        Dim FilePath As String = "/select,""" & Fpath & """"
+                        Process.Start("explorer.exe", FilePath)
+                        'Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        'Process.Start("explorer.exe", directoryPath)
+                    End If
+                Else
+                    Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    Dim FilePath As String = "/select,""" & Fpath & """"
+                    Process.Start("explorer.exe", FilePath)
+                    'Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    'Process.Start("explorer.exe", directoryPath)
+                End If
             End If
         End If
     End Sub

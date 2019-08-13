@@ -74,6 +74,7 @@ Partial Class IPropertiesForm
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btClipToday = New System.Windows.Forms.Button()
+        Me.lbDesigner = New System.Windows.Forms.Label()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -265,29 +266,29 @@ Partial Class IPropertiesForm
         '
         'btExpStp
         '
-        Me.btExpStp.Location = New System.Drawing.Point(59, 183)
+        Me.btExpStp.Location = New System.Drawing.Point(128, 183)
         Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(50, 23)
+        Me.btExpStp.Size = New System.Drawing.Size(38, 23)
         Me.btExpStp.TabIndex = 311
-        Me.btExpStp.Text = "X STP"
+        Me.btExpStp.Text = "STP"
         Me.btExpStp.UseVisualStyleBackColor = True
         '
         'btExpStl
         '
-        Me.btExpStl.Location = New System.Drawing.Point(174, 183)
+        Me.btExpStl.Location = New System.Drawing.Point(204, 183)
         Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(50, 23)
+        Me.btExpStl.Size = New System.Drawing.Size(38, 23)
         Me.btExpStl.TabIndex = 312
-        Me.btExpStl.Text = "X STL"
+        Me.btExpStl.Text = "STL"
         Me.btExpStl.UseVisualStyleBackColor = True
         '
         'btExpPdf
         '
-        Me.btExpPdf.Location = New System.Drawing.Point(230, 183)
+        Me.btExpPdf.Location = New System.Drawing.Point(242, 183)
         Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(50, 23)
+        Me.btExpPdf.Size = New System.Drawing.Size(38, 23)
         Me.btExpPdf.TabIndex = 313
-        Me.btExpPdf.Text = "X PDF"
+        Me.btExpPdf.Text = "PDF"
         Me.btExpPdf.UseVisualStyleBackColor = True
         '
         'FileLocation
@@ -360,11 +361,11 @@ Partial Class IPropertiesForm
         '
         'btExpSat
         '
-        Me.btExpSat.Location = New System.Drawing.Point(116, 183)
+        Me.btExpSat.Location = New System.Drawing.Point(166, 183)
         Me.btExpSat.Name = "btExpSat"
-        Me.btExpSat.Size = New System.Drawing.Size(50, 23)
+        Me.btExpSat.Size = New System.Drawing.Size(38, 23)
         Me.btExpSat.TabIndex = 323
-        Me.btExpSat.Text = "X SAT"
+        Me.btExpSat.Text = "SAT"
         Me.btExpSat.UseVisualStyleBackColor = True
         '
         'ModelFileLocation
@@ -439,9 +440,9 @@ Partial Class IPropertiesForm
         '
         'btPipes
         '
-        Me.btPipes.Location = New System.Drawing.Point(3, 183)
+        Me.btPipes.Location = New System.Drawing.Point(82, 183)
         Me.btPipes.Name = "btPipes"
-        Me.btPipes.Size = New System.Drawing.Size(50, 23)
+        Me.btPipes.Size = New System.Drawing.Size(46, 23)
         Me.btPipes.TabIndex = 331
         Me.btPipes.Text = "PIPES"
         Me.btPipes.UseVisualStyleBackColor = True
@@ -554,6 +555,15 @@ Partial Class IPropertiesForm
         Me.btClipToday.Text = "Copy Today"
         Me.btClipToday.UseVisualStyleBackColor = True
         '
+        'lbDesigner
+        '
+        Me.lbDesigner.AutoSize = True
+        Me.lbDesigner.Location = New System.Drawing.Point(3, 189)
+        Me.lbDesigner.Name = "lbDesigner"
+        Me.lbDesigner.Size = New System.Drawing.Size(49, 13)
+        Me.lbDesigner.TabIndex = 340
+        Me.lbDesigner.Text = "Designer"
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -561,6 +571,7 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 361)
+        Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.btDefer)
         Me.Controls.Add(Me.btClipToday)
@@ -671,4 +682,5 @@ Partial Class IPropertiesForm
     Friend WithEvents Label15 As Windows.Forms.Label
     Friend WithEvents Label13 As Windows.Forms.Label
     Friend WithEvents btClipToday As Windows.Forms.Button
+    Friend WithEvents lbDesigner As Windows.Forms.Label
 End Class
