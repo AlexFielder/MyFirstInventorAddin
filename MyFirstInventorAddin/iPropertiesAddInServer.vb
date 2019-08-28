@@ -7,6 +7,7 @@ Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
 
+
 Namespace iPropertiesController
 
     <ProgIdAttribute("iPropertiesController.StandardAddInServer"),
@@ -23,6 +24,8 @@ Namespace iPropertiesController
         ' new unused - at this point - event objects
         Private WithEvents m_DocEvents As DocumentEvents
 
+        Private WithEvents m_FileAccessEvents As FileAccessEvents
+
         Private WithEvents m_AssemblyEvents As AssemblyEvents
         Private WithEvents m_PartEvents As PartEvents
         Private WithEvents m_ModelingEvents As ModelingEvents
@@ -31,6 +34,7 @@ Namespace iPropertiesController
         Private thisAssembly As Assembly = Assembly.GetExecutingAssembly()
         Private thisAssemblyPath As String = String.Empty
         Public thisVersion As Version = Nothing
+        Private DirtiedTime As DateTime
         Public Shared attribute As GuidAttribute = Nothing
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
@@ -143,6 +147,17 @@ Namespace iPropertiesController
             Catch ex As Exception
                 log.Error(ex.Message)
             End Try
+        End Sub
+
+        Private Sub m_FileAccessEvents_OnFileDirty(RelativeFileName As String, LibraryName As String, ByRef CustomLogicalName() As Byte, FullFileName As String, DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                DirtiedTime = DateTime.Now
+                dirtiedAttSet = DocumentObject.AttributeSets.Add("DirtiedTimeSet")
+                Dim oAtt = String.Empty
+                dirtiedTimeStr = String.Format("{0}", DirtiedTime)
+                oAtt = dirtiedAttSet.Add("DirtiedTime", ValueTypeEnum.kStringType, dirtiedTimeStr)
+                oAtt = dirtiedAttSet.Add("User", ValueTypeEnum.kStringType, AddinGlobal.InventorApp.UserName)
+            End If
         End Sub
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)

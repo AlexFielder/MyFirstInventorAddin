@@ -103,6 +103,7 @@
     <Compile Include="ButtonActions.vb" />
     <Compile Include="InventorButton.vb" />
     <Compile Include="iProperties.vb" />
+    <Compile Include="SaveReminder.vb" />
     <Compile Include="iPropertiesForm.Designer.vb">
       <DependentUpon>iPropertiesForm.vb</DependentUpon>
     </Compile>
