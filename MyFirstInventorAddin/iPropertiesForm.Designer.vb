@@ -558,7 +558,7 @@ Partial Class IPropertiesForm
         'lbDesigner
         '
         Me.lbDesigner.AutoSize = True
-        Me.lbDesigner.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
+        Me.lbDesigner.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
         Me.lbDesigner.Location = New System.Drawing.Point(3, 189)
         Me.lbDesigner.Name = "lbDesigner"
         Me.lbDesigner.Size = New System.Drawing.Size(49, 13)

@@ -639,6 +639,7 @@ Namespace iPropertiesController
                 myiPropsForm.tbStockNumber.Hide()
                 myiPropsForm.btCopyPN.Hide()
                 myiPropsForm.btViewNames.Show()
+                myiPropsForm.lbDesigner.Hide()
 
                 myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -713,7 +714,6 @@ Namespace iPropertiesController
                             myiPropsForm.ModelFileLocation.Text = ModelPath
 
                             myiPropsForm.Label12.Text = MaterialString
-                            myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDesignerDesignTrackingProperties, "", "")
 
                             myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                         End If
@@ -741,6 +741,7 @@ Namespace iPropertiesController
                 myiPropsForm.ModelFileLocation.Hide()
                 myiPropsForm.btCopyPN.Show()
                 myiPropsForm.btViewNames.Hide()
+                myiPropsForm.lbDesigner.Show()
 
 
                 myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
@@ -753,7 +754,7 @@ Namespace iPropertiesController
                 Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                 myiPropsForm.tbDensity.Text = myDensity2 & " g/cm^3"
                 myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDesignerDesignTrackingProperties, "", "")
+                myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
 
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
 
