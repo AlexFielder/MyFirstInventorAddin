@@ -266,29 +266,29 @@ Partial Class IPropertiesForm
         '
         'btExpStp
         '
-        Me.btExpStp.Location = New System.Drawing.Point(128, 183)
+        Me.btExpStp.Location = New System.Drawing.Point(163, 183)
         Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(38, 23)
+        Me.btExpStp.Size = New System.Drawing.Size(30, 23)
         Me.btExpStp.TabIndex = 311
-        Me.btExpStp.Text = "STP"
+        Me.btExpStp.Text = "stp"
         Me.btExpStp.UseVisualStyleBackColor = True
         '
         'btExpStl
         '
-        Me.btExpStl.Location = New System.Drawing.Point(204, 183)
+        Me.btExpStl.Location = New System.Drawing.Point(221, 183)
         Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(38, 23)
+        Me.btExpStl.Size = New System.Drawing.Size(30, 23)
         Me.btExpStl.TabIndex = 312
-        Me.btExpStl.Text = "STL"
+        Me.btExpStl.Text = "stl"
         Me.btExpStl.UseVisualStyleBackColor = True
         '
         'btExpPdf
         '
-        Me.btExpPdf.Location = New System.Drawing.Point(242, 183)
+        Me.btExpPdf.Location = New System.Drawing.Point(250, 183)
         Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(38, 23)
+        Me.btExpPdf.Size = New System.Drawing.Size(30, 23)
         Me.btExpPdf.TabIndex = 313
-        Me.btExpPdf.Text = "PDF"
+        Me.btExpPdf.Text = "pdf"
         Me.btExpPdf.UseVisualStyleBackColor = True
         '
         'FileLocation
@@ -361,11 +361,11 @@ Partial Class IPropertiesForm
         '
         'btExpSat
         '
-        Me.btExpSat.Location = New System.Drawing.Point(166, 183)
+        Me.btExpSat.Location = New System.Drawing.Point(192, 183)
         Me.btExpSat.Name = "btExpSat"
-        Me.btExpSat.Size = New System.Drawing.Size(38, 23)
+        Me.btExpSat.Size = New System.Drawing.Size(30, 23)
         Me.btExpSat.TabIndex = 323
-        Me.btExpSat.Text = "SAT"
+        Me.btExpSat.Text = "sat"
         Me.btExpSat.UseVisualStyleBackColor = True
         '
         'ModelFileLocation
@@ -440,11 +440,11 @@ Partial Class IPropertiesForm
         '
         'btPipes
         '
-        Me.btPipes.Location = New System.Drawing.Point(82, 183)
+        Me.btPipes.Location = New System.Drawing.Point(124, 183)
         Me.btPipes.Name = "btPipes"
-        Me.btPipes.Size = New System.Drawing.Size(46, 23)
+        Me.btPipes.Size = New System.Drawing.Size(40, 23)
         Me.btPipes.TabIndex = 331
-        Me.btPipes.Text = "PIPES"
+        Me.btPipes.Text = "pipes"
         Me.btPipes.UseVisualStyleBackColor = True
         '
         'btCheckOut
@@ -558,6 +558,7 @@ Partial Class IPropertiesForm
         'lbDesigner
         '
         Me.lbDesigner.AutoSize = True
+        Me.lbDesigner.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.0!)
         Me.lbDesigner.Location = New System.Drawing.Point(3, 189)
         Me.lbDesigner.Name = "lbDesigner"
         Me.lbDesigner.Size = New System.Drawing.Size(49, 13)
