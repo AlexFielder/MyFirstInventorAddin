@@ -571,7 +571,7 @@ Partial Class IPropertiesForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(285, 361)
+        Me.ClientSize = New System.Drawing.Size(285, 364)
         Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.btDefer)

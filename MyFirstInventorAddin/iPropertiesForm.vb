@@ -1942,6 +1942,9 @@ Public Class IPropertiesForm
         oAsmDoc.Save2(True)
         For Each oRefDoc In oRefDocs
             If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                pisWeep = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
+                iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForSummaryInformationEnum.kSubjectSummaryInformation, pisWeep, "", True)
+
                 NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
 
                 'GetNewFilePaths()
@@ -1981,7 +1984,7 @@ Public Class IPropertiesForm
                     Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
                     UpdateStatusBar("File saved as Step file")
 
-                    AttachRefFile(oAsmDoc, oData.FileName)
+                    'AttachRefFile(oAsmDoc, oData.FileName)
                     'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
@@ -2258,6 +2261,10 @@ Public Class IPropertiesForm
     Private Sub btClipToday_Click(sender As Object, e As EventArgs) Handles btClipToday.Click
         Dim oDate As Object = Today
         Clipboard.SetText(oDate)
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+
     End Sub
 
     'Public Shared Function GetFileName(path As String) As String
