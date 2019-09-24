@@ -2263,10 +2263,6 @@ Public Class IPropertiesForm
         Clipboard.SetText(oDate)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     'Public Shared Function GetFileName(path As String) As String
     'End Function
 End Class
