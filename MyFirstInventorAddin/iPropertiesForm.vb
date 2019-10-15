@@ -1537,23 +1537,23 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-            If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-                Dim iProp As String = String.Empty
+            'If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+            '    Dim iProp As String = String.Empty
 
-                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
-                Dim oSht As Sheet = oDWG.ActiveSheet
-                Dim oView As DrawingView = Nothing
+            '    Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+            '    Dim oSht As Sheet = oDWG.ActiveSheet
+            '    Dim oView As DrawingView = Nothing
 
-                For Each view As DrawingView In oSht.DrawingViews
-                    oView = view
-                    Exit For
-                Next
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            '    For Each view As DrawingView In oSht.DrawingViews
+            '        oView = view
+            '        Exit For
+            '    Next
+            '    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+            '    Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
-                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
-            End If
+            '    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
+            'End If
 
         End If
     End Sub
