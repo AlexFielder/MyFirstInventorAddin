@@ -575,17 +575,17 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
-                myiPropsForm.tbDescription.Text = String.Empty
-                myiPropsForm.tbPartNumber.Text = String.Empty
-                myiPropsForm.tbStockNumber.Text = String.Empty
-                myiPropsForm.tbEngineer.Text = String.Empty
-                myiPropsForm.tbDrawnBy.Text = String.Empty
-                myiPropsForm.tbRevNo.Text = String.Empty
-                myiPropsForm.tbComments.Text = String.Empty
-                myiPropsForm.tbNotes.Text = String.Empty
-                myiPropsForm.Label12.Text = String.Empty
-                myiPropsForm.FileLocation.Text = String.Empty
-                myiPropsForm.ModelFileLocation.Text = String.Empty
+                'myiPropsForm.tbDescription.Text = String.Empty
+                'myiPropsForm.tbPartNumber.Text = String.Empty
+                'myiPropsForm.tbStockNumber.Text = String.Empty
+                'myiPropsForm.tbEngineer.Text = String.Empty
+                'myiPropsForm.tbDrawnBy.Text = String.Empty
+                'myiPropsForm.tbRevNo.Text = String.Empty
+                'myiPropsForm.tbComments.Text = String.Empty
+                'myiPropsForm.tbNotes.Text = String.Empty
+                'myiPropsForm.Label12.Text = String.Empty
+                'myiPropsForm.FileLocation.Text = String.Empty
+                'myiPropsForm.ModelFileLocation.Text = String.Empty
                 UpdateDisplayediProperties()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -716,13 +716,14 @@ Namespace iPropertiesController
                             myiPropsForm.Label12.Text = MaterialString
 
                             myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                            DrawDesc = myiPropsForm.tbDescription.Text
+                            iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, DrawDesc, "")
                         End If
                     End If
                 End If
 
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 

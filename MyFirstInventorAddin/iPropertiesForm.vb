@@ -521,6 +521,12 @@ Public Class IPropertiesForm
 
             Dim oCurrentSheet = Nothing
             oCurrentSheet = oDrawDoc.ActiveSheet.Name
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+            Dim MaterialString As String = String.Empty
+            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
             i = 1
 
@@ -532,42 +538,50 @@ Public Class IPropertiesForm
                         oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                 End Select
             Next
-
-            If oPromptEntry = "<Material>" Then
-                oPromptText = "Engineer"
-            ElseIf oPromptEntry = "" Then
-                oPromptText = "Engineer"
-            Else
-                oPromptText = oPromptEntry
-            End If
-
-
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
-
-            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-            prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
-                                   vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
-
             MaterialTextBox = GetMaterialTextBox(oTitleBlock.Definition)
-            Dim MaterialString As String = String.Empty
-            MaterialString = prtMaterial
-            If prtMaterial = "Engineer" Then
-                MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
-                                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-                                                              "",
-                                                              "")
-            ElseIf UCase(prtMaterial) = "PRT" Then
-                MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
-                                                              PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
-                                                              "",
-                                                              ""))
+
+            If TypeOf drawnDoc Is AssemblyDocument Then
+                If oPromptEntry = "<Material>" Then
+                    oPromptText = "SEE BOM"
+                ElseIf oPromptEntry = "" Then
+                    oPromptText = "SEE BOM"
+                Else
+                    oPromptText = oPromptEntry
+                End If
+                prtMaterial = InputBox("leaving as 'SEE BOM' will fill box with 'SEE BOM'" &
+                                   vbCrLf & "otherwise you can alter this to suit needs", "Assembly", oPromptText)
+                If prtMaterial = "SEE BOM" Then
+                    MaterialString = "SEE BOM"
+                Else
+                    MaterialString = prtMaterial
+                End If
             Else
-                MaterialString = prtMaterial
+                If oPromptEntry = "<Material>" Then
+                    oPromptText = "Engineer"
+                ElseIf oPromptEntry = "" Then
+                    oPromptText = "Engineer"
+                Else
+                    oPromptText = oPromptEntry
+                End If
+                prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
+                                  vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
+                If prtMaterial = "Engineer" Then
+                    MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                                  PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                                  "",
+                                                                  "")
+                ElseIf UCase(prtMaterial) = "PRT" Then
+                    MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+                                                                  "",
+                                                                  ""))
+                Else
+                    MaterialString = prtMaterial
+                End If
             End If
+
+            MaterialString = prtMaterial
+
             oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
         Catch ex As Exception When MaterialTextBox Is Nothing
             UpdateStatusBar("No compatible drawing open!")
@@ -645,7 +659,7 @@ Public Class IPropertiesForm
 
     Function GetScaleTextBox(ByVal titleDef As TitleBlockDefinition) As Inventor.TextBox
         For Each defText As Inventor.TextBox In titleDef.Sketch.TextBoxes
-            If (defText.Text = "<Scale>" Or defText.Text = "Scale") Then
+            If (defText.Text = "Scale" Or defText.Text = "<Scale>") Then
                 Return defText
             End If
         Next
@@ -1941,60 +1955,66 @@ Public Class IPropertiesForm
         'oDocu = inventorApp.ActiveDocument
         oAsmDoc.Save2(True)
         For Each oRefDoc In oRefDocs
-            If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
-                pisWeep = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
-                iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForSummaryInformationEnum.kSubjectSummaryInformation, pisWeep, "", True)
+            If oRefDoc.FullFileName.Contains("pisweep") Then
+                If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                    Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
+                    'Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
+                    pisWeep = pisWeep.Replace("PISWEEP.", "")
 
-                NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+                    iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
 
-                'GetNewFilePaths()
-                ' Get the STEP translator Add-In.
+                    Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+                    NewPath = NewPath.Replace("pisweep.", "")
 
-                Dim oSTEPTranslator As TranslatorAddIn
-                oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+                    'GetNewFilePaths()
+                    ' Get the STEP translator Add-In.
 
-                If oSTEPTranslator Is Nothing Then
-                    MsgBox("Could not access STEP translator.")
-                    Exit Sub
+                    Dim oSTEPTranslator As TranslatorAddIn
+                    oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                    If oSTEPTranslator Is Nothing Then
+                        MsgBox("Could not access STEP translator.")
+                        Exit Sub
+                    End If
+
+                    Dim oContext As TranslationContext
+                    oContext = inventorApp.TransientObjects.CreateTranslationContext
+                    Dim oOptions As NameValueMap
+                    oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                    If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                        ' Set application protocol.
+                        ' 2 = AP 203 - Configuration Controlled Design
+                        ' 3 = AP 214 - Automotive Design
+                        oOptions.Value("ApplicationProtocolType") = 4
+
+                        ' Other options...
+                        'oOptions.Value("Author") = ""
+                        'oOptions.Value("Authorization") = ""
+                        'oOptions.Value("Description") = ""
+                        'oOptions.Value("Organization") = ""
+
+                        oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                        Dim oData As DataMedium
+                        oData = inventorApp.TransientObjects.CreateDataMedium
+                        oData.FileName = NewPath + "_R" + oRev + ".stp"
+
+                        Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                        UpdateStatusBar("File saved as Step file")
+
+                        'AttachRefFile(oAsmDoc, oData.FileName)
+                        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                        If AttachFile = vbYes Then
+                            AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                            UpdateStatusBar("File attached")
+                        Else
+                            'Do Nothing
+                        End If
+                    End If
+                Else
+                    UpdateStatusBar("File skipped because it's read-only")
                 End If
-
-                Dim oContext As TranslationContext
-                oContext = inventorApp.TransientObjects.CreateTranslationContext
-                Dim oOptions As NameValueMap
-                oOptions = inventorApp.TransientObjects.CreateNameValueMap
-                If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
-
-                    ' Set application protocol.
-                    ' 2 = AP 203 - Configuration Controlled Design
-                    ' 3 = AP 214 - Automotive Design
-                    oOptions.Value("ApplicationProtocolType") = 4
-
-                    ' Other options...
-                    'oOptions.Value("Author") = ""
-                    'oOptions.Value("Authorization") = ""
-                    'oOptions.Value("Description") = ""
-                    'oOptions.Value("Organization") = ""
-
-                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
-
-                    Dim oData As DataMedium
-                    oData = inventorApp.TransientObjects.CreateDataMedium
-                    oData.FileName = NewPath + "_R" + oRev + ".stp"
-
-                    Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
-                    UpdateStatusBar("File saved as Step file")
-
-                    'AttachRefFile(oAsmDoc, oData.FileName)
-                    'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
-                    'If AttachFile = vbYes Then
-                    '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
-                    '    UpdateStatusBar("File attached")
-                    'Else
-                    '    'Do Nothing
-                    'End If
-                End If
-            Else
-                UpdateStatusBar("File skipped because it's read-only")
             End If
         Next
 
