@@ -716,9 +716,15 @@ Namespace iPropertiesController
                             myiPropsForm.Label12.Text = MaterialString
 
                             myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                            myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                            DrawDesc = myiPropsForm.tbDescription.Text
-                            iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, DrawDesc, "")
+
+                            Dim DrawDesc As String = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                            Dim ModelDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                            If DrawDesc = String.Empty Then
+                                myiPropsForm.tbDescription.Text = ModelDesc
+                                iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, ModelDesc, "", True)
+                            Else
+                                myiPropsForm.tbDescription.Text = DrawDesc
+                            End If
                         End If
                     End If
                 End If
