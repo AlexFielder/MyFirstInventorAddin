@@ -580,7 +580,7 @@ Public Class IPropertiesForm
                 End If
             End If
 
-            MaterialString = prtMaterial
+            'MaterialString = prtMaterial
 
             oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
         Catch ex As Exception When MaterialTextBox Is Nothing
