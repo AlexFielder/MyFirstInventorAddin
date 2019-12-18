@@ -505,9 +505,14 @@ Namespace iPropertiesController
                             '        UpdateFormTextBoxColours()
                             '        UpdateDisplayediProperties(DrawDoc)
                             '    End If
+
+
                             Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-                            UpdateFormTextBoxColours()
-                            UpdateDisplayediProperties(DrawDoc)
+                            If Not System.IO.File.Exists(DrawDoc.FullFileName) = False Then
+                                UpdateFormTextBoxColours()
+                                UpdateDisplayediProperties(DrawDoc)
+                            End If
+
                         End If
                         'End If
                     End If
@@ -652,19 +657,21 @@ Namespace iPropertiesController
                 Dim MaterialString As String = String.Empty
 
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+
                     myiPropsForm.tbDrawnBy.ReadOnly = True
 
-                    If iProperties.GetorSetStandardiProperty(
+                        If iProperties.GetorSetStandardiProperty(
                                           DocumentToPulliPropValuesFrom,
                                           PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                        myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                        myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
-                    ElseIf iProperties.GetorSetStandardiProperty(
+                            myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                            myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
+                        ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                        myiPropsForm.btDefer.BackColor = Drawing.Color.Green
-                        myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
-                    End If
+                            myiPropsForm.btDefer.BackColor = Drawing.Color.Green
+                            myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
+                        End If
+
                 Else
 
                     myiPropsForm.tbDrawnBy.ReadOnly = False
@@ -852,14 +859,15 @@ Namespace iPropertiesController
         ''' <param name="doc"></param>
         ''' <returns></returns>
         Public Shared Function CheckReadOnly(ByVal doc As Document) As Boolean
-            Try
-                ' Handle the case with the active document never saved
-                If System.IO.File.Exists(doc.FullFileName) = False Then
-                    UpdateStatusBar("Save file before executing this method. Exiting ...")
-                    Return False
-                End If
+            'Try
+            ' Handle the case with the active document never saved
+            If System.IO.File.Exists(doc.FullFileName) = False Then
+                UpdateStatusBar("Save file before executing this method. Exiting ...")
+                Return False
+            End If
 
-                Dim atts As FileAttributes = IO.File.GetAttributes(doc.FullFileName)
+
+            Dim atts As FileAttributes = IO.File.GetAttributes(doc.FullFileName)
 
                 If ((atts And FileAttributes.ReadOnly) = System.IO.FileAttributes.ReadOnly) Then
                     Return True
@@ -867,9 +875,9 @@ Namespace iPropertiesController
                     'The file is Read/Write
                     Return False
                 End If
-            Catch ex As Exception
-                log.Error(ex.Message)
-            End Try
+            'Catch ex As Exception
+            ' log.Error(ex.Message)
+            ' End Try
         End Function
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
