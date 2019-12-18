@@ -859,15 +859,15 @@ Namespace iPropertiesController
         ''' <param name="doc"></param>
         ''' <returns></returns>
         Public Shared Function CheckReadOnly(ByVal doc As Document) As Boolean
-            'Try
-            ' Handle the case with the active document never saved
-            If System.IO.File.Exists(doc.FullFileName) = False Then
-                UpdateStatusBar("Save file before executing this method. Exiting ...")
-                Return False
-            End If
+            Try
+                ' Handle the case with the active document never saved
+                If System.IO.File.Exists(doc.FullFileName) = False Then
+                    UpdateStatusBar("Save file before executing this method. Exiting ...")
+                    Return False
+                End If
 
 
-            Dim atts As FileAttributes = IO.File.GetAttributes(doc.FullFileName)
+                Dim atts As FileAttributes = IO.File.GetAttributes(doc.FullFileName)
 
                 If ((atts And FileAttributes.ReadOnly) = System.IO.FileAttributes.ReadOnly) Then
                     Return True
@@ -875,9 +875,9 @@ Namespace iPropertiesController
                     'The file is Read/Write
                     Return False
                 End If
-            'Catch ex As Exception
-            ' log.Error(ex.Message)
-            ' End Try
+            Catch ex As Exception
+                log.Error(ex.Message)
+            End Try
         End Function
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
