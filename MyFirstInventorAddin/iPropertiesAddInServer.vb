@@ -508,10 +508,9 @@ Namespace iPropertiesController
 
 
                             Dim DrawDoc As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-                            If Not System.IO.File.Exists(DrawDoc.FullFileName) = False Then
-                                UpdateFormTextBoxColours()
-                                UpdateDisplayediProperties(DrawDoc)
-                            End If
+
+                            UpdateFormTextBoxColours()
+                            UpdateDisplayediProperties(DrawDoc)
 
                         End If
                         'End If
@@ -727,10 +726,14 @@ Namespace iPropertiesController
                             Dim DrawDesc As String = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                             Dim ModelDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                             If DrawDesc = String.Empty Then
-                                myiPropsForm.tbDescription.Text = ModelDesc
-                                iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, ModelDesc, "", True)
+                                If Not ModelDesc Is String.Empty Then
+                                    myiPropsForm.tbDescription.Text = ModelDesc
+                                    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, ModelDesc, "", True)
+                                Else
+                                    myiPropsForm.tbDescription.Text = "Model Description Not Set"
+                                End If
                             Else
-                                myiPropsForm.tbDescription.Text = DrawDesc
+                                    myiPropsForm.tbDescription.Text = DrawDesc
                             End If
                         End If
                     End If
