@@ -150,17 +150,21 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            myiPropsForm.tbDescription.Text = String.Empty
-            myiPropsForm.tbPartNumber.Text = String.Empty
-            myiPropsForm.tbStockNumber.Text = String.Empty
-            myiPropsForm.tbEngineer.Text = String.Empty
-            myiPropsForm.tbDrawnBy.Text = String.Empty
-            myiPropsForm.tbRevNo.Text = String.Empty
-            myiPropsForm.tbComments.Text = String.Empty
-            myiPropsForm.tbNotes.Text = String.Empty
-            myiPropsForm.Label12.Text = String.Empty
-            myiPropsForm.FileLocation.Text = String.Empty
-            myiPropsForm.ModelFileLocation.Text = String.Empty
+            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                UpdateDisplayediProperties()
+            Else
+                myiPropsForm.tbDescription.Text = String.Empty
+                myiPropsForm.tbPartNumber.Text = String.Empty
+                myiPropsForm.tbStockNumber.Text = String.Empty
+                myiPropsForm.tbEngineer.Text = String.Empty
+                myiPropsForm.tbDrawnBy.Text = String.Empty
+                myiPropsForm.tbRevNo.Text = String.Empty
+                myiPropsForm.tbComments.Text = String.Empty
+                myiPropsForm.tbNotes.Text = String.Empty
+                myiPropsForm.Label12.Text = String.Empty
+                myiPropsForm.FileLocation.Text = String.Empty
+                myiPropsForm.ModelFileLocation.Text = String.Empty
+            End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -543,6 +547,31 @@ Namespace iPropertiesController
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
+
+                Dim PlotDate As Object = "PlotDate"
+                Dim PlotDateValue As Object = Now
+                ' Get the custom property set.
+                Dim customPropSet As Inventor.PropertySet
+                customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item(
+               "Inventor User Defined Properties")
+
+                ' Get the existing property, if it exists.
+                Dim prop As Inventor.Property = Nothing
+                Dim propExists As Boolean = True
+                Try
+                    prop = customPropSet.Item(PlotDate)
+                Catch ex As Exception
+                    propExists = False
+                End Try
+
+                ' Check to see if the property was successfully obtained.
+                If Not propExists Then
+                    ' Failed to get the existing property so create a new one.
+                    prop = customPropSet.Add(PlotDateValue, PlotDate)
+                Else
+                    ' Change the value of the existing property.
+                    prop.Value = PlotDateValue
+                End If
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -579,18 +608,21 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
-                'myiPropsForm.tbDescription.Text = String.Empty
-                'myiPropsForm.tbPartNumber.Text = String.Empty
-                'myiPropsForm.tbStockNumber.Text = String.Empty
-                'myiPropsForm.tbEngineer.Text = String.Empty
-                'myiPropsForm.tbDrawnBy.Text = String.Empty
-                'myiPropsForm.tbRevNo.Text = String.Empty
-                'myiPropsForm.tbComments.Text = String.Empty
-                'myiPropsForm.tbNotes.Text = String.Empty
-                'myiPropsForm.Label12.Text = String.Empty
-                'myiPropsForm.FileLocation.Text = String.Empty
-                'myiPropsForm.ModelFileLocation.Text = String.Empty
-                UpdateDisplayediProperties()
+                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    UpdateDisplayediProperties()
+                Else
+                    myiPropsForm.tbDescription.Text = String.Empty
+                    myiPropsForm.tbPartNumber.Text = String.Empty
+                    myiPropsForm.tbStockNumber.Text = String.Empty
+                    myiPropsForm.tbEngineer.Text = String.Empty
+                    myiPropsForm.tbDrawnBy.Text = String.Empty
+                    myiPropsForm.tbRevNo.Text = String.Empty
+                    myiPropsForm.tbComments.Text = String.Empty
+                    myiPropsForm.tbNotes.Text = String.Empty
+                    myiPropsForm.Label12.Text = String.Empty
+                    myiPropsForm.FileLocation.Text = String.Empty
+                    myiPropsForm.ModelFileLocation.Text = String.Empty
+                End If
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
