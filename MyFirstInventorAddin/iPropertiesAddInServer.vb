@@ -149,26 +149,25 @@ Namespace iPropertiesController
             Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
             If Not CheckReadOnly(DocumentToPulliPropValuesFrom) Then
                 If Not DocumentToPulliPropValuesFrom Is Nothing Then
-                    If DocumentToPulliPropValuesFrom.Dirty Then
-                        Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
+                    Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
+                    Dim dt As DateTime = Nothing
+                    Dim TimeNow As DateTime = DateTime.Now
+                    Dim CheckTime As DateTime = dt.AddMinutes(30)
+                    Dim NewTimeNow As DateTime = TimeNow.AddMinutes(-20)
 
-                        Dim dt As DateTime = System.IO.File.GetLastWriteTime(path)
+                    If Not System.IO.File.Exists(path) Then
+                        dt = DateTime.Now
+                    Else
+                        If DocumentToPulliPropValuesFrom.Dirty Then
+                            dt = System.IO.File.GetLastWriteTime(path)
+                            If CheckTime <= TimeNow Then
 
-                        Dim TimeNow As DateTime = DateTime.Now
+                                LastWriteSave = MsgBox("File hasn't been saved in a while now, you probably want to save it you maniac!", vbOKOnly, "SAVE YO SH#T")
+                                If LastWriteSave = vbOK Then
+                                    System.IO.File.SetLastWriteTime(path, NewTimeNow)
+                                End If
 
-                        Dim CheckTime As DateTime = dt.AddMinutes(30)
-
-                        Dim NewTimeNow As DateTime = TimeNow.AddMinutes(-20)
-
-                        If CheckTime <= TimeNow Then
-
-                            LastWriteSave = MsgBox("File hasn't been saved in a while now, you probably want to save it you maniac!", vbOKCancel)
-                            If LastWriteSave = vbOK Then
-                                System.IO.File.SetLastWriteTime(path, NewTimeNow)
-                            Else
-                                System.IO.File.SetLastWriteTime(path, TimeNow)
                             End If
-
                         End If
                     End If
                 End If
@@ -299,7 +298,31 @@ Namespace iPropertiesController
                         UpdateFormTextBoxColours()
                     End If
                 End If
+                If Not CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
+                        Dim dt As DateTime = Nothing
+                        Dim TimeNow As DateTime = DateTime.Now
+                        Dim CheckTime As DateTime = dt.AddMinutes(30)
+                        Dim NewTimeNow As DateTime = TimeNow.AddMinutes(-20)
 
+                        If Not System.IO.File.Exists(path) Then
+                            dt = DateTime.Now
+                        Else
+                            If DocumentToPulliPropValuesFrom.Dirty Then
+                                dt = System.IO.File.GetLastWriteTime(path)
+                                If CheckTime <= TimeNow Then
+
+                                    LastWriteSave = MsgBox("File hasn't been saved in a while now, you probably want to save it you maniac!", vbOKOnly, "SAVE YO SH#T")
+                                    If LastWriteSave = vbOK Then
+                                        System.IO.File.SetLastWriteTime(path, NewTimeNow)
+                                    End If
+
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
             End If
         End Sub
 
