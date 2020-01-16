@@ -162,7 +162,7 @@ Namespace iPropertiesController
 
                         If CheckTime <= TimeNow Then
 
-                            LastWriteSave = MsgBox("File hasn't been saved in a whilte now, you probably want to save it you maniac!", vbOKCancel)
+                            LastWriteSave = MsgBox("File hasn't been saved in a while now, you probably want to save it you maniac!", vbOKCancel)
                             If LastWriteSave = vbOK Then
                                 System.IO.File.SetLastWriteTime(path, NewTimeNow)
                             Else
