@@ -662,9 +662,18 @@ Namespace iPropertiesController
                     UpdateDisplayediProperties(DocumentToPulliPropValuesFrom)
                     UpdateFormTextBoxColours()
                     myiPropsForm.GetNewFilePaths()
-                End If
 
+                    If Not CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                        If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                            Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
+                            Dim TimeNow As DateTime = DateTime.Now
+
+                            System.IO.File.SetLastWriteTime(path, TimeNow)
+                        End If
+                    End If
+                End If
             End If
+
             HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
