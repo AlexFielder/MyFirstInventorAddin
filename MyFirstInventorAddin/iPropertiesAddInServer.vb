@@ -146,7 +146,33 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
+            Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+            If Not CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+                If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                    If DocumentToPulliPropValuesFrom.Dirty Then
+                        Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
 
+                        Dim dt As DateTime = System.IO.File.GetLastWriteTime(path)
+
+                        Dim TimeNow As DateTime = DateTime.Now
+
+                        Dim CheckTime As DateTime = dt.AddMinutes(30)
+
+                        Dim NewTimeNow As DateTime = TimeNow.AddMinutes(-20)
+
+                        If CheckTime <= TimeNow Then
+
+                            LastWriteSave = MsgBox("File hasn't been saved in a whilte now, you probably want to save it you maniac!", vbOKCancel)
+                            If LastWriteSave = vbOK Then
+                                System.IO.File.SetLastWriteTime(path, NewTimeNow)
+                            Else
+                                System.IO.File.SetLastWriteTime(path, TimeNow)
+                            End If
+
+                        End If
+                    End If
+                End If
+            End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -179,8 +205,16 @@ Namespace iPropertiesController
                         UpdateDisplayediProperties()
                     End If
                 End If
+
             End If
         End Sub
+
+        'Private Sub Wait(ByVal seconds As Integer)
+        '    For i As Integer = 0 To seconds * 100
+        '        System.Threading.Thread.Sleep(10)
+        '        AddinGlobal.InventorApp.DoEvents()
+        '    Next
+        'End Sub
 
         Public Shared Sub UpdateStatusBar(ByVal Message As String)
             AddinGlobal.InventorApp.StatusBarText = Message
@@ -265,6 +299,7 @@ Namespace iPropertiesController
                         UpdateFormTextBoxColours()
                     End If
                 End If
+
             End If
         End Sub
 
@@ -547,6 +582,9 @@ Namespace iPropertiesController
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
+
+                'Dim path As String = AddinGlobal.InventorApp.ActiveDocument.FullFileName
+                'System.IO.File.SetLastWriteTime(path, DateTime.Now)
 
                 'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 '    Dim PlotDate As Object = "PlotDate"
