@@ -27,8 +27,4 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers
 ' by using the '*' as shown below:
 
-<<<<<<< HEAD
 <Assembly: AssemblyVersion("14.9.1.*")>
-=======
-<Assembly: AssemblyVersion("14.8.1.*")>
->>>>>>> parent of de26f79... comented out print date and time as might not be what we want now. Also think it might have been slowing down the save process a bit.
