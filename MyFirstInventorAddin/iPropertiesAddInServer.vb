@@ -84,9 +84,9 @@ Namespace iPropertiesController
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 End If
 
-                AddHandler m_AppEvents.OnInitializeDocument, AddressOf Me.m_ApplicationEvents_OnInitializeDocument
+                'AddHandler m_AppEvents.OnInitializeDocument, AddressOf Me.m_ApplicationEvents_OnInitializeDocument
 
-                AddHandler m_FileAccesEvents.OnFileDirty, AddressOf Me.m_FileAccesEvents_OnFileDirty
+                'AddHandler m_FileAccesEvents.OnFileDirty, AddressOf Me.m_FileAccesEvents_OnFileDirty
 
                 AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
 
@@ -151,73 +151,8 @@ Namespace iPropertiesController
             End Try
         End Sub
 
-        Private Sub m_FileAccesEvents_OnFileDirty(RelativeFileName As String, LibraryName As String, ByRef CustomLogicalName() As Byte, FullFileName As String, DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-
-        End Sub
-
-        'Private Sub AlarmClock(dt As DateTime)
-        '    Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-        '    If Not CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-        '        If Not DocumentToPulliPropValuesFrom Is Nothing Then
-        '            If DocumentToPulliPropValuesFrom.Dirty Then
-        '                Dim dtime As Object = "Date Time"
-        '                Dim dtValue As Object = dt
-        '                Dim TimeNow As DateTime = DateTime.Now
-        '                Dim CheckTime As DateTime = Nothing
-        '                Dim NewTimeNow As Object = TimeNow.AddMinutes(-20)
-        '                Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
-        '                ' Get the custom property set.
-        '                Dim customPropSet As Inventor.PropertySet
-        '                customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
-
-        '                ' Get the existing property, if it exists.
-        '                Dim prop As Inventor.Property = Nothing
-        '                Dim propExists As Boolean = True
-        '                Try
-        '                    prop = customPropSet.Item(dtime)
-        '                Catch ex As Exception
-        '                    propExists = False
-        '                End Try
-
-        '                Dim YesProp As DateTime = prop.Value
-
-        '                ' Check to see if the property was successfully obtained.
-        '                If Not propExists Then
-        '                    ' Failed to get the existing property so create a new one.
-        '                    prop = customPropSet.Add(NewTimeNow, dtime)
-
-        '                End If
-        '            Else
-        '                ' Change the value of the existing property.
-        '                CheckTime = YesProp.AddMinutes(30)
-        '                If CheckTime <= TimeNow Then
-
-        '                    LastWriteSave = MsgBox("File hasn't been saved in a while now, you probably want to save it you maniac!", vbOKOnly, "SAVE YO SH#T")
-        '                    If LastWriteSave = vbOK Then
-        '                        prop.Value = NewTimeNow
-        '                    End If
-
-        '                End If
-        '            End If
-        '        End If
-        '    End If
-        'End Sub
-
-        Private Sub m_ApplicationEvents_OnInitializeDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            'dt = DateTime.Now
-            'AlarmClock(dt)
-        End Sub
-
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
-            'Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-            'Dim path As String = DocumentToPulliPropValuesFrom.FullFileName
-            'If Not System.IO.File.Exists(path) Then
-            '    dt = DateTime.Now
-            '    AlarmClock(dt)
-            'Else
-            '    dt = System.IO.File.GetLastWriteTime(path)
-            '    AlarmClock(dt)
-            'End If
+
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -684,9 +619,6 @@ Namespace iPropertiesController
                     UpdateFormTextBoxColours()
                     myiPropsForm.GetNewFilePaths()
 
-
-                    'dt = DateTime.Now
-                    'AlarmClock(dt)
                 End If
             End If
 
