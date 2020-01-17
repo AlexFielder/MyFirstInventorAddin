@@ -151,6 +151,7 @@ Namespace iPropertiesController
             End Try
         End Sub
 
+<<<<<<< HEAD
         Private Sub m_FileAccesEvents_OnFileDirty(RelativeFileName As String, LibraryName As String, ByRef CustomLogicalName() As Byte, FullFileName As String, DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
 
         End Sub
@@ -218,6 +219,10 @@ Namespace iPropertiesController
             '    dt = System.IO.File.GetLastWriteTime(path)
             '    AlarmClock(dt)
             'End If
+=======
+        Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
+
+>>>>>>> parent of 54d082c... Added popup save reminder
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -250,16 +255,8 @@ Namespace iPropertiesController
                         UpdateDisplayediProperties()
                     End If
                 End If
-
             End If
         End Sub
-
-        'Private Sub Wait(ByVal seconds As Integer)
-        '    For i As Integer = 0 To seconds * 100
-        '        System.Threading.Thread.Sleep(10)
-        '        AddinGlobal.InventorApp.DoEvents()
-        '    Next
-        'End Sub
 
         Public Shared Sub UpdateStatusBar(ByVal Message As String)
             AddinGlobal.InventorApp.StatusBarText = Message
@@ -626,9 +623,6 @@ Namespace iPropertiesController
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
-
-                'Dim path As String = AddinGlobal.InventorApp.ActiveDocument.FullFileName
-                'System.IO.File.SetLastWriteTime(path, DateTime.Now)
 
                 'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 '    Dim PlotDate As Object = "PlotDate"
