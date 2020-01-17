@@ -624,31 +624,31 @@ Namespace iPropertiesController
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
 
-                'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-                '    Dim PlotDate As Object = "PlotDate"
-                '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
-                '    ' Get the custom property set.
-                '    Dim customPropSet As Inventor.PropertySet
-                '    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
+                If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+                    Dim PlotDate As Object = "PlotDate"
+                    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
+                    ' Get the custom property set.
+                    Dim customPropSet As Inventor.PropertySet
+                    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
 
-                '    ' Get the existing property, if it exists.
-                '    Dim prop As Inventor.Property = Nothing
-                '    Dim propExists As Boolean = True
-                '    Try
-                '        prop = customPropSet.Item(PlotDate)
-                '    Catch ex As Exception
-                '        propExists = False
-                '    End Try
+                    ' Get the existing property, if it exists.
+                    Dim prop As Inventor.Property = Nothing
+                    Dim propExists As Boolean = True
+                    Try
+                        prop = customPropSet.Item(PlotDate)
+                    Catch ex As Exception
+                        propExists = False
+                    End Try
 
-                '    ' Check to see if the property was successfully obtained.
-                '    If Not propExists Then
-                '        ' Failed to get the existing property so create a new one.
-                '        prop = customPropSet.Add(PlotDateValue, PlotDate)
-                '    Else
-                '        ' Change the value of the existing property.
-                '        prop.Value = PlotDateValue
-                '    End If
-                'End If
+                    ' Check to see if the property was successfully obtained.
+                    If Not propExists Then
+                        ' Failed to get the existing property so create a new one.
+                        prop = customPropSet.Add(PlotDateValue, PlotDate)
+                    Else
+                        ' Change the value of the existing property.
+                        prop.Value = PlotDateValue
+                    End If
+                End If
             End If
                 HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
