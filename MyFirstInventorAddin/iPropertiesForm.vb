@@ -1546,6 +1546,9 @@ Public Class IPropertiesForm
     Private Sub tbNotes_TextChanged(sender As Object, e As EventArgs) Handles tbNotes.TextChanged
         tbNotes.ForeColor = Drawing.Color.Red
     End Sub
+    Private Sub tbService_TextChanged(sender As Object, e As EventArgs) Handles tbService.TextChanged
+        tbNotes.ForeColor = Drawing.Color.Red
+    End Sub
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
@@ -1570,6 +1573,32 @@ Public Class IPropertiesForm
             'End If
 
         End If
+    End Sub
+
+    Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            tbDescription.ForeColor = Drawing.Color.Black
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "Project", tbService.Text)
+        End If
+    End Sub
+
+    Private Sub tbService_Enter(sender As Object, e As EventArgs) Handles tbService.Enter
+        If tbService.Text = "Project" Then
+            tbService.Clear()
+            tbService.Focus()
+        End If
+    End Sub
+
+    Private Sub tbService_MouseClick(sender As Object, e As EventArgs) Handles tbService.MouseClick
+        If tbService.Text = "Project" Then
+            tbService.Clear()
+            tbService.Focus()
+        End If
+    End Sub
+
+    Private Sub tbService_MouseHover(sender As Object, e As EventArgs) Handles tbService.MouseHover
+        Dim descText As String = tbService.Text
+        ToolTip1.Show(descText, tbService)
     End Sub
 
     Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
@@ -2281,6 +2310,10 @@ Public Class IPropertiesForm
         Dim oDate As Object = Today
         Clipboard.SetText(oDate)
     End Sub
+
+
+
+
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function

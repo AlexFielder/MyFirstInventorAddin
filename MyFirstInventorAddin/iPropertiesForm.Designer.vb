@@ -75,6 +75,8 @@ Partial Class IPropertiesForm
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btClipToday = New System.Windows.Forms.Button()
         Me.lbDesigner = New System.Windows.Forms.Label()
+        Me.lbservice = New System.Windows.Forms.Label()
+        Me.tbService = New System.Windows.Forms.TextBox()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -565,6 +567,27 @@ Partial Class IPropertiesForm
         Me.lbDesigner.TabIndex = 340
         Me.lbDesigner.Text = "Designer"
         '
+        'lbservice
+        '
+        Me.lbservice.AutoSize = True
+        Me.lbservice.Location = New System.Drawing.Point(3, 76)
+        Me.lbservice.Name = "lbservice"
+        Me.lbservice.Size = New System.Drawing.Size(43, 13)
+        Me.lbservice.TabIndex = 341
+        Me.lbservice.Text = "Service"
+        '
+        'tbService
+        '
+        Me.tbService.AcceptsReturn = True
+        Me.tbService.AcceptsTab = True
+        Me.tbService.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbService.Location = New System.Drawing.Point(74, 72)
+        Me.tbService.Name = "tbService"
+        Me.tbService.Size = New System.Drawing.Size(205, 20)
+        Me.tbService.TabIndex = 342
+        Me.tbService.TabStop = False
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -605,7 +628,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.tbEngineer)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.tbStockNumber)
         Me.Controls.Add(Me.btDegEng)
@@ -621,6 +643,9 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.btCopyPN)
+        Me.Controls.Add(Me.lbservice)
+        Me.Controls.Add(Me.tbService)
+        Me.Controls.Add(Me.tbEngineer)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
@@ -684,4 +709,6 @@ Partial Class IPropertiesForm
     Friend WithEvents Label13 As Windows.Forms.Label
     Friend WithEvents btClipToday As Windows.Forms.Button
     Friend WithEvents lbDesigner As Windows.Forms.Label
+    Friend WithEvents lbservice As Windows.Forms.Label
+    Friend WithEvents tbService As Windows.Forms.TextBox
 End Class

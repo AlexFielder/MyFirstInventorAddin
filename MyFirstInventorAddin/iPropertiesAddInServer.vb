@@ -166,6 +166,7 @@ Namespace iPropertiesController
                 myiPropsForm.Label12.Text = String.Empty
                 myiPropsForm.FileLocation.Text = String.Empty
                 myiPropsForm.ModelFileLocation.Text = String.Empty
+                myiPropsForm.tbService.Text = String.Empty
             End If
         End Sub
 
@@ -536,6 +537,7 @@ Namespace iPropertiesController
             myiPropsForm.tbRevNo.ForeColor = Drawing.Color.Black
             myiPropsForm.tbComments.ForeColor = Drawing.Color.Black
             myiPropsForm.tbNotes.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbService.ForeColor = Drawing.Color.Black
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -550,31 +552,31 @@ Namespace iPropertiesController
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
 
-                If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-                    Dim PlotDate As Object = "PlotDate"
-                    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
-                    ' Get the custom property set.
-                    Dim customPropSet As Inventor.PropertySet
-                    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
+                'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+                '    Dim PlotDate As Object = "PlotDate"
+                '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
+                '    ' Get the custom property set.
+                '    Dim customPropSet As Inventor.PropertySet
+                '    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
 
-                    ' Get the existing property, if it exists.
-                    Dim prop As Inventor.Property = Nothing
-                    Dim propExists As Boolean = True
-                    Try
-                        prop = customPropSet.Item(PlotDate)
-                    Catch ex As Exception
-                        propExists = False
-                    End Try
+                '    ' Get the existing property, if it exists.
+                '    Dim prop As Inventor.Property = Nothing
+                '    Dim propExists As Boolean = True
+                '    Try
+                '        prop = customPropSet.Item(PlotDate)
+                '    Catch ex As Exception
+                '        propExists = False
+                '    End Try
 
-                    ' Check to see if the property was successfully obtained.
-                    If Not propExists Then
-                        ' Failed to get the existing property so create a new one.
-                        prop = customPropSet.Add(PlotDateValue, PlotDate)
-                    Else
-                        ' Change the value of the existing property.
-                        prop.Value = PlotDateValue
-                    End If
-                End If
+                '    ' Check to see if the property was successfully obtained.
+                '    If Not propExists Then
+                '        ' Failed to get the existing property so create a new one.
+                '        prop = customPropSet.Add(PlotDateValue, PlotDate)
+                '    Else
+                '        ' Change the value of the existing property.
+                '        prop.Value = PlotDateValue
+                '    End If
+                'End If
             End If
                 HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
@@ -626,6 +628,7 @@ Namespace iPropertiesController
                     myiPropsForm.Label12.Text = String.Empty
                     myiPropsForm.FileLocation.Text = String.Empty
                     myiPropsForm.ModelFileLocation.Text = String.Empty
+                    myiPropsForm.tbService.Text = String.Empty
                 End If
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -680,6 +683,8 @@ Namespace iPropertiesController
                 myiPropsForm.btCopyPN.Hide()
                 myiPropsForm.btViewNames.Show()
                 myiPropsForm.lbDesigner.Hide()
+                myiPropsForm.tbService.Hide()
+                myiPropsForm.lbservice.Hide()
 
                 myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -796,6 +801,20 @@ Namespace iPropertiesController
                 myiPropsForm.btViewNames.Hide()
                 myiPropsForm.lbDesigner.Show()
 
+                If DocumentToPulliPropValuesFrom.FullDocumentName.Contains("pisweep") Then
+                    myiPropsForm.lbservice.Show()
+                    myiPropsForm.tbService.Show()
+                    myiPropsForm.btDiaEng.Hide()
+                    myiPropsForm.btDegEng.Hide()
+                    myiPropsForm.Label4.Hide()
+                Else
+                    myiPropsForm.lbservice.Hide()
+                    myiPropsForm.tbService.Hide()
+                    myiPropsForm.btDiaEng.Show()
+                    myiPropsForm.btDegEng.Show()
+                    myiPropsForm.Label4.Show()
+                End If
+
 
                 myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
 
@@ -812,6 +831,8 @@ Namespace iPropertiesController
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+                myiPropsForm.tbService.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "", "")
 
                 myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
 
@@ -868,6 +889,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbComments.ReadOnly = True
                     myiPropsForm.tbNotes.ReadOnly = True
                     myiPropsForm.tbDrawnBy.ReadOnly = True
+                    myiPropsForm.tbService.ReadOnly = True
                 Else
                     'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                     'myiPropsForm.Label10.Text = "Checked Out"
@@ -884,6 +906,7 @@ Namespace iPropertiesController
                     myiPropsForm.tbComments.ReadOnly = False
                     myiPropsForm.tbNotes.ReadOnly = False
                     myiPropsForm.tbDrawnBy.ReadOnly = False
+                    myiPropsForm.tbService.ReadOnly = False
                 End If
             End If
 
