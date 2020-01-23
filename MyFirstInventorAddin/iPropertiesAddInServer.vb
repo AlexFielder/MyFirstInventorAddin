@@ -695,22 +695,28 @@ Namespace iPropertiesController
                 Dim oView As DrawingView = Nothing
                 Dim drawnDoc As Document = Nothing
                 Dim MaterialString As String = String.Empty
+                Dim DrawDesc As String = String.Empty
+                Dim ModelDesc As String = String.Empty
 
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
 
                     myiPropsForm.tbDrawnBy.ReadOnly = True
 
-                        If iProperties.GetorSetStandardiProperty(
+                    drawnDoc = DocumentToPulliPropValuesFrom
+                    DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                    ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+                    If iProperties.GetorSetStandardiProperty(
                                           DocumentToPulliPropValuesFrom,
                                           PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                            myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
-                        ElseIf iProperties.GetorSetStandardiProperty(
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                        myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
+                    ElseIf iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Green
-                            myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
-                        End If
+                        myiPropsForm.btDefer.BackColor = Drawing.Color.Green
+                        myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
+                    End If
 
                 Else
 
@@ -735,7 +741,6 @@ Namespace iPropertiesController
                         If Not oView Is Nothing Then
                             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-
                             If TypeOf drawnDoc Is AssemblyDocument Then
                                 myiPropsForm.btITEM.Show()
                                 myiPropsForm.btReNum.Show()
@@ -750,8 +755,7 @@ Namespace iPropertiesController
                                 myiPropsForm.Label11.Show()
                                 myiPropsForm.Label12.Show()
 
-                                MaterialString = iProperties.GetorSetStandardiProperty(
-                            drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                                MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
                             End If
 
                             MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
@@ -762,21 +766,23 @@ Namespace iPropertiesController
 
                             myiPropsForm.Label12.Text = MaterialString
 
-                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                            DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                            ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
-                            Dim DrawDesc As String = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                            Dim ModelDesc As String = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                            If DrawDesc = String.Empty Then
-                                If Not ModelDesc Is String.Empty Then
-                                    myiPropsForm.tbDescription.Text = ModelDesc
-                                    iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, ModelDesc, "", True)
-                                Else
-                                    myiPropsForm.tbDescription.Text = "Model Description Not Set"
-                                End If
-                            Else
-                                    myiPropsForm.tbDescription.Text = DrawDesc
-                            End If
+                            myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                         End If
+                    End If
+
+
+                End If
+                If Not DrawDesc = String.Empty Then
+                    myiPropsForm.tbDescription.Text = DrawDesc
+                Else
+                    If Not ModelDesc Is String.Empty Then
+                        myiPropsForm.tbDescription.Text = ModelDesc
+                        iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, ModelDesc, "", True)
+                    Else
+                        myiPropsForm.tbDescription.Text = "Model Description Not Set"
                     End If
                 End If
 

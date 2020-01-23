@@ -2028,12 +2028,12 @@ Public Class IPropertiesForm
                         Dim oData As DataMedium
                         oData = inventorApp.TransientObjects.CreateDataMedium
                         oData.FileName = NewPath + "_R" + oRev + ".stp"
-
+                        Dim RefName As String = pisWeep + "_R" + oRev + ".stp"
                         Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
                         UpdateStatusBar("File saved as Step file")
 
                         'AttachRefFile(oAsmDoc, oData.FileName)
-                        AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                        AttachFile = MsgBox("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
                         If AttachFile = vbYes Then
                             AddReferences(inventorApp.ActiveDocument, oData.FileName)
                             UpdateStatusBar("File attached")
