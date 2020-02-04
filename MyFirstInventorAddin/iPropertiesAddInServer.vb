@@ -721,7 +721,7 @@ Namespace iPropertiesController
                 Else
 
                     myiPropsForm.tbDrawnBy.ReadOnly = False
-                    If DocumentToPulliPropValuesFrom.exists Then
+                    If DocumentToPulliPropValuesFrom.FullFileName IsNot Nothing Then
 
                         If iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
                             PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
@@ -729,7 +729,7 @@ Namespace iPropertiesController
                             myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                         ElseIf iProperties.GetorSetStandardiProperty(
                                 DocumentToPulliPropValuesFrom,
-                                PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                               PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                             myiPropsForm.btDefer.BackColor = Drawing.Color.Green
                             myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
 
