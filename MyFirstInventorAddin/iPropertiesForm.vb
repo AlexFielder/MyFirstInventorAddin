@@ -1582,6 +1582,38 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Private Sub tbService_KeyUp(sender As Object, e As KeyEventArgs) Handles tbService.KeyUp
+
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyValue = Keys.Tab Then
+                    tbRevNo.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                ElseIf e.KeyValue = Keys.Return Then
+                    tbService_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyValue = Keys.Tab Then
+                    tbRevNo.Focus()
+
+                ElseIf e.KeyValue = Keys.Return Then
+                    tbService_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyValue = Keys.Tab Then
+                tbRevNo.Focus()
+
+            ElseIf e.KeyValue = Keys.Return Then
+                tbService_Leave(sender, e)
+            End If
+        End If
+    End Sub
+
     Private Sub tbService_Enter(sender As Object, e As EventArgs) Handles tbService.Enter
         If tbService.Text = "Project" Then
             tbService.Clear()
