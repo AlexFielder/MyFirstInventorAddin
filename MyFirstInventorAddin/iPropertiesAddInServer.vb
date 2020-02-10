@@ -722,53 +722,55 @@ Namespace iPropertiesController
 
                     myiPropsForm.tbDrawnBy.ReadOnly = False
                     If DocumentToPulliPropValuesFrom.FullFileName IsNot Nothing Then
+                        If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
 
-                        If iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                            myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
-                        ElseIf iProperties.GetorSetStandardiProperty(
-                                DocumentToPulliPropValuesFrom,
-                               PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Green
-                            myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
+                            If iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                                PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                                myiPropsForm.btDefer.BackColor = Drawing.Color.Red
+                                myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
+                            ElseIf iProperties.GetorSetStandardiProperty(
+                                    DocumentToPulliPropValuesFrom,
+                                   PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                                myiPropsForm.btDefer.BackColor = Drawing.Color.Green
+                                myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
 
-                            For Each view As DrawingView In oSht.DrawingViews
-                                oView = view
-                                Exit For
-                            Next
+                                For Each view As DrawingView In oSht.DrawingViews
+                                    oView = view
+                                    Exit For
+                                Next
 
-                            If Not oView Is Nothing Then
-                                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                                If Not oView Is Nothing Then
+                                    drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                                If TypeOf drawnDoc Is AssemblyDocument Then
-                                    myiPropsForm.btITEM.Show()
-                                    myiPropsForm.btReNum.Show()
-                                    myiPropsForm.Label11.Show()
-                                    myiPropsForm.Label12.Show()
+                                    If TypeOf drawnDoc Is AssemblyDocument Then
+                                        myiPropsForm.btITEM.Show()
+                                        myiPropsForm.btReNum.Show()
+                                        myiPropsForm.Label11.Show()
+                                        myiPropsForm.Label12.Show()
 
 
-                                    MaterialString = "See BOM"
-                                Else
-                                    myiPropsForm.btITEM.Hide()
-                                    myiPropsForm.btReNum.Hide()
-                                    myiPropsForm.Label11.Show()
-                                    myiPropsForm.Label12.Show()
+                                        MaterialString = "See BOM"
+                                    Else
+                                        myiPropsForm.btITEM.Hide()
+                                        myiPropsForm.btReNum.Hide()
+                                        myiPropsForm.Label11.Show()
+                                        myiPropsForm.Label12.Show()
 
-                                    MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                                        MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                                    End If
+
+                                    MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+                                    ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+
+                                    myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                                    myiPropsForm.ModelFileLocation.Text = ModelPath
+
+                                    myiPropsForm.Label12.Text = MaterialString
+                                    DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                                    ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+                                    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                                 End If
-
-                                MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
-                                ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-
-                                myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                                myiPropsForm.ModelFileLocation.Text = ModelPath
-
-                                myiPropsForm.Label12.Text = MaterialString
-                                DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                                ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-                                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                             End If
                         End If
                     End If
@@ -807,20 +809,23 @@ Namespace iPropertiesController
                 myiPropsForm.btViewNames.Hide()
                 myiPropsForm.lbDesigner.Show()
 
-                If DocumentToPulliPropValuesFrom.FullDocumentName.Contains("pisweep") Then
-                    myiPropsForm.lbservice.Show()
-                    myiPropsForm.tbService.Show()
-                    myiPropsForm.btDiaEng.Hide()
-                    myiPropsForm.btDegEng.Hide()
-                    myiPropsForm.Label4.Hide()
-                Else
-                    myiPropsForm.lbservice.Hide()
-                    myiPropsForm.tbService.Hide()
-                    myiPropsForm.btDiaEng.Show()
-                    myiPropsForm.btDegEng.Show()
-                    myiPropsForm.Label4.Show()
+                If DocumentToPulliPropValuesFrom.FullFileName IsNot Nothing Then
+                    If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
+                        If DocumentToPulliPropValuesFrom.FullDocumentName.Contains("pisweep") Then
+                            myiPropsForm.lbservice.Show()
+                            myiPropsForm.tbService.Show()
+                            myiPropsForm.btDiaEng.Hide()
+                            myiPropsForm.btDegEng.Hide()
+                            myiPropsForm.Label4.Hide()
+                        Else
+                            myiPropsForm.lbservice.Hide()
+                            myiPropsForm.tbService.Hide()
+                            myiPropsForm.btDiaEng.Show()
+                            myiPropsForm.btDegEng.Show()
+                            myiPropsForm.Label4.Show()
+                        End If
+                    End If
                 End If
-
 
                 myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
 
