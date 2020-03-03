@@ -542,16 +542,16 @@ Public Class IPropertiesForm
 
             If TypeOf drawnDoc Is AssemblyDocument Then
                 If oPromptEntry = "<Material>" Then
-                    oPromptText = "SEE BOM"
+                    oPromptText = "SEE ABOVE"
                 ElseIf oPromptEntry = "" Then
-                    oPromptText = "SEE BOM"
+                    oPromptText = "SEE ABOVE"
                 Else
                     oPromptText = oPromptEntry
                 End If
-                prtMaterial = InputBox("leaving as 'SEE BOM' will fill box with 'SEE BOM'" &
+                prtMaterial = InputBox("leaving as 'SEE ABOVE' will fill box with 'SEE ABOVE'" &
                                    vbCrLf & "otherwise you can alter this to suit needs", "Assembly", oPromptText)
-                If prtMaterial = "SEE BOM" Then
-                    MaterialString = "SEE BOM"
+                If prtMaterial = "SEE ABOVE" Then
+                    MaterialString = "SEE ABOVE"
                 Else
                     MaterialString = prtMaterial
                 End If
@@ -1553,25 +1553,29 @@ Public Class IPropertiesForm
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
-            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
-            'If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
-            '    Dim iProp As String = String.Empty
+            'CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
+                Dim iProp As String = String.Empty
 
-            '    Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
-            '    Dim oSht As Sheet = oDWG.ActiveSheet
-            '    Dim oView As DrawingView = Nothing
+                Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
+                Dim oSht As Sheet = oDWG.ActiveSheet
+                Dim oView As DrawingView = Nothing
 
-            '    For Each view As DrawingView In oSht.DrawingViews
-            '        oView = view
-            '        Exit For
-            '    Next
-            '    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                For Each view As DrawingView In oSht.DrawingViews
+                    oView = view
+                    Exit For
+                Next
+                If Not oView Is Nothing Then
+                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    Dim drawingDoc As Document = inventorApp.ActiveDocument
+                    Dim drawingDesc As String = tbDescription.Text
 
-            '    Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-            '    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
-            'End If
-
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawingDoc)
+                End If
+            Else
+                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            End If
         End If
     End Sub
 
@@ -2208,7 +2212,7 @@ Public Class IPropertiesForm
 
                 Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                Dim drawingPN As String = tbPartNumber.Text
 
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
