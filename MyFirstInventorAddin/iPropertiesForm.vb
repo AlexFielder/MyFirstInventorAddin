@@ -2360,6 +2360,12 @@ Public Class IPropertiesForm
         For Each oSheet In oDoc.Sheets
             oSheet.Activate()
 
+            If iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = String.Empty Then
+                For Each oRevTable In oSheet.RevisionTables
+                    oRevTable.Delete
+                Next
+            End If
+
             If oDoc.ActiveSheet.RevisionTables.Count = 0 Then
                 Dim oTG As TransientGeometry = inventorApp.TransientGeometry
                 Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
