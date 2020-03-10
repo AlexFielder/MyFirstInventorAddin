@@ -73,7 +73,7 @@ Partial Class IPropertiesForm
         Me.tbNotes = New System.Windows.Forms.TextBox()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.btClipToday = New System.Windows.Forms.Button()
+        Me.btRevision = New System.Windows.Forms.Button()
         Me.lbDesigner = New System.Windows.Forms.Label()
         Me.lbservice = New System.Windows.Forms.Label()
         Me.tbService = New System.Windows.Forms.TextBox()
@@ -548,14 +548,14 @@ Partial Class IPropertiesForm
         Me.Label15.TabIndex = 338
         Me.Label15.Text = "Notes:"
         '
-        'btClipToday
+        'btRevision
         '
-        Me.btClipToday.Location = New System.Drawing.Point(193, 162)
-        Me.btClipToday.Name = "btClipToday"
-        Me.btClipToday.Size = New System.Drawing.Size(87, 22)
-        Me.btClipToday.TabIndex = 339
-        Me.btClipToday.Text = "Copy Today"
-        Me.btClipToday.UseVisualStyleBackColor = True
+        Me.btRevision.Location = New System.Drawing.Point(193, 162)
+        Me.btRevision.Name = "btRevision"
+        Me.btRevision.Size = New System.Drawing.Size(87, 22)
+        Me.btRevision.TabIndex = 339
+        Me.btRevision.Text = "Revision"
+        Me.btRevision.UseVisualStyleBackColor = True
         '
         'lbDesigner
         '
@@ -598,7 +598,7 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.btDefer)
-        Me.Controls.Add(Me.btClipToday)
+        Me.Controls.Add(Me.btRevision)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.tbNotes)
@@ -707,7 +707,7 @@ Partial Class IPropertiesForm
     Friend WithEvents tbNotes As Windows.Forms.TextBox
     Friend WithEvents Label15 As Windows.Forms.Label
     Friend WithEvents Label13 As Windows.Forms.Label
-    Friend WithEvents btClipToday As Windows.Forms.Button
+    Friend WithEvents btRevision As Windows.Forms.Button
     Friend WithEvents lbDesigner As Windows.Forms.Label
     Friend WithEvents lbservice As Windows.Forms.Label
     Friend WithEvents tbService As Windows.Forms.TextBox

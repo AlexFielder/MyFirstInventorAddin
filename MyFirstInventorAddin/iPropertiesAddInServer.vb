@@ -1055,6 +1055,7 @@ Namespace iPropertiesController
         ' Note:this method is now obsolete, you should use the
         ' ControlDefinition functionality for implementing commands.
         Public Sub ExecuteCommand(ByVal commandID As Integer) Implements Inventor.ApplicationAddInServer.ExecuteCommand
+
         End Sub
 
 #End Region

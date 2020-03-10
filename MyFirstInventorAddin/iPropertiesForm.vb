@@ -2342,9 +2342,65 @@ Public Class IPropertiesForm
         ToolTip1.Show(hovText, tbNotes)
     End Sub
 
-    Private Sub btClipToday_Click(sender As Object, e As EventArgs) Handles btClipToday.Click
-        Dim oDate As Object = Today
-        Clipboard.SetText(oDate)
+    Private Sub btRevision_Click(sender As Object, e As EventArgs) Handles btRevision.Click
+        Dim oDoc As Document = inventorApp.ActiveDocument
+        Dim oChange As String
+        Dim oRow As RevisionTableRow
+        Dim oSheet As Sheet
+        Dim oInput As String
+
+        'oDoc.PropertySets.Item("Inventor Summary Information").Item("Author").Value ="ELC"
+        oChange = UCase(InputBox("Input change number if any?", "ECN", ""))
+
+        oInput = UCase(InputBox("What did you change?", "REV", "INTRODUCED"))
+        If oInput = "" Then
+            Exit Sub
+        End If
+
+        For Each oSheet In oDoc.Sheets
+            oSheet.Activate()
+
+            If oDoc.ActiveSheet.RevisionTables.Count = 0 Then
+                Dim oTG As TransientGeometry = inventorApp.TransientGeometry
+                Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
+                oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
+                Dim oRevTable As RevisionTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                'Set it equal to the the current date        
+                'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                oCell3.Text = oInput
+            Else
+                Dim oRevTable As RevisionTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+
+                oRevTable.RevisionTableRows.Add()
+                oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                ' Make sure we have the active row
+                If oRow.IsActiveRow Then
+
+                    Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                    '                    'Set it equal to the user name on the open application 
+
+                    oCell1.Text = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text + 1
+
+                    Dim oCell2 As RevisionTableCell = oRow.Item(2)
+                    '                    'Set it equal to the user name on the open application        
+                    oCell2.Text = oChange
+
+                    Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                    'Set it equal to the the current date        
+                    'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                    oCell3.Text = oInput
+
+                    Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                    'Set it equal to the the current date        
+                    oCell4.Text = DateTime.Now.ToString("d")
+                End If
+
+            End If 'Rev table count = 0
+            'End If 'Sheet Name is PO
+        Next
+
     End Sub
 
 
