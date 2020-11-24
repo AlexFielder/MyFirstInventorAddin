@@ -344,27 +344,18 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btDefer_Click(sender As Object, e As EventArgs) Handles btDefer.Click
-        Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
-        'Dim osheetname As String
-        'osheetname = oSheet.Name
-        'Dim osheetno As String
-        'If osheetname = "sheet:1" Then
-        '    osheetno = "1"
-        'ElseIf osheetname = "sheet:2" Then
-        '    osheetno = "2"
-        'ElseIf osheetname = "sheet:3" Then
-        '    osheetno = "3"
-        'ElseIf osheetname = "sheet:4" Then
-        '    osheetno = "4"
-        'ElseIf osheetname = "sheet:5" Then
-        '    osheetno = "5"
-        'ElseIf osheetname = "sheet:6" Then
-        '    osheetno = "6"
-        'End If
+
         'Toggle 'Defer updates' on and off in a Drawing
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                oSheet.Activate()
+                Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                Dim oSheets = inventorApp.ActiveDocument.Sheets
+
+                Dim strSheetName As String
+                strSheetName = oSheet.Name
+
+                oSheets(strSheetName).Activate
+
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
                     'DrawingSettings.DeferUpdates = False
@@ -406,6 +397,24 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btITEM_Click(sender As Object, e As EventArgs) Handles btITEM.Click
+
+        'Dim oAsmDoc As AssemblyDocument
+        'oAsmDoc = inventorApp.ActiveDocument
+
+        'oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
+
+        'Dim oCommandMgr As CommandManager
+        'oCommandMgr = inventorApp.CommandManager
+
+        ''Dim compOcc As ComponentOccurrence = oRefDoc
+        ''Call inventorApp.ActiveDocument.SelectSet.Select(compOcc)
+
+        'tube = inventorApp.CommandManager.Pick(SelectionFilterEnum.kAssemblyLeafOccurrenceFilter, "Pick Part")
+        'oAsmDoc.SelectSet.Select(tube)
+
+        'Call oCommandMgr.ControlDefinitions.Item("CADC:TpXmlReporter:BendingMachineCmd").Execute()
+
+
         If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
             Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
@@ -1835,11 +1844,12 @@ Public Class IPropertiesForm
                 Dim drawingRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp, drawnDoc)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp, drawnDoc)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp)
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
-                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
+                'iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
 
             Else
                 tbRevNo.ForeColor = Drawing.Color.Black
@@ -1847,7 +1857,7 @@ Public Class IPropertiesForm
                 Dim iPropRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", iPropRev, iProp)
 
 
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
@@ -2199,6 +2209,54 @@ Public Class IPropertiesForm
         Dim oLabel As String = "DETAIL OF ITEM "
         Dim isoLabel As String = "ISOMETRIC VIEW"
 
+        If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            Dim drDoc As Document = Nothing
+
+            For Each view As DrawingView In oSheet.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            drDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+            Dim doc = drDoc
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
+
+            oBOM.StructuredViewEnabled = True
+
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+            Dim oBOMRow As BOMRow
+
+            For Each oBOMRow In oBOMView.BOMRows
+
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
+
+                Else
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+
+                    Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                End If
+            Next
+            oSheet.Update()
+        End If
+        UpdateStatusBar("BOM item numbers copied to #ITEM")
+
         For Each oView In oSheet.DrawingViews
             If Not oView.ParentView Is Nothing Then
                 'we're working on a child view and should get the parent view as an object
@@ -2363,11 +2421,22 @@ Public Class IPropertiesForm
         ToolTip1.Show(hovText, tbNotes)
     End Sub
 
+    ''Validates a string of alpha characters
+    'Function CheckForAlphaCharacters(ByVal StringToCheck As String)
+    '    For i = 0 To StringToCheck.Length - 1
+    '        If Not Char.IsLetter(StringToCheck.Chars(i)) Then
+    '            Return False
+    '        End If
+    '    Next
+
+    '    Return True 'Return true if all elements are characters
+    'End Function
+
     Private Sub btRevision_Click(sender As Object, e As EventArgs) Handles btRevision.Click
         Dim oDoc As Document = inventorApp.ActiveDocument
         Dim oChange As String
         Dim oRow As RevisionTableRow
-        Dim oSheet As Sheet
+        Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
         Dim oInput As String
         Dim oCreation1 As DateTime = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                      PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties,
@@ -2382,23 +2451,22 @@ Public Class IPropertiesForm
 
 
         'oDoc.PropertySets.Item("Inventor Summary Information").Item("Author").Value ="ELC"
-        oNumberRev = UCase(InputBox("Input letter revision, leave blank for number revisions", "REV", ""))
+        oNumberRev = UCase(InputBox("Input revision letter or number, leave blank for new up revision", "REV", ""))
         oChange = UCase(InputBox("Input change number if any?", "ECN", ""))
         oInput = UCase(InputBox("What did you change?", "CHANGE", "INTRODUCED"))
         If oInput = "" Then
             Exit Sub
         End If
 
-        For Each oSheet In oDoc.Sheets
-            oSheet.Activate()
-
-            If oDoc.ActiveSheet.RevisionTables.Count = 0 Then
+        If oDoc.ActiveSheet.RevisionTables.Count = 0 Then
+            For Each oSheet In oDoc.Sheets
+                oSheet.Activate()
                 Dim oTG As TransientGeometry = inventorApp.TransientGeometry
                 Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
                 If oNumberRev = "" Then
                     oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
                 Else
-                    oSheet.RevisionTables.Add2(pt, False, True, False, "A", , )
+                    oSheet.RevisionTables.Add2(pt, False, True, False, oNumberRev, , )
                 End If
                 oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
                 oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
@@ -2406,95 +2474,115 @@ Public Class IPropertiesForm
                 'Set it equal to the the current date        
                 'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
                 oCell3.Text = oInput
-            Else
                 oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
-
                 oRow1 = oRevTable.RevisionTableRows.Item(1)
-
                 Rev1date = oRow1.Item(4).Text
-                rev1rev = oRow1.Item(1).Text
+
+                If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = Rev1date Then
+
+                    inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = Rev1date
+                    UpdateStatusBar("Creation date updated to " + Rev1date)
+                End If
+            Next
+        Else
+            oSheet.Activate()
+            oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+
+            oRow1 = oRevTable.RevisionTableRows.Item(1)
+
+            Rev1date = oRow1.Item(4).Text
+            rev1rev = oRow1.Item(1).Text
 
 
-                ' Make sure we have the active row
-                If rev1rev = String.Empty Then
-                    Dim oCell1 As RevisionTableCell = oRow1.Item(1)
-                    '                    'Set it equal to the user name on the open application 
+            ' Make sure we have the active row
+            If rev1rev = String.Empty Then
+                Dim oCell1 As RevisionTableCell = oRow1.Item(1)
+                '                    'Set it equal to the user name on the open application 
 
-                    If oNumberRev = "" Then
-                        oCell1.Text = "1"
-                    Else
-                        oCell1.Text = "A"
-                    End If
-
-                    Dim oCell2 As RevisionTableCell = oRow1.Item(2)
-                    '                    'Set it equal to the user name on the open application        
-                    oCell2.Text = oChange
-
-                    Dim oCell3 As RevisionTableCell = oRow1.Item(3)
-                    'Set it equal to the the current date        
-                    'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
-                    oCell3.Text = oInput
-
-                    Dim oCell4 As RevisionTableCell = oRow1.Item(4)
-                    'Set it equal to the the current date        
-                    oCell4.Text = DateTime.Now.ToString("d")
-
-                ElseIf rev1rev IsNot String.Empty Then
-                    If Rev1date <> oCreation Then
-                        If rev1rev = "1" Or rev1rev = "A" Then
-                            For Each oRevTable In oSheet.RevisionTables
-                                oRevTable.Delete()
-                            Next
-                            Dim oTG As TransientGeometry = inventorApp.TransientGeometry
-                            Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
-                            If oNumberRev = "" Then
-                                oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
-                            Else
-                                oSheet.RevisionTables.Add2(pt, False, True, False, "A", , )
-                            End If
-                            oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
-                            oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
-                            Dim oCell3 As RevisionTableCell = oRow.Item(3)
-                            'Set it equal to the the current date        
-                            'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
-                            oCell3.Text = oInput
-                        End If
-                    Else
-                        oRevTable.RevisionTableRows.Add()
-                        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
-                        If oRow.IsActiveRow Then
-                            Dim oCell1 As RevisionTableCell = oRow.Item(1)
-                            '                    'Set it equal to the user name on the open application 
-                            If oNumberRev = "" Then
-                                OldRev = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text
-                                If Char.IsLetter(OldRev) Then
-                                    oCell1.Text = "1"
-                                Else
-                                    oCell1.Text = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text + 1
-                                End If
-                            Else
-                                oCell1.Text = oNumberRev
-                            End If
-
-                            Dim oCell2 As RevisionTableCell = oRow.Item(2)
-                            '                    'Set it equal to the user name on the open application        
-                            oCell2.Text = oChange
-
-                            Dim oCell3 As RevisionTableCell = oRow.Item(3)
-                            'Set it equal to the the current date        
-                            'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
-                            oCell3.Text = oInput
-
-                            Dim oCell4 As RevisionTableCell = oRow.Item(4)
-                            'Set it equal to the the current date        
-                            oCell4.Text = DateTime.Now.ToString("d")
-                        End If
-                    End If
+                If oNumberRev = "" Then
+                    oCell1.Text = "1"
+                Else
+                    oCell1.Text = oNumberRev
                 End If
 
-            End If 'Rev table count = 0
-        Next
-        'End If 'Sheet Name is PO
+                Dim oCell2 As RevisionTableCell = oRow1.Item(2)
+                '                    'Set it equal to the user name on the open application        
+                oCell2.Text = oChange
+
+                Dim oCell3 As RevisionTableCell = oRow1.Item(3)
+                'Set it equal to the the current date        
+                'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                oCell3.Text = oInput
+
+                Dim oCell4 As RevisionTableCell = oRow1.Item(4)
+                'Set it equal to the the current date        
+                oCell4.Text = DateTime.Now.ToString("d")
+
+            ElseIf rev1rev IsNot String.Empty Then
+                If Rev1date <> oCreation Then
+                    If rev1rev = "1" Or rev1rev = "A" Then
+                        'For Each oRevTable In oSheet.RevisionTables
+                        '    oRevTable.Delete()
+                        'Next
+                        oRows = oRevTable.RevisionTableRows
+                        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+
+                        For Each oRow In oRows
+                            If oRow.IsActiveRow Then
+                                'do nothing for the active row
+                            Else
+                                oRow.Delete() 'deletes rev tags also
+                            End If
+                        Next
+                        Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                        Dim ocell2 As RevisionTableCell = oRow.Item(2)
+                        ocell2.Text = oChange
+                        If oNumberRev = "" Then
+                            oCell1.Text = "1"
+                        Else
+                            oCell1.Text = oNumberRev
+                        End If
+
+                        Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                        Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                        'Set it equal to the the current date        
+                        oCell4.Text = DateTime.Now.ToString("d")
+                        oCell3.Text = oInput
+                    End If
+                Else
+                    oRevTable.RevisionTableRows.Add()
+                    oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                    If oRow.IsActiveRow Then
+                        Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                        '                    'Set it equal to the user name on the open application 
+                        If oNumberRev = "" Then
+                            OldRev = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text
+                            If Char.IsLetter(OldRev) Then
+                                oCell1.Text = "1"
+                            Else
+                                oCell1.Text = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text + 1
+                            End If
+                        Else
+                            oCell1.Text = oNumberRev
+                        End If
+
+                        Dim oCell2 As RevisionTableCell = oRow.Item(2)
+                        '                    'Set it equal to the user name on the open application        
+                        oCell2.Text = oChange
+
+                        Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                        'Set it equal to the the current date        
+                        'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                        oCell3.Text = oInput
+
+                        Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                        'Set it equal to the the current date        
+                        oCell4.Text = DateTime.Now.ToString("d")
+                    End If
+                End If
+            End If
+        End If
 
     End Sub
 

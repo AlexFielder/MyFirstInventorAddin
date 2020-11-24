@@ -317,7 +317,7 @@ Namespace iPropertiesController
                     selecteddoc = virtualDef.Document
 
                     UpdateDisplayediProperties(selecteddoc)
-                    AssyDoc.SelectSet.Select(compOcc)
+                    'AssyDoc.SelectSet.Select(compOcc)
                     UpdateFormTextBoxColours()
                 Else
                     selecteddoc = compOcc.Definition.Document
@@ -326,6 +326,7 @@ Namespace iPropertiesController
                     AssyDoc.SelectSet.Select(compOcc) ' _inChangeSelectSetHandler is required because of this
                     UpdateFormTextBoxColours()
                 End If
+
                 'selecteddoc = compOcc.Definition.Document
                 '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
                 '    'Dim selectedVirtdoc As Document = Nothing
