@@ -1279,30 +1279,48 @@ Public Class IPropertiesForm
                 Dim oDataMedium As DataMedium
                 oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
-                ' Check whether the translator has 'SaveCopyAs' options
-                If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
+                'Get sheet names and set options depending on them
+                Dim strSheetName As String
+                Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                Dim oDoc = inventorApp.ActiveDocument
+                Dim oSheets = inventorApp.ActiveDocument.Sheets
+                For Each oSheet In oDocu.Sheets
+                    oSheet.Activate()
 
-                    ' Options for drawings...
+                    strSheetName = oSheet.Name
+                    If strSheetName.Contains("Model") Then
+                        Exit For
+                    End If
+                Next
 
-                    oOptions.Value("All_Color_AS_Black") = 1
-
-                    'oOptions.Value("Remove_Line_Weights") = 0
-                    'oOptions.Value("Vector_Resolution") = 400
-                    'oOptions.Value("Sheet_Range") = kPrintAllSheets
-                    'oOptions.Value("Custom_Begin_Sheet") = 2
-                    'oOptions.Value("Custom_End_Sheet") = 4
-
+                If strSheetName.Contains("Model") Then
+                    oDoc.sheets.item("Sheet:1").Activate()
+                    oDoc.Sheets.item("Model (AutoCAD)").ExcludeFromPrinting = True
                 End If
 
-                'Set the destination file name
-                oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
+                If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
 
-                'Publish document.
-                Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
-                UpdateStatusBar("File saved as pdf file")
-                AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
-            Else
-                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                        ' Options for drawings...
+
+                        oOptions.Value("All_Color_AS_Black") = 1
+
+                        'oOptions.Value("Remove_Line_Weights") = 0
+                        'oOptions.Value("Vector_Resolution") = 400
+                        oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
+                        'oOptions.Value("Custom_Begin_Sheet") = 2
+                        'oOptions.Value("Custom_End_Sheet") = 4
+
+                    End If
+
+                    'Set the destination file name
+                    oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
+
+                    'Publish document.
+                    Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
+                    UpdateStatusBar("File saved as pdf file")
+                    AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                Else
+                    CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -2434,10 +2452,10 @@ Public Class IPropertiesForm
 
     Private Sub btRevision_Click(sender As Object, e As EventArgs) Handles btRevision.Click
         Dim oDoc As Document = inventorApp.ActiveDocument
-        Dim oChange As String
+        Dim oChange As String = String.Empty
         Dim oRow As RevisionTableRow
         Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
-        Dim oInput As String
+        Dim oInput As String = String.Empty
         Dim oCreation1 As DateTime = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                      PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties,
                                                      "", "")
@@ -2448,7 +2466,7 @@ Public Class IPropertiesForm
         Dim Rev1date As String = String.Empty
         Dim rev1rev As String = String.Empty
 
-
+        Dim oNumberRev As String = String.Empty
 
         'oDoc.PropertySets.Item("Inventor Summary Information").Item("Author").Value ="ELC"
         oNumberRev = UCase(InputBox("Input revision letter or number, leave blank for new up revision", "REV", ""))
@@ -2520,36 +2538,70 @@ Public Class IPropertiesForm
 
             ElseIf rev1rev IsNot String.Empty Then
                 If Rev1date <> oCreation Then
-                    If rev1rev = "1" Or rev1rev = "A" Then
-                        'For Each oRevTable In oSheet.RevisionTables
-                        '    oRevTable.Delete()
-                        'Next
-                        oRows = oRevTable.RevisionTableRows
-                        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
-                        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
-
-                        For Each oRow In oRows
-                            If oRow.IsActiveRow Then
-                                'do nothing for the active row
-                            Else
-                                oRow.Delete() 'deletes rev tags also
-                            End If
-                        Next
-                        Dim oCell1 As RevisionTableCell = oRow.Item(1)
-                        Dim ocell2 As RevisionTableCell = oRow.Item(2)
-                        ocell2.Text = oChange
+                    For Each oRevTable In oSheet.RevisionTables
+                        oRevTable.Delete()
+                    Next
+                    For Each oSheet In oDoc.Sheets
+                        oSheet.Activate()
+                        Dim oTG As TransientGeometry = inventorApp.TransientGeometry
+                        Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
                         If oNumberRev = "" Then
-                            oCell1.Text = "1"
+                            oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
                         Else
-                            oCell1.Text = oNumberRev
+                            oSheet.RevisionTables.Add2(pt, False, True, False, oNumberRev, , )
                         End If
-
+                        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
                         Dim oCell3 As RevisionTableCell = oRow.Item(3)
-                        Dim oCell4 As RevisionTableCell = oRow.Item(4)
                         'Set it equal to the the current date        
-                        oCell4.Text = DateTime.Now.ToString("d")
+                        'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
                         oCell3.Text = oInput
-                    End If
+                        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                        oRow1 = oRevTable.RevisionTableRows.Item(1)
+                        Rev1date = oRow1.Item(4).Text
+                        If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = Rev1date Then
+
+                            inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = Rev1date
+                            UpdateStatusBar("Creation date updated to " + Rev1date)
+                        End If
+                    Next
+                    'If rev1rev = "1" Or rev1rev = "A" Then
+                    '    'For Each oRevTable In oSheet.RevisionTables
+                    '    '    oRevTable.Delete()
+                    '    'Next
+                    '    For Each oSheet In oDoc.Sheets
+                    '        oRows = oRevTable.RevisionTableRows
+                    '        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                    '        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+
+                    '        For Each oRow In oRows
+                    '            If oRow.IsActiveRow Then
+                    '                'do nothing for the active row
+                    '            Else
+                    '                oRow.Delete() 'deletes rev tags also
+                    '            End If
+                    '        Next
+                    '        Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                    '        Dim ocell2 As RevisionTableCell = oRow.Item(2)
+                    '        Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                    '        Dim oCell4 As RevisionTableCell = oRow.Item(4)
+
+                    '        If oNumberRev = String.Empty Then
+                    '            If Not oCell1.Text = "1" Then
+                    '                oCell1.Text = "1"
+                    '            End If
+                    '        Else
+                    '                oCell1.Text = oNumberRev
+                    '        End If
+                    '        If Not oChange = String.Empty Then
+                    '            ocell2.Text = oChange
+                    '        End If
+
+                    '        oCell3.Text = oInput
+                    '        'Set it equal to the the current date        
+                    '        oCell4.Text = DateTime.Now.ToString("d")
+                    '    Next
+                    'End If
                 Else
                     oRevTable.RevisionTableRows.Add()
                     oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
