@@ -1300,20 +1300,21 @@ Public Class IPropertiesForm
 
                 If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
 
-                        ' Options for drawings...
+                    ' Options for drawings...
 
-                        oOptions.Value("All_Color_AS_Black") = 1
+                    oOptions.Value("All_Color_AS_Black") = 1
 
-                        'oOptions.Value("Remove_Line_Weights") = 0
-                        'oOptions.Value("Vector_Resolution") = 400
-                        oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
-                        'oOptions.Value("Custom_Begin_Sheet") = 2
-                        'oOptions.Value("Custom_End_Sheet") = 4
+                    'oOptions.Value("Remove_Line_Weights") = 0
+                    'oOptions.Value("Vector_Resolution") = 400
+                    oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
+                    'oOptions.Value("Custom_Begin_Sheet") = 2
+                    'oOptions.Value("Custom_End_Sheet") = 4
 
-                    End If
+                End If
+                oDoc.sheets.item("Sheet:1").Activate()
 
-                    'Set the destination file name
-                    oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
+                'Set the destination file name
+                oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
 
                     'Publish document.
                     Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
@@ -1349,7 +1350,25 @@ Public Class IPropertiesForm
                     Dim oDataMedium As DataMedium
                     oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
-                    ' Check whether the translator has 'SaveCopyAs' options
+                    'Get sheet names and set options depending on them
+                    Dim strSheetName As String
+                    Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                    Dim oDoc = inventorApp.ActiveDocument
+                    Dim oSheets = inventorApp.ActiveDocument.Sheets
+                    For Each oSheet In oDocu.Sheets
+                        oSheet.Activate()
+
+                        strSheetName = oSheet.Name
+                        If strSheetName.Contains("Model") Then
+                            Exit For
+                        End If
+                    Next
+
+                    If strSheetName.Contains("Model") Then
+                        oDoc.sheets.item("Sheet:1").Activate()
+                        oDoc.Sheets.item("Model (AutoCAD)").ExcludeFromPrinting = True
+                    End If
+
                     If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
 
                         ' Options for drawings...
@@ -1358,11 +1377,12 @@ Public Class IPropertiesForm
 
                         'oOptions.Value("Remove_Line_Weights") = 0
                         'oOptions.Value("Vector_Resolution") = 400
-                        'oOptions.Value("Sheet_Range") = kPrintAllSheets
+                        oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
                         'oOptions.Value("Custom_Begin_Sheet") = 2
                         'oOptions.Value("Custom_End_Sheet") = 4
 
                     End If
+                    oDoc.sheets.item("Sheet:1").Activate()
 
                     'Set the destination file name
                     oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
