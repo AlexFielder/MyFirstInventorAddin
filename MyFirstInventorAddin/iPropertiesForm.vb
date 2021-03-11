@@ -2089,65 +2089,120 @@ Public Class IPropertiesForm
         'oDocu = inventorApp.ActiveDocument
         oAsmDoc.Save2(True)
         For Each oRefDoc In oRefDocs
-            If oRefDoc.FullFileName.Contains("pisweep") Then
-                If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
-                    Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
-                    'Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
-                    pisWeep = pisWeep.Replace("PISWEEP.", "")
+            If Not oRefDoc.FullFileName.Contains("Route") Then
+                If oRefDoc.FullFileName.Contains("pisweep") Then
+                    If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                        Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
+                        'Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
+                        pisWeep = pisWeep.Replace("PISWEEP.", "")
 
-                    iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
+                        iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
 
-                    Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
-                    NewPath = NewPath.Replace("pisweep.", "")
+                        Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+                        NewPath = NewPath.Replace("pisweep.", "")
 
-                    'GetNewFilePaths()
-                    ' Get the STEP translator Add-In.
+                        'GetNewFilePaths()
+                        ' Get the STEP translator Add-In.
 
-                    Dim oSTEPTranslator As TranslatorAddIn
-                    oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+                        Dim oSTEPTranslator As TranslatorAddIn
+                        oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
-                    If oSTEPTranslator Is Nothing Then
-                        MsgBox("Could not access STEP translator.")
-                        Exit Sub
-                    End If
-
-                    Dim oContext As TranslationContext
-                    oContext = inventorApp.TransientObjects.CreateTranslationContext
-                    Dim oOptions As NameValueMap
-                    oOptions = inventorApp.TransientObjects.CreateNameValueMap
-                    If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
-
-                        ' Set application protocol.
-                        ' 2 = AP 203 - Configuration Controlled Design
-                        ' 3 = AP 214 - Automotive Design
-                        oOptions.Value("ApplicationProtocolType") = 4
-
-                        ' Other options...
-                        'oOptions.Value("Author") = ""
-                        'oOptions.Value("Authorization") = ""
-                        'oOptions.Value("Description") = ""
-                        'oOptions.Value("Organization") = ""
-
-                        oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
-
-                        Dim oData As DataMedium
-                        oData = inventorApp.TransientObjects.CreateDataMedium
-                        oData.FileName = NewPath + "_R" + oRev + ".stp"
-                        Dim RefName As String = pisWeep + "_R" + oRev + ".stp"
-                        Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
-                        UpdateStatusBar("File saved as Step file")
-
-                        'AttachRefFile(oAsmDoc, oData.FileName)
-                        AttachFile = MsgBox("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
-                        If AttachFile = vbYes Then
-                            AddReferences(inventorApp.ActiveDocument, oData.FileName)
-                            UpdateStatusBar("File attached")
-                        Else
-                            'Do Nothing
+                        If oSTEPTranslator Is Nothing Then
+                            MsgBox("Could not access STEP translator.")
+                            Exit Sub
                         End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                        If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                            ' Set application protocol.
+                            ' 2 = AP 203 - Configuration Controlled Design
+                            ' 3 = AP 214 - Automotive Design
+                            oOptions.Value("ApplicationProtocolType") = 4
+
+                            ' Other options...
+                            'oOptions.Value("Author") = ""
+                            'oOptions.Value("Authorization") = ""
+                            'oOptions.Value("Description") = ""
+                            'oOptions.Value("Organization") = ""
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = NewPath + "_R" + oRev + ".stp"
+                            Dim RefName As String = pisWeep + "_R" + oRev + ".stp"
+                            Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("File saved as Step file")
+
+                            'AttachRefFile(oAsmDoc, oData.FileName)
+                            AttachFile = MsgBox("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            If AttachFile = vbYes Then
+                                AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                                UpdateStatusBar("File attached")
+                            Else
+                                'Do Nothing
+                            End If
+                        End If
+                    Else
+                        UpdateStatusBar("File skipped because it's read-only")
                     End If
                 Else
-                    UpdateStatusBar("File skipped because it's read-only")
+                    If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+
+                        'GetNewFilePaths()
+                        ' Get the STEP translator Add-In.
+
+                        Dim oSTEPTranslator As TranslatorAddIn
+                        oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                        If oSTEPTranslator Is Nothing Then
+                            MsgBox("Could not access STEP translator.")
+                            Exit Sub
+                        End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                        If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                            ' Set application protocol.
+                            ' 2 = AP 203 - Configuration Controlled Design
+                            ' 3 = AP 214 - Automotive Design
+                            oOptions.Value("ApplicationProtocolType") = 4
+
+                            ' Other options...
+                            'oOptions.Value("Author") = ""
+                            'oOptions.Value("Authorization") = ""
+                            'oOptions.Value("Description") = ""
+                            'oOptions.Value("Organization") = ""
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = NewPath + "_R" + oRev + ".stp"
+
+                            Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("File saved as Step file")
+
+                            AttachRefFile(oAsmDoc, oData.FileName)
+                            'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            'If AttachFile = vbYes Then
+                            '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                            '    UpdateStatusBar("File attached")
+                            'Else
+                            '    'Do Nothing
+                            'End If
+                        End If
+                    Else
+                        UpdateStatusBar("File skipped because it's read-only")
+                    End If
                 End If
             End If
         Next
@@ -2295,20 +2350,23 @@ Public Class IPropertiesForm
         End If
         UpdateStatusBar("BOM item numbers copied to #ITEM")
 
-        For Each oView In oSheet.DrawingViews
-            If Not oView.ParentView Is Nothing Then
-                'we're working on a child view and should get the parent view as an object
-            Else
-                If oView.IsFlatPatternView Then
-                    oView.Name() = "FLAT PATTERN OF ITEM "
-                    oView.ShowLabel() = True
-                ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    'assembly object added but it currently also pulls in the main assembly too.
-                    'Need to find a way to not show the name label of the main referenced doc.
-                    oView.Name() = oLabel
-                    oView.ShowLabel() = True
+        For Each oSheet In oDrawDoc.Sheets
+            oSheet.Activate()
+            For Each oView In oSheet.DrawingViews
+                If Not oView.ParentView Is Nothing Then
+                    'we're working on a child view and should get the parent view as an object
+                Else
+                    If oView.IsFlatPatternView Then
+                        oView.Name() = "FLAT PATTERN OF ITEM "
+                        oView.ShowLabel() = True
+                    ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        'assembly object added but it currently also pulls in the main assembly too.
+                        'Need to find a way to not show the name label of the main referenced doc.
+                        oView.Name() = oLabel
+                        oView.ShowLabel() = True
+                    End If
                 End If
-            End If
+            Next
         Next
     End Sub
 
