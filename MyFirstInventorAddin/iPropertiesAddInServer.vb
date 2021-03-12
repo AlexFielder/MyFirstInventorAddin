@@ -144,14 +144,14 @@ Namespace iPropertiesController
                     Marshal.FinalReleaseComObject(item.ButtonDef)
                 Next
 
-                For Each item As DockableWindow In AddinGlobal.DockableList
-                    Marshal.FinalReleaseComObject(item)
-                Next
-
                 ' Close Window
                 Window.Visible = False
                 Window.Clear()
                 Window.Delete()
+
+                For Each item As DockableWindow In AddinGlobal.DockableList
+                    Marshal.FinalReleaseComObject(item)
+                Next
 
                 ' Release objects.
 
