@@ -1,13 +1,7 @@
 # MyFirstInventorAddin
-This is an attempt at a "First Addin" for Autodesk Inventor
 
-This is an exercise in Automation that originally spawned as a pre-cursor to some training I carried out for my employer Graitec UK Ltd.
+This addin simplifies a few daily tasks faced by Inventor users.
 
-The initial commit consisted of a basic Add-in for Autodesk Inventor and demonstrated a couple of things:
+It displays several "standard" Inventor iProperties in a non-intrusive dockable browser window.
 
-1) how to create a custom add-in.
-2) how to add a button to the Inventor ribbonbar.
-3) how to add a dockablewindow containing a Windows Form with a couple of dialogue boxes.
-
-It has since been worked on for several hours to create the current build available (Merged to reflect current progress of JamesSmith branch on 2017-04-25)
-
+There are also a few functions built-in that reduce the number of clicks a user might make throughout the course of a project.
