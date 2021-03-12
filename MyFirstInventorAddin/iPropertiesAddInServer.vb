@@ -105,20 +105,14 @@ Namespace iPropertiesController
                 'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
 
                 Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("iPropertiesController.addin.ico"))
-                'Change it if necessary but make sure it's embedded.
-                Dim button1 As New InventorButton("Button 1", "MyVBInventorAddin.Button_" & Guid.NewGuid().ToString(), "Button 1 description", "Button 1 tooltip", icon1, icon1,
-                    CommandTypesEnum.kShapeEditCmdType, ButtonDisplayEnum.kDisplayTextInLearningMode)
-                button1.SetBehavior(True, True, True)
-                button1.Execute = AddressOf ButtonActions.Button1_Execute
 
                 ' Add to the user interface, if it's the first time.
                 If firstTime Then
-                    AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
                     myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp)
                     'custom sizing
-                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.size.Width * 0.7) - 2 * myiPropsForm.margin - myiPropsForm.tbDrawnBy.Location.X
+                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.customSize.Width * 0.7) - 2 * myiPropsForm.customMargin - myiPropsForm.tbDrawnBy.Location.X
                     myiPropsForm.Show()
                     Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
                     Window.AddChild(myiPropsForm.Handle)
