@@ -96,13 +96,6 @@ Namespace iPropertiesController
                 logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
                 logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
                 log.Debug("Loading My First Inventor Addin")
-                ' TODO: Add button definitions.
-
-                ' Sample to illustrate creating a button definition.
-                'Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourBigImage)
-                'Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourSmallImage)
-                'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
-                'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
 
                 Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("iPropertiesController.addin.ico"))
 
