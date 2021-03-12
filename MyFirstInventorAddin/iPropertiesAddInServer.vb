@@ -121,7 +121,7 @@ Namespace iPropertiesController
                         'myDockableWindow.DockingState = DockingStateEnum.kFloat
                         Window.DockingState = DockingStateEnum.kDockLastKnown
                     Else
-                        Window.DockingState = DockingStateEnum.kFloat
+                        Window.DockingState = DockingStateEnum.kDockLeft
                     End If
 
                     Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
@@ -141,6 +141,57 @@ Namespace iPropertiesController
             End Try
         End Sub
 
+
+        ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
+        ' unloaded either manually by the user or when the Inventor session is terminated.
+        Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
+            Try
+                ' TODO:  Add ApplicationAddInServer.Deactivate implementation
+                For Each item As InventorButton In AddinGlobal.ButtonList
+                    Marshal.FinalReleaseComObject(item.ButtonDef)
+                Next
+
+                For Each item As DockableWindow In AddinGlobal.DockableList
+                    Marshal.FinalReleaseComObject(item)
+                Next
+
+                ' Close Window
+                Window.Visible = False
+                Window.Clear()
+
+                uiMgr.
+                ' Release objects.
+
+                m_UserInputEvents = Nothing
+                m_AppEvents = Nothing
+                m_uiEvents = Nothing
+                m_StyleEvents = Nothing
+
+                myiPropsForm.CurrentPath = Nothing
+                myiPropsForm.NewPath = Nothing
+                myiPropsForm.RefNewPath = Nothing
+                myiPropsForm.RefDoc = Nothing
+                thisAssembly = Nothing
+                myiPropsForm = Nothing
+
+                If AddinGlobal.RibbonPanel IsNot Nothing Then
+                    Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
+                End If
+
+                If Not InventorAppQuitting Then
+                    If AddinGlobal.InventorApp IsNot Nothing Then
+                        Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
+                    End If
+                End If
+
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+            Catch ex As Exception
+                log.Error(ex.Message)
+            End Try
+        End Sub
+
+#Region "Application/User Event Handlers Setup"
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 Dim oDWG = AddinGlobal.InventorApp.ActiveDocument
@@ -299,6 +350,102 @@ Namespace iPropertiesController
             End If
         End Sub
 
+        Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kBefore Then
+                InventorAppQuitting = True
+            End If
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                UpdateDisplayediProperties()
+                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                myiPropsForm.GetNewFilePaths()
+
+                'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+                '    Dim PlotDate As Object = "PlotDate"
+                '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
+                '    ' Get the custom property set.
+                '    Dim customPropSet As Inventor.PropertySet
+                '    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
+
+                '    ' Get the existing property, if it exists.
+                '    Dim prop As Inventor.Property = Nothing
+                '    Dim propExists As Boolean = True
+                '    Try
+                '        prop = customPropSet.Item(PlotDate)
+                '    Catch ex As Exception
+                '        propExists = False
+                '    End Try
+
+                '    ' Check to see if the property was successfully obtained.
+                '    If Not propExists Then
+                '        ' Failed to get the existing property so create a new one.
+                '        prop = customPropSet.Add(PlotDateValue, PlotDate)
+                '    Else
+                '        ' Change the value of the existing property.
+                '        prop.Value = PlotDateValue
+                '    End If
+                'End If
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                m_DocEvents = DocumentObject.DocumentEvents
+                AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
+                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
+                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                    UpdateDisplayediProperties(DocumentToPulliPropValuesFrom)
+                    UpdateFormTextBoxColours()
+                    myiPropsForm.GetNewFilePaths()
+                End If
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                'this change prevents this firing for EVERY opening file.
+                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
+                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                    UpdateDisplayediProperties(DocumentToPulliPropValuesFrom)
+                    UpdateFormTextBoxColours()
+                    myiPropsForm.GetNewFilePaths()
+
+                End If
+            End If
+
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+        Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+            If BeforeOrAfter = EventTimingEnum.kAfter Then
+                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    UpdateDisplayediProperties()
+                Else
+                    myiPropsForm.tbDescription.Text = String.Empty
+                    myiPropsForm.tbPartNumber.Text = String.Empty
+                    myiPropsForm.tbStockNumber.Text = String.Empty
+                    myiPropsForm.tbEngineer.Text = String.Empty
+                    myiPropsForm.tbDrawnBy.Text = String.Empty
+                    myiPropsForm.tbRevNo.Text = String.Empty
+                    myiPropsForm.tbComments.Text = String.Empty
+                    myiPropsForm.tbNotes.Text = String.Empty
+                    myiPropsForm.Label12.Text = String.Empty
+                    myiPropsForm.FileLocation.Text = String.Empty
+                    myiPropsForm.ModelFileLocation.Text = String.Empty
+                    myiPropsForm.tbService.Text = String.Empty
+                End If
+            End If
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
+        End Sub
+
+
+#End Region
         Public Shared Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
             If AssyDoc.SelectSet.Count = 1 Then
                 Dim selecteddoc As Document = Nothing
@@ -569,99 +716,6 @@ Namespace iPropertiesController
             myiPropsForm.tbService.ForeColor = Drawing.Color.Black
         End Sub
 
-        Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kBefore Then
-                InventorAppQuitting = True
-            End If
-        End Sub
-
-        Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                UpdateDisplayediProperties()
-                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-                myiPropsForm.GetNewFilePaths()
-
-                'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-                '    Dim PlotDate As Object = "PlotDate"
-                '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
-                '    ' Get the custom property set.
-                '    Dim customPropSet As Inventor.PropertySet
-                '    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
-
-                '    ' Get the existing property, if it exists.
-                '    Dim prop As Inventor.Property = Nothing
-                '    Dim propExists As Boolean = True
-                '    Try
-                '        prop = customPropSet.Item(PlotDate)
-                '    Catch ex As Exception
-                '        propExists = False
-                '    End Try
-
-                '    ' Check to see if the property was successfully obtained.
-                '    If Not propExists Then
-                '        ' Failed to get the existing property so create a new one.
-                '        prop = customPropSet.Add(PlotDateValue, PlotDate)
-                '    Else
-                '        ' Change the value of the existing property.
-                '        prop.Value = PlotDateValue
-                '    End If
-                'End If
-            End If
-                HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
-
-        Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                m_DocEvents = DocumentObject.DocumentEvents
-                AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
-                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
-                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
-                    UpdateDisplayediProperties(DocumentToPulliPropValuesFrom)
-                    UpdateFormTextBoxColours()
-                    myiPropsForm.GetNewFilePaths()
-                End If
-            End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
-
-        Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-                'this change prevents this firing for EVERY opening file.
-                If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
-                    SetFormDisplayOption(DocumentToPulliPropValuesFrom)
-                    UpdateDisplayediProperties(DocumentToPulliPropValuesFrom)
-                    UpdateFormTextBoxColours()
-                    myiPropsForm.GetNewFilePaths()
-
-                End If
-            End If
-
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
-
-        Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If BeforeOrAfter = EventTimingEnum.kAfter Then
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
-                    UpdateDisplayediProperties()
-                Else
-                    myiPropsForm.tbDescription.Text = String.Empty
-                    myiPropsForm.tbPartNumber.Text = String.Empty
-                    myiPropsForm.tbStockNumber.Text = String.Empty
-                    myiPropsForm.tbEngineer.Text = String.Empty
-                    myiPropsForm.tbDrawnBy.Text = String.Empty
-                    myiPropsForm.tbRevNo.Text = String.Empty
-                    myiPropsForm.tbComments.Text = String.Empty
-                    myiPropsForm.tbNotes.Text = String.Empty
-                    myiPropsForm.Label12.Text = String.Empty
-                    myiPropsForm.FileLocation.Text = String.Empty
-                    myiPropsForm.ModelFileLocation.Text = String.Empty
-                    myiPropsForm.tbService.Text = String.Empty
-                End If
-            End If
-            HandlingCode = HandlingCodeEnum.kEventNotHandled
-        End Sub
 
         ''' <summary>
         ''' Need to add more updates here as we add textboxes and therefore properties to this list.
@@ -974,49 +1028,6 @@ Namespace iPropertiesController
             End Try
         End Function
 
-        ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
-        ' unloaded either manually by the user or when the Inventor session is terminated.
-        Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
-            Try
-                ' TODO:  Add ApplicationAddInServer.Deactivate implementation
-                For Each item As InventorButton In AddinGlobal.ButtonList
-                    Marshal.FinalReleaseComObject(item.ButtonDef)
-                Next
-
-                For Each item As DockableWindow In AddinGlobal.DockableList
-                    Marshal.FinalReleaseComObject(item)
-                Next
-
-                ' Release objects.
-
-                m_UserInputEvents = Nothing
-                m_AppEvents = Nothing
-                m_uiEvents = Nothing
-                m_StyleEvents = Nothing
-
-                myiPropsForm.CurrentPath = Nothing
-                myiPropsForm.NewPath = Nothing
-                myiPropsForm.RefNewPath = Nothing
-                myiPropsForm.RefDoc = Nothing
-                thisAssembly = Nothing
-                myiPropsForm = Nothing
-
-                If AddinGlobal.RibbonPanel IsNot Nothing Then
-                    Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
-                End If
-
-                If Not InventorAppQuitting Then
-                    If AddinGlobal.InventorApp IsNot Nothing Then
-                        Marshal.FinalReleaseComObject(AddinGlobal.InventorApp)
-                    End If
-                End If
-
-                GC.Collect()
-                GC.WaitForPendingFinalizers()
-            Catch ex As Exception
-                log.Error(ex.Message)
-            End Try
-        End Sub
 
         ' This property is provided to allow the AddIn to expose an API of its own to other
         ' programs. Typically, this  would be done by implementing the AddIn's API
