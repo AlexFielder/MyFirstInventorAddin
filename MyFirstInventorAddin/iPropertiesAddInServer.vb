@@ -151,8 +151,8 @@ Namespace iPropertiesController
                 ' Close Window
                 Window.Visible = False
                 Window.Clear()
+                Window.Delete()
 
-                uiMgr.
                 ' Release objects.
 
                 m_UserInputEvents = Nothing
