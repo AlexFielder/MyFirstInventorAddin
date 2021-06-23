@@ -2301,8 +2301,14 @@ Public Class IPropertiesForm
         Dim oViews As DrawingViews = Nothing
         Dim oLabel As String = "DETAIL OF ITEM "
         Dim isoLabel As String = "ISOMETRIC VIEW"
+        'Dim strSheetName As String
 
         If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            'strSheetName = oSheet.Name
+
+            oDrawDoc.Sheets.Item("Sheet:1").Activate()
+
+
             Dim drDoc As Document = Nothing
 
             For Each view As DrawingView In oSheet.DrawingViews
@@ -2368,6 +2374,7 @@ Public Class IPropertiesForm
                 End If
             Next
         Next
+        oDrawDoc.Sheets.Item("Sheet:1").Activate()
     End Sub
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
@@ -2616,45 +2623,45 @@ Public Class IPropertiesForm
                 oCell4.Text = DateTime.Now.ToString("d")
 
             ElseIf rev1rev IsNot String.Empty Then
-                If Rev1date <> oCreation Then
-                    If rev1rev = "1" Or rev1rev = "A" Then
-                        'For Each oSheet In oDoc.Sheets
+                'If Rev1date <> oCreation Then
+                'If rev1rev = "1" Or rev1rev = "A" Then
+                '    'For Each oSheet In oDoc.Sheets
 
-                        oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
-                        oRows = oRevTable.RevisionTableRows
-                        oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                '    oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                '    oRows = oRevTable.RevisionTableRows
+                '    oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
 
-                        For Each oRow In oRows
-                            If oRow.IsActiveRow Then
-                                Dim oCell1 As RevisionTableCell = oRow.Item(1)
-                                '                    'Set it equal to the user name on the open application 
-                                If oNumberRev = "" Then
-                                    oCell1.Text = "1"
-                                Else
-                                    oCell1.Text = oNumberRev
-                                End If
+                '    For Each oRow In oRows
+                '        If oRow.IsActiveRow Then
+                '            Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                '            '                    'Set it equal to the user name on the open application 
+                '            If oNumberRev = "" Then
+                '                oCell1.Text = "1"
+                '            Else
+                '                oCell1.Text = oNumberRev
+                '            End If
 
-                                Dim oCell2 As RevisionTableCell = oRow.Item(2)
-                                '                    'Set it equal to the user name on the open application        
-                                oCell2.Text = oChange
+                '            Dim oCell2 As RevisionTableCell = oRow.Item(2)
+                '            '                    'Set it equal to the user name on the open application        
+                '            oCell2.Text = oChange
 
-                                Dim oCell3 As RevisionTableCell = oRow.Item(3)
-                                'Set it equal to the the current date        
-                                'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
-                                oCell3.Text = oInput
+                '            Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                '            'Set it equal to the the current date        
+                '            'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                '            oCell3.Text = oInput
 
-                                Dim oCell4 As RevisionTableCell = oRow.Item(4)
-                                'Set it equal to the the current date        
-                                oCell4.Text = DateTime.Now.ToString("d")
+                '            Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                '            'Set it equal to the the current date        
+                '            oCell4.Text = DateTime.Now.ToString("d")
 
-                            Else
-                                oRow.Delete() 'deletes rev tags also
-                            End If
-                        Next
+                '        Else
+                '            oRow.Delete() 'deletes rev tags also
+                '        End If
+                '    Next
 
-                    End If
-                Else
-                    oRevTable.RevisionTableRows.Add()
+                'End If
+                'Else
+                oRevTable.RevisionTableRows.Add()
                     oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
                     If oRow.IsActiveRow Then
                         Dim oCell1 As RevisionTableCell = oRow.Item(1)
@@ -2684,8 +2691,8 @@ Public Class IPropertiesForm
                         oCell4.Text = DateTime.Now.ToString("d")
                     End If
                 End If
-            End If
         End If
+        'End If
 
     End Sub
 

@@ -147,6 +147,7 @@ Namespace iPropertiesController
             End Try
         End Sub
 
+#Region "Application/User Event Handlers Setup"
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 Dim oDWG = AddinGlobal.InventorApp.ActiveDocument
@@ -323,20 +324,22 @@ Namespace iPropertiesController
                     selecteddoc = compOcc.Definition.Document
 
                     UpdateDisplayediProperties(selecteddoc)
-                    AssyDoc.SelectSet.Select(compOcc) ' _inChangeSelectSetHandler is required because of this
+                    If AssyDoc.SelectSet.Count = 0 Then
+                        AssyDoc.SelectSet.Select(compOcc) ' _inChangeSelectSetHandler is required because of this
+                    End If
                     UpdateFormTextBoxColours()
+                    End If
+
+                    'selecteddoc = compOcc.Definition.Document
+                    '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
+                    '    'Dim selectedVirtdoc As Document = Nothing
+                    '    'selectedVirtdoc = VirtualDef.Document
+
+                    '    'UpdateDisplayediProperties(selectedVirtdoc)
+                    '    UpdateDisplayediProperties(selecteddoc)
+                    '    AssyDoc.SelectSet.Select(compOcc)
+                    '    UpdateFormTextBoxColours()
                 End If
-
-                'selecteddoc = compOcc.Definition.Document
-                '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
-                '    'Dim selectedVirtdoc As Document = Nothing
-                '    'selectedVirtdoc = VirtualDef.Document
-
-                '    'UpdateDisplayediProperties(selectedVirtdoc)
-                '    UpdateDisplayediProperties(selecteddoc)
-                '    AssyDoc.SelectSet.Select(compOcc)
-                '    UpdateFormTextBoxColours()
-            End If
         End Sub
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -415,7 +418,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbEngineer.Text = "Reading Part Hole Properties"
                                     myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                    myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                                    myiPropsForm.tbDescription.Text = FeatOcc.ThreadDesignation
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
                                     myiPropsForm.tbPartNumber.ReadOnly = True
                                     myiPropsForm.tbDescription.ReadOnly = True
