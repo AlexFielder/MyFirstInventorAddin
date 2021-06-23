@@ -147,7 +147,7 @@ Namespace iPropertiesController
             End Try
         End Sub
 
-#Region "Application/User Event Handlers Setup"
+
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 Dim oDWG = AddinGlobal.InventorApp.ActiveDocument
