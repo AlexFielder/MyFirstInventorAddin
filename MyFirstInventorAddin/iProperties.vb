@@ -116,6 +116,7 @@ Namespace iPropertiesController
                     Return currentvalue
                 End If
             End If
+            Return Nothing
         End Function
 
 #End Region
