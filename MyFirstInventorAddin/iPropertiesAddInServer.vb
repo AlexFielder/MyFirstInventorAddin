@@ -118,7 +118,7 @@ Namespace iPropertiesController
                     Dim localWindow As DockableWindow = Nothing
                     myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp)
                     'custom sizing
-                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.size.Width * 0.7) - 2 * myiPropsForm.margin - myiPropsForm.tbDrawnBy.Location.X
+                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.Size.Width * 0.7) - 2 * myiPropsForm.customMargin - myiPropsForm.tbDrawnBy.Location.X
                     myiPropsForm.Show()
                     Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
                     Window.AddChild(myiPropsForm.Handle)
@@ -328,18 +328,18 @@ Namespace iPropertiesController
                         AssyDoc.SelectSet.Select(compOcc) ' _inChangeSelectSetHandler is required because of this
                     End If
                     UpdateFormTextBoxColours()
-                    End If
-
-                    'selecteddoc = compOcc.Definition.Document
-                    '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
-                    '    'Dim selectedVirtdoc As Document = Nothing
-                    '    'selectedVirtdoc = VirtualDef.Document
-
-                    '    'UpdateDisplayediProperties(selectedVirtdoc)
-                    '    UpdateDisplayediProperties(selecteddoc)
-                    '    AssyDoc.SelectSet.Select(compOcc)
-                    '    UpdateFormTextBoxColours()
                 End If
+
+                'selecteddoc = compOcc.Definition.Document
+                '    'Dim VirtualDef As VirtualComponentDefinition = TryCast(compOcc.Definition, VirtualComponentDefinition)
+                '    'Dim selectedVirtdoc As Document = Nothing
+                '    'selectedVirtdoc = VirtualDef.Document
+
+                '    'UpdateDisplayediProperties(selectedVirtdoc)
+                '    UpdateDisplayediProperties(selecteddoc)
+                '    AssyDoc.SelectSet.Select(compOcc)
+                '    UpdateFormTextBoxColours()
+            End If
         End Sub
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -616,7 +616,7 @@ Namespace iPropertiesController
                 '    End If
                 'End If
             End If
-                HandlingCode = HandlingCodeEnum.kEventNotHandled
+            HandlingCode = HandlingCodeEnum.kEventNotHandled
         End Sub
 
         Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)

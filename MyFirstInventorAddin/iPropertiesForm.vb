@@ -351,10 +351,7 @@ Public Class IPropertiesForm
                 Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
                 Dim oSheets = inventorApp.ActiveDocument.Sheets
 
-                Dim strSheetName As String
-                strSheetName = oSheet.Name
-
-                oSheets(strSheetName).Activate
+                oSheet.Activate()
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
@@ -2306,13 +2303,10 @@ Public Class IPropertiesForm
         Dim oViews As DrawingViews = Nothing
         Dim oLabel As String = "DETAIL OF ITEM "
         Dim isoLabel As String = "ISOMETRIC VIEW"
-        'Dim strSheetName As String
 
         If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-            'strSheetName = oSheet.Name
 
-            oDrawDoc.Sheets.Item("Sheet:1").Activate()
-
+            'oDrawDoc.Sheets.Item("Sheet:1").Activate()
 
             Dim drDoc As Document = Nothing
 
@@ -2547,6 +2541,11 @@ Public Class IPropertiesForm
         Dim oRows As RevisionTableRows
         Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
         Dim oInput As String = String.Empty
+        Dim oSheetSize As DrawingSheetSizeEnum = oSheet.Size
+        Dim oRevSelect As String = String.Empty
+        Dim oDocStyles As Inventor.DrawingStylesManager = oDoc.StylesManager
+        Dim oRevStyle As RevisionTableStyle = Nothing
+
         Dim oCreation1 As DateTime = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
                                                      PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties,
                                                      "", "")
@@ -2571,11 +2570,20 @@ Public Class IPropertiesForm
             For Each oSheet In oDoc.Sheets
                 oSheet.Activate()
                 Dim oTG As TransientGeometry = inventorApp.TransientGeometry
-                Dim pt As Point2d = oTG.CreatePoint2d(1, 2.948545)
+                Dim pt As Point2d = oTG.CreatePoint2d(1, 2.56642)
                 If oNumberRev = "" Then
                     oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
                 Else
                     oSheet.RevisionTables.Add2(pt, False, True, False, oNumberRev, , )
+                End If
+                If oSheetSize = DrawingSheetSizeEnum.kA3DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A3")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA2DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A2")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA1DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A1")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA0DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A0")
                 End If
                 oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
                 oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
@@ -2586,6 +2594,7 @@ Public Class IPropertiesForm
                 oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
                 oRow1 = oRevTable.RevisionTableRows.Item(1)
                 Rev1date = oRow1.Item(4).Text
+                oRevTable.Style = oRevStyle
 
                 If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = Rev1date Then
 
