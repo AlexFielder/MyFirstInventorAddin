@@ -893,9 +893,15 @@ Namespace iPropertiesController
                 myiPropsForm.Label12.Show()
             End If
 
-            myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(
+            Dim todaysdate As String = String.Format("{0:DD/MM/yyyy}", DateTime.Now)
+
+            If PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties = True Then
+                myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(
                     DocumentToPulliPropValuesFrom,
                     PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
+                'Else
+                '    DocumentToPulliPropValuesFrom.PropertySets.Item("Design Tracking Properties").Item("Creation Date").Value = todaysdate
+            End If
 
             myiPropsForm.tbNotes.Text = iProperties.GetorSetStandardiProperty(
                     DocumentToPulliPropValuesFrom,

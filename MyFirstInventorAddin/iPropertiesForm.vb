@@ -348,22 +348,22 @@ Public Class IPropertiesForm
         'Toggle 'Defer updates' on and off in a Drawing
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
-                Dim oSheets = inventorApp.ActiveDocument.Sheets
-
-                oSheet.Activate()
-
-                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
-                    'DrawingSettings.DeferUpdates = False
-                    btDefer.BackColor = Drawing.Color.Green
-                    btDefer.Text = "Drawing Updates Not Deferred"
-                    UpdateStatusBar("Drawing updates are no longer deferred")
-                ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                    btDefer.BackColor = Drawing.Color.Red
-                    btDefer.Text = "Drawing Updates Deferred"
-                    UpdateStatusBar("Drawing updates are now deferred")
+                If TypeOf inventorApp.ActiveDocument Is DrawingDocument Then
+                    Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                    Dim oSheets = inventorApp.ActiveDocument.Sheets
+                    inventorApp.ActiveDocument.Activate()
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                        inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
+                        'DrawingSettings.DeferUpdates = False
+                        btDefer.BackColor = Drawing.Color.Green
+                        btDefer.Text = "Drawing Updates Not Deferred"
+                        UpdateStatusBar("Drawing updates are no longer deferred")
+                    ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                        inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                        btDefer.BackColor = Drawing.Color.Red
+                        btDefer.Text = "Drawing Updates Deferred"
+                        UpdateStatusBar("Drawing updates are now deferred")
+                    End If
                 End If
             Else
                 btDefer.BackColor = Drawing.Color.Green
@@ -658,18 +658,32 @@ Public Class IPropertiesForm
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
 
-        For Each viewX As DrawingView In oSheet.DrawingViews
-            If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
-                If dwgScale = "Scale from view" Then
-                    scaleString = viewX.ScaleString
-                Else
-                    scaleString = dwgScale
-
-                    Exit For
-                End If
-
-            End If
+        For Each view As DrawingView In oSheet.DrawingViews
+            oView = view
+            Exit For
         Next
+
+        If (Not String.IsNullOrEmpty(oView.ScaleString)) Then
+            If dwgScale = "Scale from view" Then
+                scaleString = oView.ScaleString
+            Else
+                scaleString = dwgScale
+            End If
+
+        End If
+
+        'For Each viewX As DrawingView In oSheet.DrawingViews
+        '    If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
+        '        If dwgScale = "Scale from view" Then
+        '            scaleString = viewX.ScaleString
+        '        Else
+        '            scaleString = dwgScale
+
+        '            Exit For
+        '        End If
+
+        '    End If
+        'Next
 
         oTitleBlock.SetPromptResultText(scaleTextBox, scaleString)
         UpdateStatusBar("Drawing scale set")
@@ -2298,28 +2312,38 @@ Public Class IPropertiesForm
     Private Sub btViewNames_Click(sender As Object, e As EventArgs) Handles btViewNames.Click
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-        Dim oSheets As Sheets = Nothing
+        Dim oSheets As Sheets = oDrawDoc.Sheets
         Dim oView As DrawingView = Nothing
         Dim oViews As DrawingViews = Nothing
         Dim oLabel As String = "DETAIL OF ITEM "
         Dim isoLabel As String = "ISOMETRIC VIEW"
 
-        If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+        Dim strSheetName As String
 
-            'oDrawDoc.Sheets.Item("Sheet:1").Activate()
+        For Each oSheet In oDrawDoc.Sheets
 
-            Dim drDoc As Document = Nothing
-
-            For Each view As DrawingView In oSheet.DrawingViews
-                oView = view
+            strSheetName = oSheet.Name
+            If strSheetName.Contains("Sheet:1") Then
                 Exit For
-            Next
+            Else
+                oDrawDoc.Sheets.Item("Sheet:1").Activate()
+                Exit For
+            End If
+        Next
 
-            drDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+        'If Not strSheetName.Contains("Sheet:1") Then
+        '    oDrawDoc.Sheets.Item("Sheet:1").Activate()
+        'End If
 
-            Dim doc = drDoc
-            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
-            Dim oBOM As BOM = oAssyDef.BOM
+        For Each view As DrawingView In oSheet.DrawingViews
+                oView = view
+            Exit For
+        Next
+
+        Dim drDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+        Dim oAssyDef As AssemblyComponentDefinition = drDoc.ComponentDefinition
+        Dim oBOM As BOM = oAssyDef.BOM
 
             oBOM.StructuredViewEnabled = True
 
@@ -2351,8 +2375,8 @@ Public Class IPropertiesForm
                     UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
                 End If
             Next
-            oSheet.Update()
-        End If
+        oSheet.Update()
+
         UpdateStatusBar("BOM item numbers copied to #ITEM")
 
         For Each oSheet In oDrawDoc.Sheets
@@ -2373,7 +2397,7 @@ Public Class IPropertiesForm
                 End If
             Next
         Next
-        oDrawDoc.Sheets.Item("Sheet:1").Activate()
+        'oDrawDoc.Sheets.Item("Sheet:1").Activate()
     End Sub
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
