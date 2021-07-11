@@ -105,14 +105,18 @@ Namespace iPropertiesController
                                                          Optional ByRef newpropertyvalue As String = "",
                                                          Optional ByRef propertyTypeStr As String = "",
                                                          Optional ByVal IsUpdating As Boolean = False) As String
-            Dim invSummaryiProperties As PropertySet = DocToUpdate.PropertySets.Item("{F29F85E0-4FF9-1068-AB91-08002B27B3D9}")
-            Dim currentvalue As String = invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value
-            If IsUpdating Then
-                invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
-                Return newpropertyvalue
-            Else
-                Return currentvalue
+
+            If DocToUpdate IsNot Nothing Then
+                Dim invSummaryiProperties As PropertySet = DocToUpdate.PropertySets.Item("{F29F85E0-4FF9-1068-AB91-08002B27B3D9}")
+                Dim currentvalue As String = invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value
+                If IsUpdating Then
+                    invSummaryiProperties.ItemByPropId(iPropertyTypeEnum).Value = newpropertyvalue.ToString()
+                    Return newpropertyvalue
+                Else
+                    Return currentvalue
+                End If
             End If
+            Return Nothing
         End Function
 
 #End Region

@@ -15,6 +15,8 @@ Public Class AddinGlobal
 
     Public Shared DockableList As List(Of DockableWindow) = New List(Of DockableWindow)()
 
+    Public Shared DisplayableVersion As String
+
     'Not implemented here
     'Public Shared PluginList As List(Of IVPlugin) = New List(Of IVPlugin)()
 
