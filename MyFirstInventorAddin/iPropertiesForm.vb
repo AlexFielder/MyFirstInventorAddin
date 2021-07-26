@@ -736,6 +736,10 @@ Public Class IPropertiesForm
         FileNameHere = System.IO.Path.GetFileName(RefFile)
         AttachFile = MsgBox(FileNameHere & " File exported, attach it to main file as reference?", vbYesNo, "File Attach")
         If AttachFile = vbYes Then
+            If iPropertiesAddInServer.CheckReadOnly(ActiveDoc) Then
+                MessageBox.Show("You can't attach things to read-only files!", "Warning", MessageBoxButtons.OKCancel)
+                Exit Sub
+            End If
             AddReferences(ActiveDoc, RefFile)
             UpdateStatusBar("File attached")
         Else
