@@ -749,7 +749,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 'GetNewFilePaths()
                 ' Get the STEP translator Add-In.
                 Dim oRev = iProperties.GetorSetStandardiProperty(
@@ -916,7 +918,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 ' Get the STL translator Add-In.
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                     inventorApp.ActiveDocument,
@@ -1163,7 +1167,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 'GetNewFilePaths()
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
@@ -1725,7 +1731,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
@@ -2103,7 +2111,10 @@ Public Class IPropertiesForm
         Dim oRev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
         'work the referenced models
         'oDocu = inventorApp.ActiveDocument
-        oAsmDoc.Save2(True)
+        If Not iPropertiesAddInServer.CheckReadOnly(oAsmDoc) Then
+            oAsmDoc.Save2(True)
+        End If
+
         For Each oRefDoc In oRefDocs
             If Not oRefDoc.FullFileName.Contains("Route") Then
                 If oRefDoc.FullFileName.Contains("pisweep") Then
