@@ -814,9 +814,12 @@ Public Class IPropertiesForm
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                            RefDoc,
-                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -1032,9 +1035,12 @@ Public Class IPropertiesForm
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                                    RefDoc,
-                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -1772,9 +1778,13 @@ Public Class IPropertiesForm
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
                 ' Get the SAT translator Add-In.
                 Dim oSATTrans As TranslatorAddIn
                 oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
