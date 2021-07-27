@@ -130,7 +130,7 @@ Partial Class IPropertiesForm
         'btUpdateAll
         '
         Me.btUpdateAll.AccessibleDescription = " up"
-        Me.btUpdateAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btUpdateAll.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btUpdateAll.Location = New System.Drawing.Point(202, 117)
         Me.btUpdateAll.Name = "btUpdateAll"
         Me.btUpdateAll.Size = New System.Drawing.Size(78, 23)
@@ -149,7 +149,7 @@ Partial Class IPropertiesForm
         '
         'btDefer
         '
-        Me.btDefer.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btDefer.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDefer.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
         Me.btDefer.ForeColor = System.Drawing.Color.White
         Me.btDefer.ImageAlign = System.Drawing.ContentAlignment.TopRight
@@ -225,7 +225,7 @@ Partial Class IPropertiesForm
         '
         'btITEM
         '
-        Me.btITEM.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btITEM.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btITEM.Location = New System.Drawing.Point(230, 140)
         Me.btITEM.Name = "btITEM"
         Me.btITEM.Size = New System.Drawing.Size(50, 23)
@@ -235,7 +235,7 @@ Partial Class IPropertiesForm
         '
         'btShtMaterial
         '
-        Me.btShtMaterial.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btShtMaterial.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btShtMaterial.Location = New System.Drawing.Point(3, 117)
         Me.btShtMaterial.Name = "btShtMaterial"
         Me.btShtMaterial.Size = New System.Drawing.Size(72, 23)
@@ -245,7 +245,7 @@ Partial Class IPropertiesForm
         '
         'btShtScale
         '
-        Me.btShtScale.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btShtScale.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btShtScale.Location = New System.Drawing.Point(75, 117)
         Me.btShtScale.Name = "btShtScale"
         Me.btShtScale.Size = New System.Drawing.Size(62, 23)
@@ -255,7 +255,7 @@ Partial Class IPropertiesForm
         '
         'btDiaEng
         '
-        Me.btDiaEng.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btDiaEng.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDiaEng.Location = New System.Drawing.Point(35, 71)
         Me.btDiaEng.Name = "btDiaEng"
         Me.btDiaEng.Size = New System.Drawing.Size(16, 23)
@@ -265,7 +265,7 @@ Partial Class IPropertiesForm
         '
         'btDegEng
         '
-        Me.btDegEng.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btDegEng.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDegEng.Location = New System.Drawing.Point(52, 71)
         Me.btDegEng.Name = "btDegEng"
         Me.btDegEng.Size = New System.Drawing.Size(16, 23)
@@ -275,7 +275,7 @@ Partial Class IPropertiesForm
         '
         'btExpStp
         '
-        Me.btExpStp.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btExpStp.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpStp.Location = New System.Drawing.Point(163, 183)
         Me.btExpStp.Name = "btExpStp"
         Me.btExpStp.Size = New System.Drawing.Size(30, 23)
@@ -285,7 +285,7 @@ Partial Class IPropertiesForm
         '
         'btExpStl
         '
-        Me.btExpStl.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btExpStl.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpStl.Location = New System.Drawing.Point(221, 183)
         Me.btExpStl.Name = "btExpStl"
         Me.btExpStl.Size = New System.Drawing.Size(30, 23)
@@ -295,7 +295,7 @@ Partial Class IPropertiesForm
         '
         'btExpPdf
         '
-        Me.btExpPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btExpPdf.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpPdf.Location = New System.Drawing.Point(250, 183)
         Me.btExpPdf.Name = "btExpPdf"
         Me.btExpPdf.Size = New System.Drawing.Size(30, 23)
@@ -373,7 +373,7 @@ Partial Class IPropertiesForm
         '
         'btExpSat
         '
-        Me.btExpSat.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btExpSat.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpSat.Location = New System.Drawing.Point(192, 183)
         Me.btExpSat.Name = "btExpSat"
         Me.btExpSat.Size = New System.Drawing.Size(30, 23)
@@ -417,7 +417,7 @@ Partial Class IPropertiesForm
         '
         'btReNum
         '
-        Me.btReNum.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btReNum.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btReNum.Location = New System.Drawing.Point(174, 140)
         Me.btReNum.Name = "btReNum"
         Me.btReNum.Size = New System.Drawing.Size(50, 23)
@@ -427,7 +427,7 @@ Partial Class IPropertiesForm
         '
         'btCopyPN
         '
-        Me.btCopyPN.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btCopyPN.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btCopyPN.Location = New System.Drawing.Point(193, 48)
         Me.btCopyPN.Name = "btCopyPN"
         Me.btCopyPN.Size = New System.Drawing.Size(87, 23)
@@ -437,7 +437,7 @@ Partial Class IPropertiesForm
         '
         'btDegDes
         '
-        Me.btDegDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btDegDes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDegDes.Location = New System.Drawing.Point(52, 25)
         Me.btDegDes.Name = "btDegDes"
         Me.btDegDes.Size = New System.Drawing.Size(16, 23)
@@ -447,7 +447,7 @@ Partial Class IPropertiesForm
         '
         'btDiaDes
         '
-        Me.btDiaDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btDiaDes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDiaDes.Location = New System.Drawing.Point(35, 25)
         Me.btDiaDes.Name = "btDiaDes"
         Me.btDiaDes.Size = New System.Drawing.Size(16, 23)
@@ -457,7 +457,7 @@ Partial Class IPropertiesForm
         '
         'btPipes
         '
-        Me.btPipes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btPipes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btPipes.Location = New System.Drawing.Point(124, 183)
         Me.btPipes.Name = "btPipes"
         Me.btPipes.Size = New System.Drawing.Size(40, 23)
@@ -468,7 +468,7 @@ Partial Class IPropertiesForm
         'btCheckOut
         '
         Me.btCheckOut.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btCheckOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btCheckOut.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
         Me.btCheckOut.Location = New System.Drawing.Point(253, 0)
         Me.btCheckOut.Name = "btCheckOut"
@@ -478,7 +478,7 @@ Partial Class IPropertiesForm
         '
         'btCheckIn
         '
-        Me.btCheckIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btCheckIn.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
         Me.btCheckIn.Location = New System.Drawing.Point(253, 0)
         Me.btCheckIn.Name = "btCheckIn"
@@ -513,7 +513,7 @@ Partial Class IPropertiesForm
         '
         'btViewNames
         '
-        Me.btViewNames.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btViewNames.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btViewNames.Location = New System.Drawing.Point(137, 117)
         Me.btViewNames.Name = "btViewNames"
         Me.btViewNames.Size = New System.Drawing.Size(65, 23)
@@ -570,7 +570,7 @@ Partial Class IPropertiesForm
         '
         'btRevision
         '
-        Me.btRevision.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btRevision.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btRevision.Location = New System.Drawing.Point(193, 162)
         Me.btRevision.Name = "btRevision"
         Me.btRevision.Size = New System.Drawing.Size(87, 22)
