@@ -3,7 +3,6 @@ Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Windows.Forms
-'Imports System.Windows.Forms
 Imports Inventor
 Imports log4net
 
@@ -229,6 +228,7 @@ Namespace iPropertiesController
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                     If CommandName = "VaultCheckinTop" Or CommandName = "VaultCheckin" Then
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+
                         If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                             WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
                             If WhatToDo = vbYes Then
@@ -237,10 +237,27 @@ Namespace iPropertiesController
                                 myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                                 UpdateStatusBar("Updates are now Deferred")
                                 MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
-                            Else
-                                'Do Nothing
                             End If
                         End If
+                    End If
+                Else
+                    If CommandName = "VaultCheckinTop" Or CommandName = "VaultCheckin" Then
+                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+                        Dim PartNo As String = myiPropsForm.tbPartNumber.Text
+                        Dim StockNo As String = myiPropsForm.tbStockNumber.Text
+                        If Not PartNo = StockNo Then
+                            stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+                            If stockNum = vbNo Then
+                                SendKeys.SendWait("{ESC}")
+                            End If
+                        End If
+                    End If
+
+                    If CommandName = "GeomToDXFCommand" Then
+                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
+
+                        Dim flatName As String = myiPropsForm.tbPartNumber.Text
+                        Clipboard.SetText(flatName)
                     End If
                 End If
             End If
@@ -806,20 +823,21 @@ Namespace iPropertiesController
                                 'DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                                 'ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
-                                myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                                'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                                'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
 
                             End If
 
                         End If
                     Else
-                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                        'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                     End If
                 End If
 
                 myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-
+                myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
                 myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
             Else

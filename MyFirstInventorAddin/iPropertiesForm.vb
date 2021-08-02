@@ -1651,7 +1651,7 @@ Public Class IPropertiesForm
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
-            'CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                 Dim iProp As String = String.Empty
 
@@ -1668,11 +1668,11 @@ Public Class IPropertiesForm
                     Dim drawingDoc As Document = inventorApp.ActiveDocument
                     Dim drawingDesc As String = tbDescription.Text
 
-                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
                     UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawingDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
                 End If
             Else
-                CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
+                'CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             End If
         End If
     End Sub
@@ -2123,24 +2123,67 @@ Public Class IPropertiesForm
         oRefDocs = oAsmDoc.AllReferencedDocuments
         Dim oRefDoc As Document
         Dim oRev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+        Dim oAssyName As String = tbStockNumber.Text
         'work the referenced models
         'oDocu = inventorApp.ActiveDocument
         If Not iPropertiesAddInServer.CheckReadOnly(oAsmDoc) Then
             oAsmDoc.Save2(True)
         End If
 
+        Dim doc = inventorApp.ActiveEditDocument
+        Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+        Dim oBOM As BOM = oAssyDef.BOM
+
+        oBOM.StructuredViewEnabled = True
+
+        Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+        Dim oBOMRow As BOMRow
+
+        For Each oBOMRow In oBOMView.BOMRows
+
+            'Set a reference to the primary ComponentDefinition of the row
+            Dim oCompDef As ComponentDefinition
+            oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+            If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
+
+            Else
+                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                Dim CompFileNameOnly As String
+                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                'MessageBox.Show(CompFileNameOnly)
+
+                Dim item As String
+                item = oBOMRow.ItemNumber
+
+                Dim iProp As String = String.Empty
+                Dim DrawnDoc = oCompDef.Document
+                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+            End If
+        Next
+
         For Each oRefDoc In oRefDocs
             If Not oRefDoc.FullFileName.Contains("Route") Then
                 If oRefDoc.FullFileName.Contains("pisweep") Then
                     If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
-                        Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
-                        'Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
-                        pisWeep = pisWeep.Replace("PISWEEP.", "")
+                        'Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
+                        ''Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
+                        'pisWeep = pisWeep.Replace("PISWEEP.", "")
+
+                        'iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
+
+                        'Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+                        'NewPath = NewPath.Replace("pisweep.", "")
+
+                        Dim itemNo As String = iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+                        Dim NewFileName As String = System.IO.Path.GetDirectoryName(oRefDoc.FullDocumentName) & "\"
+                        Dim NewPath As String = NewFileName & oAssyName & "-" & itemNo
+                        Dim pisWeep As String = oAssyName & "-" & itemNo
 
                         iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
-
-                        Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
-                        NewPath = NewPath.Replace("pisweep.", "")
 
                         'GetNewFilePaths()
                         ' Get the STEP translator Add-In.
@@ -2252,17 +2295,37 @@ Public Class IPropertiesForm
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
         If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            'If Not (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+            '    Dim PartNo As String = tbPartNumber.Text
+            '    Dim StockNo As String = tbStockNumber.Text
+            '    If Not PartNo = StockNo Then
+            '        stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+            '        If stockNum = vbNo Then
+            '            Exit Sub
+            '        End If
+            '    End If
             If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
-                If AssyDoc.SelectSet.Count = 1 Then
-                    If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                    Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
+                    If AssyDoc.SelectSet.Count = 1 Then
+                        If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                            ' Get the CommandManager object. 
+                            Dim oCommandMgr As CommandManager
+                            oCommandMgr = inventorApp.CommandManager
+
+                            ' Get control definition for the line command. 
+                            Dim oControlDef As ControlDefinition
+                            oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
+                            ' Execute the command. 
+                            Call oControlDef.Execute()
+                        End If
+                    Else
                         ' Get the CommandManager object. 
                         Dim oCommandMgr As CommandManager
                         oCommandMgr = inventorApp.CommandManager
 
                         ' Get control definition for the line command. 
                         Dim oControlDef As ControlDefinition
-                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
+                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
                         ' Execute the command. 
                         Call oControlDef.Execute()
                     End If
@@ -2277,18 +2340,8 @@ Public Class IPropertiesForm
                     ' Execute the command. 
                     Call oControlDef.Execute()
                 End If
-            Else
-                ' Get the CommandManager object. 
-                Dim oCommandMgr As CommandManager
-                oCommandMgr = inventorApp.CommandManager
-
-                ' Get control definition for the line command. 
-                Dim oControlDef As ControlDefinition
-                oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
-                ' Execute the command. 
-                Call oControlDef.Execute()
             End If
-        End If
+        'End If
     End Sub
 
     Private Sub btCheckOut_Click(sender As Object, e As EventArgs) Handles btCheckOut.Click
