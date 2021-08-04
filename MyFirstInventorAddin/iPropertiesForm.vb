@@ -2836,7 +2836,7 @@ Public Class IPropertiesForm
             Dim oDataIO As DataIO = oDoc.ComponentDefinition.DataIO
 
             ' Build the string that defines the format of the DXF file.
-            Dim sOut As String = "FLAT PATTERN DXF?AcadVersion=2000&OuterProfileLayer=IV_INTERIOR_PROFILES"
+            Dim sOut As String = "FLAT PATTERN DXF?AcadVersion=2000&OuterProfileLayer=IV_INTERIOR_PROFILES&BendUpLayerColor=255;0;0&BendDownLayerColor=255;0;0&BendLayerColor=255;0;0&InvisibleLayers=IV_TANGENT;IV_ROLL_TANGENT"
             Dim oRev As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation)
             Dim fileFolder As String = System.IO.Path.GetDirectoryName(oDoc.FullFileName)
             Dim fileName As String = System.IO.Path.GetFileNameWithoutExtension(oDoc.FullDocumentName)
