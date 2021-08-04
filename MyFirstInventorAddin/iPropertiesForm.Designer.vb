@@ -77,6 +77,7 @@ Partial Class IPropertiesForm
         Me.lbDesigner = New System.Windows.Forms.Label()
         Me.lbservice = New System.Windows.Forms.Label()
         Me.tbService = New System.Windows.Forms.TextBox()
+        Me.btExpDXF = New System.Windows.Forms.Button()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -609,6 +610,16 @@ Partial Class IPropertiesForm
         Me.tbService.TabIndex = 342
         Me.tbService.TabStop = False
         '
+        'btExpDXF
+        '
+        Me.btExpDXF.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
+        Me.btExpDXF.Location = New System.Drawing.Point(96, 183)
+        Me.btExpDXF.Name = "btExpDXF"
+        Me.btExpDXF.Size = New System.Drawing.Size(30, 23)
+        Me.btExpDXF.TabIndex = 343
+        Me.btExpDXF.Text = "dxf"
+        Me.btExpDXF.UseVisualStyleBackColor = True
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -616,6 +627,7 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 364)
+        Me.Controls.Add(Me.btExpDXF)
         Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.btDefer)
@@ -732,4 +744,5 @@ Partial Class IPropertiesForm
     Friend WithEvents lbDesigner As Windows.Forms.Label
     Friend WithEvents lbservice As Windows.Forms.Label
     Friend WithEvents tbService As Windows.Forms.TextBox
+    Friend WithEvents btExpDXF As Windows.Forms.Button
 End Class

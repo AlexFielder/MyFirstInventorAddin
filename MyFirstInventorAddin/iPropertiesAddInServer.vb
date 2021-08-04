@@ -740,6 +740,7 @@ Namespace iPropertiesController
                 myiPropsForm.lbDesigner.Hide()
                 myiPropsForm.tbService.Hide()
                 myiPropsForm.lbservice.Hide()
+                myiPropsForm.btExpDXF.Hide()
 
                 myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -875,6 +876,20 @@ Namespace iPropertiesController
                     End If
                 End If
 
+                If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
+                    myiPropsForm.btITEM.Show()
+                    myiPropsForm.btReNum.Show()
+                    myiPropsForm.Label11.Hide()
+                    myiPropsForm.Label12.Hide()
+                    myiPropsForm.btExpDXF.Hide()
+                ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
+                    myiPropsForm.btITEM.Hide()
+                    myiPropsForm.btReNum.Hide()
+                    myiPropsForm.Label11.Show()
+                    myiPropsForm.Label12.Show()
+                    myiPropsForm.btExpDXF.Show()
+                End If
+
                 myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
 
                 Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
@@ -897,18 +912,6 @@ Namespace iPropertiesController
 
                 myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
-            End If
-
-            If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
-                myiPropsForm.btITEM.Show()
-                myiPropsForm.btReNum.Show()
-                myiPropsForm.Label11.Hide()
-                myiPropsForm.Label12.Hide()
-            ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
-                myiPropsForm.btITEM.Hide()
-                myiPropsForm.btReNum.Hide()
-                myiPropsForm.Label11.Show()
-                myiPropsForm.Label12.Show()
             End If
 
             Dim todaysdate As String = String.Format("{0:DD/MM/yyyy}", DateTime.Now)

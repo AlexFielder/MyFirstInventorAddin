@@ -2155,14 +2155,12 @@ Public Class IPropertiesForm
                 CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
                 'MessageBox.Show(CompFileNameOnly)
-
-                Dim item As String
-                item = oBOMRow.ItemNumber
+                Dim item As String = oBOMRow.ItemNumber
 
                 Dim iProp As String = String.Empty
                 Dim DrawnDoc = oCompDef.Document
-                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
-            End If
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                End If
         Next
 
         For Each oRefDoc In oRefDocs
@@ -2178,7 +2176,13 @@ Public Class IPropertiesForm
                         'Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
                         'NewPath = NewPath.Replace("pisweep.", "")
 
-                        Dim itemNo As String = iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+                        Dim itemNum As String = iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+                        Dim itemNo As String
+                        If itemNum < 10 Then
+                            itemNo = "0" & itemNum
+                        Else
+                            itemNo = itemNum
+                        End If
                         Dim NewFileName As String = System.IO.Path.GetDirectoryName(oRefDoc.FullDocumentName) & "\"
                         Dim NewPath As String = NewFileName & oAssyName & "-" & itemNo
                         Dim pisWeep As String = oAssyName & "-" & itemNo
@@ -2810,6 +2814,40 @@ Public Class IPropertiesForm
         End If
         'End If
 
+    End Sub
+
+    Private Sub btExpDXF_Click(sender As Object, e As EventArgs) Handles btExpDXF.Click
+        If Not TypeOf inventorApp.ActiveDocument Is PartDocument Then
+
+        Else
+            'Set a reference to the active document (the document to be published).
+            Dim oDoc As Document = inventorApp.ActiveDocument
+
+            Dim oCompDef As SheetMetalComponentDefinition
+            oCompDef = oDoc.ComponentDefinition
+            If oCompDef.HasFlatPattern = False Then
+                oCompDef.Unfold()
+
+            Else
+                oCompDef.FlatPattern.Edit()
+            End If
+
+            ' Get the DataIO object.
+            Dim oDataIO As DataIO = oDoc.ComponentDefinition.DataIO
+
+            ' Build the string that defines the format of the DXF file.
+            Dim sOut As String = "FLAT PATTERN DXF?AcadVersion=2000&OuterProfileLayer=IV_INTERIOR_PROFILES"
+            Dim oRev As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation)
+            Dim fileFolder As String = System.IO.Path.GetDirectoryName(oDoc.FullFileName)
+            Dim fileName As String = System.IO.Path.GetFileNameWithoutExtension(oDoc.FullDocumentName)
+            Dim sFname As String = fileFolder & "\" & fileName & "_R" & oRev & ".dxf"
+
+            'Export the DXF and fold the model back up
+            oCompDef.DataIO.WriteDataToFile(sOut, sFname)
+            Dim oSMDef As SheetMetalComponentDefinition
+            oSMDef = oDoc.ComponentDefinition
+            oSMDef.FlatPattern.ExitEdit()
+        End If
     End Sub
 
 
