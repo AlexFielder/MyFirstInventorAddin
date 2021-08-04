@@ -53,7 +53,6 @@ Partial Class IPropertiesForm
         Me.tbStockNumber = New System.Windows.Forms.TextBox()
         Me.tbPartNumber = New System.Windows.Forms.TextBox()
         Me.tbDescription = New System.Windows.Forms.TextBox()
-        Me.btExpSat = New System.Windows.Forms.Button()
         Me.ModelFileLocation = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.tbRevNo = New System.Windows.Forms.TextBox()
@@ -63,10 +62,6 @@ Partial Class IPropertiesForm
         Me.btDegDes = New System.Windows.Forms.Button()
         Me.btDiaDes = New System.Windows.Forms.Button()
         Me.btPipes = New System.Windows.Forms.Button()
-        Me.btCheckOut = New System.Windows.Forms.Button()
-        Me.btCheckIn = New System.Windows.Forms.Button()
-        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.btViewNames = New System.Windows.Forms.Button()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.tbComments = New System.Windows.Forms.TextBox()
@@ -78,6 +73,11 @@ Partial Class IPropertiesForm
         Me.lbservice = New System.Windows.Forms.Label()
         Me.tbService = New System.Windows.Forms.TextBox()
         Me.btExpDXF = New System.Windows.Forms.Button()
+        Me.btAttachFile = New System.Windows.Forms.Button()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.btCheckOut = New System.Windows.Forms.Button()
+        Me.btCheckIn = New System.Windows.Forms.Button()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -277,7 +277,7 @@ Partial Class IPropertiesForm
         'btExpStp
         '
         Me.btExpStp.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpStp.Location = New System.Drawing.Point(163, 183)
+        Me.btExpStp.Location = New System.Drawing.Point(192, 183)
         Me.btExpStp.Name = "btExpStp"
         Me.btExpStp.Size = New System.Drawing.Size(30, 23)
         Me.btExpStp.TabIndex = 311
@@ -372,16 +372,6 @@ Partial Class IPropertiesForm
         Me.tbDescription.TabIndex = 2
         Me.tbDescription.TabStop = False
         '
-        'btExpSat
-        '
-        Me.btExpSat.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpSat.Location = New System.Drawing.Point(192, 183)
-        Me.btExpSat.Name = "btExpSat"
-        Me.btExpSat.Size = New System.Drawing.Size(30, 23)
-        Me.btExpSat.TabIndex = 323
-        Me.btExpSat.Text = "sat"
-        Me.btExpSat.UseVisualStyleBackColor = True
-        '
         'ModelFileLocation
         '
         Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
@@ -459,58 +449,12 @@ Partial Class IPropertiesForm
         'btPipes
         '
         Me.btPipes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btPipes.Location = New System.Drawing.Point(124, 183)
+        Me.btPipes.Location = New System.Drawing.Point(153, 183)
         Me.btPipes.Name = "btPipes"
         Me.btPipes.Size = New System.Drawing.Size(40, 23)
         Me.btPipes.TabIndex = 331
         Me.btPipes.Text = "pipes"
         Me.btPipes.UseVisualStyleBackColor = True
-        '
-        'btCheckOut
-        '
-        Me.btCheckOut.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btCheckOut.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
-        Me.btCheckOut.Location = New System.Drawing.Point(253, 0)
-        Me.btCheckOut.Name = "btCheckOut"
-        Me.btCheckOut.Size = New System.Drawing.Size(25, 25)
-        Me.btCheckOut.TabIndex = 333
-        Me.btCheckOut.UseVisualStyleBackColor = True
-        '
-        'btCheckIn
-        '
-        Me.btCheckIn.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
-        Me.btCheckIn.Location = New System.Drawing.Point(253, 0)
-        Me.btCheckIn.Name = "btCheckIn"
-        Me.btCheckIn.Size = New System.Drawing.Size(25, 25)
-        Me.btCheckIn.TabIndex = 332
-        Me.btCheckIn.UseVisualStyleBackColor = True
-        '
-        'PictureBox2
-        '
-        Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
-        Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(236, 7)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox2.TabIndex = 304
-        Me.PictureBox2.TabStop = False
-        '
-        'PictureBox1
-        '
-        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
-        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(236, 7)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox1.TabIndex = 303
-        Me.PictureBox1.TabStop = False
         '
         'btViewNames
         '
@@ -531,7 +475,7 @@ Partial Class IPropertiesForm
         Me.tbComments.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.tbComments.Location = New System.Drawing.Point(42, 206)
+        Me.tbComments.Location = New System.Drawing.Point(42, 207)
         Me.tbComments.Multiline = True
         Me.tbComments.Name = "tbComments"
         Me.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
@@ -613,12 +557,68 @@ Partial Class IPropertiesForm
         'btExpDXF
         '
         Me.btExpDXF.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpDXF.Location = New System.Drawing.Point(96, 183)
+        Me.btExpDXF.Location = New System.Drawing.Point(125, 183)
         Me.btExpDXF.Name = "btExpDXF"
         Me.btExpDXF.Size = New System.Drawing.Size(30, 23)
         Me.btExpDXF.TabIndex = 343
         Me.btExpDXF.Text = "dxf"
         Me.btExpDXF.UseVisualStyleBackColor = True
+        '
+        'btAttachFile
+        '
+        Me.btAttachFile.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
+        Me.btAttachFile.Image = Global.iPropertiesController.My.Resources.Resources.paperclip2
+        Me.btAttachFile.Location = New System.Drawing.Point(108, 183)
+        Me.btAttachFile.Name = "btAttachFile"
+        Me.btAttachFile.Size = New System.Drawing.Size(18, 24)
+        Me.btAttachFile.TabIndex = 344
+        Me.btAttachFile.UseVisualStyleBackColor = True
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
+        Me.PictureBox2.ImageLocation = ""
+        Me.PictureBox2.Location = New System.Drawing.Point(236, 7)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox2.TabIndex = 304
+        Me.PictureBox2.TabStop = False
+        '
+        'btCheckOut
+        '
+        Me.btCheckOut.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btCheckOut.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
+        Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
+        Me.btCheckOut.Location = New System.Drawing.Point(253, 0)
+        Me.btCheckOut.Name = "btCheckOut"
+        Me.btCheckOut.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckOut.TabIndex = 333
+        Me.btCheckOut.UseVisualStyleBackColor = True
+        '
+        'btCheckIn
+        '
+        Me.btCheckIn.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
+        Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
+        Me.btCheckIn.Location = New System.Drawing.Point(253, 0)
+        Me.btCheckIn.Name = "btCheckIn"
+        Me.btCheckIn.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckIn.TabIndex = 332
+        Me.btCheckIn.UseVisualStyleBackColor = True
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
+        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
+        Me.PictureBox1.Location = New System.Drawing.Point(236, 7)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox1.TabIndex = 303
+        Me.PictureBox1.TabStop = False
         '
         'IPropertiesForm
         '
@@ -627,6 +627,7 @@ Partial Class IPropertiesForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(285, 364)
+        Me.Controls.Add(Me.btAttachFile)
         Me.Controls.Add(Me.btExpDXF)
         Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.PictureBox2)
@@ -647,7 +648,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.tbRevNo)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.ModelFileLocation)
-        Me.Controls.Add(Me.btExpSat)
         Me.Controls.Add(Me.tbDescription)
         Me.Controls.Add(Me.tbPartNumber)
         Me.Controls.Add(Me.btITEM)
@@ -722,7 +722,6 @@ Partial Class IPropertiesForm
     Friend WithEvents tbStockNumber As Windows.Forms.TextBox
     Friend WithEvents tbPartNumber As Windows.Forms.TextBox
     Friend WithEvents tbDescription As Windows.Forms.TextBox
-    Friend WithEvents btExpSat As Windows.Forms.Button
     Friend WithEvents ModelFileLocation As Windows.Forms.Label
     Friend WithEvents Label14 As Windows.Forms.Label
     Friend WithEvents tbRevNo As Windows.Forms.TextBox
@@ -745,4 +744,5 @@ Partial Class IPropertiesForm
     Friend WithEvents lbservice As Windows.Forms.Label
     Friend WithEvents tbService As Windows.Forms.TextBox
     Friend WithEvents btExpDXF As Windows.Forms.Button
+    Friend WithEvents btAttachFile As Windows.Forms.Button
 End Class

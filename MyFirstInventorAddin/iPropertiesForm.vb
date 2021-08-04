@@ -1735,7 +1735,7 @@ Public Class IPropertiesForm
         ToolTip1.Show(descText, tbService)
     End Sub
 
-    Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
+    Private Sub btExpSat_Click(sender As Object, e As EventArgs) 
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
@@ -2849,6 +2849,25 @@ Public Class IPropertiesForm
             oSMDef.FlatPattern.ExitEdit()
 
             AttachRefFile(oDoc, sFname)
+        End If
+    End Sub
+
+    Private Sub btAttachFile_Click(sender As Object, e As EventArgs) Handles btAttachFile.Click
+        Dim oDoc As Document = inventorApp.ActiveDocument
+        Dim oFileDlg As Inventor.FileDialog = Nothing
+        inventorApp.CreateFileDialog(oFileDlg)
+        oFileDlg.Filter = "All Files (*.*)|*.*"
+        oFileDlg.FilterIndex = 1
+        oFileDlg.DialogTitle = "Select file to attach"
+        oFileDlg.InitialDirectory = "C:\VAULT WORKING FOLDER\Designs"
+        oFileDlg.CancelError = True
+        On Error Resume Next
+        oFileDlg.ShowOpen()
+        If Err.Number <> 0 Then
+
+        ElseIf oFileDlg.FileName <> "" Then
+            AddReferences(oDoc, oFileDlg.FileName)
+            MsgBox("File attached")
         End If
     End Sub
 
