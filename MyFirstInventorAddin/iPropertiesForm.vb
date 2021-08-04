@@ -2847,6 +2847,8 @@ Public Class IPropertiesForm
             Dim oSMDef As SheetMetalComponentDefinition
             oSMDef = oDoc.ComponentDefinition
             oSMDef.FlatPattern.ExitEdit()
+
+            AttachRefFile(oDoc, sFname)
         End If
     End Sub
 
