@@ -268,6 +268,34 @@ Namespace iPropertiesController
                         Dim flatName As String = myiPropsForm.tbPartNumber.Text
                         Clipboard.SetText(flatName)
                     End If
+
+                    Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
+                    If TypeOf oDoc Is PartDocument Then
+                        If CommandName = "AppFileSaveCmd" Then
+                            Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
+                            Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
+                            Dim kgWeight As Decimal = Weight / 1000
+                            Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
+                            If Material = "Generic" Then
+                                MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
+                            End If
+                            If Weight2 > 10 Then
+                                MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
+                            End If
+                        End If
+                        If CommandName = "AppFileSaveAsCmd" Then
+                            Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
+                            Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
+                            Dim kgWeight As Decimal = Weight / 1000
+                            Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
+                            If Material = "Generic" Then
+                                MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
+                            End If
+                            If Weight2 > 10 Then
+                                MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
+                            End If
+                        End If
+                    End If
                 End If
             End If
         End Sub
@@ -615,45 +643,6 @@ Namespace iPropertiesController
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
-                'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
-                '    Dim PlotDate As Object = "PlotDate"
-                '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
-                '    ' Get the custom property set.
-                '    Dim customPropSet As Inventor.PropertySet
-                '    customPropSet = AddinGlobal.InventorApp.ActiveDocument.PropertySets.Item("Inventor User Defined Properties")
-
-                '    ' Get the existing property, if it exists.
-                '    Dim prop As Inventor.Property = Nothing
-                '    Dim propExists As Boolean = True
-                '    Try
-                '        prop = customPropSet.Item(PlotDate)
-                '    Catch ex As Exception
-                '        propExists = False
-                '    End Try
-
-                '    ' Check to see if the property was successfully obtained.
-                '    If Not propExists Then
-                '        ' Failed to get the existing property so create a new one.
-                '        prop = customPropSet.Add(PlotDateValue, PlotDate)
-                '    Else
-                '        ' Change the value of the existing property.
-                '        prop.Value = PlotDateValue
-                '    End If
-                'End If
-            ElseIf BeforeOrAfter = EventTimingEnum.kBefore Then
-                Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
-                If TypeOf oDoc Is PartDocument Then
-                    Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
-                    Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
-                    Dim kgWeight As Decimal = Weight / 1000
-                    Dim Weight2 As Decimal = Math.Round(kgWeight, 0)
-                    If Material = "Generic" Then
-                        MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
-                    End If
-                    If Weight2 > 10 Then
-                        MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
-                    End If
-                End If
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
 
