@@ -36,6 +36,10 @@ Namespace iPropertiesController
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
+        'we can set the following to false if we don't want the file to save:
+        Public AllowFileToSave As Boolean = True
+        Public AllowFileToSaveAs As Boolean = True
+
         Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesAddInServer))
 
@@ -145,7 +149,6 @@ Namespace iPropertiesController
                 log.Error(ex.Message)
             End Try
         End Sub
-
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
@@ -257,7 +260,7 @@ Namespace iPropertiesController
                         If Not PartNo = StockNo Then
                             stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
                             If stockNum = vbNo Then
-                                SendKeys.SendWait("{ESC}")
+                                Exit Sub
                             End If
                         End If
                     End If
@@ -271,28 +274,24 @@ Namespace iPropertiesController
 
                     Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
                     If TypeOf oDoc Is PartDocument Then
-                        If CommandName = "AppFileSaveCmd" Then
+                        If CommandName = "AppFileSaveCmd" Or CommandName = "AppFileSaveAsCmd" Then
                             Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
                             Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
                             Dim kgWeight As Decimal = Weight / 1000
                             Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
                             If Material = "Generic" Then
-                                MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
+                                whatnow = MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbYesNo, "Material Check")
+                                If whatnow = vbNo Then
+                                    AllowFileToSave = False
+                                    AllowFileToSaveAs = False
+                                End If
                             End If
                             If Weight2 > 10 Then
-                                MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
-                            End If
-                        End If
-                        If CommandName = "AppFileSaveAsCmd" Then
-                            Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
-                            Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
-                            Dim kgWeight As Decimal = Weight / 1000
-                            Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
-                            If Material = "Generic" Then
-                                MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
-                            End If
-                            If Weight2 > 10 Then
-                                MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
+                                whatnow = MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbYesNo, "Weight Check")
+                                If whatnow = vbNo Then
+                                    AllowFileToSave = False
+                                    AllowFileToSaveAs = False
+                                End If
                             End If
                         End If
                     End If
@@ -639,12 +638,30 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
+
+            If BeforeOrAfter = EventTimingEnum.kBefore Then
+                'put stuff in here that you want Inventor to do prior to saving the file.
+                'things such as checking the material is set from something other than generic
+                ' and then the messagebox if whatever you're checking returns as true:
+                Dim WhateverWeChecked As Boolean = False
+
+                If WhateverWeChecked Then
+                    'this should cancel the save event allowing the user to set a material
+                    Exit Sub
+                End If
+
+            End If
+
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
+
+            If Not AllowFileToSave Or Not AllowFileToSaveAs Then
+                HandlingCode = HandlingCodeEnum.kEventCanceled
+            End If
 
         End Sub
 
