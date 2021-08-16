@@ -1735,7 +1735,7 @@ Public Class IPropertiesForm
         ToolTip1.Show(descText, tbService)
     End Sub
 
-    Private Sub btExpSat_Click(sender As Object, e As EventArgs) 
+    Private Sub btExpSat_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")

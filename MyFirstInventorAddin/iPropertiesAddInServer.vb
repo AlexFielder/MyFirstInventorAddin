@@ -148,7 +148,8 @@ Namespace iPropertiesController
 
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
-            If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
+            If TypeOf oDoc Is DrawingDocument Then
                 Dim oDWG = AddinGlobal.InventorApp.ActiveDocument
                 DocumentToPulliPropValuesFrom = oDWG
                 Dim oSht As Sheet = oDWG.ActiveSheet
@@ -181,8 +182,16 @@ Namespace iPropertiesController
                         End If
                     End If
                 End If
-
+            Else
+                Dim oPartDoc As PartDocument = oDoc
+                If CommandName = "SheetMetalStylesCmd" Then
+                    Dim partcompdef As PartComponentDefinition = oPartDoc.ComponentDefinition
+                    Dim sheetmetalcompdef As SheetMetalComponentDefinition = partcompdef
+                    Dim oUnfoldMethod As String = sheetmetalcompdef.UnfoldMethod.Name
+                    UpdateCustomiProperty(oDoc, "Sheet Metal Rule", oUnfoldMethod)
+                End If
             End If
+
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -606,7 +615,6 @@ Namespace iPropertiesController
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
-
                 'If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
                 '    Dim PlotDate As Object = "PlotDate"
                 '    Dim PlotDateValue As Object = DateTime.Now.ToString("dd/MM/yyyy, hh:mm tt")
@@ -632,8 +640,23 @@ Namespace iPropertiesController
                 '        prop.Value = PlotDateValue
                 '    End If
                 'End If
+            ElseIf BeforeOrAfter = EventTimingEnum.kBefore Then
+                Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
+                If TypeOf oDoc Is PartDocument Then
+                    Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
+                    Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
+                    Dim kgWeight As Decimal = Weight / 1000
+                    Dim Weight2 As Decimal = Math.Round(kgWeight, 0)
+                    If Material = "Generic" Then
+                        MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbOKOnly, "Material Check")
+                    End If
+                    If Weight2 > 10 Then
+                        MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbOKOnly, "Weight Check")
+                    End If
+                End If
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
+
         End Sub
 
         Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -889,6 +912,7 @@ Namespace iPropertiesController
                     myiPropsForm.Label12.Show()
                     myiPropsForm.btExpDXF.Show()
                 End If
+                'get the document sub-type
 
                 myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
 
@@ -933,6 +957,30 @@ Namespace iPropertiesController
             UpdateFormTextBoxColours()
             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
 
+        End Sub
+
+        Private Sub UpdateCustomiProperty(ByRef Doc As Inventor.Document, ByRef PropertyName As String, ByRef PropertyValue As String)
+            ' Get the custom property set.
+            Dim customPropSet As Inventor.PropertySet
+            customPropSet = Doc.PropertySets.Item("Inventor User Defined Properties")
+
+            ' Get the existing property, if it exists.
+            Dim prop As Inventor.Property = Nothing
+            Dim propExists As Boolean = True
+            Try
+                prop = customPropSet.Item(PropertyName)
+            Catch ex As Exception
+                propExists = False
+            End Try
+
+            ' Check to see if the property was successfully obtained.
+            If Not propExists Then
+                ' Failed to get the existing property so create a new one.
+                prop = customPropSet.Add(PropertyValue, PropertyName)
+            Else
+                ' Change the value of the existing property.
+                prop.Value = PropertyValue
+            End If
         End Sub
 
         ''' <summary>

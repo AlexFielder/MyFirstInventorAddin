@@ -277,7 +277,7 @@ Partial Class IPropertiesForm
         'btExpStp
         '
         Me.btExpStp.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpStp.Location = New System.Drawing.Point(192, 183)
+        Me.btExpStp.Location = New System.Drawing.Point(175, 183)
         Me.btExpStp.Name = "btExpStp"
         Me.btExpStp.Size = New System.Drawing.Size(30, 23)
         Me.btExpStp.TabIndex = 311
@@ -287,7 +287,7 @@ Partial Class IPropertiesForm
         'btExpStl
         '
         Me.btExpStl.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpStl.Location = New System.Drawing.Point(221, 183)
+        Me.btExpStl.Location = New System.Drawing.Point(204, 183)
         Me.btExpStl.Name = "btExpStl"
         Me.btExpStl.Size = New System.Drawing.Size(30, 23)
         Me.btExpStl.TabIndex = 312
@@ -297,7 +297,7 @@ Partial Class IPropertiesForm
         'btExpPdf
         '
         Me.btExpPdf.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpPdf.Location = New System.Drawing.Point(250, 183)
+        Me.btExpPdf.Location = New System.Drawing.Point(233, 183)
         Me.btExpPdf.Name = "btExpPdf"
         Me.btExpPdf.Size = New System.Drawing.Size(30, 23)
         Me.btExpPdf.TabIndex = 313
@@ -449,7 +449,7 @@ Partial Class IPropertiesForm
         'btPipes
         '
         Me.btPipes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btPipes.Location = New System.Drawing.Point(153, 183)
+        Me.btPipes.Location = New System.Drawing.Point(136, 183)
         Me.btPipes.Name = "btPipes"
         Me.btPipes.Size = New System.Drawing.Size(40, 23)
         Me.btPipes.TabIndex = 331
@@ -557,7 +557,7 @@ Partial Class IPropertiesForm
         'btExpDXF
         '
         Me.btExpDXF.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
-        Me.btExpDXF.Location = New System.Drawing.Point(125, 183)
+        Me.btExpDXF.Location = New System.Drawing.Point(108, 183)
         Me.btExpDXF.Name = "btExpDXF"
         Me.btExpDXF.Size = New System.Drawing.Size(30, 23)
         Me.btExpDXF.TabIndex = 343
@@ -568,7 +568,7 @@ Partial Class IPropertiesForm
         '
         Me.btAttachFile.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btAttachFile.Image = Global.iPropertiesController.My.Resources.Resources.paperclip2
-        Me.btAttachFile.Location = New System.Drawing.Point(108, 183)
+        Me.btAttachFile.Location = New System.Drawing.Point(262, 183)
         Me.btAttachFile.Name = "btAttachFile"
         Me.btAttachFile.Size = New System.Drawing.Size(18, 24)
         Me.btAttachFile.TabIndex = 344
