@@ -68,6 +68,9 @@
   <PropertyGroup>
     <RootNamespace>iPropertiesController</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="autodesk.inventor.interop, Version=21.2.0.0, Culture=neutral, PublicKeyToken=d84147f8b4276564, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,12 +109,12 @@
     <Compile Include="iPropertiesForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="iPropertiesAddInServer.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="iPropertiesAddInServer.vb" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -169,6 +172,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Installer\Installer.iss" />
+    <Content Include="Resources\paperclip.jpg" />
+    <None Include="Resources\paperclip1.jpg" />
     <None Include="Resources\CHECKOUT.png" />
     <None Include="Resources\CHECKIN.png" />
     <None Include="Resources\green_button_tick.png" />

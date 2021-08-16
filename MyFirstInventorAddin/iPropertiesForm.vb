@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.Drawing
+Imports System.Windows.Forms
 Imports Inventor
 Imports iPropertiesController.iPropertiesController
 Imports log4net
@@ -6,10 +7,11 @@ Imports log4net
 Public Class IPropertiesForm
     'Inherits Form
     Private inventorApp As Inventor.Application
-    Private localWindow As DockableWindow
+    'Private localWindow As DockableWindow
     Private value As String
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
-
+    Public customMargin As Integer = 5
+    Public customSize As Size = Me.ClientSize
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
     Public Sub GetNewFilePaths()
@@ -44,6 +46,16 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Private Sub GetTheStuffs()
+        tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+
+        tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+        tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+        tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+    End Sub
+
     Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
         Dim oleReference As ReferencedOLEFileDescriptor
         oleReference = odoc.ReferencedOLEFileDescriptors _
@@ -58,7 +70,7 @@ Public Class IPropertiesForm
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
-    Public Sub New(ByVal inventorApp As Inventor.Application, ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+    Public Sub New(ByVal inventorApp As Inventor.Application) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
             log.Debug("Loading iProperties Form")
             InitializeComponent()
@@ -66,25 +78,23 @@ Public Class IPropertiesForm
             'Me.KeyPreview = True
             Me.inventorApp = inventorApp
             Me.value = addinCLS
-            Me.localWindow = localWindow
-            Dim uiMgr As UserInterfaceManager = inventorApp.UserInterfaceManager
-            Dim addinName As String = lbAddinName.Text
-            Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
-            myDockableWindow.AddChild(Me.Handle)
+            'Me.localWindow = localWindow
+            'Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
+            'myDockableWindow.AddChild(Me.Handle)
 
-            If Not myDockableWindow.IsCustomized = True Then
-                'myDockableWindow.DockingState = DockingStateEnum.kFloat
-                myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
-            Else
-                myDockableWindow.DockingState = DockingStateEnum.kFloat
-            End If
+            'If Not myDockableWindow.IsCustomized = True Then
+            '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
+            '    myDockableWindow.DockingState = DockingStateEnum.kDockLastKnown
+            'Else
+            '    myDockableWindow.DockingState = DockingStateEnum.kFloat
+            'End If
 
-            myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+            'myDockableWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
 
-            Me.Dock = DockStyle.Fill
-            Me.Visible = True
-            localWindow = myDockableWindow
-            AddinGlobal.DockableList.Add(myDockableWindow)
+            'Me.Dock = DockStyle.Fill
+            'Me.Visible = True
+            'localWindow = myDockableWindow
+            'AddinGlobal.DockableList.Add(myDockableWindow)
         Catch ex As Exception
             log.Error(ex.Message)
         End Try
@@ -226,6 +236,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "", True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -234,6 +246,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "", True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties(inventorApp.ActiveEditObject)
             log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -242,6 +256,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(proptoUpdate As PropertiesForDesignTrackingPropertiesEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, AssyDoc As AssemblyDocument, selecteddoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "", True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties(selecteddoc)
             log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
@@ -251,6 +267,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, newPropValue, "", True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -259,6 +277,8 @@ Public Class IPropertiesForm
     Private Sub UpdateProperties(sumtoUpdate As PropertiesForSummaryInformationEnum, propname As String, ByRef newPropValue As String, ByRef iProp As String, drawnDoc As Document)
         If Not newPropValue = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, "", "") Then
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, newPropValue, "", True)
+            'inventorApp.ActiveDocument.Save2(True)
+            iPropertiesAddInServer.UpdateDisplayediProperties()
             log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
@@ -278,7 +298,6 @@ Public Class IPropertiesForm
         If Not inventorApp.ActiveDocument Is Nothing Then
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
-
         End If
     End Sub
 
@@ -302,7 +321,6 @@ Public Class IPropertiesForm
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", drawingEng, iProp, drawnDoc)
             End If
-
         End If
     End Sub
 
@@ -330,18 +348,27 @@ Public Class IPropertiesForm
         'Toggle 'Defer updates' on and off in a Drawing
         If Not inventorApp.ActiveDocument Is Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
-                If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
-                    'DrawingSettings.DeferUpdates = False
-                    Label8.ForeColor = Drawing.Color.Green
-                    Label8.Text = "Drawing Updates Not Deferred"
-                    UpdateStatusBar("Drawing updates are no longer deferred")
-                ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                    inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                    Label8.ForeColor = Drawing.Color.Red
-                    Label8.Text = "Drawing Updates Deferred"
-                    UpdateStatusBar("Drawing updates are now deferred")
+                If TypeOf inventorApp.ActiveDocument Is DrawingDocument Then
+                    Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                    Dim oSheets = inventorApp.ActiveDocument.Sheets
+                    inventorApp.ActiveDocument.Activate()
+                    If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                        inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
+                        'DrawingSettings.DeferUpdates = False
+                        btDefer.BackColor = Drawing.Color.Green
+                        btDefer.Text = "Drawing Updates Not Deferred"
+                        UpdateStatusBar("Drawing updates are no longer deferred")
+                    ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                        inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
+                        btDefer.BackColor = Drawing.Color.Red
+                        btDefer.Text = "Drawing Updates Deferred"
+                        UpdateStatusBar("Drawing updates are now deferred")
+                    End If
                 End If
+            Else
+                btDefer.BackColor = Drawing.Color.Green
+                btDefer.Text = "Drawing Updates Not Deferred"
+                MessageBox.Show("Save file before deferring updates")
             End If
         End If
     End Sub
@@ -367,6 +394,24 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btITEM_Click(sender As Object, e As EventArgs) Handles btITEM.Click
+
+        'Dim oAsmDoc As AssemblyDocument
+        'oAsmDoc = inventorApp.ActiveDocument
+
+        'oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
+
+        'Dim oCommandMgr As CommandManager
+        'oCommandMgr = inventorApp.CommandManager
+
+        ''Dim compOcc As ComponentOccurrence = oRefDoc
+        ''Call inventorApp.ActiveDocument.SelectSet.Select(compOcc)
+
+        'tube = inventorApp.CommandManager.Pick(SelectionFilterEnum.kAssemblyLeafOccurrenceFilter, "Pick Part")
+        'oAsmDoc.SelectSet.Select(tube)
+
+        'Call oCommandMgr.ControlDefinitions.Item("CADC:TpXmlReporter:BendingMachineCmd").Execute()
+
+
         If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
             Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
@@ -449,7 +494,7 @@ Public Class IPropertiesForm
 
                     Dim iProp As String = String.Empty
                     Dim DrawnDoc = oCompDef.Document
-                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, drawnDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
                 End If
             Next
         End If
@@ -457,8 +502,10 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbMass_Enter(sender As Object, e As EventArgs) Handles tbMass.Enter
-        Clipboard.SetText(tbMass.Text)
-        UpdateStatusBar("Mass copied to clipboard")
+        If Not tbMass.Text.Length = 0 Then
+            Clipboard.SetText(tbMass.Text)
+            UpdateStatusBar("Mass copied to clipboard")
+        End If
     End Sub
 
     Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.MouseClick
@@ -466,8 +513,10 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.Enter
-        Clipboard.SetText(tbDensity.Text)
-        UpdateStatusBar("Density copied to clipboard")
+        If Not tbDensity.Text.Length = 0 Then
+            Clipboard.SetText(tbDensity.Text)
+            UpdateStatusBar("Density copied to ")
+        End If
     End Sub
 
     Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.MouseClick
@@ -499,6 +548,12 @@ Public Class IPropertiesForm
 
             Dim oCurrentSheet = Nothing
             oCurrentSheet = oDrawDoc.ActiveSheet.Name
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+            Dim MaterialString As String = String.Empty
+            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
             i = 1
 
@@ -510,42 +565,50 @@ Public Class IPropertiesForm
                         oPromptEntry = oTitleBlock.GetResultText(oTextBox)
                 End Select
             Next
-
-            If oPromptEntry = "<Material>" Then
-                oPromptText = "Engineer"
-            ElseIf oPromptEntry = "" Then
-                oPromptText = "Engineer"
-            Else
-                oPromptText = oPromptEntry
-            End If
-
-
-            For Each view As DrawingView In oSht.DrawingViews
-                oView = view
-                Exit For
-            Next
-
-            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-            prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
-                                   vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
-
             MaterialTextBox = GetMaterialTextBox(oTitleBlock.Definition)
-            Dim MaterialString As String = String.Empty
-            MaterialString = prtMaterial
-            If prtMaterial = "Engineer" Then
-                MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
-                                                              PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
-                                                              "",
-                                                              "")
-            ElseIf UCase(prtMaterial) = "PRT" Then
-                MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
-                                                              PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
-                                                              "",
-                                                              ""))
+
+            If TypeOf drawnDoc Is AssemblyDocument Then
+                If oPromptEntry = "<Material>" Then
+                    oPromptText = "SEE ABOVE"
+                ElseIf oPromptEntry = "" Then
+                    oPromptText = "SEE ABOVE"
+                Else
+                    oPromptText = oPromptEntry
+                End If
+                prtMaterial = InputBox("leaving as 'SEE ABOVE' will fill box with 'SEE ABOVE'" &
+                                   vbCrLf & "otherwise you can alter this to suit needs", "Assembly", oPromptText)
+                If prtMaterial = "SEE ABOVE" Then
+                    MaterialString = "SEE ABOVE"
+                Else
+                    MaterialString = prtMaterial
+                End If
             Else
-                MaterialString = prtMaterial
+                If oPromptEntry = "<Material>" Then
+                    oPromptText = "Engineer"
+                ElseIf oPromptEntry = "" Then
+                    oPromptText = "Engineer"
+                Else
+                    oPromptText = oPromptEntry
+                End If
+                prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
+                                  vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
+                If prtMaterial = "Engineer" Then
+                    MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                                  PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties,
+                                                                  "",
+                                                                  "")
+                ElseIf UCase(prtMaterial) = "PRT" Then
+                    MaterialString = UCase(iProperties.GetorSetStandardiProperty(drawnDoc,
+                                                                  PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties,
+                                                                  "",
+                                                                  ""))
+                Else
+                    MaterialString = prtMaterial
+                End If
             End If
+
+            'MaterialString = prtMaterial
+
             oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
         Catch ex As Exception When MaterialTextBox Is Nothing
             UpdateStatusBar("No compatible drawing open!")
@@ -595,18 +658,32 @@ Public Class IPropertiesForm
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
         dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
 
-        For Each viewX As DrawingView In oSheet.DrawingViews
-            If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
-                If dwgScale = "Scale from view" Then
-                    scaleString = viewX.ScaleString
-                Else
-                    scaleString = dwgScale
-
-                    Exit For
-                End If
-
-            End If
+        For Each view As DrawingView In oSheet.DrawingViews
+            oView = view
+            Exit For
         Next
+
+        If (Not String.IsNullOrEmpty(oView.ScaleString)) Then
+            If dwgScale = "Scale from view" Then
+                scaleString = oView.ScaleString
+            Else
+                scaleString = dwgScale
+            End If
+
+        End If
+
+        'For Each viewX As DrawingView In oSheet.DrawingViews
+        '    If (Not String.IsNullOrEmpty(viewX.ScaleString)) Then
+        '        If dwgScale = "Scale from view" Then
+        '            scaleString = viewX.ScaleString
+        '        Else
+        '            scaleString = dwgScale
+
+        '            Exit For
+        '        End If
+
+        '    End If
+        'Next
 
         oTitleBlock.SetPromptResultText(scaleTextBox, scaleString)
         UpdateStatusBar("Drawing scale set")
@@ -623,7 +700,7 @@ Public Class IPropertiesForm
 
     Function GetScaleTextBox(ByVal titleDef As TitleBlockDefinition) As Inventor.TextBox
         For Each defText As Inventor.TextBox In titleDef.Sketch.TextBoxes
-            If (defText.Text = "<Scale>" Or defText.Text = "Scale") Then
+            If (defText.Text = "Scale" Or defText.Text = "<Scale>") Then
                 Return defText
             End If
         Next
@@ -659,6 +736,10 @@ Public Class IPropertiesForm
         FileNameHere = System.IO.Path.GetFileName(RefFile)
         AttachFile = MsgBox(FileNameHere & " File exported, attach it to main file as reference?", vbYesNo, "File Attach")
         If AttachFile = vbYes Then
+            If iPropertiesAddInServer.CheckReadOnly(ActiveDoc) Then
+                MessageBox.Show("You can't attach things to read-only files! Your file has been exported but if you want it to be attached, check-out and try again.", "Warning", MessageBoxButtons.OK)
+                Exit Sub
+            End If
             AddReferences(ActiveDoc, RefFile)
             UpdateStatusBar("File attached")
         Else
@@ -672,7 +753,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 'GetNewFilePaths()
                 ' Get the STEP translator Add-In.
                 Dim oRev = iProperties.GetorSetStandardiProperty(
@@ -731,9 +814,12 @@ Public Class IPropertiesForm
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                            RefDoc,
-                            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -839,7 +925,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 ' Get the STL translator Add-In.
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                     inventorApp.ActiveDocument,
@@ -947,9 +1035,12 @@ Public Class IPropertiesForm
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
                 'GetNewFilePaths()
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                                    RefDoc,
-                                    PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                inventorApp.ActiveDocument,
+                                PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
                 If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                     UpdateStatusBar("Cannot export model whilst drawing updates are deferred")
@@ -1086,7 +1177,9 @@ Public Class IPropertiesForm
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 'GetNewFilePaths()
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
@@ -1107,78 +1200,79 @@ Public Class IPropertiesForm
                     End If
                 Next
 
-                If oPDFAddIn Is Nothing Then
+                If oPDFAddIn IsNot Nothing Then
+
+                    Dim oPDFConvertor3D = oPDFAddIn.Automation
+
+                    'Set a reference to the active document (the document to be published).
+                    Dim oDocument As Document = inventorApp.ActiveDocument
+
+                    If oDocument.FileSaveCounter = 0 Then
+                        MsgBox("You must save the document to continue...")
+                        Return
+                    End If
+
+                    ' Create a NameValueMap objectfor all options...
+                    Dim oOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+                    Dim STEPFileOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
+
+                    ' All Possible Options
+                    ' Export file name and location...
+                    oOptions.Value("FileOutputLocation") = NewPath + "_R" + oRev + ".pdf"
+                    ' Export annotations?
+                    oOptions.Value("ExportAnnotations") = 1
+                    ' Export work features?
+                    oOptions.Value("ExportWokFeatures") = 1
+                    ' Attach STEP file to 3D PDF?
+                    oOptions.Value("GenerateAndAttachSTEPFile") = True
+                    ' What quality (high quality takes longer to export)
+                    'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
+                    oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
+                    'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
+                    'oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
+                    ' Limit export to entities in selected view representation(s)
+                    oOptions.Value("LimitToEntitiesInDVRs") = True
+                    ' Open the 3D PDF when export is complete?
+                    oOptions.Value("ViewPDFWhenFinished") = False
+
+                    ' Export all properties?
+                    oOptions.Value("ExportAllProperties") = True
+                    ' OR - Set the specific properties to export
+                    '    Dim sProps(5) As String
+                    '    sProps(0) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Title"
+                    '    sProps(1) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Keywords"
+                    '    sProps(2) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Comments"
+                    '    sProps(3) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Description"
+                    '    sProps(4) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Stock Number"
+                    '    sProps(5) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Revision Number"
+
+                    'oOptions.Value("ExportProperties") = sProps
+
+                    ' Choose the export template based off the current document type
+                    If oDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Part Template.pdf"
+                    Else
+                        oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Assembly Template.pdf"
+                    End If
+
+                    ' Define a file to attach to the exported 3D PDF - note here I have picked an Excel spreadsheet
+                    ' You need to use the full path and filename - if it does not exist the file will not be attached.
+                    Dim oAttachedFiles As String() = {"C:\FileToAttach.xlsx"}
+                    oOptions.Value("AttachedFiles") = oAttachedFiles
+
+                    ' Set the design view(s) to export - note here I am exporting only the active design view (view representation)
+                    Dim sDesignViews(0) As String
+                    sDesignViews(0) = oDocument.ComponentDefinition.RepresentationsManager.ActiveDesignViewRepresentation.Name
+                    oOptions.Value("ExportDesignViewRepresentations") = sDesignViews
+
+                    'Publish document.
+                    Call oPDFConvertor3D.Publish(oDocument, oOptions)
+                    UpdateStatusBar("File saved as 3D pdf file")
+                    AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
+                Else
                     MsgBox("Inventor 3D PDF Addin not loaded.")
                     Exit Sub
                 End If
-
-                Dim oPDFConvertor3D = oPDFAddIn.Automation
-
-                'Set a reference to the active document (the document to be published).
-                Dim oDocument As Document = inventorApp.ActiveDocument
-
-                If oDocument.FileSaveCounter = 0 Then
-                    MsgBox("You must save the document to continue...")
-                    Return
-                End If
-
-                ' Create a NameValueMap objectfor all options...
-                Dim oOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
-                Dim STEPFileOptions As NameValueMap = inventorApp.TransientObjects.CreateNameValueMap
-
-                ' All Possible Options
-                ' Export file name and location...
-                oOptions.Value("FileOutputLocation") = NewPath + "_R" + oRev + ".pdf"
-                ' Export annotations?
-                oOptions.Value("ExportAnnotations") = 1
-                ' Export work features?
-                oOptions.Value("ExportWokFeatures") = 1
-                ' Attach STEP file to 3D PDF?
-                oOptions.Value("GenerateAndAttachSTEPFile") = True
-                ' What quality (high quality takes longer to export)
-                'oOptions.Value("VisualizationQuality") = AccuracyEnumVeryHigh
-                oOptions.Value("VisualizationQuality") = AccuracyEnum.kHigh
-                'oOptions.Value("VisualizationQuality") = AccuracyEnum.kMedium
-                'oOptions.Value("VisualizationQuality") = AccuracyEnum.kLow
-                ' Limit export to entities in selected view representation(s)
-                oOptions.Value("LimitToEntitiesInDVRs") = True
-                ' Open the 3D PDF when export is complete?
-                oOptions.Value("ViewPDFWhenFinished") = False
-
-                ' Export all properties?
-                oOptions.Value("ExportAllProperties") = True
-                ' OR - Set the specific properties to export
-                '    Dim sProps(5) As String
-                '    sProps(0) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Title"
-                '    sProps(1) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Keywords"
-                '    sProps(2) = "{F29F85E0-4FF9-1068-AB91-08002B27B3D9}:Comments"
-                '    sProps(3) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Description"
-                '    sProps(4) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Stock Number"
-                '    sProps(5) =    "{32853F0F-3444-11D1-9E93-0060B03C1CA6}:Revision Number"
-
-                'oOptions.Value("ExportProperties") = sProps
-
-                ' Choose the export template based off the current document type
-                If oDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Part Template.pdf"
-                Else
-                    oOptions.Value("ExportTemplate") = "C:\Users\Public\Documents\Autodesk\Inventor 2017\Templates\Sample Assembly Template.pdf"
-                End If
-
-                ' Define a file to attach to the exported 3D PDF - note here I have picked an Excel spreadsheet
-                ' You need to use the full path and filename - if it does not exist the file will not be attached.
-                Dim oAttachedFiles As String() = {"C:\FileToAttach.xlsx"}
-                oOptions.Value("AttachedFiles") = oAttachedFiles
-
-                ' Set the design view(s) to export - note here I am exporting only the active design view (view representation)
-                Dim sDesignViews(0) As String
-                sDesignViews(0) = oDocument.ComponentDefinition.RepresentationsManager.ActiveDesignViewRepresentation.Name
-                oOptions.Value("ExportDesignViewRepresentations") = sDesignViews
-
-                'Publish document.
-                Call oPDFConvertor3D.Publish(oDocument, oOptions)
-                UpdateStatusBar("File saved as 3D pdf file")
-                AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
             Else
                 'Do Nothing
             End If
@@ -1213,7 +1307,25 @@ Public Class IPropertiesForm
                 Dim oDataMedium As DataMedium
                 oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
-                ' Check whether the translator has 'SaveCopyAs' options
+                'Get sheet names and set options depending on them
+                Dim strSheetName As String
+                Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                Dim oDoc = inventorApp.ActiveDocument
+                Dim oSheets = inventorApp.ActiveDocument.Sheets
+                For Each oSheet In oDocu.Sheets
+                    oSheet.Activate()
+
+                    strSheetName = oSheet.Name
+                    If strSheetName.Contains("Model") Then
+                        Exit For
+                    End If
+                Next
+
+                If strSheetName.Contains("Model") Then
+                    oDoc.sheets.item("Sheet:1").Activate()
+                    oDoc.Sheets.item("Model (AutoCAD)").ExcludeFromPrinting = True
+                End If
+
                 If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
 
                     ' Options for drawings...
@@ -1222,21 +1334,22 @@ Public Class IPropertiesForm
 
                     'oOptions.Value("Remove_Line_Weights") = 0
                     'oOptions.Value("Vector_Resolution") = 400
-                    'oOptions.Value("Sheet_Range") = kPrintAllSheets
+                    oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
                     'oOptions.Value("Custom_Begin_Sheet") = 2
                     'oOptions.Value("Custom_End_Sheet") = 4
 
                 End If
+                oDoc.sheets.item("Sheet:1").Activate()
 
                 'Set the destination file name
                 oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
 
-                'Publish document.
-                Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
-                UpdateStatusBar("File saved as pdf file")
-                AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
-            Else
-                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                    'Publish document.
+                    Call PDFAddIn.SaveCopyAs(oDocument, oContext, oOptions, oDataMedium)
+                    UpdateStatusBar("File saved as pdf file")
+                    AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
+                Else
+                    CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -1265,7 +1378,25 @@ Public Class IPropertiesForm
                     Dim oDataMedium As DataMedium
                     oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
-                    ' Check whether the translator has 'SaveCopyAs' options
+                    'Get sheet names and set options depending on them
+                    Dim strSheetName As String
+                    Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+                    Dim oDoc = inventorApp.ActiveDocument
+                    Dim oSheets = inventorApp.ActiveDocument.Sheets
+                    For Each oSheet In oDocu.Sheets
+                        oSheet.Activate()
+
+                        strSheetName = oSheet.Name
+                        If strSheetName.Contains("Model") Then
+                            Exit For
+                        End If
+                    Next
+
+                    If strSheetName.Contains("Model") Then
+                        oDoc.sheets.item("Sheet:1").Activate()
+                        oDoc.Sheets.item("Model (AutoCAD)").ExcludeFromPrinting = True
+                    End If
+
                     If PDFAddIn.HasSaveCopyAsOptions(oDocument, oContext, oOptions) Then
 
                         ' Options for drawings...
@@ -1274,11 +1405,12 @@ Public Class IPropertiesForm
 
                         'oOptions.Value("Remove_Line_Weights") = 0
                         'oOptions.Value("Vector_Resolution") = 400
-                        'oOptions.Value("Sheet_Range") = kPrintAllSheets
+                        oOptions.Value("Sheet_Range") = PrintRangeEnum.kPrintAllSheets
                         'oOptions.Value("Custom_Begin_Sheet") = 2
                         'oOptions.Value("Custom_End_Sheet") = 4
 
                     End If
+                    oDoc.sheets.item("Sheet:1").Activate()
 
                     'Set the destination file name
                     oDataMedium.FileName = NewPath + "_R" + oRev + ".pdf"
@@ -1417,12 +1549,63 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
-        If inventorApp.ActiveEditObject IsNot Nothing Then
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
-        Else
-            Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-            Process.Start("explorer.exe", directoryPath)
+        If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
+            If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                    Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                    If AssyDoc.SelectSet.Count = 1 Then
+                        Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                        Dim def As ComponentDefinition
+                        def = compOcc.Definition
+                        selecteddoc = compOcc.Definition.Document
+                        'Dim directoryPath As String = System.IO.Path.GetDirectoryName(selecteddoc.FullDocumentName)
+                        'Process.Start("explorer.exe", directoryPath)
+                        Dim Fpath As String = System.IO.Path.GetFullPath(selecteddoc.FulldocumentName)
+                        Dim FilePath As String = "/select,""" & Fpath & """"
+                        Process.Start("explorer.exe", FilePath)
+                    Else
+                        ' Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        'Process.Start("explorer.exe", directoryPath)
+                        Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        Dim FilePath As String = "/select,""" & Fpath & """"
+                        Process.Start("explorer.exe", FilePath)
+                    End If
+                Else
+                    ' Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    'Process.Start("explorer.exe", directoryPath)
+                    Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                    Dim FilePath As String = "/select,""" & Fpath & """"
+                    Process.Start("explorer.exe", FilePath)
+                End If
+            Else
+                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
+                        Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                        If AssyDoc.SelectSet.Count = 1 Then
+                            Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                            Dim def As ComponentDefinition
+                            def = compOcc.Definition
+                            selecteddoc = compOcc.Definition.Document
+                            'Dim directoryPath As String = System.IO.Path.GetDirectoryName(selecteddoc.FullDocumentName)
+                            Dim Fpath As String = System.IO.Path.GetFullPath(selecteddoc.FulldocumentName)
+                            Dim FilePath As String = "/select,""" & Fpath & """"
+                            Process.Start("explorer.exe", FilePath)
+                        Else
+                            Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                            Dim FilePath As String = "/select,""" & Fpath & """"
+                            Process.Start("explorer.exe", FilePath)
+                            'Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                            'Process.Start("explorer.exe", directoryPath)
+                        End If
+                    Else
+                        Dim Fpath As String = System.IO.Path.GetFullPath(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        Dim FilePath As String = "/select,""" & Fpath & """"
+                        Process.Start("explorer.exe", FilePath)
+                        'Dim directoryPath As String = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName)
+                        'Process.Start("explorer.exe", directoryPath)
+                    End If
+                End If
+            End If
         End If
     End Sub
 
@@ -1461,6 +1644,9 @@ Public Class IPropertiesForm
     Private Sub tbNotes_TextChanged(sender As Object, e As EventArgs) Handles tbNotes.TextChanged
         tbNotes.ForeColor = Drawing.Color.Red
     End Sub
+    Private Sub tbService_TextChanged(sender As Object, e As EventArgs) Handles tbService.TextChanged
+        tbNotes.ForeColor = Drawing.Color.Red
+    End Sub
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If Not inventorApp.ActiveDocument Is Nothing Then
@@ -1477,23 +1663,87 @@ Public Class IPropertiesForm
                     oView = view
                     Exit For
                 Next
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                If Not oView Is Nothing Then
+                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    Dim drawingDoc As Document = inventorApp.ActiveDocument
+                    Dim drawingDesc As String = tbDescription.Text
 
-                Dim drawingDesc As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawingDoc)
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", drawingDesc, iProp, drawnDoc)
+                End If
+            Else
+                'CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             End If
-
         End If
     End Sub
 
-    Private Sub btExpSat_Click(sender As Object, e As EventArgs) Handles btExpSat.Click
+    Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.Leave
+        If Not inventorApp.ActiveDocument Is Nothing Then
+            tbDescription.ForeColor = Drawing.Color.Black
+            CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "Project", tbService.Text)
+        End If
+    End Sub
+
+    Private Sub tbService_KeyUp(sender As Object, e As KeyEventArgs) Handles tbService.KeyUp
+
+        If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
+            Dim assydoc As Document = Nothing
+            assydoc = inventorApp.ActiveDocument
+            If assydoc.SelectSet.Count = 1 Then
+                Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
+                If e.KeyValue = Keys.Tab Then
+                    tbRevNo.Focus()
+                    assydoc.SelectSet.Select(compOcc)
+                ElseIf e.KeyValue = Keys.Return Then
+                    tbService_Leave(sender, e)
+                    assydoc.SelectSet.Select(compOcc)
+                End If
+            Else
+                If e.KeyValue = Keys.Tab Then
+                    tbRevNo.Focus()
+
+                ElseIf e.KeyValue = Keys.Return Then
+                    tbService_Leave(sender, e)
+                End If
+            End If
+        Else
+            If e.KeyValue = Keys.Tab Then
+                tbRevNo.Focus()
+
+            ElseIf e.KeyValue = Keys.Return Then
+                tbService_Leave(sender, e)
+            End If
+        End If
+    End Sub
+
+    Private Sub tbService_Enter(sender As Object, e As EventArgs) Handles tbService.Enter
+        If tbService.Text = "Project" Then
+            tbService.Clear()
+            tbService.Focus()
+        End If
+    End Sub
+
+    Private Sub tbService_MouseClick(sender As Object, e As EventArgs) Handles tbService.MouseClick
+        If tbService.Text = "Project" Then
+            tbService.Clear()
+            tbService.Focus()
+        End If
+    End Sub
+
+    Private Sub tbService_MouseHover(sender As Object, e As EventArgs) Handles tbService.MouseHover
+        Dim descText As String = tbService.Text
+        ToolTip1.Show(descText, tbService)
+    End Sub
+
+    Private Sub btExpSat_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
             CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
-                oDocu.Save2(True)
+                If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
+                    oDocu.Save2(True)
+                End If
                 Dim oRev = iProperties.GetorSetStandardiProperty(
                                 inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
@@ -1528,9 +1778,13 @@ Public Class IPropertiesForm
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "") = "Revision Number" Then
                 oDocu = inventorApp.ActiveDocument
                 oDocu.Save2(True)
+                'Dim oRev = iProperties.GetorSetStandardiProperty(
+                '            RefDoc,
+                '            PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                 Dim oRev = iProperties.GetorSetStandardiProperty(
-                                RefDoc,
+                                inventorApp.ActiveDocument,
                                 PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
                 ' Get the SAT translator Add-In.
                 Dim oSATTrans As TranslatorAddIn
                 oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
@@ -1624,22 +1878,24 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub ModelFileLocation_Click(sender As Object, e As EventArgs) Handles ModelFileLocation.Click
-        Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+        If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
+            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
-        Dim oSht As Sheet = oDWG.ActiveSheet
+            Dim oSht As Sheet = oDWG.ActiveSheet
 
-        Dim oView As DrawingView = Nothing
-        Dim drawnDoc As Document = Nothing
+            Dim oView As DrawingView = Nothing
+            Dim drawnDoc As Document = Nothing
 
-        For Each view As DrawingView In oSht.DrawingViews
-            oView = view
-            Exit For
-        Next
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
 
-        ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-        Process.Start("explorer.exe", ModelPath)
+            ModelPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+            Process.Start("explorer.exe", ModelPath)
 
-        ModelPath = Nothing
+            ModelPath = Nothing
+        End If
     End Sub
 
     Private Sub ModelFileLocation_MouseLeave(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeave
@@ -1652,32 +1908,32 @@ Public Class IPropertiesForm
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
                 Dim oView As DrawingView = Nothing
+                Dim drawnDoc As Document = Nothing
 
                 For Each view As DrawingView In oSht.DrawingViews
                     oView = view
                     Exit For
                 Next
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                 tbRevNo.ForeColor = Drawing.Color.Black
                 Dim drawingRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp, drawnDoc)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp, drawnDoc)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp)
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
+                'iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
 
-                Dim modelrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "", True)
-                If Not modelrev = drawingRev Then
-                    modelrev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
-                End If
             Else
                 tbRevNo.ForeColor = Drawing.Color.Black
 
                 Dim iPropRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", tbRevNo.Text, iProp)
+                UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", iPropRev, iProp)
 
 
                 log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
@@ -1827,16 +2083,17 @@ Public Class IPropertiesForm
 
     Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
+        If Not inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
+            MessageBox.Show("Please run this rule from the assembly file.", "Vikoma Notice")
+            Exit Sub
+        End If
+
         Dim oAsmDoc As AssemblyDocument
         oAsmDoc = inventorApp.ActiveDocument
         'oAsmName = oAsmDoc.FileName 'without extension
 
         oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
 
-        If inventorApp.ActiveDocument.DocumentType <> DocumentTypeEnum.kAssemblyDocumentObject Then
-            MessageBox.Show("Please run this rule from the assembly file.", "iLogic")
-            Exit Sub
-        End If
         'get user input
         RUsure = MessageBox.Show(
         "This will create a STEP file for all components." _
@@ -1866,61 +2123,175 @@ Public Class IPropertiesForm
         oRefDocs = oAsmDoc.AllReferencedDocuments
         Dim oRefDoc As Document
         Dim oRev = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+        Dim oAssyName As String = tbStockNumber.Text
         'work the referenced models
         'oDocu = inventorApp.ActiveDocument
-        oAsmDoc.Save2(True)
-        For Each oRefDoc In oRefDocs
-            If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
-                NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+        If Not iPropertiesAddInServer.CheckReadOnly(oAsmDoc) Then
+            oAsmDoc.Save2(True)
+        End If
 
-                'GetNewFilePaths()
-                ' Get the STEP translator Add-In.
+        Dim doc = inventorApp.ActiveEditDocument
+        Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+        Dim oBOM As BOM = oAssyDef.BOM
 
-                Dim oSTEPTranslator As TranslatorAddIn
-                oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+        oBOM.StructuredViewEnabled = True
 
-                If oSTEPTranslator Is Nothing Then
-                    MsgBox("Could not access STEP translator.")
-                    Exit Sub
-                End If
+        Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
 
-                Dim oContext As TranslationContext
-                oContext = inventorApp.TransientObjects.CreateTranslationContext
-                Dim oOptions As NameValueMap
-                oOptions = inventorApp.TransientObjects.CreateNameValueMap
-                If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+        Dim oBOMRow As BOMRow
 
-                    ' Set application protocol.
-                    ' 2 = AP 203 - Configuration Controlled Design
-                    ' 3 = AP 214 - Automotive Design
-                    oOptions.Value("ApplicationProtocolType") = 4
+        For Each oBOMRow In oBOMView.BOMRows
 
-                    ' Other options...
-                    'oOptions.Value("Author") = ""
-                    'oOptions.Value("Authorization") = ""
-                    'oOptions.Value("Description") = ""
-                    'oOptions.Value("Organization") = ""
+            'Set a reference to the primary ComponentDefinition of the row
+            Dim oCompDef As ComponentDefinition
+            oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+            If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
 
-                    oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
-
-                    Dim oData As DataMedium
-                    oData = inventorApp.TransientObjects.CreateDataMedium
-                    oData.FileName = NewPath + "_R" + oRev + ".stp"
-
-                    Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
-                    UpdateStatusBar("File saved as Step file")
-
-                    AttachRefFile(oAsmDoc, oData.FileName)
-                    'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
-                    'If AttachFile = vbYes Then
-                    '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
-                    '    UpdateStatusBar("File attached")
-                    'Else
-                    '    'Do Nothing
-                    'End If
-                End If
             Else
-                UpdateStatusBar("File skipped because it's read-only")
+                Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                Dim CompFileNameOnly As String
+                Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                'MessageBox.Show(CompFileNameOnly)
+                Dim item As String = oBOMRow.ItemNumber
+
+                Dim iProp As String = String.Empty
+                Dim DrawnDoc = oCompDef.Document
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                End If
+        Next
+
+        For Each oRefDoc In oRefDocs
+            If Not oRefDoc.FullFileName.Contains("Route") Then
+                If oRefDoc.FullFileName.Contains("pisweep") Then
+                    If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                        'Dim pisWeep As String = UCase(System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName))
+                        ''Dim DeleteThese As Char() = {"P"c, "I"c, "S"c, "W"c, "E"c, "P"c, "."c}
+                        'pisWeep = pisWeep.Replace("PISWEEP.", "")
+
+                        'iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
+
+                        'Dim NewPath As String = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+                        'NewPath = NewPath.Replace("pisweep.", "")
+
+                        Dim itemNum As String = iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+                        Dim itemNo As String
+                        If itemNum < 10 Then
+                            itemNo = "0" & itemNum
+                        Else
+                            itemNo = itemNum
+                        End If
+                        Dim NewFileName As String = System.IO.Path.GetDirectoryName(oRefDoc.FullDocumentName) & "\"
+                        Dim NewPath As String = NewFileName & oAssyName & "-" & itemNo
+                        Dim pisWeep As String = oAssyName & "-" & itemNo
+
+                        iProperties.GetorSetStandardiProperty(oRefDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, pisWeep, "", True)
+
+                        'GetNewFilePaths()
+                        ' Get the STEP translator Add-In.
+
+                        Dim oSTEPTranslator As TranslatorAddIn
+                        oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                        If oSTEPTranslator Is Nothing Then
+                            MsgBox("Could not access STEP translator.")
+                            Exit Sub
+                        End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                        If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                            ' Set application protocol.
+                            ' 2 = AP 203 - Configuration Controlled Design
+                            ' 3 = AP 214 - Automotive Design
+                            oOptions.Value("ApplicationProtocolType") = 4
+
+                            ' Other options...
+                            'oOptions.Value("Author") = ""
+                            'oOptions.Value("Authorization") = ""
+                            'oOptions.Value("Description") = ""
+                            'oOptions.Value("Organization") = ""
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = NewPath + "_R" + oRev + ".stp"
+                            Dim RefName As String = pisWeep + "_R" + oRev + ".stp"
+                            Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("File saved as Step file")
+
+                            'AttachRefFile(oAsmDoc, oData.FileName)
+                            AttachFile = MsgBox("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            If AttachFile = vbYes Then
+                                AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                                UpdateStatusBar("File attached")
+                            Else
+                                'Do Nothing
+                            End If
+                        End If
+                    Else
+                        UpdateStatusBar("File skipped because it's read-only")
+                    End If
+                Else
+                    If Not iPropertiesAddInServer.CheckReadOnly(oRefDoc) Then
+                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oRefDoc.FullDocumentName)
+
+                        'GetNewFilePaths()
+                        ' Get the STEP translator Add-In.
+
+                        Dim oSTEPTranslator As TranslatorAddIn
+                        oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
+
+                        If oSTEPTranslator Is Nothing Then
+                            MsgBox("Could not access STEP translator.")
+                            Exit Sub
+                        End If
+
+                        Dim oContext As TranslationContext
+                        oContext = inventorApp.TransientObjects.CreateTranslationContext
+                        Dim oOptions As NameValueMap
+                        oOptions = inventorApp.TransientObjects.CreateNameValueMap
+                        If oSTEPTranslator.HasSaveCopyAsOptions(oRefDoc, oContext, oOptions) Then
+
+                            ' Set application protocol.
+                            ' 2 = AP 203 - Configuration Controlled Design
+                            ' 3 = AP 214 - Automotive Design
+                            oOptions.Value("ApplicationProtocolType") = 4
+
+                            ' Other options...
+                            'oOptions.Value("Author") = ""
+                            'oOptions.Value("Authorization") = ""
+                            'oOptions.Value("Description") = ""
+                            'oOptions.Value("Organization") = ""
+
+                            oContext.Type = IOMechanismEnum.kFileBrowseIOMechanism
+
+                            Dim oData As DataMedium
+                            oData = inventorApp.TransientObjects.CreateDataMedium
+                            oData.FileName = NewPath + "_R" + oRev + ".stp"
+
+                            Call oSTEPTranslator.SaveCopyAs(oRefDoc, oContext, oOptions, oData)
+                            UpdateStatusBar("File saved as Step file")
+
+                            AttachRefFile(oAsmDoc, oData.FileName)
+                            'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            'If AttachFile = vbYes Then
+                            '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
+                            '    UpdateStatusBar("File attached")
+                            'Else
+                            '    'Do Nothing
+                            'End If
+                        End If
+                    Else
+                        UpdateStatusBar("File skipped because it's read-only")
+                    End If
+                End If
             End If
         Next
 
@@ -1928,17 +2299,37 @@ Public Class IPropertiesForm
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
         If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            'If Not (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
+            '    Dim PartNo As String = tbPartNumber.Text
+            '    Dim StockNo As String = tbStockNumber.Text
+            '    If Not PartNo = StockNo Then
+            '        stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+            '        If stockNum = vbNo Then
+            '            Exit Sub
+            '        End If
+            '    End If
             If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
-                If AssyDoc.SelectSet.Count = 1 Then
-                    If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                    Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
+                    If AssyDoc.SelectSet.Count = 1 Then
+                        If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
+                            ' Get the CommandManager object. 
+                            Dim oCommandMgr As CommandManager
+                            oCommandMgr = inventorApp.CommandManager
+
+                            ' Get control definition for the line command. 
+                            Dim oControlDef As ControlDefinition
+                            oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
+                            ' Execute the command. 
+                            Call oControlDef.Execute()
+                        End If
+                    Else
                         ' Get the CommandManager object. 
                         Dim oCommandMgr As CommandManager
                         oCommandMgr = inventorApp.CommandManager
 
                         ' Get control definition for the line command. 
                         Dim oControlDef As ControlDefinition
-                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
+                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
                         ' Execute the command. 
                         Call oControlDef.Execute()
                     End If
@@ -1953,18 +2344,8 @@ Public Class IPropertiesForm
                     ' Execute the command. 
                     Call oControlDef.Execute()
                 End If
-            Else
-                ' Get the CommandManager object. 
-                Dim oCommandMgr As CommandManager
-                oCommandMgr = inventorApp.CommandManager
-
-                ' Get control definition for the line command. 
-                Dim oControlDef As ControlDefinition
-                oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
-                ' Execute the command. 
-                Call oControlDef.Execute()
             End If
-        End If
+        'End If
     End Sub
 
     Private Sub btCheckOut_Click(sender As Object, e As EventArgs) Handles btCheckOut.Click
@@ -2005,31 +2386,100 @@ Public Class IPropertiesForm
                 ' Execute the command. 
                 Call oControlDef.Execute()
             End If
+            Me.btCheckOut.Hide()
+            Me.btCheckIn.Show()
         End If
     End Sub
 
     Private Sub btViewNames_Click(sender As Object, e As EventArgs) Handles btViewNames.Click
         Dim oDrawDoc As DrawingDocument = inventorApp.ActiveDocument
         Dim oSheet As Sheet = oDrawDoc.ActiveSheet
-        Dim oSheets As Sheets = Nothing
+        Dim oSheets As Sheets = oDrawDoc.Sheets
         Dim oView As DrawingView = Nothing
         Dim oViews As DrawingViews = Nothing
         Dim oLabel As String = "DETAIL OF ITEM "
         Dim isoLabel As String = "ISOMETRIC VIEW"
 
-        For Each oView In oSheet.DrawingViews
-            If Not oView.ParentView Is Nothing Then
-                'we're working on a child view and should get the parent view as an object
+        Dim strSheetName As String
+
+        For Each oSheet In oDrawDoc.Sheets
+
+            strSheetName = oSheet.Name
+            If strSheetName.Contains("Sheet:1") Then
+                Exit For
             Else
-                If oView.IsFlatPatternView Then
-                    oView.Name() = "FLAT PATTERN OF ITEM "
-                    oView.ShowLabel() = True
-                ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-                    oView.Name() = oLabel
-                    oView.ShowLabel() = True
-                End If
+                oDrawDoc.Sheets.Item("Sheet:1").Activate()
+                Exit For
             End If
         Next
+
+        'If Not strSheetName.Contains("Sheet:1") Then
+        '    oDrawDoc.Sheets.Item("Sheet:1").Activate()
+        'End If
+
+        For Each view As DrawingView In oSheet.DrawingViews
+                oView = view
+            Exit For
+        Next
+
+        Dim drDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+        Dim oAssyDef As AssemblyComponentDefinition = drDoc.ComponentDefinition
+        Dim oBOM As BOM = oAssyDef.BOM
+
+            oBOM.StructuredViewEnabled = True
+
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+            Dim oBOMRow As BOMRow
+
+            For Each oBOMRow In oBOMView.BOMRows
+
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
+
+                Else
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+
+                    Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                End If
+            Next
+        oSheet.Update()
+
+        UpdateStatusBar("BOM item numbers copied to #ITEM")
+
+        For Each oSheet In oDrawDoc.Sheets
+            oSheet.Activate()
+            For Each oView In oSheet.DrawingViews
+                If Not oView.ParentView Is Nothing Then
+                    'we're working on a child view and should get the parent view as an object
+                Else
+                    If oView.IsFlatPatternView Then
+                        oView.Name() = "FLAT PATTERN OF ITEM "
+                        oView.ShowLabel() = True
+                    ElseIf oView.ReferencedFile.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
+                        'assembly object added but it currently also pulls in the main assembly too.
+                        'Need to find a way to not show the name label of the main referenced doc.
+                        oView.Name() = oLabel
+                        oView.ShowLabel() = True
+                    End If
+                End If
+            Next
+        Next
+        'oDrawDoc.Sheets.Item("Sheet:1").Activate()
     End Sub
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
@@ -2049,12 +2499,11 @@ Public Class IPropertiesForm
 
                 Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim drawingPN As String = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                Dim drawingPN As String = tbPartNumber.Text
 
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
             End If
-
         End If
     End Sub
 
@@ -2179,6 +2628,252 @@ Public Class IPropertiesForm
         Dim hovText As String = "Notes"
         ToolTip1.Show(hovText, tbNotes)
     End Sub
+
+    ''Validates a string of alpha characters
+    'Function CheckForAlphaCharacters(ByVal StringToCheck As String)
+    '    For i = 0 To StringToCheck.Length - 1
+    '        If Not Char.IsLetter(StringToCheck.Chars(i)) Then
+    '            Return False
+    '        End If
+    '    Next
+
+    '    Return True 'Return true if all elements are characters
+    'End Function
+
+    Private Sub btRevision_Click(sender As Object, e As EventArgs) Handles btRevision.Click
+        Dim oDoc As Document = inventorApp.ActiveDocument
+        Dim oChange As String = String.Empty
+        Dim oRow As RevisionTableRow
+        Dim oRows As RevisionTableRows
+        Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
+        Dim oInput As String = String.Empty
+        Dim oSheetSize As DrawingSheetSizeEnum = oSheet.Size
+        Dim oRevSelect As String = String.Empty
+        Dim oDocStyles As Inventor.DrawingStylesManager = oDoc.StylesManager
+        Dim oRevStyle As RevisionTableStyle = Nothing
+
+        Dim oCreation1 As DateTime = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument,
+                                                     PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties,
+                                                     "", "")
+        Dim oCreation As String = oCreation1.ToString("dd/MM/yyyy")
+
+        Dim oRevTable As RevisionTable = Nothing
+
+        Dim Rev1date As String = String.Empty
+        Dim rev1rev As String = String.Empty
+
+        Dim oNumberRev As String = String.Empty
+
+        'oDoc.PropertySets.Item("Inventor Summary Information").Item("Author").Value ="ELC"
+        oNumberRev = UCase(InputBox("Input revision letter/number, leave blank for new revision.", "REV", ""))
+        oChange = UCase(InputBox("Input change number if any?", "ECN", ""))
+        oInput = UCase(InputBox("What did you change?", "CHANGE", "INTRODUCED"))
+        If oInput = "" Then
+            Exit Sub
+        End If
+
+        If oDoc.ActiveSheet.RevisionTables.Count = 0 Then
+            For Each oSheet In oDoc.Sheets
+                oSheet.Activate()
+                Dim oTG As TransientGeometry = inventorApp.TransientGeometry
+                Dim pt As Point2d = oTG.CreatePoint2d(1, 2.56642)
+                If oNumberRev = "" Then
+                    oSheet.RevisionTables.Add2(pt, False, True, False, "1", , )
+                Else
+                    oSheet.RevisionTables.Add2(pt, False, True, False, oNumberRev, , )
+                End If
+                If oSheetSize = DrawingSheetSizeEnum.kA3DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A3")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA2DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A2")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA1DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A1")
+                ElseIf oSheetSize = DrawingSheetSizeEnum.kA0DrawingSheetSize Then
+                    oRevStyle = oDocStyles.RevisionTableStyles.Item("VIKOMA A0")
+                End If
+                oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                'Set it equal to the the current date        
+                'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                oCell3.Text = oInput
+                oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                oRow1 = oRevTable.RevisionTableRows.Item(1)
+                Rev1date = oRow1.Item(4).Text
+                oRevTable.Style = oRevStyle
+
+                If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = Rev1date Then
+
+                    inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = Rev1date
+                    UpdateStatusBar("Creation date updated to " + Rev1date)
+                End If
+            Next
+        Else
+            oSheet.Activate()
+            oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+
+            oRow1 = oRevTable.RevisionTableRows.Item(1)
+
+            Rev1date = oRow1.Item(4).Text
+            rev1rev = oRow1.Item(1).Text
+
+
+            ' Make sure we have the active row
+            If rev1rev = String.Empty Then
+                Dim oCell1 As RevisionTableCell = oRow1.Item(1)
+                '                    'Set it equal to the user name on the open application 
+
+                If oNumberRev = "" Then
+                    oCell1.Text = "1"
+                Else
+                    oCell1.Text = oNumberRev
+                End If
+
+                Dim oCell2 As RevisionTableCell = oRow1.Item(2)
+                '                    'Set it equal to the user name on the open application        
+                oCell2.Text = oChange
+
+                Dim oCell3 As RevisionTableCell = oRow1.Item(3)
+                'Set it equal to the the current date        
+                'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                oCell3.Text = oInput
+
+                Dim oCell4 As RevisionTableCell = oRow1.Item(4)
+                'Set it equal to the the current date        
+                oCell4.Text = DateTime.Now.ToString("d")
+
+            ElseIf rev1rev IsNot String.Empty Then
+                'If Rev1date <> oCreation Then
+                'If rev1rev = "1" Or rev1rev = "A" Then
+                '    'For Each oSheet In oDoc.Sheets
+
+                '    oRevTable = oDoc.ActiveSheet.RevisionTables.Item(1)
+                '    oRows = oRevTable.RevisionTableRows
+                '    oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+
+                '    For Each oRow In oRows
+                '        If oRow.IsActiveRow Then
+                '            Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                '            '                    'Set it equal to the user name on the open application 
+                '            If oNumberRev = "" Then
+                '                oCell1.Text = "1"
+                '            Else
+                '                oCell1.Text = oNumberRev
+                '            End If
+
+                '            Dim oCell2 As RevisionTableCell = oRow.Item(2)
+                '            '                    'Set it equal to the user name on the open application        
+                '            oCell2.Text = oChange
+
+                '            Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                '            'Set it equal to the the current date        
+                '            'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                '            oCell3.Text = oInput
+
+                '            Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                '            'Set it equal to the the current date        
+                '            oCell4.Text = DateTime.Now.ToString("d")
+
+                '        Else
+                '            oRow.Delete() 'deletes rev tags also
+                '        End If
+                '    Next
+
+                'End If
+                'Else
+                oRevTable.RevisionTableRows.Add()
+                    oRow = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count)
+                    If oRow.IsActiveRow Then
+                        Dim oCell1 As RevisionTableCell = oRow.Item(1)
+                        '                    'Set it equal to the user name on the open application 
+                        If oNumberRev = "" Then
+                            OldRev = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text
+                            If Char.IsLetter(OldRev) Then
+                                oCell1.Text = "1"
+                            Else
+                                oCell1.Text = oRevTable.RevisionTableRows.Item(oRevTable.RevisionTableRows.Count - 1).Item(1).Text + 1
+                            End If
+                        Else
+                            oCell1.Text = oNumberRev
+                        End If
+
+                        Dim oCell2 As RevisionTableCell = oRow.Item(2)
+                        '                    'Set it equal to the user name on the open application        
+                        oCell2.Text = oChange
+
+                        Dim oCell3 As RevisionTableCell = oRow.Item(3)
+                        'Set it equal to the the current date        
+                        'oCell4.Text= "UPDATED TO BOLTER LIB DWG"
+                        oCell3.Text = oInput
+
+                        Dim oCell4 As RevisionTableCell = oRow.Item(4)
+                        'Set it equal to the the current date        
+                        oCell4.Text = DateTime.Now.ToString("d")
+                    End If
+                End If
+        End If
+        'End If
+
+    End Sub
+
+    Private Sub btExpDXF_Click(sender As Object, e As EventArgs) Handles btExpDXF.Click
+        If Not TypeOf inventorApp.ActiveDocument Is PartDocument Then
+
+        Else
+            'Set a reference to the active document (the document to be published).
+            Dim oDoc As Document = inventorApp.ActiveDocument
+
+            Dim oCompDef As SheetMetalComponentDefinition
+            oCompDef = oDoc.ComponentDefinition
+            If oCompDef.HasFlatPattern = False Then
+                oCompDef.Unfold()
+
+            Else
+                oCompDef.FlatPattern.Edit()
+            End If
+
+            ' Get the DataIO object.
+            Dim oDataIO As DataIO = oDoc.ComponentDefinition.DataIO
+
+            ' Build the string that defines the format of the DXF file.
+            Dim sOut As String = "FLAT PATTERN DXF?AcadVersion=2000&OuterProfileLayer=IV_INTERIOR_PROFILES&BendUpLayerColor=255;0;0&BendDownLayerColor=255;0;0&BendLayerColor=255;0;0&InvisibleLayers=IV_TANGENT;IV_ROLL_TANGENT"
+            Dim oRev As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation)
+            Dim fileFolder As String = System.IO.Path.GetDirectoryName(oDoc.FullFileName)
+            Dim fileName As String = System.IO.Path.GetFileNameWithoutExtension(oDoc.FullDocumentName)
+            Dim sFname As String = fileFolder & "\" & fileName & "_R" & oRev & ".dxf"
+
+            'Export the DXF and fold the model back up
+            oCompDef.DataIO.WriteDataToFile(sOut, sFname)
+            Dim oSMDef As SheetMetalComponentDefinition
+            oSMDef = oDoc.ComponentDefinition
+            oSMDef.FlatPattern.ExitEdit()
+
+            AttachRefFile(oDoc, sFname)
+        End If
+    End Sub
+
+    Private Sub btAttachFile_Click(sender As Object, e As EventArgs) Handles btAttachFile.Click
+        Dim oDoc As Document = inventorApp.ActiveDocument
+        Dim oFileDlg As Inventor.FileDialog = Nothing
+        inventorApp.CreateFileDialog(oFileDlg)
+        oFileDlg.Filter = "All Files (*.*)|*.*"
+        oFileDlg.FilterIndex = 1
+        oFileDlg.DialogTitle = "Select file to attach"
+        oFileDlg.InitialDirectory = "C:\VAULT WORKING FOLDER\Designs"
+        oFileDlg.CancelError = True
+        On Error Resume Next
+        oFileDlg.ShowOpen()
+        If Err.Number <> 0 Then
+
+        ElseIf oFileDlg.FileName <> "" Then
+            AddReferences(oDoc, oFileDlg.FileName)
+            MsgBox("File attached")
+        End If
+    End Sub
+
+
+
+
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function
