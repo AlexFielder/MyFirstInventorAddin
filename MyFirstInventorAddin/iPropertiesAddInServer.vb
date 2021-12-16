@@ -489,8 +489,7 @@ Namespace iPropertiesController
 
 
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is ExtrudeFeature Or TypeOf AssyDoc.SelectSet(1) Is CutFeature Or TypeOf AssyDoc.SelectSet(1) Is HoleFeature Or TypeOf AssyDoc.SelectSet(1) Is BossFeature Or TypeOf AssyDoc.SelectSet(1) Is SweepFeature Or TypeOf AssyDoc.SelectSet(1) Is LoftFeature Or TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
-                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyVisibilityCtxCmd").Execute()
-
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
 
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
@@ -562,7 +561,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
 
-                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartVisibilityCtxCmd").Execute()
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartShowDimensionsCtxCmd").Execute()
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
                                     myiPropsForm.tbDescription.ReadOnly = False
