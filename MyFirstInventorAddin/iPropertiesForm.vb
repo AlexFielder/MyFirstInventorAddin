@@ -2871,7 +2871,36 @@ Public Class IPropertiesForm
         End If
     End Sub
 
+    Private Sub btFrame_Click(sender As Object, e As EventArgs) Handles btFrame.Click
+        Dim oAsm As AssemblyDocument = inventorApp.ActiveDocument
 
+        Dim oDoc As Document
+
+        For Each oDoc In oAsm.AllReferencedDocuments
+            If oDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
+                AndAlso oDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                AndAlso oDoc.IsModifiable _  'Modifiable (not reference skeleton)
+                AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(oDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+                Dim invDesignInfo As PropertySet
+                Dim CorrectName As String
+                If oDoc.DisplayName.Contains(".ipt") Then
+                    CorrectName = RemoveCharacter(oDoc.DisplayName, ".ipt")
+                Else
+                    CorrectName = oDoc.DisplayName
+                End If
+                invDesignInfo = oDoc.PropertySets.Item("Design Tracking Properties")
+                    'set the member part number text to be the same as the display name
+                    invDesignInfo.Item("Part Number").Value = CorrectName
+                End If
+        Next
+    End Sub
+
+    Function RemoveCharacter(ByVal stringToCleanUp As String, ByVal characterToRemove As String)
+        ' replace the target with nothing
+        ' Replace() returns a new String and does not modify the current one
+        Return stringToCleanUp.Replace(characterToRemove, "")
+    End Function
 
 
 

@@ -489,7 +489,7 @@ Namespace iPropertiesController
 
 
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is ExtrudeFeature Or TypeOf AssyDoc.SelectSet(1) Is CutFeature Or TypeOf AssyDoc.SelectSet(1) Is HoleFeature Or TypeOf AssyDoc.SelectSet(1) Is BossFeature Or TypeOf AssyDoc.SelectSet(1) Is SweepFeature Or TypeOf AssyDoc.SelectSet(1) Is LoftFeature Or TypeOf AssyDoc.SelectSet(1) Is PartFeature Then
-                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyVisibilityCtxCmd").Execute()
 
 
                                 Else
@@ -562,7 +562,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
 
-                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartShowDimensionsCtxCmd").Execute()
+                                    AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartVisibilityCtxCmd").Execute()
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
                                     myiPropsForm.tbDescription.ReadOnly = False
@@ -770,6 +770,7 @@ Namespace iPropertiesController
                 myiPropsForm.tbService.Hide()
                 myiPropsForm.lbservice.Hide()
                 myiPropsForm.btExpDXF.Hide()
+                myiPropsForm.btFrame.Hide()
 
                 myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
@@ -895,6 +896,12 @@ Namespace iPropertiesController
                             myiPropsForm.btDiaEng.Hide()
                             myiPropsForm.btDegEng.Hide()
                             myiPropsForm.Label4.Hide()
+                        ElseIf iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Contains("WALL TUBE") Then
+                            myiPropsForm.lbservice.Show()
+                            myiPropsForm.tbService.Show()
+                            myiPropsForm.btDiaEng.Hide()
+                            myiPropsForm.btDegEng.Hide()
+                            myiPropsForm.Label4.Hide()
                         Else
                             myiPropsForm.lbservice.Hide()
                             myiPropsForm.tbService.Hide()
@@ -911,12 +918,14 @@ Namespace iPropertiesController
                     myiPropsForm.Label11.Hide()
                     myiPropsForm.Label12.Hide()
                     myiPropsForm.btExpDXF.Hide()
+                    myiPropsForm.btFrame.Show()
                 ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
                     myiPropsForm.btITEM.Hide()
                     myiPropsForm.btReNum.Hide()
                     myiPropsForm.Label11.Show()
                     myiPropsForm.Label12.Show()
                     myiPropsForm.btExpDXF.Show()
+                    myiPropsForm.btFrame.Hide()
                 End If
                 'get the document sub-type
 

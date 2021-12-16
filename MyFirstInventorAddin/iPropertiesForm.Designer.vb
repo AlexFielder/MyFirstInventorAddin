@@ -78,6 +78,7 @@ Partial Class IPropertiesForm
         Me.btCheckOut = New System.Windows.Forms.Button()
         Me.btCheckIn = New System.Windows.Forms.Button()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.btFrame = New System.Windows.Forms.Button()
         CType(Me.ErrorProvider1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -306,10 +307,10 @@ Partial Class IPropertiesForm
         '
         'FileLocation
         '
-        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
+        Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.5!)
         Me.FileLocation.Location = New System.Drawing.Point(3, 287)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(273, 35)
+        Me.FileLocation.Size = New System.Drawing.Size(273, 44)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -374,10 +375,10 @@ Partial Class IPropertiesForm
         '
         'ModelFileLocation
         '
-        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
-        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 322)
+        Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.5!)
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 331)
         Me.ModelFileLocation.Name = "ModelFileLocation"
-        Me.ModelFileLocation.Size = New System.Drawing.Size(273, 35)
+        Me.ModelFileLocation.Size = New System.Drawing.Size(273, 44)
         Me.ModelFileLocation.TabIndex = 324
         Me.ModelFileLocation.Text = "Model File location"
         '
@@ -620,13 +621,24 @@ Partial Class IPropertiesForm
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
         '
+        'btFrame
+        '
+        Me.btFrame.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
+        Me.btFrame.Location = New System.Drawing.Point(93, 183)
+        Me.btFrame.Name = "btFrame"
+        Me.btFrame.Size = New System.Drawing.Size(45, 23)
+        Me.btFrame.TabIndex = 345
+        Me.btFrame.Text = "Frame"
+        Me.btFrame.UseVisualStyleBackColor = True
+        '
         'IPropertiesForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(285, 364)
+        Me.ClientSize = New System.Drawing.Size(285, 384)
+        Me.Controls.Add(Me.btFrame)
         Me.Controls.Add(Me.btAttachFile)
         Me.Controls.Add(Me.btExpDXF)
         Me.Controls.Add(Me.lbDesigner)
@@ -745,4 +757,5 @@ Partial Class IPropertiesForm
     Friend WithEvents tbService As Windows.Forms.TextBox
     Friend WithEvents btExpDXF As Windows.Forms.Button
     Friend WithEvents btAttachFile As Windows.Forms.Button
+    Friend WithEvents btFrame As Windows.Forms.Button
 End Class
