@@ -2872,28 +2872,154 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btFrame_Click(sender As Object, e As EventArgs) Handles btFrame.Click
-        Dim oAsm As AssemblyDocument = inventorApp.ActiveDocument
+        If TypeOf AddinGlobal.InventorApp.ActiveDocument Is DrawingDocument Then
+            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
-        Dim oDoc As Document
+            Dim oSht As Sheet = oDWG.ActiveSheet
 
-        For Each oDoc In oAsm.AllReferencedDocuments
-            If oDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
-                AndAlso oDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
-                AndAlso oDoc.IsModifiable _  'Modifiable (not reference skeleton)
-                AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(oDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+            Dim oView As DrawingView = Nothing
+            Dim drDoc As Document = Nothing
 
-                Dim invDesignInfo As PropertySet
-                Dim CorrectName As String
-                If oDoc.DisplayName.Contains(".ipt") Then
-                    CorrectName = RemoveCharacter(oDoc.DisplayName, ".ipt")
+            For Each view As DrawingView In oSht.DrawingViews
+                oView = view
+                Exit For
+            Next
+
+            drDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+            Dim oAsm As AssemblyDocument = drDoc
+
+            Dim doc = drDoc
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
+
+            If Not oBOM.StructuredViewEnabled = True Then
+                oBOM.StructuredViewEnabled = True
+            End If
+
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+            Dim oBOMRow As BOMRow
+
+            For Each oBOMRow In oBOMView.BOMRows
+
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
+
                 Else
-                    CorrectName = oDoc.DisplayName
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+
+                    'Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    'UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                    'Dim itemNo As String = iProperties.GetorSetStandardiProperty(DrawnDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+
+                    If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
+                        AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                        AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
+                        AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+                        Dim invDesignInfo As PropertySet
+                        Dim CorrectName As String
+                        If oAsm.DisplayName.Contains(".iam") Then
+                            CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                        Else
+                            CorrectName = DrawnDoc.DisplayName & "-0" & item
+                        End If
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo.Item("Part Number").Value = CorrectName
+                    End If
                 End If
-                invDesignInfo = oDoc.PropertySets.Item("Design Tracking Properties")
-                    'set the member part number text to be the same as the display name
-                    invDesignInfo.Item("Part Number").Value = CorrectName
+            Next
+            oSht.Update()
+        ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
+            Dim doc = inventorApp.ActiveEditDocument
+            Dim oAsm As AssemblyDocument = inventorApp.ActiveDocument
+            Dim oAssyDef As AssemblyComponentDefinition = doc.ComponentDefinition
+            Dim oBOM As BOM = oAssyDef.BOM
+
+            If Not oBOM.StructuredViewEnabled = True Then
+                oBOM.StructuredViewEnabled = True
+            End If
+
+            Dim oBOMView As BOMView = oBOM.BOMViews.Item("Structured")
+
+            Dim oBOMRow As BOMRow
+
+            For Each oBOMRow In oBOMView.BOMRows
+
+                'Set a reference to the primary ComponentDefinition of the row
+                Dim oCompDef As ComponentDefinition
+                oCompDef = oBOMRow.ComponentDefinitions.Item(1)
+                If oCompDef.Document.FullDocumentName.Contains("Content Center") Or oCompDef.Document.FullDocumentName.Contains("Bought Out") Then
+
+                Else
+                    Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
+                    Dim CompFileNameOnly As String
+                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
+
+                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+
+                    'MessageBox.Show(CompFileNameOnly)
+
+                    Dim item As String
+                    item = oBOMRow.ItemNumber
+
+                    'Dim iProp As String = String.Empty
+                    Dim DrawnDoc = oCompDef.Document
+                    'UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
+                    'Dim itemNo As String = iProperties.GetorSetStandardiProperty(DrawnDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
+
+                    If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
+                        AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                        AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
+                        AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+                        Dim invDesignInfo As PropertySet
+                        Dim CorrectName As String
+                        If oAsm.DisplayName.Contains(".iam") Then
+                            CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                        Else
+                            CorrectName = DrawnDoc.DisplayName & "-0" & item
+                        End If
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo.Item("Part Number").Value = CorrectName
+                    End If
                 End If
-        Next
+            Next
+        End If
+        'Dim oAsm As AssemblyDocument = inventorApp.ActiveDocument
+
+        'Dim oDoc As Document
+
+        'For Each oDoc In oAsm.AllReferencedDocuments
+        '    If oDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
+        '        AndAlso oDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+        '        AndAlso oDoc.IsModifiable _  'Modifiable (not reference skeleton)
+        '        AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(oDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+        '        Dim invDesignInfo As PropertySet
+        '        Dim CorrectName As String
+        '        If oDoc.DisplayName.Contains(".ipt") Then
+        '            CorrectName = RemoveCharacter(oDoc.DisplayName, ".ipt")
+        '        Else
+        '            CorrectName = oDoc.DisplayName
+        '        End If
+        '        invDesignInfo = oDoc.PropertySets.Item("Design Tracking Properties")
+        '            'set the member part number text to be the same as the display name
+        '            invDesignInfo.Item("Part Number").Value = CorrectName
+        '        End If
+        'Next
     End Sub
 
     Function RemoveCharacter(ByVal stringToCleanUp As String, ByVal characterToRemove As String)

@@ -769,7 +769,7 @@ Namespace iPropertiesController
                 myiPropsForm.tbService.Hide()
                 myiPropsForm.lbservice.Hide()
                 myiPropsForm.btExpDXF.Hide()
-                myiPropsForm.btFrame.Hide()
+                myiPropsForm.btFrame.Show()
 
                 myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
                             DocumentToPulliPropValuesFrom,
