@@ -2909,10 +2909,7 @@ Public Class IPropertiesForm
 
                 Else
                     Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                    Dim CompFileNameOnly As String
-                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
-
-                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                    Dim CompFileNameOnly As String = System.IO.Path.GetFileNameWithoutExtension(CompFullDocumentName)
 
                     Dim item As Integer
                     item = oBOMRow.ItemNumber
@@ -2930,46 +2927,46 @@ Public Class IPropertiesForm
                         AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
                         AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
 
-                            Dim invDesignInfo As PropertySet
-                            Dim CorrectName As String
-                            If oAsm.DisplayName.Contains(".iam") Then
-                                If item < "10" Then
-                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
-                                Else
-                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
-                                End If
+                        Dim invDesignInfo As PropertySet
+                        Dim CorrectName As String
+                        If oAsm.DisplayName.Contains(".iam") Then
+                            If item < 10 Then
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
                             Else
-                                If item < "10" Then
-                                    CorrectName = DrawnDoc.DisplayName & "-0" & item
-                                Else
-                                    CorrectName = DrawnDoc.DisplayName & "-" & item
-                                End If
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
                             End If
-                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
-                            invDesignInfo.Item("Part Number").Value = CorrectName
-                        ElseIf DrawnDoc.DisplayName.Contains(oAsmName) AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                        Else
+                            If item < 10 Then
+                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            Else
+                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                            End If
+                        End If
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo.Item("Part Number").Value = CorrectName
+                    ElseIf DrawnDoc.DisplayName.Contains(oAsmName) AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
                         AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
                         AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
 
-                            Dim invDesignInfo As PropertySet
-                            Dim CorrectName As String
-                            If oAsm.DisplayName.Contains(".iam") Then
-                                If item < "10" Then
-                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
-                                Else
-                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
-                                End If
+                        Dim invDesignInfo As PropertySet
+                        Dim CorrectName As String
+                        If oAsm.DisplayName.Contains(".iam") Then
+                            If item < 10 Then
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
                             Else
-                                If item < "10" Then
-                                    CorrectName = DrawnDoc.DisplayName & "-0" & item
-                                Else
-                                    CorrectName = DrawnDoc.DisplayName & "-" & item
-                                End If
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
                             End If
-                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
-                            invDesignInfo.Item("Part Number").Value = CorrectName
+                        Else
+                            If item < 10 Then
+                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            Else
+                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                            End If
                         End If
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo.Item("Part Number").Value = CorrectName
                     End If
+                End If
             Next
             oSht.Update()
         ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
@@ -2995,10 +2992,7 @@ Public Class IPropertiesForm
 
                 Else
                     Dim CompFullDocumentName As String = oCompDef.Document.FullDocumentName
-                    Dim CompFileNameOnly As String
-                    Dim index As Integer = CompFullDocumentName.LastIndexOf("\")
-
-                    CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
+                    Dim CompFileNameOnly As String = System.IO.Path.GetFileNameWithoutExtension(CompFullDocumentName)
 
                     Dim item As Integer
                     item = oBOMRow.ItemNumber
@@ -3019,13 +3013,13 @@ Public Class IPropertiesForm
                         Dim invDesignInfo As PropertySet
                         Dim CorrectName As String
                         If oAsm.DisplayName.Contains(".iam") Then
-                            If item < "10" Then
+                            If item < 10 Then
                                 CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
                             Else
                                 CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
                             End If
                         Else
-                            If item < "10" Then
+                            If item < 10 Then
                                 CorrectName = DrawnDoc.DisplayName & "-0" & item
                             Else
                                 CorrectName = DrawnDoc.DisplayName & "-" & item
@@ -3040,13 +3034,13 @@ Public Class IPropertiesForm
                         Dim invDesignInfo As PropertySet
                         Dim CorrectName As String
                         If oAsm.DisplayName.Contains(".iam") Then
-                            If item < "10" Then
+                            If item < 10 Then
                                 CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
                             Else
                                 CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
                             End If
                         Else
-                            If item < "10" Then
+                            If item < 10 Then
                                 CorrectName = DrawnDoc.DisplayName & "-0" & item
                             Else
                                 CorrectName = DrawnDoc.DisplayName & "-" & item
