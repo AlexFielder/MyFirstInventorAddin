@@ -2918,31 +2918,58 @@ Public Class IPropertiesForm
                     item = oBOMRow.ItemNumber
 
                     Dim DrawnDoc = oCompDef.Document
+                    Dim oAsmName As String
+                    If oAsm.DisplayName.Contains(".iam") Then
+                        oAsmName = RemoveCharacter(oAsm.DisplayName, ".iam")
+                    Else
+                        oAsmName = oAsm.DisplayName
+                    End If
 
                     If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
                         AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
                         AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
                         AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
 
-                        Dim invDesignInfo As PropertySet
-                        Dim CorrectName As String
-                        If oAsm.DisplayName.Contains(".iam") Then
-                            If item < "10" Then
-                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            Dim invDesignInfo As PropertySet
+                            Dim CorrectName As String
+                            If oAsm.DisplayName.Contains(".iam") Then
+                                If item < "10" Then
+                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                                Else
+                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                                End If
                             Else
-                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                                If item < "10" Then
+                                    CorrectName = DrawnDoc.DisplayName & "-0" & item
+                                Else
+                                    CorrectName = DrawnDoc.DisplayName & "-" & item
+                                End If
                             End If
-                        Else
-                            If item < "10" Then
-                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                            invDesignInfo.Item("Part Number").Value = CorrectName
+                        ElseIf DrawnDoc.DisplayName.Contains(oAsmName) AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                        AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
+                        AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+                            Dim invDesignInfo As PropertySet
+                            Dim CorrectName As String
+                            If oAsm.DisplayName.Contains(".iam") Then
+                                If item < "10" Then
+                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                                Else
+                                    CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                                End If
                             Else
-                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                                If item < "10" Then
+                                    CorrectName = DrawnDoc.DisplayName & "-0" & item
+                                Else
+                                    CorrectName = DrawnDoc.DisplayName & "-" & item
+                                End If
                             End If
+                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                            invDesignInfo.Item("Part Number").Value = CorrectName
                         End If
-                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
-                        invDesignInfo.Item("Part Number").Value = CorrectName
                     End If
-                End If
             Next
             oSht.Update()
         ElseIf TypeOf AddinGlobal.InventorApp.ActiveDocument Is AssemblyDocument Then
@@ -2977,6 +3004,12 @@ Public Class IPropertiesForm
                     item = oBOMRow.ItemNumber
 
                     Dim DrawnDoc = oCompDef.Document
+                    Dim oAsmName As String
+                    If oAsm.DisplayName.Contains(".iam") Then
+                        oAsmName = RemoveCharacter(oAsm.DisplayName, ".iam")
+                    Else
+                        oAsmName = oAsm.DisplayName
+                    End If
 
                     If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
                         AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
@@ -2998,7 +3031,28 @@ Public Class IPropertiesForm
                                 CorrectName = DrawnDoc.DisplayName & "-" & item
                             End If
                         End If
-                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                        invDesignInfo.Item("Part Number").Value = CorrectName
+                    ElseIf DrawnDoc.DisplayName.Contains(oAsmName) AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
+                    AndAlso DrawnDoc.IsModifiable _  'Modifiable (not reference skeleton)
+                    AndAlso oAsm.ComponentDefinition.Occurrences.AllReferencedOccurrences(DrawnDoc).Count > 0 Then 'Exists in assembly (not derived base component)
+
+                        Dim invDesignInfo As PropertySet
+                        Dim CorrectName As String
+                        If oAsm.DisplayName.Contains(".iam") Then
+                            If item < "10" Then
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            Else
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                            End If
+                        Else
+                            If item < "10" Then
+                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            Else
+                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                            End If
+                        End If
+                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
                         invDesignInfo.Item("Part Number").Value = CorrectName
                     End If
                 End If
