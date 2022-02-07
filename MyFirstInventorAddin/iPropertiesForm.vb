@@ -2914,15 +2914,10 @@ Public Class IPropertiesForm
 
                     CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                    'MessageBox.Show(CompFileNameOnly)
-
-                    Dim item As String
+                    Dim item As Integer
                     item = oBOMRow.ItemNumber
 
-                    'Dim iProp As String = String.Empty
                     Dim DrawnDoc = oCompDef.Document
-                    'UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
-                    'Dim itemNo As String = iProperties.GetorSetStandardiProperty(DrawnDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
 
                     If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
                         AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
@@ -2932,9 +2927,17 @@ Public Class IPropertiesForm
                         Dim invDesignInfo As PropertySet
                         Dim CorrectName As String
                         If oAsm.DisplayName.Contains(".iam") Then
-                            CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            If item < "10" Then
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            Else
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                            End If
                         Else
-                            CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            If item < "10" Then
+                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            Else
+                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                            End If
                         End If
                         invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
                         invDesignInfo.Item("Part Number").Value = CorrectName
@@ -2970,15 +2973,10 @@ Public Class IPropertiesForm
 
                     CompFileNameOnly = CompFullDocumentName.Substring(index + 1)
 
-                    'MessageBox.Show(CompFileNameOnly)
-
-                    Dim item As String
+                    Dim item As Integer
                     item = oBOMRow.ItemNumber
 
-                    'Dim iProp As String = String.Empty
                     Dim DrawnDoc = oCompDef.Document
-                    'UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties, "Authority", item, iProp, DrawnDoc)
-                    'Dim itemNo As String = iProperties.GetorSetStandardiProperty(DrawnDoc, PropertiesForDesignTrackingPropertiesEnum.kAuthorityDesignTrackingProperties)
 
                     If DrawnDoc.DocumentInterests.HasInterest("{AC211AE0-A7A5-4589-916D-81C529DA6D17}") _ 'Frame generator component
                         AndAlso DrawnDoc.DocumentType = DocumentTypeEnum.kPartDocumentObject _ 'Part
@@ -2988,11 +2986,19 @@ Public Class IPropertiesForm
                         Dim invDesignInfo As PropertySet
                         Dim CorrectName As String
                         If oAsm.DisplayName.Contains(".iam") Then
-                            CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            If item < "10" Then
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-0" & item
+                            Else
+                                CorrectName = RemoveCharacter(oAsm.DisplayName, ".iam") & "-" & item
+                            End If
                         Else
-                            CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            If item < "10" Then
+                                CorrectName = DrawnDoc.DisplayName & "-0" & item
+                            Else
+                                CorrectName = DrawnDoc.DisplayName & "-" & item
+                            End If
                         End If
-                        invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
+                            invDesignInfo = DrawnDoc.PropertySets.Item("Design Tracking Properties")
                         invDesignInfo.Item("Part Number").Value = CorrectName
                     End If
                 End If
