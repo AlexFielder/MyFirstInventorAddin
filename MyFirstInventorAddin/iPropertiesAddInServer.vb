@@ -126,12 +126,12 @@ Namespace iPropertiesController
                     Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
                     Window.AddChild(myiPropsForm.Handle)
 
-                    If Not Window.IsCustomized = True Then
-                        'myDockableWindow.DockingState = DockingStateEnum.kFloat
-                        Window.DockingState = DockingStateEnum.kDockLastKnown
-                    Else
-                        Window.DockingState = DockingStateEnum.kFloat
-                    End If
+                    'If Not Window.IsCustomized = True Then
+                    '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
+                    '    Window.DockingState = DockingStateEnum.kDockLastKnown
+                    'Else
+                    '    Window.DockingState = DockingStateEnum.kFloat
+                    'End If
 
                     Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
                     Window.ShowVisibilityCheckBox = True
