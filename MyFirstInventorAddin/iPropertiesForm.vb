@@ -2496,13 +2496,14 @@ Public Class IPropertiesForm
                     oView = view
                     Exit For
                 Next
+                If oView.ReferencedDocumentDescriptor.ReferencedDocument IsNot Nothing Then
+                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    Dim drawingPN As String = tbPartNumber.Text
 
-                Dim drawingPN As String = tbPartNumber.Text
-
-                Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
+                    Dim iProp As String = String.Empty
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
+                End If
             End If
         End If
     End Sub
@@ -3081,8 +3082,6 @@ Public Class IPropertiesForm
         ' Replace() returns a new String and does not modify the current one
         Return stringToCleanUp.Replace(characterToRemove, "")
     End Function
-
-
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function

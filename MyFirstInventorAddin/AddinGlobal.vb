@@ -17,6 +17,12 @@ Public Class AddinGlobal
 
     Public Shared DisplayableVersion As String
 
+    'color objects because of Inventor's Themes
+    Public Shared BackColour As Drawing.Color
+    Public Shared ForeColour As Drawing.Color
+    Public Shared ControlBackColour As Drawing.Color
+    Public Shared ControlHighlightedColour As Drawing.Color
+
     'Not implemented here
     'Public Shared PluginList As List(Of IVPlugin) = New List(Of IVPlugin)()
 

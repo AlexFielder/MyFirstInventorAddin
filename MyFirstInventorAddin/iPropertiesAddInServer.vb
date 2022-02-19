@@ -120,6 +120,12 @@ Namespace iPropertiesController
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
                     myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp)
+                    'deal with Inventor's Dark theme:
+                    If IsInventorUsingDarkTheme() Then
+                        SwitchTheme(myiPropsForm, True)
+                    Else
+                        SwitchTheme(myiPropsForm)
+                    End If
                     'custom sizing
                     myiPropsForm.tbDrawnBy.Width = (myiPropsForm.Size.Width * 0.7) - 2 * myiPropsForm.customMargin - myiPropsForm.tbDrawnBy.Location.X
                     myiPropsForm.Show()
@@ -136,7 +142,7 @@ Namespace iPropertiesController
                     Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
                     Window.ShowVisibilityCheckBox = True
                     Window.ShowTitleBar = True
-                    Window.SetMinimumSize(361, 285)
+                    Window.SetMinimumSize(440, 285)
                     myiPropsForm.Dock = DockStyle.Fill
                     Window.Visible = True
                     'localWindow = myDockableWindow
@@ -149,6 +155,51 @@ Namespace iPropertiesController
                 log.Error(ex.Message)
             End Try
         End Sub
+
+        Private Sub SwitchTheme(ByRef myiPropsForm As IPropertiesForm, Optional DarkTheme As Boolean = False)
+            If DarkTheme Then
+                AddinGlobal.BackColour = Drawing.Color.FromArgb(59, 68, 83)
+                AddinGlobal.ForeColour = Drawing.Color.FromArgb(225, 225, 225)
+                AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(69, 79, 97)
+                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(44, 52, 64)
+            Else
+                AddinGlobal.BackColour = Drawing.Color.FromArgb(240, 240, 240)
+                AddinGlobal.ForeColour = Drawing.Color.FromArgb(0, 0, 0)
+                AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(255, 255, 255)
+                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(225, 225, 225)
+            End If
+            myiPropsForm.BackColor = AddinGlobal.BackColour
+            For Each FormControl As Control In myiPropsForm.Controls
+                Select Case TypeName(FormControl)
+                    Case "Button"
+                        Dim Btn As Button = FormControl
+                        Btn.BackColor = AddinGlobal.ControlBackColour
+                        Btn.ForeColor = AddinGlobal.ForeColour
+                    Case "Label"
+                        Dim Lbl As Label = FormControl
+                        Lbl.BackColor = AddinGlobal.BackColour
+                        Lbl.ForeColor = AddinGlobal.ForeColour
+                    Case "TextBox"
+                        Dim TxtBox As Windows.Forms.TextBox = FormControl
+                        TxtBox.BackColor = AddinGlobal.ControlHighlightedColour
+                        TxtBox.ForeColor = AddinGlobal.ForeColour
+                    Case "DateTimePicker"
+                        Dim DateTimePickR As DateTimePicker = FormControl
+                        DateTimePickR.CalendarMonthBackground = AddinGlobal.ControlBackColour
+                        DateTimePickR.CalendarForeColor = AddinGlobal.ForeColour
+                End Select
+
+            Next
+        End Sub
+
+        Private Function IsInventorUsingDarkTheme() As Boolean
+            Dim oThemeManager As ThemeManager = AddinGlobal.InventorApp.ThemeManager
+            If oThemeManager.Themes.Item(1).Name = oThemeManager.ActiveTheme.Name Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
             Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
@@ -186,12 +237,14 @@ Namespace iPropertiesController
                     End If
                 End If
             Else
-                Dim oPartDoc As PartDocument = oDoc
-                If CommandName = "SheetMetalStylesCmd" Then
-                    Dim partcompdef As PartComponentDefinition = oPartDoc.ComponentDefinition
-                    Dim sheetmetalcompdef As SheetMetalComponentDefinition = partcompdef
-                    Dim oUnfoldMethod As String = sheetmetalcompdef.UnfoldMethod.Name
-                    UpdateCustomiProperty(oDoc, "Sheet Metal Rule", oUnfoldMethod)
+                If TypeOf oDoc Is PartDocument Then
+                    Dim oPartDoc As PartDocument = oDoc
+                    If CommandName = "SheetMetalStylesCmd" Then
+                        Dim partcompdef As PartComponentDefinition = oPartDoc.ComponentDefinition
+                        Dim sheetmetalcompdef As SheetMetalComponentDefinition = partcompdef
+                        Dim oUnfoldMethod As String = sheetmetalcompdef.UnfoldMethod.Name
+                        UpdateCustomiProperty(oDoc, "Sheet Metal Rule", oUnfoldMethod)
+                    End If
                 End If
             End If
 
@@ -559,8 +612,9 @@ Namespace iPropertiesController
                                     myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
                                     myiPropsForm.tbPartNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
-                                    myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
-
+                                    If FeatOcc.ExtendedName IsNot Nothing Then
+                                        myiPropsForm.tbDescription.Text = FeatOcc.ExtendedName
+                                    End If
                                     AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartShowDimensionsCtxCmd").Execute()
                                 Else
                                     myiPropsForm.tbPartNumber.ReadOnly = False
