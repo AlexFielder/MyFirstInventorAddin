@@ -82,7 +82,7 @@ Namespace iPropertiesController
                 AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
                 'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
                 'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                     m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 End If
@@ -221,7 +221,7 @@ Namespace iPropertiesController
                             Exit For
                         Next
 
-                        If Not oView Is Nothing Then
+                        If oView IsNot Nothing Then
 
                             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
@@ -251,26 +251,28 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_ApplicationEvents_OnCloseDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                 UpdateDisplayediProperties()
             Else
-                myiPropsForm.tbDescription.Text = String.Empty
-                myiPropsForm.tbPartNumber.Text = String.Empty
-                myiPropsForm.tbStockNumber.Text = String.Empty
-                myiPropsForm.tbEngineer.Text = String.Empty
-                myiPropsForm.tbDrawnBy.Text = String.Empty
-                myiPropsForm.tbRevNo.Text = String.Empty
-                myiPropsForm.tbComments.Text = String.Empty
-                myiPropsForm.tbNotes.Text = String.Empty
-                myiPropsForm.Label12.Text = String.Empty
-                myiPropsForm.FileLocation.Text = String.Empty
-                myiPropsForm.ModelFileLocation.Text = String.Empty
-                myiPropsForm.tbService.Text = String.Empty
+                If myiPropsForm IsNot Nothing Then
+                    myiPropsForm.tbDescription.Text = String.Empty
+                    myiPropsForm.tbPartNumber.Text = String.Empty
+                    myiPropsForm.tbStockNumber.Text = String.Empty
+                    myiPropsForm.tbEngineer.Text = String.Empty
+                    myiPropsForm.tbDrawnBy.Text = String.Empty
+                    myiPropsForm.tbRevNo.Text = String.Empty
+                    myiPropsForm.tbComments.Text = String.Empty
+                    myiPropsForm.tbNotes.Text = String.Empty
+                    myiPropsForm.Label12.Text = String.Empty
+                    myiPropsForm.FileLocation.Text = String.Empty
+                    myiPropsForm.ModelFileLocation.Text = String.Empty
+                    myiPropsForm.tbService.Text = String.Empty
+                End If
             End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnNewEditObject(EditObject As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
-            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                 If BeforeOrAfter = EventTimingEnum.kAfter Then
                     If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                         UpdateDisplayediProperties()
@@ -289,7 +291,7 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub m_UserInputEvents_OnActivateCommand(CommandName As String, Context As NameValueMap)
-            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
                     If CommandName = "VaultCheckinTop" Or CommandName = "VaultCheckin" Then
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
@@ -357,7 +359,7 @@ Namespace iPropertiesController
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
-                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                    If DocumentToPulliPropValuesFrom IsNot Nothing Then
                         Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
                         Dim oSht As Sheet = oDWG.ActiveSheet
                         Dim oView As DrawingView = Nothing
@@ -367,7 +369,7 @@ Namespace iPropertiesController
                             oView = view
                             Exit For
                         Next
-                        If Not oView Is Nothing Then
+                        If oView IsNot Nothing Then
                             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
                             revno = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
                             modrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
@@ -386,25 +388,25 @@ Namespace iPropertiesController
                     If AssyDoc.SelectSet.Count = 1 Then
                         Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
                         DocumentToPulliPropValuesFrom = compOcc.Definition.Document
-                        If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                        If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
                             DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                        ElseIf Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
                             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                             UpdateFormTextBoxColours()
                         End If
                     Else
-                        If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                        If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
                             DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                        ElseIf Not DocumentToPulliPropValuesFrom Is Nothing Then
+                        ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
                             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                             UpdateFormTextBoxColours()
                         End If
                     End If
                 Else
-                    If Not AddinGlobal.InventorApp.ActiveEditObject Is DocumentToPulliPropValuesFrom Then
+                    If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
                     End If
-                    If Not DocumentToPulliPropValuesFrom Is Nothing Then
+                    If DocumentToPulliPropValuesFrom IsNot Nothing Then
                         SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                         UpdateFormTextBoxColours()
                     End If
@@ -451,7 +453,7 @@ Namespace iPropertiesController
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
-                    If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                         Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                         Material = iProperties.GetorSetStandardiProperty(
                                DocumentToPulliPropValuesFrom,
@@ -501,7 +503,7 @@ Namespace iPropertiesController
 
                 _inChangeSelectSetHandler = True
                 Try
-                    If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                    If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
 
                         If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                             Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
@@ -751,7 +753,7 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnNewDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                     UpdateDisplayediProperties()
                 Else
                     myiPropsForm.tbDescription.Text = String.Empty
@@ -778,12 +780,12 @@ Namespace iPropertiesController
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Public Shared Sub UpdateDisplayediProperties(Optional DocumentToPulliPropValuesFrom As Document = Nothing)
 
-            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing And DocumentToPulliPropValuesFrom Is Nothing Then
                 DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
             End If
             'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
 
-            If Not DocumentToPulliPropValuesFrom Is Nothing Then
+            If DocumentToPulliPropValuesFrom IsNot Nothing Then
                 myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
                 myiPropsForm.FileLocation.Text = DocumentToPulliPropValuesFrom.FullFileName
                 myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
@@ -877,7 +879,7 @@ Namespace iPropertiesController
                                 Exit For
                             Next
 
-                            If Not oView Is Nothing Then
+                            If oView IsNot Nothing Then
                                 drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
                                 If TypeOf drawnDoc Is AssemblyDocument Then
@@ -1056,7 +1058,7 @@ Namespace iPropertiesController
         ''' </summary>
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
-            If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                 If CheckReadOnly(DocumentToPulliPropValuesFrom) = True Then
                     'myiPropsForm.Label10.ForeColor = Drawing.Color.Red
                     'myiPropsForm.Label10.Text = "Checked In"
