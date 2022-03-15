@@ -272,29 +272,29 @@ Namespace iPropertiesController
                         Clipboard.SetText(flatName)
                     End If
 
-                    Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
-                    If TypeOf oDoc Is PartDocument Then
-                        If CommandName = "AppFileSaveCmd" Or CommandName = "AppFileSaveAsCmd" Then
-                            Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
-                            Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
-                            Dim kgWeight As Decimal = Weight / 1000
-                            Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
-                            If Material = "Generic" Then
-                                whatnow = MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbYesNo, "Material Check")
-                                If whatnow = vbNo Then
-                                    AllowFileToSave = False
-                                    AllowFileToSaveAs = False
-                                End If
-                            End If
-                            If Weight2 > 10 Then
-                                whatnow = MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbYesNo, "Weight Check")
-                                If whatnow = vbNo Then
-                                    AllowFileToSave = False
-                                    AllowFileToSaveAs = False
-                                End If
-                            End If
-                        End If
-                    End If
+                    'Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
+                    'If TypeOf oDoc Is PartDocument Then
+                    '    If CommandName = "AppFileSaveCmd" Or CommandName = "AppFileSaveAsCmd" Then
+                    '        Dim Material As String = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties)
+                    '        Dim Weight As Decimal = iProperties.GetorSetStandardiProperty(oDoc, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties)
+                    '        Dim kgWeight As Decimal = Weight / 1000
+                    '        Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
+                    '        If Material = "Generic" Then
+                    '            whatnow = MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbYesNo, "Material Check")
+                    '            If whatnow = vbNo Then
+                    '                AllowFileToSave = False
+                    '                AllowFileToSaveAs = False
+                    '            End If
+                    '        End If
+                    '        If Weight2 > 10 Then
+                    '            whatnow = MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbYesNo, "Weight Check")
+                    '            If whatnow = vbNo Then
+                    '                AllowFileToSave = False
+                    '                AllowFileToSaveAs = False
+                    '            End If
+                    '        End If
+                    '    End If
+                    'End If
                 End If
             End If
         End Sub
@@ -658,9 +658,9 @@ Namespace iPropertiesController
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
 
-            If Not AllowFileToSave Or Not AllowFileToSaveAs Then
-                HandlingCode = HandlingCodeEnum.kEventCanceled
-            End If
+            'If Not AllowFileToSave Or Not AllowFileToSaveAs Then
+            '    HandlingCode = HandlingCodeEnum.kEventCanceled
+            'End If
 
         End Sub
 
