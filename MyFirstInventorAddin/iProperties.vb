@@ -145,7 +145,7 @@ Namespace iPropertiesController
             Catch ex As Exception
                 propExists = False
             End Try
-            If Not PropertyValue Is Nothing Then
+            If PropertyValue IsNot Nothing Then
                 ' Check to see if the property was successfully obtained.
                 If Not propExists Then
                     ' Failed to get the existing property so create a new one.
