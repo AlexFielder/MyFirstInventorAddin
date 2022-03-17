@@ -15,7 +15,7 @@ Public Class IPropertiesForm
     Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
     Public Sub GetNewFilePaths()
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
                     CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
@@ -35,11 +35,13 @@ Public Class IPropertiesForm
                         Next
 
                         CurrentPath = System.IO.Path.GetDirectoryName(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
-                        RefCurrentPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-                        NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
+                        If oView IsNot Nothing Then
+                            RefCurrentPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+                            NewPath = CurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(AddinGlobal.InventorApp.ActiveDocument.FullDocumentName)
 
-                        RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                        RefNewPath = RefCurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+                            RefDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                            RefNewPath = RefCurrentPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+                        End If
                     End If
                 End If
             End If
@@ -103,7 +105,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub UpdateAllCommon()
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
             'try these and see if they fire or not!
@@ -295,14 +297,14 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             tbStockNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
     End Sub
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             tbEngineer.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
 
@@ -326,7 +328,7 @@ Public Class IPropertiesForm
 
     Private Sub btUpdateAll_Click(sender As Object, e As EventArgs) Handles btUpdateAll.Click
 
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
                 Dim assydoc As Document = Nothing
                 assydoc = inventorApp.ActiveDocument
@@ -346,7 +348,7 @@ Public Class IPropertiesForm
     Private Sub btDefer_Click(sender As Object, e As EventArgs) Handles btDefer.Click
 
         'Toggle 'Defer updates' on and off in a Drawing
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
                 If TypeOf inventorApp.ActiveDocument Is DrawingDocument Then
                     Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
@@ -384,7 +386,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
 
             tbDrawnBy.ForeColor = Drawing.Color.Black
 
@@ -1578,7 +1580,7 @@ Public Class IPropertiesForm
                     Process.Start("explorer.exe", FilePath)
                 End If
             Else
-                If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+                If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                     If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                         Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
                         If AssyDoc.SelectSet.Count = 1 Then
@@ -1649,7 +1651,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -1663,7 +1665,7 @@ Public Class IPropertiesForm
                     oView = view
                     Exit For
                 Next
-                If Not oView Is Nothing Then
+                If oView IsNot Nothing Then
                     Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
                     Dim drawingDoc As Document = inventorApp.ActiveDocument
                     Dim drawingDesc As String = tbDescription.Text
@@ -1678,7 +1680,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             tbDescription.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "Project", tbService.Text)
         End If
@@ -1903,7 +1905,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
                 Dim oSht As Sheet = oDWG.ActiveSheet
@@ -2073,7 +2075,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btCopyPN_Click(sender As Object, e As EventArgs) Handles btCopyPN.Click
-        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+        If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
             If tbPartNumber.Text.Length > 0 Then
                 tbStockNumber.Text = tbPartNumber.Text
                 tbStockNumber_Leave(sender, e)
@@ -2298,7 +2300,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btCheckIn_Click(sender As Object, e As EventArgs) Handles btCheckIn.Click
-        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+        If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
             'If Not (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
             '    Dim PartNo As String = tbPartNumber.Text
             '    Dim StockNo As String = tbStockNumber.Text
@@ -2309,27 +2311,16 @@ Public Class IPropertiesForm
             '        End If
             '    End If
             If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
-                    Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
-                    If AssyDoc.SelectSet.Count = 1 Then
-                        If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
-                            ' Get the CommandManager object. 
-                            Dim oCommandMgr As CommandManager
-                            oCommandMgr = inventorApp.CommandManager
-
-                            ' Get control definition for the line command. 
-                            Dim oControlDef As ControlDefinition
-                            oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
-                            ' Execute the command. 
-                            Call oControlDef.Execute()
-                        End If
-                    Else
+                Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
+                If AssyDoc.SelectSet.Count = 1 Then
+                    If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
                         ' Get the CommandManager object. 
                         Dim oCommandMgr As CommandManager
                         oCommandMgr = inventorApp.CommandManager
 
                         ' Get control definition for the line command. 
                         Dim oControlDef As ControlDefinition
-                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
+                        oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckin")
                         ' Execute the command. 
                         Call oControlDef.Execute()
                     End If
@@ -2344,12 +2335,23 @@ Public Class IPropertiesForm
                     ' Execute the command. 
                     Call oControlDef.Execute()
                 End If
+            Else
+                ' Get the CommandManager object. 
+                Dim oCommandMgr As CommandManager
+                oCommandMgr = inventorApp.CommandManager
+
+                ' Get control definition for the line command. 
+                Dim oControlDef As ControlDefinition
+                oControlDef = oCommandMgr.ControlDefinitions.Item("VaultCheckinTop")
+                ' Execute the command. 
+                Call oControlDef.Execute()
             End If
+        End If
         'End If
     End Sub
 
     Private Sub btCheckOut_Click(sender As Object, e As EventArgs) Handles btCheckOut.Click
-        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+        If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
             If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
                 Dim AssyDoc As AssemblyDocument = inventorApp.ActiveDocument
                 If AssyDoc.SelectSet.Count = 1 Then
@@ -2464,7 +2466,7 @@ Public Class IPropertiesForm
         For Each oSheet In oDrawDoc.Sheets
             oSheet.Activate()
             For Each oView In oSheet.DrawingViews
-                If Not oView.ParentView Is Nothing Then
+                If oView.ParentView IsNot Nothing Then
                     'we're working on a child view and should get the parent view as an object
                 Else
                     If oView.IsFlatPatternView Then
@@ -2483,7 +2485,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             tbPartNumber.ForeColor = Drawing.Color.Black
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
 
@@ -2496,19 +2498,20 @@ Public Class IPropertiesForm
                     oView = view
                     Exit For
                 Next
+                If oView.ReferencedDocumentDescriptor.ReferencedDocument IsNot Nothing Then
+                    Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
-                Dim drawnDoc As Document = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                    Dim drawingPN As String = tbPartNumber.Text
 
-                Dim drawingPN As String = tbPartNumber.Text
-
-                Dim iProp As String = String.Empty
-                UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
+                    Dim iProp As String = String.Empty
+                    UpdateProperties(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", drawingPN, iProp, drawnDoc)
+                End If
             End If
         End If
     End Sub
 
     Private Sub btCopyPN_KeyUp(sender As Object, e As KeyEventArgs) Handles btCopyPN.KeyUp
-        If Not AddinGlobal.InventorApp.ActiveDocument Is Nothing Then
+        If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
             If e.KeyValue = Keys.Return Then
                 If tbPartNumber.Text.Length > 0 Then
                     tbStockNumber.Text = tbPartNumber.Text
@@ -2580,7 +2583,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
             tbNotes.ForeColor = Drawing.Color.Black
         End If
@@ -2593,7 +2596,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
-        If Not inventorApp.ActiveDocument Is Nothing Then
+        If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, tbComments.Text, "", True)
             tbComments.ForeColor = Drawing.Color.Black
         End If
@@ -2817,7 +2820,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub btExpDXF_Click(sender As Object, e As EventArgs) Handles btExpDXF.Click
-        If Not TypeOf inventorApp.ActiveDocument Is PartDocument Then
+        If TypeOf inventorApp.ActiveDocument IsNot PartDocument Then
 
         Else
             'Set a reference to the active document (the document to be published).
@@ -3081,8 +3084,6 @@ Public Class IPropertiesForm
         ' Replace() returns a new String and does not modify the current one
         Return stringToCleanUp.Replace(characterToRemove, "")
     End Function
-
-
 
     'Public Shared Function GetFileName(path As String) As String
     'End Function
