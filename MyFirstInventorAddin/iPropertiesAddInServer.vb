@@ -159,29 +159,32 @@ Namespace iPropertiesController
         Private Sub SwitchTheme(ByRef myiPropsForm As IPropertiesForm, Optional DarkTheme As Boolean = False)
             If DarkTheme Then
                 AddinGlobal.BackColour = Drawing.Color.FromArgb(59, 68, 83)
-                AddinGlobal.ForeColour = Drawing.Color.FromArgb(225, 225, 225)
+                AddinGlobal.ForeColour = Drawing.Color.FromArgb(255, 255, 255)
                 AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(69, 79, 97)
                 AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(44, 52, 64)
             Else
                 AddinGlobal.BackColour = Drawing.Color.FromArgb(240, 240, 240)
                 AddinGlobal.ForeColour = Drawing.Color.FromArgb(0, 0, 0)
                 AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(255, 255, 255)
-                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(225, 225, 225)
+                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(225, 255, 255)
             End If
             myiPropsForm.BackColor = AddinGlobal.BackColour
             For Each FormControl As Control In myiPropsForm.Controls
                 Select Case TypeName(FormControl)
                     Case "Button"
                         Dim Btn As Button = FormControl
-                        Btn.BackColor = AddinGlobal.ControlBackColour
-                        Btn.ForeColor = AddinGlobal.ForeColour
+                        If Not Btn.Name = btDefer Then
+                            Btn.BackColor = AddinGlobal.ControlBackColour
+                            Btn.ForeColor = AddinGlobal.ForeColour
+                            'Btn.FlatAppearance.BorderColor = AddinGlobal.ForeColour
+                        End If
                     Case "Label"
                         Dim Lbl As Label = FormControl
                         Lbl.BackColor = AddinGlobal.BackColour
                         Lbl.ForeColor = AddinGlobal.ForeColour
                     Case "TextBox"
                         Dim TxtBox As Windows.Forms.TextBox = FormControl
-                        TxtBox.BackColor = AddinGlobal.ControlHighlightedColour
+                        TxtBox.BackColor = AddinGlobal.ControlBackColour
                         TxtBox.ForeColor = AddinGlobal.ForeColour
                     Case "DateTimePicker"
                         Dim DateTimePickR As DateTimePicker = FormControl
@@ -227,8 +230,8 @@ Namespace iPropertiesController
 
                             myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                             myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDescription.ForeColor = AddinGlobal.ForeColour
+                            myiPropsForm.tbPartNumber.ForeColor = AddinGlobal.ForeColour
 
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, myiPropsForm.tbDescription.Text, "", True)
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, myiPropsForm.tbPartNumber.Text, "", True)
@@ -675,15 +678,15 @@ Namespace iPropertiesController
         End Sub
 
         Private Shared Sub UpdateFormTextBoxColours()
-            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbRevNo.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbComments.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbNotes.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbService.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbDescription.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbPartNumber.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbStockNumber.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbEngineer.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbDrawnBy.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbRevNo.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbComments.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbNotes.ForeColor = AddinGlobal.ForeColour
+            myiPropsForm.tbService.ForeColor = AddinGlobal.ForeColour
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -709,7 +712,7 @@ Namespace iPropertiesController
 
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
-                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbDrawnBy.ForeColor = AddinGlobal.ForeColour
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -786,16 +789,16 @@ Namespace iPropertiesController
             'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
 
             If DocumentToPulliPropValuesFrom IsNot Nothing Then
-                myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                myiPropsForm.FileLocation.ForeColor = AddinGlobal.ForeColour
                 myiPropsForm.FileLocation.Text = DocumentToPulliPropValuesFrom.FullFileName
                 myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
             Else ' use the active edit object in cases where we're editing-in-place
                 If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
-                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.ForeColor = AddinGlobal.ForeColour
                     myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
                     myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 Else
-                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
+                    myiPropsForm.FileLocation.ForeColor = AddinGlobal.ForeColour
                     myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
                     myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                 End If
@@ -902,7 +905,7 @@ Namespace iPropertiesController
                                 MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
                                 ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
 
-                                myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
+                                myiPropsForm.ModelFileLocation.ForeColor = AddinGlobal.ForeColour
                                 myiPropsForm.ModelFileLocation.Text = ModelPath
 
                                 myiPropsForm.Label12.Text = MaterialString

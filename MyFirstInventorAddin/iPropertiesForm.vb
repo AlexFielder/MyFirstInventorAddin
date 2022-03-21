@@ -298,14 +298,14 @@ Public Class IPropertiesForm
 
     Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbStockNumber.ForeColor = Drawing.Color.Black
+            tbStockNumber.ForeColor = AddinGlobal.ForeColour
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
     End Sub
 
     Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbEngineer.ForeColor = Drawing.Color.Black
+            tbEngineer.ForeColor = AddinGlobal.ForeColour
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
 
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -388,7 +388,7 @@ Public Class IPropertiesForm
     Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
 
-            tbDrawnBy.ForeColor = Drawing.Color.Black
+            tbDrawnBy.ForeColor = AddinGlobal.ForeColour
 
             CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", tbDrawnBy.Text)
 
@@ -1616,7 +1616,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
-        FileLocation.ForeColor = Drawing.Color.Black
+        FileLocation.ForeColor = AddinGlobal.ForeColour
     End Sub
 
     Private Sub tbPartNumber_TextChanged(sender As Object, e As EventArgs) Handles tbPartNumber.TextChanged
@@ -1652,7 +1652,7 @@ Public Class IPropertiesForm
 
     Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbDescription.ForeColor = Drawing.Color.Black
+            tbDescription.ForeColor = AddinGlobal.ForeColour
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                 Dim iProp As String = String.Empty
@@ -1681,7 +1681,7 @@ Public Class IPropertiesForm
 
     Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbDescription.ForeColor = Drawing.Color.Black
+            tbDescription.ForeColor = AddinGlobal.ForeColour
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "Project", tbService.Text)
         End If
     End Sub
@@ -1901,7 +1901,7 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub ModelFileLocation_MouseLeave(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeave
-        ModelFileLocation.ForeColor = Drawing.Color.Black
+        ModelFileLocation.ForeColor = AddinGlobal.ForeColour
     End Sub
 
     Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
@@ -1918,7 +1918,7 @@ Public Class IPropertiesForm
                 Next
 
                 drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                tbRevNo.ForeColor = Drawing.Color.Black
+                tbRevNo.ForeColor = AddinGlobal.ForeColour
                 Dim drawingRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
@@ -1930,7 +1930,7 @@ Public Class IPropertiesForm
                 'iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
 
             Else
-                tbRevNo.ForeColor = Drawing.Color.Black
+                tbRevNo.ForeColor = AddinGlobal.ForeColour
 
                 Dim iPropRev As String = tbRevNo.Text
 
@@ -2486,7 +2486,7 @@ Public Class IPropertiesForm
 
     Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbPartNumber.ForeColor = Drawing.Color.Black
+            tbPartNumber.ForeColor = AddinGlobal.ForeColour
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
 
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -2585,7 +2585,7 @@ Public Class IPropertiesForm
     Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
-            tbNotes.ForeColor = Drawing.Color.Black
+            tbNotes.ForeColor = AddinGlobal.ForeColour
         End If
     End Sub
 
@@ -2598,7 +2598,7 @@ Public Class IPropertiesForm
     Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
         If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, tbComments.Text, "", True)
-            tbComments.ForeColor = Drawing.Color.Black
+            tbComments.ForeColor = AddinGlobal.ForeColour
         End If
     End Sub
 
