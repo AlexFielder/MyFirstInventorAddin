@@ -573,7 +573,7 @@ Partial Class IPropertiesForm
         Me.btRevision.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btRevision.FlatAppearance.BorderSize = 0
         Me.btRevision.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btRevision.Location = New System.Drawing.Point(194, 188)
+        Me.btRevision.Location = New System.Drawing.Point(194, 187)
         Me.btRevision.Name = "btRevision"
         Me.btRevision.Size = New System.Drawing.Size(87, 22)
         Me.btRevision.TabIndex = 339
