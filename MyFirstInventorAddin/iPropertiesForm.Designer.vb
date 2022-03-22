@@ -87,7 +87,7 @@ Partial Class IPropertiesForm
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(3, 10)
+        Me.Label1.Location = New System.Drawing.Point(3, 11)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(46, 13)
         Me.Label1.TabIndex = 100
@@ -96,7 +96,7 @@ Partial Class IPropertiesForm
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(3, 34)
+        Me.Label2.Location = New System.Drawing.Point(3, 37)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(35, 13)
         Me.Label2.TabIndex = 101
@@ -105,7 +105,7 @@ Partial Class IPropertiesForm
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(3, 58)
+        Me.Label3.Location = New System.Drawing.Point(3, 63)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(55, 13)
         Me.Label3.TabIndex = 102
@@ -114,7 +114,7 @@ Partial Class IPropertiesForm
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(3, 82)
+        Me.Label4.Location = New System.Drawing.Point(3, 89)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(29, 13)
         Me.Label4.TabIndex = 104
@@ -123,7 +123,7 @@ Partial Class IPropertiesForm
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(3, 106)
+        Me.Label5.Location = New System.Drawing.Point(3, 115)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(32, 13)
         Me.Label5.TabIndex = 105
@@ -134,10 +134,10 @@ Partial Class IPropertiesForm
         Me.btUpdateAll.AccessibleDescription = " up"
         Me.btUpdateAll.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btUpdateAll.FlatAppearance.BorderSize = 0
-        Me.btUpdateAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btUpdateAll.Location = New System.Drawing.Point(211, 125)
+        Me.btUpdateAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btUpdateAll.Location = New System.Drawing.Point(211, 135)
         Me.btUpdateAll.Name = "btUpdateAll"
-        Me.btUpdateAll.Size = New System.Drawing.Size(70, 20)
+        Me.btUpdateAll.Size = New System.Drawing.Size(70, 22)
         Me.btUpdateAll.TabIndex = 7
         Me.btUpdateAll.Text = "Update iProp"
         Me.btUpdateAll.UseVisualStyleBackColor = True
@@ -145,7 +145,7 @@ Partial Class IPropertiesForm
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(3, 178)
+        Me.Label6.Location = New System.Drawing.Point(3, 193)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(67, 13)
         Me.Label6.TabIndex = 106
@@ -159,7 +159,7 @@ Partial Class IPropertiesForm
         Me.btDefer.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
         Me.btDefer.ForeColor = System.Drawing.SystemColors.ControlText
         Me.btDefer.ImageAlign = System.Drawing.ContentAlignment.TopRight
-        Me.btDefer.Location = New System.Drawing.Point(52, 54)
+        Me.btDefer.Location = New System.Drawing.Point(52, 60)
         Me.btDefer.Name = "btDefer"
         Me.btDefer.Size = New System.Drawing.Size(187, 20)
         Me.btDefer.TabIndex = 201
@@ -171,7 +171,7 @@ Partial Class IPropertiesForm
         Me.tbMass.BackColor = System.Drawing.SystemColors.Window
         Me.tbMass.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbMass.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbMass.Location = New System.Drawing.Point(74, 106)
+        Me.tbMass.Location = New System.Drawing.Point(74, 115)
         Me.tbMass.Name = "tbMass"
         Me.tbMass.ReadOnly = True
         Me.tbMass.Size = New System.Drawing.Size(116, 13)
@@ -180,7 +180,7 @@ Partial Class IPropertiesForm
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(3, 128)
+        Me.Label9.Location = New System.Drawing.Point(3, 139)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(42, 13)
         Me.Label9.TabIndex = 108
@@ -191,7 +191,7 @@ Partial Class IPropertiesForm
         Me.tbDensity.BackColor = System.Drawing.SystemColors.Window
         Me.tbDensity.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbDensity.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbDensity.Location = New System.Drawing.Point(75, 128)
+        Me.tbDensity.Location = New System.Drawing.Point(75, 139)
         Me.tbDensity.Name = "tbDensity"
         Me.tbDensity.ReadOnly = True
         Me.tbDensity.Size = New System.Drawing.Size(115, 13)
@@ -200,7 +200,7 @@ Partial Class IPropertiesForm
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(3, 153)
+        Me.Label11.Location = New System.Drawing.Point(3, 166)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(30, 13)
         Me.Label11.TabIndex = 109
@@ -209,7 +209,7 @@ Partial Class IPropertiesForm
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(31, 153)
+        Me.Label12.Location = New System.Drawing.Point(31, 166)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(44, 13)
         Me.Label12.TabIndex = 9
@@ -221,7 +221,7 @@ Partial Class IPropertiesForm
         Me.DateTimePicker1.AllowDrop = True
         Me.DateTimePicker1.CustomFormat = "dd/MM/yyyy"
         Me.DateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.DateTimePicker1.Location = New System.Drawing.Point(74, 174)
+        Me.DateTimePicker1.Location = New System.Drawing.Point(74, 189)
         Me.DateTimePicker1.Name = "DateTimePicker1"
         Me.DateTimePicker1.Size = New System.Drawing.Size(116, 20)
         Me.DateTimePicker1.TabIndex = 301
@@ -229,7 +229,7 @@ Partial Class IPropertiesForm
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(3, 106)
+        Me.Label7.Location = New System.Drawing.Point(3, 115)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(53, 13)
         Me.Label7.TabIndex = 110
@@ -239,10 +239,10 @@ Partial Class IPropertiesForm
         '
         Me.btITEM.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btITEM.FlatAppearance.BorderSize = 0
-        Me.btITEM.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btITEM.Location = New System.Drawing.Point(231, 149)
+        Me.btITEM.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btITEM.Location = New System.Drawing.Point(231, 161)
         Me.btITEM.Name = "btITEM"
-        Me.btITEM.Size = New System.Drawing.Size(50, 20)
+        Me.btITEM.Size = New System.Drawing.Size(50, 22)
         Me.btITEM.TabIndex = 202
         Me.btITEM.Text = "#ITEM"
         Me.btITEM.UseVisualStyleBackColor = True
@@ -252,10 +252,10 @@ Partial Class IPropertiesForm
         Me.btShtMaterial.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.btShtMaterial.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btShtMaterial.FlatAppearance.BorderSize = 0
-        Me.btShtMaterial.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btShtMaterial.Location = New System.Drawing.Point(5, 125)
+        Me.btShtMaterial.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btShtMaterial.Location = New System.Drawing.Point(5, 135)
         Me.btShtMaterial.Name = "btShtMaterial"
-        Me.btShtMaterial.Size = New System.Drawing.Size(70, 20)
+        Me.btShtMaterial.Size = New System.Drawing.Size(70, 22)
         Me.btShtMaterial.TabIndex = 305
         Me.btShtMaterial.Text = "Sht Material"
         Me.btShtMaterial.UseVisualStyleBackColor = True
@@ -264,10 +264,10 @@ Partial Class IPropertiesForm
         '
         Me.btShtScale.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btShtScale.FlatAppearance.BorderSize = 0
-        Me.btShtScale.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btShtScale.Location = New System.Drawing.Point(77, 125)
+        Me.btShtScale.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btShtScale.Location = New System.Drawing.Point(77, 135)
         Me.btShtScale.Name = "btShtScale"
-        Me.btShtScale.Size = New System.Drawing.Size(65, 20)
+        Me.btShtScale.Size = New System.Drawing.Size(65, 22)
         Me.btShtScale.TabIndex = 306
         Me.btShtScale.Text = "Sht Scale"
         Me.btShtScale.UseVisualStyleBackColor = True
@@ -277,9 +277,9 @@ Partial Class IPropertiesForm
         Me.btDiaEng.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDiaEng.FlatAppearance.BorderSize = 0
         Me.btDiaEng.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btDiaEng.Location = New System.Drawing.Point(35, 78)
+        Me.btDiaEng.Location = New System.Drawing.Point(35, 85)
         Me.btDiaEng.Name = "btDiaEng"
-        Me.btDiaEng.Size = New System.Drawing.Size(16, 20)
+        Me.btDiaEng.Size = New System.Drawing.Size(16, 22)
         Me.btDiaEng.TabIndex = 307
         Me.btDiaEng.Text = "Ø"
         Me.btDiaEng.UseVisualStyleBackColor = True
@@ -289,9 +289,9 @@ Partial Class IPropertiesForm
         Me.btDegEng.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDegEng.FlatAppearance.BorderSize = 0
         Me.btDegEng.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btDegEng.Location = New System.Drawing.Point(52, 78)
+        Me.btDegEng.Location = New System.Drawing.Point(52, 85)
         Me.btDegEng.Name = "btDegEng"
-        Me.btDegEng.Size = New System.Drawing.Size(16, 20)
+        Me.btDegEng.Size = New System.Drawing.Size(16, 22)
         Me.btDegEng.TabIndex = 308
         Me.btDegEng.Text = "°"
         Me.btDegEng.UseVisualStyleBackColor = True
@@ -301,9 +301,9 @@ Partial Class IPropertiesForm
         Me.btExpStp.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpStp.FlatAppearance.BorderSize = 0
         Me.btExpStp.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btExpStp.Location = New System.Drawing.Point(176, 198)
+        Me.btExpStp.Location = New System.Drawing.Point(176, 215)
         Me.btExpStp.Name = "btExpStp"
-        Me.btExpStp.Size = New System.Drawing.Size(30, 20)
+        Me.btExpStp.Size = New System.Drawing.Size(30, 22)
         Me.btExpStp.TabIndex = 311
         Me.btExpStp.Text = "stp"
         Me.btExpStp.UseVisualStyleBackColor = True
@@ -313,9 +313,9 @@ Partial Class IPropertiesForm
         Me.btExpStl.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpStl.FlatAppearance.BorderSize = 0
         Me.btExpStl.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btExpStl.Location = New System.Drawing.Point(205, 198)
+        Me.btExpStl.Location = New System.Drawing.Point(205, 215)
         Me.btExpStl.Name = "btExpStl"
-        Me.btExpStl.Size = New System.Drawing.Size(30, 20)
+        Me.btExpStl.Size = New System.Drawing.Size(30, 22)
         Me.btExpStl.TabIndex = 312
         Me.btExpStl.Text = "stl"
         Me.btExpStl.UseVisualStyleBackColor = True
@@ -325,9 +325,9 @@ Partial Class IPropertiesForm
         Me.btExpPdf.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpPdf.FlatAppearance.BorderSize = 0
         Me.btExpPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btExpPdf.Location = New System.Drawing.Point(234, 198)
+        Me.btExpPdf.Location = New System.Drawing.Point(234, 215)
         Me.btExpPdf.Name = "btExpPdf"
-        Me.btExpPdf.Size = New System.Drawing.Size(30, 20)
+        Me.btExpPdf.Size = New System.Drawing.Size(30, 22)
         Me.btExpPdf.TabIndex = 313
         Me.btExpPdf.Text = "pdf"
         Me.btExpPdf.UseVisualStyleBackColor = True
@@ -335,9 +335,9 @@ Partial Class IPropertiesForm
         'FileLocation
         '
         Me.FileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.5!)
-        Me.FileLocation.Location = New System.Drawing.Point(3, 309)
+        Me.FileLocation.Location = New System.Drawing.Point(3, 335)
         Me.FileLocation.Name = "FileLocation"
-        Me.FileLocation.Size = New System.Drawing.Size(273, 44)
+        Me.FileLocation.Size = New System.Drawing.Size(273, 48)
         Me.FileLocation.TabIndex = 314
         Me.FileLocation.Text = "File location"
         '
@@ -348,7 +348,7 @@ Partial Class IPropertiesForm
         Me.tbDrawnBy.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbDrawnBy.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.tbDrawnBy.Location = New System.Drawing.Point(74, 106)
+        Me.tbDrawnBy.Location = New System.Drawing.Point(74, 115)
         Me.tbDrawnBy.Name = "tbDrawnBy"
         Me.tbDrawnBy.Size = New System.Drawing.Size(116, 13)
         Me.tbDrawnBy.TabIndex = 5
@@ -362,7 +362,7 @@ Partial Class IPropertiesForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbEngineer.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbEngineer.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbEngineer.Location = New System.Drawing.Point(74, 82)
+        Me.tbEngineer.Location = New System.Drawing.Point(74, 89)
         Me.tbEngineer.Name = "tbEngineer"
         Me.tbEngineer.Size = New System.Drawing.Size(205, 13)
         Me.tbEngineer.TabIndex = 4
@@ -374,7 +374,7 @@ Partial Class IPropertiesForm
         Me.tbStockNumber.AcceptsTab = True
         Me.tbStockNumber.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbStockNumber.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbStockNumber.Location = New System.Drawing.Point(74, 58)
+        Me.tbStockNumber.Location = New System.Drawing.Point(74, 63)
         Me.tbStockNumber.Name = "tbStockNumber"
         Me.tbStockNumber.Size = New System.Drawing.Size(116, 13)
         Me.tbStockNumber.TabIndex = 3
@@ -388,7 +388,7 @@ Partial Class IPropertiesForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbPartNumber.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbPartNumber.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbPartNumber.Location = New System.Drawing.Point(74, 10)
+        Me.tbPartNumber.Location = New System.Drawing.Point(74, 11)
         Me.tbPartNumber.Name = "tbPartNumber"
         Me.tbPartNumber.Size = New System.Drawing.Size(156, 13)
         Me.tbPartNumber.TabIndex = 1
@@ -403,7 +403,7 @@ Partial Class IPropertiesForm
         Me.tbDescription.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbDescription.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
         Me.tbDescription.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbDescription.Location = New System.Drawing.Point(74, 33)
+        Me.tbDescription.Location = New System.Drawing.Point(74, 36)
         Me.tbDescription.Name = "tbDescription"
         Me.tbDescription.Size = New System.Drawing.Size(205, 13)
         Me.tbDescription.TabIndex = 2
@@ -412,16 +412,16 @@ Partial Class IPropertiesForm
         'ModelFileLocation
         '
         Me.ModelFileLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.5!)
-        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 353)
+        Me.ModelFileLocation.Location = New System.Drawing.Point(3, 382)
         Me.ModelFileLocation.Name = "ModelFileLocation"
-        Me.ModelFileLocation.Size = New System.Drawing.Size(273, 44)
+        Me.ModelFileLocation.Size = New System.Drawing.Size(273, 48)
         Me.ModelFileLocation.TabIndex = 324
         Me.ModelFileLocation.Text = "Model File location"
         '
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(195, 106)
+        Me.Label14.Location = New System.Drawing.Point(195, 115)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(50, 13)
         Me.Label14.TabIndex = 325
@@ -435,7 +435,7 @@ Partial Class IPropertiesForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbRevNo.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbRevNo.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbRevNo.Location = New System.Drawing.Point(247, 106)
+        Me.tbRevNo.Location = New System.Drawing.Point(247, 115)
         Me.tbRevNo.Name = "tbRevNo"
         Me.tbRevNo.Size = New System.Drawing.Size(32, 13)
         Me.tbRevNo.TabIndex = 6
@@ -449,10 +449,10 @@ Partial Class IPropertiesForm
         '
         Me.btReNum.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btReNum.FlatAppearance.BorderSize = 0
-        Me.btReNum.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btReNum.Location = New System.Drawing.Point(179, 149)
+        Me.btReNum.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btReNum.Location = New System.Drawing.Point(179, 161)
         Me.btReNum.Name = "btReNum"
-        Me.btReNum.Size = New System.Drawing.Size(50, 20)
+        Me.btReNum.Size = New System.Drawing.Size(50, 22)
         Me.btReNum.TabIndex = 327
         Me.btReNum.Text = "BoM #"
         Me.btReNum.UseVisualStyleBackColor = True
@@ -462,9 +462,9 @@ Partial Class IPropertiesForm
         Me.btCopyPN.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btCopyPN.FlatAppearance.BorderSize = 0
         Me.btCopyPN.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btCopyPN.Location = New System.Drawing.Point(193, 54)
+        Me.btCopyPN.Location = New System.Drawing.Point(193, 59)
         Me.btCopyPN.Name = "btCopyPN"
-        Me.btCopyPN.Size = New System.Drawing.Size(87, 20)
+        Me.btCopyPN.Size = New System.Drawing.Size(87, 22)
         Me.btCopyPN.TabIndex = 328
         Me.btCopyPN.Text = "Copy Part No."
         Me.btCopyPN.UseVisualStyleBackColor = True
@@ -474,9 +474,9 @@ Partial Class IPropertiesForm
         Me.btDegDes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDegDes.FlatAppearance.BorderSize = 0
         Me.btDegDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btDegDes.Location = New System.Drawing.Point(52, 30)
+        Me.btDegDes.Location = New System.Drawing.Point(52, 33)
         Me.btDegDes.Name = "btDegDes"
-        Me.btDegDes.Size = New System.Drawing.Size(16, 20)
+        Me.btDegDes.Size = New System.Drawing.Size(16, 22)
         Me.btDegDes.TabIndex = 330
         Me.btDegDes.Text = "°"
         Me.btDegDes.UseVisualStyleBackColor = True
@@ -486,9 +486,9 @@ Partial Class IPropertiesForm
         Me.btDiaDes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btDiaDes.FlatAppearance.BorderSize = 0
         Me.btDiaDes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btDiaDes.Location = New System.Drawing.Point(35, 30)
+        Me.btDiaDes.Location = New System.Drawing.Point(35, 33)
         Me.btDiaDes.Name = "btDiaDes"
-        Me.btDiaDes.Size = New System.Drawing.Size(16, 20)
+        Me.btDiaDes.Size = New System.Drawing.Size(16, 22)
         Me.btDiaDes.TabIndex = 329
         Me.btDiaDes.Text = "Ø"
         Me.btDiaDes.UseVisualStyleBackColor = True
@@ -498,9 +498,9 @@ Partial Class IPropertiesForm
         Me.btPipes.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btPipes.FlatAppearance.BorderSize = 0
         Me.btPipes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btPipes.Location = New System.Drawing.Point(142, 198)
+        Me.btPipes.Location = New System.Drawing.Point(142, 215)
         Me.btPipes.Name = "btPipes"
-        Me.btPipes.Size = New System.Drawing.Size(35, 20)
+        Me.btPipes.Size = New System.Drawing.Size(35, 22)
         Me.btPipes.TabIndex = 331
         Me.btPipes.Text = "pipes"
         Me.btPipes.UseVisualStyleBackColor = True
@@ -509,10 +509,10 @@ Partial Class IPropertiesForm
         '
         Me.btViewNames.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btViewNames.FlatAppearance.BorderSize = 0
-        Me.btViewNames.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btViewNames.Location = New System.Drawing.Point(144, 125)
+        Me.btViewNames.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btViewNames.Location = New System.Drawing.Point(144, 135)
         Me.btViewNames.Name = "btViewNames"
-        Me.btViewNames.Size = New System.Drawing.Size(65, 20)
+        Me.btViewNames.Size = New System.Drawing.Size(65, 22)
         Me.btViewNames.TabIndex = 334
         Me.btViewNames.Text = "View Labs"
         Me.btViewNames.UseVisualStyleBackColor = True
@@ -528,11 +528,11 @@ Partial Class IPropertiesForm
         Me.tbComments.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbComments.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbComments.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbComments.Location = New System.Drawing.Point(42, 225)
+        Me.tbComments.Location = New System.Drawing.Point(42, 244)
         Me.tbComments.Multiline = True
         Me.tbComments.Name = "tbComments"
         Me.tbComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.tbComments.Size = New System.Drawing.Size(238, 39)
+        Me.tbComments.Size = New System.Drawing.Size(238, 42)
         Me.tbComments.TabIndex = 335
         '
         'tbNotes
@@ -543,17 +543,17 @@ Partial Class IPropertiesForm
         Me.tbNotes.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbNotes.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.5!)
         Me.tbNotes.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbNotes.Location = New System.Drawing.Point(42, 266)
+        Me.tbNotes.Location = New System.Drawing.Point(42, 288)
         Me.tbNotes.Multiline = True
         Me.tbNotes.Name = "tbNotes"
         Me.tbNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.tbNotes.Size = New System.Drawing.Size(238, 39)
+        Me.tbNotes.Size = New System.Drawing.Size(238, 42)
         Me.tbNotes.TabIndex = 336
         '
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(3, 225)
+        Me.Label13.Location = New System.Drawing.Point(3, 244)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(33, 13)
         Me.Label13.TabIndex = 337
@@ -562,7 +562,7 @@ Partial Class IPropertiesForm
         'Label15
         '
         Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(3, 266)
+        Me.Label15.Location = New System.Drawing.Point(3, 288)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(38, 13)
         Me.Label15.TabIndex = 338
@@ -572,10 +572,10 @@ Partial Class IPropertiesForm
         '
         Me.btRevision.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btRevision.FlatAppearance.BorderSize = 0
-        Me.btRevision.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.btRevision.Location = New System.Drawing.Point(194, 174)
+        Me.btRevision.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btRevision.Location = New System.Drawing.Point(194, 188)
         Me.btRevision.Name = "btRevision"
-        Me.btRevision.Size = New System.Drawing.Size(87, 20)
+        Me.btRevision.Size = New System.Drawing.Size(87, 22)
         Me.btRevision.TabIndex = 339
         Me.btRevision.Text = "Revision"
         Me.btRevision.UseVisualStyleBackColor = True
@@ -584,7 +584,7 @@ Partial Class IPropertiesForm
         '
         Me.lbDesigner.AutoSize = True
         Me.lbDesigner.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!)
-        Me.lbDesigner.Location = New System.Drawing.Point(3, 203)
+        Me.lbDesigner.Location = New System.Drawing.Point(3, 220)
         Me.lbDesigner.Name = "lbDesigner"
         Me.lbDesigner.Size = New System.Drawing.Size(49, 13)
         Me.lbDesigner.TabIndex = 340
@@ -593,7 +593,7 @@ Partial Class IPropertiesForm
         'lbservice
         '
         Me.lbservice.AutoSize = True
-        Me.lbservice.Location = New System.Drawing.Point(3, 82)
+        Me.lbservice.Location = New System.Drawing.Point(3, 89)
         Me.lbservice.Name = "lbservice"
         Me.lbservice.Size = New System.Drawing.Size(43, 13)
         Me.lbservice.TabIndex = 341
@@ -607,7 +607,7 @@ Partial Class IPropertiesForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbService.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.tbService.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.tbService.Location = New System.Drawing.Point(74, 82)
+        Me.tbService.Location = New System.Drawing.Point(74, 89)
         Me.tbService.Name = "tbService"
         Me.tbService.Size = New System.Drawing.Size(205, 13)
         Me.tbService.TabIndex = 342
@@ -618,9 +618,9 @@ Partial Class IPropertiesForm
         Me.btExpDXF.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btExpDXF.FlatAppearance.BorderSize = 0
         Me.btExpDXF.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btExpDXF.Location = New System.Drawing.Point(113, 198)
+        Me.btExpDXF.Location = New System.Drawing.Point(113, 215)
         Me.btExpDXF.Name = "btExpDXF"
-        Me.btExpDXF.Size = New System.Drawing.Size(30, 20)
+        Me.btExpDXF.Size = New System.Drawing.Size(30, 22)
         Me.btExpDXF.TabIndex = 343
         Me.btExpDXF.Text = "dxf"
         Me.btExpDXF.UseVisualStyleBackColor = True
@@ -631,9 +631,9 @@ Partial Class IPropertiesForm
         Me.btAttachFile.FlatAppearance.BorderSize = 0
         Me.btAttachFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btAttachFile.Image = Global.iPropertiesController.My.Resources.Resources.paperclip2
-        Me.btAttachFile.Location = New System.Drawing.Point(263, 197)
+        Me.btAttachFile.Location = New System.Drawing.Point(263, 213)
         Me.btAttachFile.Name = "btAttachFile"
-        Me.btAttachFile.Size = New System.Drawing.Size(18, 20)
+        Me.btAttachFile.Size = New System.Drawing.Size(18, 22)
         Me.btAttachFile.TabIndex = 344
         Me.btAttachFile.UseVisualStyleBackColor = True
         '
@@ -642,9 +642,9 @@ Partial Class IPropertiesForm
         Me.PictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), System.Drawing.Image)
         Me.PictureBox2.ImageLocation = ""
-        Me.PictureBox2.Location = New System.Drawing.Point(236, 10)
+        Me.PictureBox2.Location = New System.Drawing.Point(236, 11)
         Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox2.Size = New System.Drawing.Size(12, 13)
         Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.PictureBox2.TabIndex = 304
         Me.PictureBox2.TabStop = False
@@ -658,7 +658,7 @@ Partial Class IPropertiesForm
         Me.btCheckOut.Image = Global.iPropertiesController.My.Resources.Resources.CHECKOUT
         Me.btCheckOut.Location = New System.Drawing.Point(253, 3)
         Me.btCheckOut.Name = "btCheckOut"
-        Me.btCheckOut.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckOut.Size = New System.Drawing.Size(25, 27)
         Me.btCheckOut.TabIndex = 333
         Me.btCheckOut.UseVisualStyleBackColor = True
         '
@@ -669,7 +669,7 @@ Partial Class IPropertiesForm
         Me.btCheckIn.Image = Global.iPropertiesController.My.Resources.Resources.CHECKIN
         Me.btCheckIn.Location = New System.Drawing.Point(253, 3)
         Me.btCheckIn.Name = "btCheckIn"
-        Me.btCheckIn.Size = New System.Drawing.Size(25, 25)
+        Me.btCheckIn.Size = New System.Drawing.Size(25, 27)
         Me.btCheckIn.TabIndex = 332
         Me.btCheckIn.UseVisualStyleBackColor = True
         '
@@ -678,10 +678,10 @@ Partial Class IPropertiesForm
         Me.PictureBox1.BackColor = System.Drawing.SystemColors.Control
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(236, 10)
+        Me.PictureBox1.Location = New System.Drawing.Point(236, 11)
         Me.PictureBox1.Margin = New System.Windows.Forms.Padding(0)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(12, 12)
+        Me.PictureBox1.Size = New System.Drawing.Size(12, 13)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.PictureBox1.TabIndex = 303
         Me.PictureBox1.TabStop = False
@@ -691,20 +691,20 @@ Partial Class IPropertiesForm
         Me.btFrame.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control
         Me.btFrame.FlatAppearance.BorderSize = 0
         Me.btFrame.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btFrame.Location = New System.Drawing.Point(103, 198)
+        Me.btFrame.Location = New System.Drawing.Point(103, 215)
         Me.btFrame.Name = "btFrame"
-        Me.btFrame.Size = New System.Drawing.Size(40, 20)
+        Me.btFrame.Size = New System.Drawing.Size(40, 22)
         Me.btFrame.TabIndex = 345
         Me.btFrame.Text = "Frame"
         Me.btFrame.UseVisualStyleBackColor = True
         '
         'IPropertiesForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(285, 404)
+        Me.ClientSize = New System.Drawing.Size(285, 438)
         Me.Controls.Add(Me.lbDesigner)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.Label13)
@@ -719,7 +719,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.btCheckOut)
@@ -749,7 +748,6 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.tbStockNumber)
         Me.Controls.Add(Me.btCopyPN)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.tbDensity)
         Me.Controls.Add(Me.btITEM)
         Me.Controls.Add(Me.btReNum)
         Me.Controls.Add(Me.Label12)
@@ -758,6 +756,8 @@ Partial Class IPropertiesForm
         Me.Controls.Add(Me.btShtMaterial)
         Me.Controls.Add(Me.btShtScale)
         Me.Controls.Add(Me.btViewNames)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.tbDensity)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "IPropertiesForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
