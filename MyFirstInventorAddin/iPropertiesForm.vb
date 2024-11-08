@@ -12,7 +12,7 @@ Public Class IPropertiesForm
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
     Public customMargin As Integer = 5
     Public customSize As Size = Me.ClientSize
-    Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
+    'Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
 
     Public Sub GetNewFilePaths()
         If inventorApp.ActiveDocument IsNot Nothing Then
@@ -74,7 +74,7 @@ Public Class IPropertiesForm
 
     Public Sub New(ByVal inventorApp As Inventor.Application) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
-            log.Debug("Loading iProperties Form")
+            'log.Debug("Loading iProperties Form")
             InitializeComponent()
 
             'Me.KeyPreview = True
@@ -98,9 +98,9 @@ Public Class IPropertiesForm
             'localWindow = myDockableWindow
             'AddinGlobal.DockableList.Add(myDockableWindow)
         Catch ex As Exception
-            log.Error(ex.Message)
+            'log.Error(ex.Message)
         End Try
-        log.Info("iProperties Form Loaded")
+        'log.Info("iProperties Form Loaded")
 
     End Sub
 
@@ -129,12 +129,12 @@ Public Class IPropertiesForm
                     Dim kgMass As Decimal = myMass / 1000
                     Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                     tbMass.Text = myMass2 & " kg"
-                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbMass.Text)
+                    'log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbMass.Text)
 
                     Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                     Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                     tbDensity.Text = myDensity2 & " g/cm^3"
-                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                    'log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbDensity.Text)
 
                     Label12.Text = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
 
@@ -144,12 +144,12 @@ Public Class IPropertiesForm
                     Dim kgMass As Decimal = myMass / 1000
                     Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                     tbMass.Text = myMass2 & " kg"
-                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+                    'log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
 
                     Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                     Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                     tbDensity.Text = myDensity2 & " g/cm^3"
-                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                    'log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
 
                     Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
                 End If
@@ -158,12 +158,12 @@ Public Class IPropertiesForm
                 Dim kgMass As Decimal = myMass / 1000
                 Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                 tbMass.Text = myMass2 & " kg"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
 
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                 Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                 tbDensity.Text = myDensity2 & " g/cm^3"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
 
                 Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
             End If
@@ -240,7 +240,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -250,7 +250,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties(inventorApp.ActiveEditObject)
-            log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -260,7 +260,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties(selecteddoc)
-            log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
         End If
@@ -271,7 +271,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -281,7 +281,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -614,9 +614,9 @@ Public Class IPropertiesForm
             oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
         Catch ex As Exception When MaterialTextBox Is Nothing
             UpdateStatusBar("No compatible drawing open!")
-            log.Error(ex.Message)
+            'log.Error(ex.Message)
         Catch ex As Exception
-            log.Error(ex.Message)
+            'log.Error(ex.Message)
         End Try
         UpdateStatusBar("Drawing material set")
     End Sub
@@ -1924,7 +1924,7 @@ Public Class IPropertiesForm
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp, drawnDoc)
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp)
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
                 'iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
@@ -1938,7 +1938,7 @@ Public Class IPropertiesForm
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", iPropRev, iProp)
 
 
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
                 UpdateStatusBar("Revision updated to " + iPropRev)
             End If
         End If
