@@ -4,7 +4,7 @@ Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Windows.Forms
 Imports Inventor
-Imports log4net
+Imports Serilog
 
 Namespace iPropertiesController
 
@@ -41,7 +41,7 @@ Namespace iPropertiesController
         Public AllowFileToSaveAs As Boolean = True
 
         'Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
-        'Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesAddInServer))
+        'Private Shared ReadOnly log As ILogger = Log.ForContext(Of iPropertiesAddInServer)()
 
         'Private WithEvents m_sampleButton As ButtonDefinition
 
@@ -52,6 +52,7 @@ Namespace iPropertiesController
         ' the first time. However, with the introduction of the ribbon this argument is always true.
         Public Sub Activate(ByVal addInSiteObject As ApplicationAddInSite, ByVal firstTime As Boolean) Implements ApplicationAddInServer.Activate
             ' Initialize AddIn members.
+            Log.Information("Activating iPropertiesAddInServer")
             AddinGlobal.InventorApp = addInSiteObject.Application
             'new versioning display method borrowed from here: https://stackoverflow.com/a/826850/572634
             thisVersion = Assembly.GetExecutingAssembly().GetName().Version
@@ -62,6 +63,17 @@ Namespace iPropertiesController
             attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
             Try
 
+                ' Initialize Serilog
+                Dim logPath As String = IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "Autodesk", "Inventor Addins", "iPropertiesController", "iPropertiesController.log")
+                Directory.CreateDirectory(IO.Path.GetDirectoryName(logPath))
+                Dim loggerConfig = New LoggerConfiguration()
+                With loggerConfig
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .WriteTo.File(logPath, rollingInterval:=Serilog.RollingInterval.Day, retainedFileCountLimit:=7)
+                End With
+                Log.Logger = loggerConfig.CreateLogger()
+
                 AddinGlobal.GetAddinClassId(Me.GetType())
                 'store our Addin path.
                 thisAssemblyPath = IO.Path.GetDirectoryName(thisAssembly.Location)
@@ -71,12 +83,14 @@ Namespace iPropertiesController
                 m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
                 m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
                 m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
+                Log.Debug("Event objects initialized")
 
                 AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
                 AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
                 AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
                 AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
                 AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
+                Log.Debug("Application event handlers registered")
 
                 AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
                 AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
@@ -85,6 +99,7 @@ Namespace iPropertiesController
                 If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                     m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
                     AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
+                    Log.Debug("Document select-set change handler registered for active document")
                 End If
 
                 AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
@@ -93,12 +108,7 @@ Namespace iPropertiesController
 
                 AddHandler m_AppEvents.OnCloseDocument, AddressOf Me.m_ApplicationEvents_OnCloseDocument
 
-                'start our logger.
-                'logHelper.Init()
-                'logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "iPropertiesController.log"))
-                'logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
-                'logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
-                'log.Debug("Loading My First Inventor Addin")
+                Log.Information("Loading My First Inventor Addin")
                 ' TODO: Add button definitions.
 
                 ' Sample to illustrate creating a button definition.
@@ -116,6 +126,7 @@ Namespace iPropertiesController
 
                 ' Add to the user interface, if it's the first time.
                 If firstTime Then
+                    Log.Information("First-time initialization: adding UI and dockable window")
                     AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
@@ -150,10 +161,11 @@ Namespace iPropertiesController
                     'Window = localWindow
 
                 End If
-                'log.Info("Loaded My First Inventor Add-in")
+                Log.Information("Loaded My First Inventor Add-in")
             Catch ex As Exception
-                'log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
+            Log.Information("Activation complete")
         End Sub
 
         Private Sub SwitchTheme(ByRef myiPropsForm As IPropertiesForm, Optional DarkTheme As Boolean = False)
@@ -202,6 +214,7 @@ Namespace iPropertiesController
         End Function
 
         Private Sub m_UserInputEvents_OnTerminateCommand(CommandName As String, Context As NameValueMap)
+            Log.Debug("Terminate command: {CommandName}", CommandName)
             Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
             If TypeOf oDoc Is DrawingDocument Then
                 Dim oDWG = AddinGlobal.InventorApp.ActiveDocument
@@ -213,6 +226,7 @@ Namespace iPropertiesController
                 Dim DrawDesc As String = iProperties.GetorSetStandardiProperty(oDWG, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
 
                 If DrawDesc = String.Empty Then
+                    Log.Debug("Drawing description empty; handling base view command")
 
                     If CommandName = "DrawingBaseViewCmd" Then
 
@@ -222,6 +236,7 @@ Namespace iPropertiesController
                         Next
 
                         If oView IsNot Nothing Then
+                            Log.Debug("Base view found; syncing description/part number from referenced doc")
 
                             drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
 
@@ -238,12 +253,14 @@ Namespace iPropertiesController
                 End If
             Else
                 If TypeOf oDoc Is PartDocument Then
+                    Log.Debug("Terminate command in PartDocument: {CommandName}", CommandName)
                     Dim oPartDoc As PartDocument = oDoc
                     If CommandName = "SheetMetalStylesCmd" Then
                         Dim partcompdef As PartComponentDefinition = oPartDoc.ComponentDefinition
                         Dim sheetmetalcompdef As SheetMetalComponentDefinition = partcompdef
                         Dim oUnfoldMethod As String = sheetmetalcompdef.UnfoldMethod.Name
                         UpdateCustomiProperty(oDoc, "Sheet Metal Rule", oUnfoldMethod)
+                        Log.Information("Updated custom iProperty 'Sheet Metal Rule' to {Rule}", oUnfoldMethod)
                     End If
                 End If
             End If
@@ -304,6 +321,7 @@ Namespace iPropertiesController
                                 myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
                                 UpdateStatusBar("Updates are now Deferred")
                                 MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
+                                Log.Information("Deferred updates enabled during Vault check-in")
                             End If
                         End If
                     End If
@@ -315,6 +333,7 @@ Namespace iPropertiesController
                         If Not PartNo = StockNo Then
                             stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
                             If stockNum = vbNo Then
+                                Log.Warning("Check-in aborted: Stock Number and Part Number differ")
                                 Exit Sub
                             End If
                         End If
@@ -325,6 +344,7 @@ Namespace iPropertiesController
 
                         Dim flatName As String = myiPropsForm.tbPartNumber.Text
                         Clipboard.SetText(flatName)
+                        Log.Information("Copied part number '{PartNumber}' to clipboard for DXF", flatName)
                     End If
 
                     'Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
@@ -356,6 +376,7 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As Inventor.View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Log.Debug("OnActivateView: updating form and properties")
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 'check if the form exists in case the user hasn't enabled it in the browser yet.
                 If myiPropsForm IsNot Nothing Then
@@ -420,6 +441,7 @@ Namespace iPropertiesController
 
         Public Shared Sub ShowOccurrenceProperties(AssyDoc As AssemblyDocument)
             If AssyDoc.SelectSet.Count = 1 Then
+                Log.Debug("ShowOccurrenceProperties: one occurrence selected")
                 Dim selecteddoc As Document = Nothing
                 Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
                 Dim def As ComponentDefinition
@@ -456,6 +478,7 @@ Namespace iPropertiesController
 
         Private Sub m_StyleEvents_OnActivateStyle(DocumentObject As _Document, Material As Object, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Log.Debug("OnActivateStyle: recalculating mass/density/material")
                 If (AddinGlobal.InventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject) Then
                     If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
                         Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
@@ -475,6 +498,7 @@ Namespace iPropertiesController
                             PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                         Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                         myiPropsForm.tbDensity.Text = myDensity2 & " g/cm^3"
+                        If Log.IsEnabled(Serilog.Events.LogEventLevel.Debug) Then Log.Debug("Updated mass {MassKg}kg and density {Density} for {Doc}", myMass2, myDensity2, DocumentToPulliPropValuesFrom.FullFileName)
 
                         myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(
                            DocumentToPulliPropValuesFrom,
@@ -559,6 +583,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbComments.ReadOnly = False
                                     myiPropsForm.tbNotes.ReadOnly = False
                                     UpdateDisplayediProperties(AssyDoc)
+                                    Log.Debug("Updated properties for assembly document after selection change")
                                 End If
                             ElseIf AssyDoc.SelectSet.Count = 0 Then
                                 If AddinGlobal.InventorApp.ActiveEditDocument Is Nothing Then
@@ -631,6 +656,7 @@ Namespace iPropertiesController
                                     myiPropsForm.tbComments.ReadOnly = False
                                     myiPropsForm.tbNotes.ReadOnly = False
                                     UpdateDisplayediProperties(PartDoc)
+                                    Log.Debug("Updated properties for part document after selection change")
                                 End If
                             Else
                                 myiPropsForm.tbPartNumber.ReadOnly = False
@@ -641,6 +667,7 @@ Namespace iPropertiesController
                                 myiPropsForm.tbComments.ReadOnly = False
                                 myiPropsForm.tbNotes.ReadOnly = False
                                 UpdateDisplayediProperties(PartDoc)
+                                Log.Debug("Updated properties for part document (no selection)")
                             End If
                         Else
                             'If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject) Then
@@ -668,6 +695,7 @@ Namespace iPropertiesController
 
                             UpdateFormTextBoxColours()
                             UpdateDisplayediProperties(DrawDoc)
+                            Log.Debug("Updated properties for drawing document after selection change")
 
                         End If
                         'End If
@@ -693,12 +721,14 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kBefore Then
                 InventorAppQuitting = True
+                Log.Information("Inventor application quitting")
             End If
         End Sub
 
         Private Sub m_ApplicationEvents_OnSaveDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
 
             If BeforeOrAfter = EventTimingEnum.kBefore Then
+                Log.Information("OnSaveDocument BEFORE for {Doc}", DocumentObject.FullFileName)
                 'put stuff in here that you want Inventor to do prior to saving the file.
                 'things such as checking the material is set from something other than generic
                 ' and then the messagebox if whatever you're checking returns as true:
@@ -712,6 +742,7 @@ Namespace iPropertiesController
             End If
 
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Log.Information("OnSaveDocument AFTER for {Doc}", DocumentObject.FullFileName)
                 UpdateDisplayediProperties()
                 myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
                 myiPropsForm.GetNewFilePaths()
@@ -726,6 +757,7 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnActivateDocument(DocumentObject As _Document, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Log.Information("OnActivateDocument {Doc}", DocumentObject.FullFileName)
                 m_DocEvents = DocumentObject.DocumentEvents
                 AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
@@ -741,6 +773,7 @@ Namespace iPropertiesController
 
         Private Sub m_ApplicationEvents_OnOpenDocument(DocumentObject As _Document, FullDocumentName As String, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
+                Log.Information("OnOpenDocument {Doc}", FullDocumentName)
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
                 'this change prevents this firing for EVERY opening file.
                 If DocumentObject Is AddinGlobal.InventorApp.ActiveDocument Then
@@ -1128,7 +1161,7 @@ Namespace iPropertiesController
                     Return False
                 End If
             Catch ex As Exception
-                'log.Error(ex.Message)
+                Log.Error(ex, "CheckReadOnly failed for {Doc}", If(doc IsNot Nothing, doc.FullFileName, "(null)"))
             End Try
         End Function
 
@@ -1136,6 +1169,7 @@ Namespace iPropertiesController
         ' unloaded either manually by the user or when the Inventor session is terminated.
         Public Sub Deactivate() Implements Inventor.ApplicationAddInServer.Deactivate
             Try
+                Log.Information("Deactivating iPropertiesAddInServer")
                 ' TODO:  Add ApplicationAddInServer.Deactivate implementation
                 For Each item As InventorButton In AddinGlobal.ButtonList
                     Marshal.FinalReleaseComObject(item.ButtonDef)
@@ -1171,8 +1205,9 @@ Namespace iPropertiesController
 
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
+                Log.Information("Deactivation complete")
             Catch ex As Exception
-                'log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
         End Sub
 
@@ -1252,7 +1287,7 @@ Namespace iPropertiesController
                     cmdCtrls.AddButton(button1.ButtonDef, button1.DisplayBigIcon, button1.DisplayText, "", button1.InsertBeforeTarget)
                 End If
             Catch ex As Exception
-                'log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
         End Sub
 

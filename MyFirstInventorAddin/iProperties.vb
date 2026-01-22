@@ -131,34 +131,37 @@ Namespace iPropertiesController
         ''' <param name="PropertyValue">the optional value to assign - if empty we are retrieving a value</param>
         ''' <returns></returns>
         Friend Shared Function SetorCreateCustomiProperty(ByVal Doc As Inventor.Document, ByVal PropertyName As String, Optional ByVal PropertyValue As Object = Nothing) As Object
-            ' Get the custom property set.
-            Dim customPropSet As Inventor.PropertySet
-            Dim customproperty As Object = Nothing
+			' Get the custom property set.
+			Dim customPropSet As Inventor.PropertySet
+			Dim customproperty As Object = Nothing
 
-            customPropSet = Doc.PropertySets.Item("Inventor User Defined Properties")
+			customPropSet = Doc.PropertySets.Item("Inventor User Defined Properties")
 
-            ' Get the existing property, if it exists.
-            Dim prop As Inventor.Property = Nothing
-            Dim propExists As Boolean = True
-            Try
-                prop = customPropSet.Item(PropertyName)
-            Catch ex As Exception
-                propExists = False
-            End Try
-            If PropertyValue IsNot Nothing Then
-                ' Check to see if the property was successfully obtained.
-                If Not propExists Then
-                    ' Failed to get the existing property so create a new one.
-                    prop = customPropSet.Add(PropertyValue, PropertyName)
-                Else
-                    ' Change the value of the existing property.
-                    prop.Value = PropertyValue
-                End If
-            Else
-                customproperty = prop.Value
-            End If
-            Return customproperty
-        End Function
+			' Get the existing property, if it exists.
+			Dim prop As Inventor.Property = Nothing
+			Dim propExists As Boolean = True
+			Try
+				prop = customPropSet.Item(PropertyName)
+			Catch ex As Exception
+				propExists = False
+			End Try
+			If PropertyValue IsNot Nothing Then
+				' Check to see if the property was successfully obtained.
+				If Not propExists Then
+					' Failed to get the existing property so create a new one.
+					prop = customPropSet.Add(PropertyValue, PropertyName)
+					If prop IsNot Nothing Then
+						customproperty = prop
+					End If
+				Else
+					' Change the value of the existing property.
+					prop.Value = PropertyValue
+				End If
+			Else
+				customproperty = prop.Value
+			End If
+			Return customproperty
+		End Function
 
 #End Region
 
