@@ -3,6 +3,7 @@ Imports System.Windows.Forms
 Imports Inventor
 Imports iPropertiesController.iPropertiesController
 Imports Serilog
+Imports Serilog.Core
 Imports Serilog.Events
 
 Public Class IPropertiesForm
@@ -13,7 +14,7 @@ Public Class IPropertiesForm
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
     Public customMargin As Integer = 5
     Public customSize As Size = Me.ClientSize
-    Private ReadOnly log As ILogger = log.ForContext(Of IPropertiesForm)()
+    Public ReadOnly log As ILogger = Nothing
 
     Public Sub GetNewFilePaths()
         If inventorApp.ActiveDocument IsNot Nothing Then
@@ -73,7 +74,7 @@ Public Class IPropertiesForm
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
-    Public Sub New(ByVal inventorApp As Inventor.Application) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+    Public Sub New(ByVal inventorApp As Inventor.Application, log As Logger) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
         Try
             log.Information("Initializing iProperties form")
             InitializeComponent()
@@ -2083,6 +2084,7 @@ Public Class IPropertiesForm
             If tbPartNumber.Text.Length > 0 Then
                 tbStockNumber.Text = tbPartNumber.Text
                 tbStockNumber_Leave(sender, e)
+                log.Information($"Part Number copied: {tbPartNumber.Text}")
             End If
         End If
     End Sub
