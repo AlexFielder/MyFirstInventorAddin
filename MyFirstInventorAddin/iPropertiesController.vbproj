@@ -20,7 +20,13 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- Generates version, title, company etc. from the properties below; AssemblyInfo.vb only adds the COM GUID. -->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!-- AssemblyVersion uses a wildcard revision, which the compiler only allows in non-deterministic builds. -->
+    <Deterministic>false</Deterministic>
+    <Version>16.0.0</Version>
+    <!-- Win32 file versions cannot contain a wildcard, so don't inherit AssemblyVersion. -->
+    <FileVersion>16.0.0.0</FileVersion>
 	<UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <ProjectName Condition=" '$(ProjectName)' == '' ">iPropertiesController</ProjectName>
@@ -147,7 +153,7 @@ cd "$(ProjectDir)\Installer"
     <Description>iPropertiesController for Autodesk Inventor</Description>
     <Company>the-war-horse, alexf.</Company>
     <Product>Autodesk Inventor iPropertiesController</Product>
-    <Copyright>Copyright %3f2017 the-war-horse, alexf.</Copyright>
+    <Copyright>Copyright © 2017 the-war-horse, alexf.</Copyright>
     <AssemblyVersion>16.0.0.%2a</AssemblyVersion>
     <ImportedNamespaces>System.Windows=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
