@@ -241,3 +241,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 nppBackup/
+
+# Inno Setup installer output
+MyFirstInventorAddin/Installer/Output/
