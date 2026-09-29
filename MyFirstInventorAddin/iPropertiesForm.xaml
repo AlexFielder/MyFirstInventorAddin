@@ -176,6 +176,14 @@
                        HorizontalAlignment="Stretch" TextWrapping="Wrap" FontSize="8.67" Cursor="Hand" />
             <TextBlock x:Name="ModelFileLocation" Text="Model File location" Margin="3,373,12,0" Height="44"
                        HorizontalAlignment="Stretch" TextWrapping="Wrap" FontSize="8.67" Cursor="Hand" />
+
+            <!-- Shown when the licence server offers an update; click to install. -->
+            <Border x:Name="UpdateBanner" Margin="3,419,6,0" Height="19" VerticalAlignment="Top"
+                    Background="{DynamicResource ControlBack}" BorderBrush="{DynamicResource PanelFore}"
+                    BorderThickness="1" Cursor="Hand" Visibility="Collapsed">
+                <TextBlock x:Name="UpdateBannerText" Margin="4,1" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" FontSize="10" />
+            </Border>
         </Grid>
     </ScrollViewer>
 </UserControl>

@@ -1,0 +1,64 @@
+<Window x:Class="iPropertiesController.Licensing.LicenceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="iPropertiesController licence"
+        Width="460" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="14,3" />
+            <Setter Property="MinWidth" Value="80" />
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="Margin" Value="0,3,14,3" />
+        </Style>
+        <Style x:Key="Value" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="18">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+                <RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Style="{StaticResource Label}" Text="Licensed to" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource Value}" x:Name="EmailText" />
+            <TextBlock Grid.Row="1" Style="{StaticResource Label}" Text="Organisation" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Value}" x:Name="CustomerText" />
+            <TextBlock Grid.Row="2" Style="{StaticResource Label}" Text="Licence type" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Value}" x:Name="LicenceTypeText" />
+            <TextBlock Grid.Row="3" Style="{StaticResource Label}" Text="Licence expires" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Value}" x:Name="ExpiresText" />
+            <TextBlock Grid.Row="4" Style="{StaticResource Label}" Text="Renewed until" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource Value}" x:Name="LeaseText" />
+            <TextBlock Grid.Row="5" Style="{StaticResource Label}" Text="Installed version" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Value}" x:Name="VersionText" />
+            <TextBlock Grid.Row="6" Style="{StaticResource Label}" Text="This PC" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource Value}" x:Name="InstallIdText" FontFamily="Consolas" />
+            <TextBlock Grid.Row="7" Style="{StaticResource Label}" Text="Licence ID" />
+            <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource Value}" x:Name="LicenseIdText" FontFamily="Consolas" />
+        </Grid>
+
+        <TextBlock x:Name="UpdateText" TextWrapping="Wrap" Margin="0,14,0,0" Visibility="Collapsed" />
+        <TextBox x:Name="ReleaseNotesBox" Visibility="Collapsed" IsReadOnly="True" TextWrapping="Wrap"
+                 MaxHeight="120" VerticalScrollBarVisibility="Auto" Margin="0,6,0,0" />
+        <TextBlock x:Name="StatusText" TextWrapping="Wrap" Margin="0,10,0,0"
+                   Foreground="Firebrick" Visibility="Collapsed" />
+
+        <WrapPanel Margin="0,18,0,0">
+            <Button x:Name="CheckUpdatesButton" Content="Check for updates" Margin="0,0,8,0" />
+            <Button x:Name="InstallUpdateButton" Content="Install update" Margin="0,0,8,0" Visibility="Collapsed" />
+            <Button x:Name="DeactivateButton" Content="Deactivate this PC" Margin="0,0,8,0" />
+        </WrapPanel>
+        <Button x:Name="CloseButton" Content="Close" IsCancel="True" IsDefault="True"
+                HorizontalAlignment="Right" Margin="0,12,0,0" />
+    </StackPanel>
+</Window>

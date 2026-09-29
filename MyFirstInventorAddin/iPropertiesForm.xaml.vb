@@ -42,6 +42,24 @@ Partial Public Class IPropertiesForm
         If e.Key = Key.Back OrElse e.Key = Key.Delete Then MarkFieldEdited(e.OriginalSource)
     End Sub
 
+#Region "Update offer"
+
+    ' Raised when the user clicks the update line at the bottom of the panel.
+    Public Event UpdateBannerClicked As EventHandler
+
+    Public Sub ShowUpdateOffer(latestVersion As String, isRequired As Boolean)
+        UpdateBannerText.Text = If(isRequired,
+                                   $"Update required: iPropertiesController {latestVersion} - click to install",
+                                   $"iPropertiesController {latestVersion} is available - click to install")
+        UpdateBanner.Visibility = System.Windows.Visibility.Visible
+    End Sub
+
+    Private Sub UpdateBanner_Click(sender As Object, e As MouseEventArgs) Handles UpdateBanner.MouseLeftButtonUp
+        RaiseEvent UpdateBannerClicked(Me, EventArgs.Empty)
+    End Sub
+
+#End Region
+
 #Region "Usage tracking"
 
     ' Readable feature names for the panel's buttons, keyed by x:Name (see UsageTracking.vb).
