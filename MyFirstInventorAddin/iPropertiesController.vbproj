@@ -30,9 +30,6 @@
     <PropertyGroup>
     <OptionExplicit>Off</OptionExplicit>
   </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\CHECKIN.png" />
     <None Remove="Resources\CHECKOUT.png" />
@@ -141,20 +138,6 @@
 		<Service Include="{e691af34-cb32-4296-8cca-5d1027a27c72}" />
 	</ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo Configuration: $(Configuration)
-	echo SolutionDir: $(SolutionDir)
-echo OutDir: $(OutDir)
-echo ProjectDir: $(ProjectDir)
-echo ProjectName: $(ProjectName)
-echo TargetDir: $(TargetDir)
-if "$(Configuration)"=="Debug" (
-XCopy "$(TargetDir)*.*" "C:\ProgramData\Autodesk\Inventor Addins\$(ProjectName)\*.*" /Y /R
-if not exist "C:\Logs" mkdir "C:\Logs"
-)
-if "$(Configuration)"=="Release" (
-cd "$(ProjectDir)\Installer"
-"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer.iss"
-)</PostBuildEvent>
     <ImportedNamespaces>System.Windows=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -185,5 +168,23 @@ cd "$(ProjectDir)\Installer"
     </PropertyGroup>
     <Exec Condition="Exists('$(TextTransformExe)')" Command="call &quot;$(TextTransformExe)&quot; -a &quot;!!BuildConfiguration!$(Configuration)&quot; &quot;$(ProjectDir)AssemblyInfo.tt&quot;" />
     <Warning Condition="!Exists('$(TextTransformExe)')" Text="TextTransform.exe not found - skipping T4 version bump; using committed AssemblyInfo.vb as-is." />
+  </Target>
+  <Target Name="DeployOrPackage" AfterTargets="PostBuildEvent" Condition="'$(SkipAddinDeploy)' != 'true'">
+    <!--
+      Debug: copy the build output into Inventor's all-users add-in folder so the next Inventor
+      start loads it (fails while Inventor has the DLL loaded - close Inventor first).
+      Release: compile the installer (Installer\Installer.iss). Inno Setup ships separately, so
+      skip with a warning where it is not installed.
+      Pass -p:SkipAddinDeploy=true to build without either step.
+      This replaces a PostBuildEvent property: in SDK-style projects $(TargetDir), $(ProjectDir)
+      etc. are still empty when such a property is evaluated.
+    -->
+    <PropertyGroup>
+      <AddinDeployDir Condition="'$(AddinDeployDir)' == ''">$(ProgramData)\Autodesk\Inventor Addins\$(ProjectName)</AddinDeployDir>
+      <InnoSetupCompiler>C:\Program Files (x86)\Inno Setup 6\ISCC.exe</InnoSetupCompiler>
+    </PropertyGroup>
+    <Exec Condition="'$(Configuration)' == 'Debug'" Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;$(AddinDeployDir)\*.*&quot; /Y /R" />
+    <Exec Condition="'$(Configuration)' == 'Release' And Exists('$(InnoSetupCompiler)')" WorkingDirectory="$(ProjectDir)Installer" Command="&quot;$(InnoSetupCompiler)&quot; Installer.iss" />
+    <Warning Condition="'$(Configuration)' == 'Release' And !Exists('$(InnoSetupCompiler)')" Text="Inno Setup not found at $(InnoSetupCompiler) - skipping the installer build." />
   </Target>
 </Project>
