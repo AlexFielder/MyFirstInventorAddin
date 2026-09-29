@@ -8,10 +8,11 @@ Imports PkgContracts = AFAutomations.Licensing.Contracts
 Namespace iPropertiesController.Licensing
 
     ' Public keys that verify licences, keyId -> base64 SubjectPublicKeyInfo (ECDSA P-256). Safe to ship:
-    ' they can check a licence but not mint one. The production key afa-lc-2026 is generated when the
-    ' licence server is deployed; until a key is listed here the add-in stays unlicensed.
+    ' they can check a licence but not mint one. To rotate, add the new key alongside the old one so
+    ' licences signed by either stay valid; with no key listed the add-in stays unlicensed.
     Public Module LicensingKeys
         Public ReadOnly PublicKeys As IReadOnlyDictionary(Of String, String) = New Dictionary(Of String, String) From {
+            {"afa-lc-2026", "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECay13Fy2oLeFVG05cBsTiyNgwZCSgKRIYOfOVJNjGuDG6KXW+2240PHwsYR1LlGtW211MUKI+d8+X9Cz0YQNbg=="}
         }
     End Module
 
