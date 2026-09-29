@@ -35,11 +35,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 ;Source: "..\bin\Release\autodesk.inventor.interop.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Autodesk.iPropertiesController.Inventor.addin"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\iPropertiesController.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\log4net.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\Log4NetFileHelper.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\Log4NetFileHelper.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\Log4NetFileHelper.xml"; DestDir: "{app}"; Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

@@ -44,7 +44,6 @@ Namespace iPropertiesController
         Public AllowFileToSave As Boolean = True
         Public AllowFileToSaveAs As Boolean = True
 
-        'Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
         'Private Shared ReadOnly log As ILogger = Log.ForContext(Of iPropertiesAddInServer)()
 
         'Private WithEvents m_sampleButton As ButtonDefinition
