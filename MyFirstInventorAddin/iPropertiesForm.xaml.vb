@@ -40,7 +40,91 @@ Partial Public Class IPropertiesForm
     ' focus on the original text box so its KeyUp handler still receives the key.
     Private Sub IPropertiesForm_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles Me.PreviewKeyDown
         If e.Key = Key.Tab Then e.Handled = True
+        If e.Key = Key.Back OrElse e.Key = Key.Delete Then MarkFieldEdited(e.OriginalSource)
     End Sub
+
+#Region "Usage tracking"
+
+    ' Readable feature names for the panel's buttons, keyed by x:Name (see UsageTracking.vb).
+    Private Shared ReadOnly ButtonFeatures As New Dictionary(Of String, String) From {
+        {"btUpdateAll", "Update iProperties"},
+        {"btDefer", "Toggle drawing defer updates"},
+        {"btITEM", "Copy BOM item numbers to #ITEM"},
+        {"btShtMaterial", "Set sheet material"},
+        {"btShtScale", "Set sheet scale"},
+        {"btDiaEng", "Insert Ø in engineer"},
+        {"btDegEng", "Insert ° in engineer"},
+        {"btDiaDes", "Insert Ø in description"},
+        {"btDegDes", "Insert ° in description"},
+        {"btExpStp", "Export STEP"},
+        {"btExpStl", "Export STL"},
+        {"btExpPdf", "Export PDF"},
+        {"btExpDXF", "Export DXF"},
+        {"btReNum", "Renumber BOM"},
+        {"btCopyPN", "Copy part number to stock number"},
+        {"btPipes", "Batch export pipe STEP files"},
+        {"btViewNames", "Label drawing views"},
+        {"btRevision", "Add revision"},
+        {"btAttachFile", "Attach file"},
+        {"btCheckOut", "Vault check out"},
+        {"btCheckIn", "Vault check in"},
+        {"btFrame", "Rename frame members"}
+    }
+
+    ' iProperty fields whose edits are tracked, keyed by x:Name, named as the panel labels them.
+    Private Shared ReadOnly EditableFields As New Dictionary(Of String, String) From {
+        {"tbPartNumber", "Part Number"},
+        {"tbDescription", "Description"},
+        {"tbStockNumber", "Stock Number"},
+        {"tbEngineer", "Engineer"},
+        {"tbDrawnBy", "Drawn By"},
+        {"tbRevNo", "Revision"},
+        {"tbService", "Service"},
+        {"tbComments", "Comments"},
+        {"tbNotes", "Notes"}
+    }
+
+    ' Fields the user has typed, pasted, cut or deleted in since they were last committed. Only
+    ' these count as edits: the add-in server also sets field text whenever the document changes.
+    Private ReadOnly _editedFields As New HashSet(Of String)
+
+    ' Panel-level handlers, so every button and field is covered without changing their handlers.
+    ' They run after the control's own handler, i.e. once the feature has done its work.
+    Private Sub WireUsageTracking()
+        Me.[AddHandler](System.Windows.Controls.Primitives.ButtonBase.ClickEvent, New RoutedEventHandler(AddressOf Panel_ButtonClick))
+        Me.[AddHandler](UIElement.PreviewTextInputEvent, New System.Windows.Input.TextCompositionEventHandler(Sub(s, e) MarkFieldEdited(e.OriginalSource)))
+        Me.[AddHandler](System.Windows.Input.CommandManager.PreviewExecutedEvent, New System.Windows.Input.ExecutedRoutedEventHandler(AddressOf Panel_CommandExecuted))
+        Me.[AddHandler](UIElement.LostFocusEvent, New RoutedEventHandler(Sub(s, e) CommitFieldEdit(e.OriginalSource)))
+    End Sub
+
+    Private Sub Panel_ButtonClick(sender As Object, e As RoutedEventArgs)
+        Dim button = TryCast(e.OriginalSource, FrameworkElement)
+        Dim feature As String = Nothing
+        If button IsNot Nothing AndAlso ButtonFeatures.TryGetValue(button.Name, feature) Then TrackUsage(feature)
+    End Sub
+
+    Private Sub Panel_CommandExecuted(sender As Object, e As System.Windows.Input.ExecutedRoutedEventArgs)
+        If e.Command Is System.Windows.Input.ApplicationCommands.Paste OrElse e.Command Is System.Windows.Input.ApplicationCommands.Cut Then
+            MarkFieldEdited(e.OriginalSource)
+        End If
+    End Sub
+
+    ' Enter commits a field through its KeyUp handler, which runs before this one.
+    Private Sub IPropertiesForm_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+        If e.Key = Key.Return Then CommitFieldEdit(e.OriginalSource)
+    End Sub
+
+    Private Sub MarkFieldEdited(source As Object)
+        Dim field = TryCast(source, System.Windows.Controls.TextBox)
+        If field IsNot Nothing AndAlso EditableFields.ContainsKey(field.Name) Then _editedFields.Add(field.Name)
+    End Sub
+
+    Private Sub CommitFieldEdit(source As Object)
+        Dim field = TryCast(source, System.Windows.Controls.TextBox)
+        If field IsNot Nothing AndAlso _editedFields.Remove(field.Name) Then TrackUsage("Edit iProperty", EditableFields(field.Name))
+    End Sub
+
+#End Region
 
     Public Sub GetNewFilePaths()
         If inventorApp.ActiveDocument IsNot Nothing Then
@@ -107,6 +191,7 @@ Partial Public Class IPropertiesForm
         Try
             log.Information("Initializing iProperties form")
             InitializeComponent()
+            WireUsageTracking()
 
             'Me.KeyPreview = True
             Me.inventorApp = inventorApp
@@ -416,6 +501,7 @@ Partial Public Class IPropertiesForm
 
                 inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = picked
                 UpdateStatusBar("Creation date updated to " & picked.ToShortDateString())
+                TrackUsage("Edit iProperty", "Drawn Date")
             End If
         End If
     End Sub
@@ -547,6 +633,7 @@ Partial Public Class IPropertiesForm
 
     Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.PreviewMouseLeftButtonUp
         tbMass_Enter(sender, e)
+        TrackUsage("Copy mass")
     End Sub
 
     Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.GotFocus
@@ -558,6 +645,7 @@ Partial Public Class IPropertiesForm
 
     Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.PreviewMouseLeftButtonUp
         tbDensity_Enter(sender, e)
+        TrackUsage("Copy density")
     End Sub
 
     Private Sub UpdateStatusBar(ByVal Message As String)
@@ -1586,6 +1674,7 @@ Partial Public Class IPropertiesForm
     End Sub
 
     Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.MouseLeftButtonUp
+        TrackUsage("Open file location")
         If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
             If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
                 If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
@@ -1915,6 +2004,7 @@ Partial Public Class IPropertiesForm
     End Sub
 
     Private Sub ModelFileLocation_Click(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeftButtonUp
+        TrackUsage("Open model file location")
         If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
             Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 

@@ -80,7 +80,23 @@ Namespace iPropertiesController
                 Dim seqServerUrl As String = System.Environment.GetEnvironmentVariable(SeqServerUrlVariable)
                 If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = DefaultSeqServerUrl
                 Dim useSeq As Boolean = Not String.IsNullOrWhiteSpace(seqApiKey)
-                If useSeq Then loggerConfig.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
+                If useSeq Then
+                    ' Information and above only (the file log keeps Debug detail). Every Seq event
+                    ' carries these session properties, so usage and errors can be grouped by add-in
+                    ' version, Inventor version, session and (pseudonymous) user.
+                    Dim inventorVersion As String = AddinGlobal.InventorApp.SoftwareVersion.DisplayVersion
+                    Dim sessionId As String = Guid.NewGuid().ToString("N")
+                    Dim userId As String = PseudonymousUserId()
+                    loggerConfig.WriteTo.Logger(Sub(seqLog)
+                                                    seqLog.MinimumLevel.Information()
+                                                    seqLog.Enrich.WithProperty("Application", "iPropertiesController")
+                                                    seqLog.Enrich.WithProperty("AddinVersion", AddinGlobal.DisplayableVersion)
+                                                    seqLog.Enrich.WithProperty("InventorVersion", inventorVersion)
+                                                    seqLog.Enrich.WithProperty("SessionId", sessionId)
+                                                    seqLog.Enrich.WithProperty("UserId", userId)
+                                                    seqLog.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
+                                                End Sub)
+                End If
                 Log.Logger = loggerConfig.CreateLogger()
                 If useSeq Then
                     Log.Information("Seq sink configured: {ServerUrl}", seqServerUrl)
@@ -211,6 +227,7 @@ Namespace iPropertiesController
 
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, myiPropsForm.tbDescription.Text, "", True)
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, myiPropsForm.tbPartNumber.Text, "", True)
+                            TrackUsage("Auto-fill drawing description from base view")
 
                         End If
                     End If
@@ -223,6 +240,7 @@ Namespace iPropertiesController
                         Dim sheetmetalcompdef As SheetMetalComponentDefinition = partcompdef
                         Dim oUnfoldMethod As String = sheetmetalcompdef.UnfoldMethod.Name
                         UpdateCustomiProperty(oDoc, "Sheet Metal Rule", oUnfoldMethod)
+                        TrackUsage("Record sheet metal rule", oUnfoldMethod)
                     End If
                 End If
             End If
@@ -277,6 +295,7 @@ Namespace iPropertiesController
 
                         If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                             WhatToDo = ShowMessage("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
+                            TrackUsage("Check-in defer-updates prompt", If(WhatToDo = vbYes, "deferred", "not deferred"))
                             If WhatToDo = vbYes Then
                                 AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
                                 myiPropsForm.btDefer.Background = Media.Brushes.Red
@@ -293,6 +312,7 @@ Namespace iPropertiesController
                         Dim StockNo As String = myiPropsForm.tbStockNumber.Text
                         If Not PartNo = StockNo Then
                             stockNum = ShowMessage("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+                            TrackUsage("Check-in stock/part number mismatch prompt", If(stockNum = vbNo, "stopped", "continued"))
                             If stockNum = vbNo Then
                                 Exit Sub
                             End If
@@ -304,6 +324,7 @@ Namespace iPropertiesController
 
                         Dim flatName As String = myiPropsForm.tbPartNumber.Text
                         Clipboard.SetText(flatName)
+                        TrackUsage("Copy part number for DXF export")
                     End If
 
                     'Dim oDoc As Document = AddinGlobal.InventorApp.ActiveDocument
@@ -1156,6 +1177,8 @@ Namespace iPropertiesController
             Catch ex As Exception
                 Log.[Error](ex, ex.Message)
             End Try
+            ' The Seq sink sends in batches; flush so the last usage and error events aren't lost.
+            Log.CloseAndFlush()
         End Sub
 
         ' This property is provided to allow the AddIn to expose an API of its own to other
