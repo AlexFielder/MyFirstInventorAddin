@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <MyType>Windows</MyType>
+    <MyType>Empty</MyType>
     <PublishUrl>http://localhost/InventorAddIn/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -21,7 +21,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
 	<UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <ProjectName Condition=" '$(ProjectName)' == '' ">iPropertiesController</ProjectName>
@@ -52,14 +51,8 @@
     <Reference Update="System">
       <Name>System</Name>
     </Reference>
-	  <Reference Update="System.Windows.Forms">
-		  <Name>System.Windows.Forms</Name>
-	  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="iPropertiesForm.Designer.vb">
-      <DependentUpon>iPropertiesForm.vb</DependentUpon>
-    </Compile>
     <Compile Update="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -99,16 +92,16 @@
     </BootstrapperPackage>
   </ItemGroup>-->
   <ItemGroup>
-    <Content Include="Resources\white_button.png" />
+    <Resource Include="Resources\white_button.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\paperclip1.jpg" />
+    <Resource Include="Resources\paperclip1.jpg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\addin.ico" />
-    <Content Include="Resources\CHECKIN.png" />
-    <Content Include="Resources\CHECKOUT.png" />
-    <Content Include="Resources\green_button_tick.png" />
+    <Resource Include="Resources\CHECKIN.png" />
+    <Resource Include="Resources\CHECKOUT.png" />
+    <Resource Include="Resources\green_button_tick.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\paperclip.jpg" />
@@ -125,7 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <Import Include="System.Windows" />
-    <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Installer\nppBackup\**" />
@@ -157,7 +149,7 @@ cd "$(ProjectDir)\Installer"
     <Product>Autodesk Inventor iPropertiesController</Product>
     <Copyright>Copyright %3f2017 the-war-horse, alexf.</Copyright>
     <AssemblyVersion>16.0.0.%2a</AssemblyVersion>
-    <ImportedNamespaces>System.Windows=False,System.Windows.Forms=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
+    <ImportedNamespaces>System.Windows=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
