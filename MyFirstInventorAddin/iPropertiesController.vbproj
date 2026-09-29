@@ -20,13 +20,8 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <!-- Generates version, title, company etc. from the properties below; AssemblyInfo.vb only adds the COM GUID. -->
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <!-- AssemblyVersion uses a wildcard revision, which the compiler only allows in non-deterministic builds. -->
-    <Deterministic>false</Deterministic>
-    <Version>16.0.0</Version>
-    <!-- Win32 file versions cannot contain a wildcard, so don't inherit AssemblyVersion. -->
-    <FileVersion>16.0.0.0</FileVersion>
+    <!-- Version, title, company etc. come from AssemblyInfo.vb, generated from AssemblyInfo.tt on every build. -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <ProjectName Condition=" '$(ProjectName)' == '' ">iPropertiesController</ProjectName>
@@ -59,6 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="AssemblyInfo.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AssemblyInfo.tt</DependentUpon>
+    </Compile>
     <Compile Update="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -97,6 +97,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>-->
+  <ItemGroup>
+    <Content Include="AssemblyInfo.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AssemblyInfo.vb</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\white_button.png" />
   </ItemGroup>
@@ -149,12 +155,6 @@ if "$(Configuration)"=="Release" (
 cd "$(ProjectDir)\Installer"
 "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer.iss"
 )</PostBuildEvent>
-    <AssemblyTitle>iPropertiesController</AssemblyTitle>
-    <Description>iPropertiesController for Autodesk Inventor</Description>
-    <Company>the-war-horse, alexf.</Company>
-    <Product>Autodesk Inventor iPropertiesController</Product>
-    <Copyright>Copyright © 2017 the-war-horse, alexf.</Copyright>
-    <AssemblyVersion>16.0.0.%2a</AssemblyVersion>
     <ImportedNamespaces>System.Windows=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -164,4 +164,26 @@ cd "$(ProjectDir)\Installer"
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup>
+    <TransformOnBuild>false</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+  </PropertyGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <!--
+      T4 version bump, as in the other AF Automations Inventor/Vault add-ins. TextTransform.exe
+      ships with Visual Studio, not the .NET SDK - probe the usual install locations and SKIP
+      gracefully when absent (CI runners, SDK-only machines): AssemblyInfo.vb is tracked, so a
+      build without the bump just reuses the committed version.
+    -->
+    <PropertyGroup>
+      <TextTransformExe>C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\18\Professional\Common7\IDE\TextTransform.exe</TextTransformExe>
+    </PropertyGroup>
+    <Exec Condition="Exists('$(TextTransformExe)')" Command="call &quot;$(TextTransformExe)&quot; -a &quot;!!BuildConfiguration!$(Configuration)&quot; &quot;$(ProjectDir)AssemblyInfo.tt&quot;" />
+    <Warning Condition="!Exists('$(TextTransformExe)')" Text="TextTransform.exe not found - skipping T4 version bump; using committed AssemblyInfo.vb as-is." />
+  </Target>
 </Project>
