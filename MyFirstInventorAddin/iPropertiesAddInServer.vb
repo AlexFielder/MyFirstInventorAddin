@@ -4,7 +4,6 @@ Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports Inventor
 Imports Serilog
-Imports System.Configuration
 
 Namespace iPropertiesController
 
@@ -35,6 +34,11 @@ Namespace iPropertiesController
         Public Shared attribute As GuidAttribute = Nothing
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
+
+        ' Seq logging settings, read from the user's environment (set once per workstation).
+        Private Const SeqApiKeyVariable As String = "AFA_IPROPERTIES_SEQ_APIKEY"
+        Private Const SeqServerUrlVariable As String = "AFA_IPROPERTIES_SEQ_URL"
+        Private Const DefaultSeqServerUrl As String = "https://seq.afautomations.co.uk"
 
         'we can set the following to false if we don't want the file to save:
         Public AllowFileToSave As Boolean = True
@@ -71,18 +75,19 @@ Namespace iPropertiesController
                     .Enrich.FromLogContext()
                     .WriteTo.File(logPath, rollingInterval:=Serilog.RollingInterval.Day, retainedFileCountLimit:=7, outputTemplate:="{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
                 End With
-                ' Optional Seq sink configuration via AppSettings
-                Try
-                    Dim seqServerUrl As String = ConfigurationManager.AppSettings("Seq:ServerUrl")
-                    Dim seqApiKey As String = ConfigurationManager.AppSettings("Seq:ApiKey")
-                    If Not String.IsNullOrEmpty(seqServerUrl) Then
-                        loggerConfig.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
-                        Log.Information("Seq sink configured: {ServerUrl}", seqServerUrl)
-                    End If
-                Catch
-                    ' ignore configuration errors
-                End Try
+                ' Optional Seq sink. The API key comes from a user environment variable, never from
+                ' source control; without it the add-in logs to file only.
+                Dim seqApiKey As String = System.Environment.GetEnvironmentVariable(SeqApiKeyVariable)
+                Dim seqServerUrl As String = System.Environment.GetEnvironmentVariable(SeqServerUrlVariable)
+                If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = DefaultSeqServerUrl
+                Dim useSeq As Boolean = Not String.IsNullOrWhiteSpace(seqApiKey)
+                If useSeq Then loggerConfig.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
                 Log.Logger = loggerConfig.CreateLogger()
+                If useSeq Then
+                    Log.Information("Seq sink configured: {ServerUrl}", seqServerUrl)
+                Else
+                    Log.Information("{Variable} is not set; logging to file only", SeqApiKeyVariable)
+                End If
 
                 AddinGlobal.GetAddinClassId(Me.GetType())
                 'store our Addin path.
