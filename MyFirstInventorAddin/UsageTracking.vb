@@ -1,5 +1,3 @@
-Imports System.Security.Cryptography
-Imports System.Text
 Imports Serilog
 
 Namespace iPropertiesController
@@ -7,8 +5,8 @@ Namespace iPropertiesController
     ' Feature-usage events for Seq. Each call writes one Information event tagged
     ' EventKind = 'Usage', so usage can be counted in Seq with, for example:
     '     select count(*) from stream where EventKind = 'Usage' group by Feature
-    ' Events sent to Seq also carry the session properties added in Activate: add-in and
-    ' Inventor versions, a per-session id and a pseudonymous user id.
+    ' Events sent to Seq also carry the session properties added in ConfigureLogging: add-in and
+    ' Inventor versions, a per-session id, and the InstallId and LicenseId from the licence.
     Friend Module UsageTracking
 
         Friend Sub TrackUsage(feature As String, Optional detail As String = Nothing)
@@ -24,15 +22,6 @@ Namespace iPropertiesController
                 Log.Debug(ex, "Usage tracking failed for {Feature}", feature)
             End Try
         End Sub
-
-        ' A stable hash of the Windows account: distinct users can be counted and grouped without
-        ' their names being sent to Seq. This is pseudonymous, not anonymous - anyone who knows a
-        ' user name can compute its hash.
-        Friend Function PseudonymousUserId() As String
-            Dim account = $"{System.Environment.UserDomainName}\{System.Environment.UserName}".ToLowerInvariant()
-            Dim hash = SHA256.HashData(Encoding.UTF8.GetBytes(account))
-            Return Convert.ToHexString(hash, 0, 6)
-        End Function
 
         Private Function ActiveDocumentType() As String
             Dim doc = AddinGlobal.InventorApp?.ActiveDocument

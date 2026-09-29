@@ -2,7 +2,9 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+Imports System.Threading.Tasks
 Imports Inventor
+Imports iPropertiesController.iPropertiesController.Licensing
 Imports Serilog
 
 Namespace iPropertiesController
@@ -35,10 +37,29 @@ Namespace iPropertiesController
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
-        ' Seq logging settings, read from the user's environment (set once per workstation).
+        ' Seq logging. The licence server delivers the key on activation and renewal; these environment
+        ' variables are a developer override.
         Private Const SeqApiKeyVariable As String = "AFA_IPROPERTIES_SEQ_APIKEY"
         Private Const SeqServerUrlVariable As String = "AFA_IPROPERTIES_SEQ_URL"
         Private Const DefaultSeqServerUrl As String = "https://seq.afautomations.co.uk"
+
+        ' Per-machine folder shared with the licensing library (licence.json, install.dat) and holding
+        ' the logs. The installer creates it with Users: modify.
+        Private Shared ReadOnly StateFolder As String = IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "AFAutomations", "iPropertiesController")
+
+        ' One id for the whole Inventor session, kept when the logger is reconfigured after activation.
+        Private Shared ReadOnly SessionId As String = Guid.NewGuid().ToString("N")
+
+        Private Shared licensing As ILicensingService
+        Private Shared licenceStatus As LicenceStatus
+        Private Shared pendingUpdate As UpdateOffer
+        ' Ribbon controls and panels created for the licensing buttons, so the Activate button can be
+        ' removed after activation and everything released in Deactivate.
+        Private Shared ReadOnly licensingControls As New List(Of CommandControl)
+        Private Shared ReadOnly licensingPanels As New List(Of RibbonPanel)
+        Private Shared ReadOnly LicensingRibbons As String() = {"ZeroDoc", "Part", "Assembly", "Drawing"}
+        Private addinIcon As Icon
+        Private uiManager As UserInterfaceManager
 
         'we can set the following to false if we don't want the file to save:
         Public AllowFileToSave As Boolean = True
@@ -56,134 +77,321 @@ Namespace iPropertiesController
         Public Sub Activate(ByVal addInSiteObject As ApplicationAddInSite, ByVal firstTime As Boolean) Implements ApplicationAddInServer.Activate
             ' Initialize AddIn members.
             AddinGlobal.InventorApp = addInSiteObject.Application
-            'new versioning display method borrowed from here: https://stackoverflow.com/a/826850/572634
             thisVersion = Assembly.GetExecutingAssembly().GetName().Version
-            Dim buildDate As DateTime = New DateTime(2000, 1, 1).AddDays(thisVersion.Build).AddSeconds(thisVersion.Revision * 2)
             AddinGlobal.DisplayableVersion = $"{thisVersion}"
 
-            Dim uiMgr As UserInterfaceManager = AddinGlobal.InventorApp.UserInterfaceManager
+            uiManager = AddinGlobal.InventorApp.UserInterfaceManager
             attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
-            Try
 
-                ' Initialize Serilog
-                Dim logPath As String = IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "Autodesk", "Inventor Addins", "iPropertiesController", "iPropertiesController.log")
-                Directory.CreateDirectory(IO.Path.GetDirectoryName(logPath))
-                Dim loggerConfig = New LoggerConfiguration()
-                With loggerConfig
-                    .MinimumLevel.Debug()
-                    .Enrich.FromLogContext()
-                    .WriteTo.File(logPath, rollingInterval:=Serilog.RollingInterval.Day, retainedFileCountLimit:=7, outputTemplate:="{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
-                End With
-                ' Optional Seq sink. The API key comes from a user environment variable, never from
-                ' source control; without it the add-in logs to file only.
-                Dim seqApiKey As String = System.Environment.GetEnvironmentVariable(SeqApiKeyVariable)
-                Dim seqServerUrl As String = System.Environment.GetEnvironmentVariable(SeqServerUrlVariable)
-                If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = DefaultSeqServerUrl
-                Dim useSeq As Boolean = Not String.IsNullOrWhiteSpace(seqApiKey)
-                If useSeq Then
-                    ' Information and above only (the file log keeps Debug detail). Every Seq event
-                    ' carries these session properties, so usage and errors can be grouped by add-in
-                    ' version, Inventor version, session and (pseudonymous) user.
-                    Dim inventorVersion As String = AddinGlobal.InventorApp.SoftwareVersion.DisplayVersion
-                    Dim sessionId As String = Guid.NewGuid().ToString("N")
-                    Dim userId As String = PseudonymousUserId()
-                    loggerConfig.WriteTo.Logger(Sub(seqLog)
-                                                    seqLog.MinimumLevel.Information()
-                                                    seqLog.Enrich.WithProperty("Application", "iPropertiesController")
-                                                    seqLog.Enrich.WithProperty("AddinVersion", AddinGlobal.DisplayableVersion)
-                                                    seqLog.Enrich.WithProperty("InventorVersion", inventorVersion)
-                                                    seqLog.Enrich.WithProperty("SessionId", sessionId)
-                                                    seqLog.Enrich.WithProperty("UserId", userId)
-                                                    seqLog.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
-                                                End Sub)
-                End If
-                Log.Logger = loggerConfig.CreateLogger()
-                If useSeq Then
-                    Log.Information("Seq sink configured: {ServerUrl}", seqServerUrl)
-                Else
-                    Log.Information("{Variable} is not set; logging to file only", SeqApiKeyVariable)
-                End If
+            ' Check the licence first, locally and without any network access: the Seq settings the
+            ' logger needs come from it.
+            licensing = LicensingServiceFactory.Create()
+            Dim licenceError As Exception = Nothing
+            Try
+                licenceStatus = licensing.LoadLocalState()
+            Catch ex As Exception
+                licenceError = ex
+                licenceStatus = LicenceStatus.Unlicensed("The licence couldn't be read.", licensing.InstallId)
+            End Try
+
+            Try
+                ConfigureLogging(licenceStatus)
+                If licenceError IsNot Nothing Then Log.Error(licenceError, "Reading the licence failed")
 
                 AddinGlobal.GetAddinClassId(Me.GetType())
                 'store our Addin path.
                 thisAssemblyPath = IO.Path.GetDirectoryName(thisAssembly.Location)
-                ' Connect to the user-interface events to handle a ribbon reset.
-                m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
-                'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
-                m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
-                m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
-                m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
+                addinIcon = New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("iPropertiesController.addin.ico"))
 
-                AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
-                AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
-                AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
-                AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
-                AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
-
-                AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
-                AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
-                'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
-                'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
-                If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
-                    m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
-                    AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
+                If licenceStatus.IsLicensed Then
+                    Log.Information("Licensed to {Customer} ({LicenseType}), licence {LicenseId}", licenceStatus.Customer, licenceStatus.LicenseType, licenceStatus.LicenseId)
+                    InitialiseAddin(firstTime)
+                    AddLicensingButton(licensed:=True)
+                    StartBackgroundLicensing()
+                Else
+                    ' Inert until activated: one ribbon button, no panel, no event handlers. Nothing
+                    ' modal here - Inventor may still be showing its splash screen.
+                    Log.Information("Not licensed ({Reason}); only the Activate button is available", licenceStatus.Reason)
+                    AddLicensingButton(licensed:=False)
                 End If
-
-                AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
-
-                AddHandler m_AppEvents.OnNewEditObject, AddressOf Me.m_ApplicationEvents_OnNewEditObject
-
-                AddHandler m_AppEvents.OnCloseDocument, AddressOf Me.m_ApplicationEvents_OnCloseDocument
-
-                Log.Information("Loading My First Inventor Addin")
-                ' TODO: Add button definitions.
-
-                ' Sample to illustrate creating a button definition.
-                'Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourBigImage)
-                'Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourSmallImage)
-                'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
-                'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
-
-                Dim icon1 As New Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("iPropertiesController.addin.ico"))
-                'Change it if necessary but make sure it's embedded.
-                Dim button1 As New InventorButton("Button 1", "MyVBInventorAddin.Button_" & Guid.NewGuid().ToString(), "Button 1 description", "Button 1 tooltip", icon1, icon1,
-                    CommandTypesEnum.kShapeEditCmdType, ButtonDisplayEnum.kDisplayTextInLearningMode)
-                button1.SetBehavior(True, True, True)
-                button1.Execute = AddressOf ButtonActions.Button1_Execute
-
-                ' Add to the user interface, if it's the first time.
-                If firstTime Then
-                    AddToUserInterface(button1)
-                    'add our userform to a new DockableWindow
-                    Dim localWindow As DockableWindow = Nothing
-                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, Log.Logger)
-                    'deal with Inventor's Dark theme:
-                    myiPropsForm.ApplyTheme(IsInventorUsingDarkTheme())
-                    iPropsFormHost = New WpfDockableHost(myiPropsForm, New IntPtr(AddinGlobal.InventorApp.MainFrameHWND), 285, 440)
-                    Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
-                    Window.AddChild(iPropsFormHost.Handle)
-
-                    'If Not Window.IsCustomized = True Then
-                    '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
-                    '    Window.DockingState = DockingStateEnum.kDockLastKnown
-                    'Else
-                    '    Window.DockingState = DockingStateEnum.kFloat
-                    'End If
-
-                    Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
-                    Window.ShowVisibilityCheckBox = True
-                    Window.ShowTitleBar = True
-                    Window.SetMinimumSize(440, 285)
-                    Window.Visible = True
-                    'localWindow = myDockableWindow
-                    AddinGlobal.DockableList.Add(Window)
-                    'Window = localWindow
-                End If
-                Log.Information("Loaded My First Inventor Add-in")
             Catch ex As Exception
                 Log.[Error](ex, ex.Message)
             End Try
         End Sub
+
+        ' The add-in proper: Inventor event handlers, the sample ribbon button and the iProperties panel.
+        ' Runs at start-up when licensed, or straight after activation.
+        Private Sub InitialiseAddin(firstTime As Boolean)
+            ' Connect to the user-interface events to handle a ribbon reset.
+            m_uiEvents = AddinGlobal.InventorApp.UserInterfaceManager.UserInterfaceEvents
+            'Connect to the Application Events to handle document opening/switching for our iProperties dockable Window.
+            m_AppEvents = AddinGlobal.InventorApp.ApplicationEvents
+            m_UserInputEvents = AddinGlobal.InventorApp.CommandManager.UserInputEvents
+            m_StyleEvents = AddinGlobal.InventorApp.StyleEvents
+
+            AddHandler m_AppEvents.OnOpenDocument, AddressOf Me.m_ApplicationEvents_OnOpenDocument
+            AddHandler m_AppEvents.OnActivateDocument, AddressOf Me.m_ApplicationEvents_OnActivateDocument
+            AddHandler m_AppEvents.OnSaveDocument, AddressOf Me.m_ApplicationEvents_OnSaveDocument
+            AddHandler m_AppEvents.OnQuit, AddressOf Me.m_ApplicationEvents_OnQuit
+            AddHandler m_AppEvents.OnActivateView, AddressOf Me.m_ApplicationEvents_OnActivateView
+
+            AddHandler m_UserInputEvents.OnActivateCommand, AddressOf Me.m_UserInputEvents_OnActivateCommand
+            AddHandler m_UserInputEvents.OnTerminateCommand, AddressOf Me.m_UserInputEvents_OnTerminateCommand
+            'you can add extra handlers like this - if you uncomment the next line Visual Studio will prompt you to create the method:
+            'AddHandler m_AssemblyEvents.OnNewOccurrence, AddressOf Me.m_AssemblyEvents_NewOcccurrence
+            If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
+                m_DocEvents = AddinGlobal.InventorApp.ActiveDocument.DocumentEvents
+                AddHandler m_DocEvents.OnChangeSelectSet, AddressOf Me.m_DocumentEvents_OnChangeSelectSet
+            End If
+
+            AddHandler m_StyleEvents.OnActivateStyle, AddressOf Me.m_StyleEvents_OnActivateStyle
+
+            AddHandler m_AppEvents.OnNewEditObject, AddressOf Me.m_ApplicationEvents_OnNewEditObject
+
+            AddHandler m_AppEvents.OnCloseDocument, AddressOf Me.m_ApplicationEvents_OnCloseDocument
+
+            Log.Information("Loading My First Inventor Addin")
+            ' TODO: Add button definitions.
+
+            ' Sample to illustrate creating a button definition.
+            'Dim largeIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourBigImage)
+            'Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.YourSmallImage)
+            'Dim controlDefs As Inventor.ControlDefinitions = g_inventorApplication.CommandManager.ControlDefinitions
+            'm_sampleButton = controlDefs.AddButtonDefinition("Command Name", "Internal Name", CommandTypesEnum.kShapeEditCmdType, AddInClientID)
+
+            'Change it if necessary but make sure it's embedded.
+            Dim button1 As New InventorButton("Button 1", "MyVBInventorAddin.Button_" & Guid.NewGuid().ToString(), "Button 1 description", "Button 1 tooltip", addinIcon, addinIcon,
+                CommandTypesEnum.kShapeEditCmdType, ButtonDisplayEnum.kDisplayTextInLearningMode)
+            button1.SetBehavior(True, True, True)
+            button1.Execute = AddressOf ButtonActions.Button1_Execute
+
+            ' Add to the user interface, if it's the first time.
+            If firstTime Then
+                AddToUserInterface(button1)
+                'add our userform to a new DockableWindow
+                Dim localWindow As DockableWindow = Nothing
+                myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, Log.Logger)
+                AddHandler myiPropsForm.UpdateBannerClicked, AddressOf OnUpdateBannerClicked
+                'deal with Inventor's Dark theme:
+                myiPropsForm.ApplyTheme(IsInventorUsingDarkTheme())
+                iPropsFormHost = New WpfDockableHost(myiPropsForm, New IntPtr(AddinGlobal.InventorApp.MainFrameHWND), 285, 440)
+                Window = uiManager.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
+                Window.AddChild(iPropsFormHost.Handle)
+
+                'If Not Window.IsCustomized = True Then
+                '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
+                '    Window.DockingState = DockingStateEnum.kDockLastKnown
+                'Else
+                '    Window.DockingState = DockingStateEnum.kFloat
+                'End If
+
+                Window.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+                Window.ShowVisibilityCheckBox = True
+                Window.ShowTitleBar = True
+                Window.SetMinimumSize(440, 285)
+                Window.Visible = True
+                'localWindow = myDockableWindow
+                AddinGlobal.DockableList.Add(Window)
+                'Window = localWindow
+            End If
+            Log.Information("Loaded My First Inventor Add-in")
+        End Sub
+
+#Region "Licensing"
+
+        ' File log (Debug and above) in the state folder, and Seq (Information and above) when a key is
+        ' available - from the licence, or from the developer override variables. Called at start-up and
+        ' again after activation, when the licence has just delivered the Seq key.
+        Private Sub ConfigureLogging(status As LicenceStatus)
+            Dim logFolder = IO.Path.Combine(StateFolder, "logs")
+            Try
+                Directory.CreateDirectory(logFolder)
+            Catch ex As Exception
+                ' Not writable (for example a developer PC without the installer): use the user profile.
+                logFolder = IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "AFAutomations", "iPropertiesController", "logs")
+                Directory.CreateDirectory(logFolder)
+            End Try
+
+            Dim loggerConfig = New LoggerConfiguration()
+            With loggerConfig
+                .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
+                .WriteTo.File(IO.Path.Combine(logFolder, "iPropertiesController.log"), rollingInterval:=Serilog.RollingInterval.Day, retainedFileCountLimit:=7, outputTemplate:="{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+            End With
+
+            Dim seqApiKey As String = System.Environment.GetEnvironmentVariable(SeqApiKeyVariable)
+            Dim seqServerUrl As String = System.Environment.GetEnvironmentVariable(SeqServerUrlVariable)
+            Dim keySource As String = "developer override"
+            If String.IsNullOrWhiteSpace(seqApiKey) AndAlso status?.Seq IsNot Nothing Then
+                seqApiKey = status.Seq.ApiKey
+                If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = status.Seq.ServerUrl
+                keySource = "licence"
+            End If
+            If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = DefaultSeqServerUrl
+            Dim useSeq As Boolean = Not String.IsNullOrWhiteSpace(seqApiKey)
+            If useSeq Then
+                ' Every Seq event carries these, so usage and errors can be grouped by version, session,
+                ' install and licence. The key itself stamps Customer and Product server-side.
+                Dim inventorVersion As String = AddinGlobal.InventorApp.SoftwareVersion.DisplayVersion
+                Dim installId As String = If(status?.InstallId, licensing?.InstallId)
+                Dim licenseId As String = status?.LicenseId
+                loggerConfig.WriteTo.Logger(Sub(seqLog)
+                                                seqLog.MinimumLevel.Information()
+                                                seqLog.Enrich.WithProperty("Application", "iPropertiesController")
+                                                seqLog.Enrich.WithProperty("AddinVersion", AddinGlobal.DisplayableVersion)
+                                                seqLog.Enrich.WithProperty("InventorVersion", inventorVersion)
+                                                seqLog.Enrich.WithProperty("SessionId", SessionId)
+                                                If Not String.IsNullOrEmpty(installId) Then seqLog.Enrich.WithProperty("InstallId", installId)
+                                                If Not String.IsNullOrEmpty(licenseId) Then seqLog.Enrich.WithProperty("LicenseId", licenseId)
+                                                seqLog.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
+                                            End Sub)
+            End If
+
+            Log.CloseAndFlush() ' replaces the previous logger when called again after activation
+            Log.Logger = loggerConfig.CreateLogger()
+            If useSeq Then
+                Log.Information("Seq sink configured: {ServerUrl} (key from {KeySource})", seqServerUrl, keySource)
+            Else
+                Log.Information("No Seq key (not activated, and {Variable} is not set); logging to file only", SeqApiKeyVariable)
+            End If
+        End Sub
+
+        ' Licensed: "Licence" (details, updates, deactivate). Unlicensed: "Activate iPropertiesController",
+        ' the only thing the add-in offers until it is activated. Added to the Tools tab of the no-document,
+        ' part, assembly and drawing ribbons so it is always reachable.
+        Private Sub AddLicensingButton(licensed As Boolean)
+            Dim button As InventorButton
+            If licensed Then
+                button = New InventorButton("Licence", "iPropertiesController.Licence_" & Guid.NewGuid().ToString("N"),
+                    "iPropertiesController licence details, updates and deactivation", "iPropertiesController licence",
+                    addinIcon, addinIcon, CommandTypesEnum.kNonShapeEditCmdType, ButtonDisplayEnum.kAlwaysDisplayText)
+                button.Execute = AddressOf OnLicenceClicked
+            Else
+                button = New InventorButton("Activate iPropertiesController", "iPropertiesController.Activate_" & Guid.NewGuid().ToString("N"),
+                    "Activate iPropertiesController on this PC", "Activate iPropertiesController",
+                    addinIcon, addinIcon, CommandTypesEnum.kNonShapeEditCmdType, ButtonDisplayEnum.kAlwaysDisplayText)
+                button.Execute = AddressOf OnActivateClicked
+            End If
+
+            For Each ribbonName In LicensingRibbons
+                Try
+                    licensingControls.Add(GetLicensingPanel(ribbonName).CommandControls.AddButton(button.ButtonDef, True, True))
+                Catch ex As Exception
+                    Log.Warning(ex, "Couldn't add {Button} to the {Ribbon} ribbon", button.ButtonDef.DisplayName, ribbonName)
+                End Try
+            Next
+        End Sub
+
+        Private Function GetLicensingPanel(ribbonName As String) As RibbonPanel
+            Dim tab As RibbonTab = uiManager.Ribbons(ribbonName).RibbonTabs("id_TabTools")
+            Dim internalName = "iPropertiesController.LicencePanel." & ribbonName
+            For Each existing As RibbonPanel In tab.RibbonPanels
+                If existing.InternalName = internalName Then Return existing
+            Next
+            Dim panel = tab.RibbonPanels.Add("iProperties Controller", internalName, AddinGlobal.ClassId)
+            licensingPanels.Add(panel)
+            Return panel
+        End Function
+
+        Private Sub OnActivateClicked()
+            Try
+                Dim status = ActivationWindow.ShowActivation(licensing)
+                If status Is Nothing Then Return
+
+                licenceStatus = status
+                ConfigureLogging(status)
+                TrackUsage("Activate add-in")
+
+                ' Swap the Activate button for the licence button and bring the add-in up now, rather
+                ' than at the next start.
+                For Each control In licensingControls
+                    Try
+                        control.Delete()
+                    Catch ex As Exception
+                        Log.Debug(ex, "Couldn't remove the Activate button")
+                    End Try
+                Next
+                licensingControls.Clear()
+                InitialiseAddin(firstTime:=True)
+                AddLicensingButton(licensed:=True)
+                RefreshPanelForActiveDocument()
+                UpdateStatusBar("iPropertiesController is activated")
+                StartBackgroundLicensing()
+            Catch ex As Exception
+                Log.Error(ex, "Activation failed")
+                ShowMessage("Activation failed: " & ex.Message, MsgBoxStyle.OkOnly, "Activate iPropertiesController")
+            End Try
+        End Sub
+
+        Private Sub OnLicenceClicked()
+            Try
+                If LicenceWindow.ShowLicence(licensing, licenceStatus, pendingUpdate) Then UpdateStatusBar("This PC has been deactivated")
+            Catch ex As Exception
+                Log.Error(ex, "The licence window failed")
+                ShowMessage("Couldn't show the licence details: " & ex.Message, MsgBoxStyle.OkOnly, "iPropertiesController licence")
+            End Try
+        End Sub
+
+        ' Renewal (when due) and the update check, off the UI thread so they never block loading. Results
+        ' that touch the panel are marshalled back through its dispatcher.
+        Private Sub StartBackgroundLicensing()
+            Dim uiDispatcher = myiPropsForm?.Dispatcher
+            Dim renewDue = licenceStatus.RenewDue
+            Task.Run(Async Function()
+                         Try
+                             If renewDue Then
+                                 Dim renewed = Await licensing.RenewAsync()
+                                 If Not renewed.IsLicensed Then
+                                     Log.Warning("Licence renewal: {Reason}. iPropertiesController will be inactive from the next start", renewed.Reason)
+                                     Return
+                                 End If
+                                 Log.Information("Licence renewed; lease now ends {LeaseExpiresUtc}", renewed.LeaseExpiresUtc)
+                                 uiDispatcher?.Invoke(Sub() licenceStatus = renewed)
+                             End If
+
+                             Dim offer = Await licensing.CheckForUpdateAsync()
+                             If offer IsNot Nothing Then
+                                 Log.Information("Update {LatestVersion} is available", offer.LatestVersion)
+                                 uiDispatcher?.Invoke(Sub() OfferUpdate(offer))
+                             End If
+                         Catch ex As LicensingException When ex.Code = LicensingException.ServerUnreachable
+                             Log.Information("Licence server unreachable; renewal and the update check will be retried at the next start")
+                         Catch ex As Exception
+                             Log.Warning(ex, "Background licence renewal or update check failed")
+                         End Try
+                     End Function)
+        End Sub
+
+        Private Sub OfferUpdate(offer As UpdateOffer)
+            pendingUpdate = offer
+            myiPropsForm?.ShowUpdateOffer(offer.LatestVersion, offer.IsRequired)
+        End Sub
+
+        Private Async Sub OnUpdateBannerClicked(sender As Object, e As EventArgs)
+            If pendingUpdate Is Nothing Then Return
+            Try
+                Await UpdateInstaller.DownloadAndRunAsync(licensing, pendingUpdate, AddressOf UpdateStatusBar)
+            Catch ex As LicensingException
+                Log.Warning(ex, "Update failed with {Code}", ex.Code)
+                ShowMessage(ex.UserMessage(), MsgBoxStyle.OkOnly, "Update iPropertiesController")
+            Catch ex As Exception
+                Log.Error(ex, "Update failed")
+                ShowMessage("The update failed: " & ex.Message, MsgBoxStyle.OkOnly, "Update iPropertiesController")
+            End Try
+        End Sub
+
+        ' After activation mid-session: show the active document's iProperties straight away, as
+        ' OnActivateDocument would have.
+        Private Sub RefreshPanelForActiveDocument()
+            Dim doc As Document = AddinGlobal.InventorApp.ActiveDocument
+            If doc Is Nothing OrElse myiPropsForm Is Nothing Then Return
+            SetFormDisplayOption(doc)
+            UpdateDisplayediProperties(doc)
+            UpdateFormTextBoxColours()
+            myiPropsForm.GetNewFilePaths()
+        End Sub
+
+#End Region
 
         Private Shared iPropsFormHost As WpfDockableHost = Nothing
 
@@ -1167,6 +1375,11 @@ Namespace iPropertiesController
                 If AddinGlobal.RibbonPanel IsNot Nothing Then
                     Marshal.FinalReleaseComObject(AddinGlobal.RibbonPanel)
                 End If
+                For Each panel In licensingPanels
+                    Marshal.FinalReleaseComObject(panel)
+                Next
+                licensingPanels.Clear()
+                licensingControls.Clear()
 
                 If Not InventorAppQuitting Then
                     If AddinGlobal.InventorApp IsNot Nothing Then
