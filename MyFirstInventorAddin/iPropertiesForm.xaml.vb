@@ -11,7 +11,6 @@ Imports Serilog.Events
 Partial Public Class IPropertiesForm
     Private inventorApp As Inventor.Application
     'Private localWindow As DockableWindow
-    Private value As String
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
     Public ReadOnly log As ILogger = Nothing
 
@@ -160,16 +159,6 @@ Partial Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub GetTheStuffs()
-        tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-
-        tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-        tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-
-        tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-    End Sub
-
     Public Sub AddReferences(ByVal odoc As Inventor.Document, ByVal selectedfile As String)
         Dim oleReference As ReferencedOLEFileDescriptor
         oleReference = odoc.ReferencedOLEFileDescriptors _
@@ -195,7 +184,6 @@ Partial Public Class IPropertiesForm
 
             'Me.KeyPreview = True
             Me.inventorApp = inventorApp
-            Me.value = addinCLS
             'Me.localWindow = localWindow
             'Dim myDockableWindow As DockableWindow = uiMgr.DockableWindows.Add(addinCLS, "iPropertiesControllerWindow", "iProperties Controller " + addinName)
             'myDockableWindow.AddChild(Me.Handle)
@@ -225,14 +213,14 @@ Partial Public Class IPropertiesForm
             'If inventorApp.ActiveDocument.FullFileName?.Length > 0 Then
             inventorApp.CommandManager.ControlDefinitions.Item("AppUpdateMassPropertiesCmd").Execute()
             'try these and see if they fire or not!
-            tbPartNumber_Leave(sender, e)
-            tbDescription_Leave(sender, e)
-            tbStockNumber_Leave(sender, e)
-            tbEngineer_Leave(sender, e)
-            tbDrawnBy_Leave(sender, e)
-            tbRevNo_Leave(sender, e)
-            tbComments_Leave(sender, e)
-            tbNotes_Leave(sender, e)
+            tbPartNumber_Leave(Nothing, Nothing)
+            tbDescription_Leave(Nothing, Nothing)
+            tbStockNumber_Leave(Nothing, Nothing)
+            tbEngineer_Leave(Nothing, Nothing)
+            tbDrawnBy_Leave(Nothing, Nothing)
+            tbRevNo_Leave(Nothing, Nothing)
+            tbComments_Leave(Nothing, Nothing)
+            tbNotes_Leave(Nothing, Nothing)
 
             If TypeOf (inventorApp.ActiveDocument) Is AssemblyDocument Then
                 Dim AssyDoc As AssemblyDocument = Nothing
@@ -1316,7 +1304,7 @@ Partial Public Class IPropertiesForm
                     Exit Sub
                 End If
                 ' Get the 3D PDF Add-In.
-                Dim oPDFAddIn As ApplicationAddIn
+                Dim oPDFAddIn As ApplicationAddIn = Nothing
                 Dim oAddin As ApplicationAddIn
                 For Each oAddin In inventorApp.ApplicationAddIns
                     If oAddin.ClassIdString = "{3EE52B28-D6E0-4EA4-8AA6-C2A266DEBB88}" Then
@@ -1433,7 +1421,7 @@ Partial Public Class IPropertiesForm
                 oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
                 'Get sheet names and set options depending on them
-                Dim strSheetName As String
+                Dim strSheetName As String = String.Empty
                 Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
                 Dim oDoc = inventorApp.ActiveDocument
                 Dim oSheets = inventorApp.ActiveDocument.Sheets
@@ -1504,7 +1492,7 @@ Partial Public Class IPropertiesForm
                     oDataMedium = inventorApp.TransientObjects.CreateDataMedium
 
                     'Get sheet names and set options depending on them
-                    Dim strSheetName As String
+                    Dim strSheetName As String = String.Empty
                     Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
                     Dim oDoc = inventorApp.ActiveDocument
                     Dim oSheets = inventorApp.ActiveDocument.Sheets
@@ -2773,7 +2761,6 @@ Partial Public Class IPropertiesForm
         Dim oDoc As Document = inventorApp.ActiveDocument
         Dim oChange As String = String.Empty
         Dim oRow As RevisionTableRow
-        Dim oRows As RevisionTableRows
         Dim oSheet As Sheet = inventorApp.ActiveDocument.ActiveSheet
         Dim oInput As String = String.Empty
         Dim oSheetSize As DrawingSheetSizeEnum = oSheet.Size
