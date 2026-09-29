@@ -1106,7 +1106,7 @@ Namespace iPropertiesController
         ''' Original copied verbatim from here:
         ''' http://adndevblog.typepad.com/manufacturing/2012/05/checking-whether-a-inventor-document-is-read-only-or-not.html
         ''' Modified as suggested by this page:
-        ''' https://msdn.microsoft.com/en-us/library/system.io.fileattributes(v=vs.110).aspx?f=255&MSPPError=-2147217396&cs-save-lang=1&cs-lang=vb#code-snippet-2
+        ''' https://msdn.microsoft.com/en-us/library/system.io.fileattributes(v=vs.110).aspx?f=255&amp;MSPPError=-2147217396&amp;cs-save-lang=1&amp;cs-lang=vb#code-snippet-2
         ''' </summary>
         ''' <param name="doc"></param>
         ''' <returns></returns>
@@ -1128,8 +1128,10 @@ Namespace iPropertiesController
                     Return False
                 End If
             Catch ex As Exception
-                'log.Error(ex.Message)
+                ' Treat the document as writable when its attributes can't be read.
+                Log.Warning(ex, "Could not check whether the document is read-only; treating it as writable")
             End Try
+            Return False
         End Function
 
         ' This method is called by Inventor when the AddIn is unloaded. The AddIn will be
