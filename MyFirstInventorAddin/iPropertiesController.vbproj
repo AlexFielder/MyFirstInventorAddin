@@ -1,19 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <MyType>Windows</MyType>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <ProjectGuid>{E3133B87-5830-4ECA-A611-BE8CABD0D3EF}</ProjectGuid>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MyType>Empty</MyType>
     <PublishUrl>http://localhost/InventorAddIn/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -29,110 +20,67 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <!-- Version, title, company etc. come from AssemblyInfo.vb, generated from AssemblyInfo.tt on every build. -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	  <ProjectName Condition=" '$(ProjectName)' == '' ">iPropertiesController</ProjectName>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>.xml</DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>full</DebugType>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>.xml</DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <Optimize>true</Optimize>
-    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>none</DebugType>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
+    <PropertyGroup>
     <OptionExplicit>Off</OptionExplicit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionInfer>On</OptionInfer>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RootNamespace>iPropertiesController</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autodesk.Inventor.Interop, Version=27.4.0.0, Culture=neutral, PublicKeyToken=d84147f8b4276564, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2023\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</HintPath>
+    <None Remove="Resources\CHECKIN.png" />
+    <None Remove="Resources\CHECKOUT.png" />
+    <None Remove="Resources\green_button_tick.png" />
+    <None Remove="Resources\paperclip1.jpg" />
+    <None Remove="Resources\white_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2027\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
+    <Reference Include="stdole">
+      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2027\Bin\stdole.dll</HintPath>
     </Reference>
-    <Reference Include="Log4NetFileHelper">
-      <HintPath>..\Log4NetFileHelper\bin\Debug\Log4NetFileHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms">
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Import Include="Microsoft.VisualBasic" />
-    <Import Include="System" />
-    <Import Include="System.Collections" />
-    <Import Include="System.Diagnostics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AddinGlobal.vb" />
-    <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="ButtonActions.vb" />
-    <Compile Include="InventorButton.vb" />
-    <Compile Include="iProperties.vb" />
-    <Compile Include="iPropertiesForm.Designer.vb">
-      <DependentUpon>iPropertiesForm.vb</DependentUpon>
+    <Compile Update="AssemblyInfo.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AssemblyInfo.tt</DependentUpon>
     </Compile>
-    <Compile Include="iPropertiesForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="iPropertiesAddInServer.vb" />
-    <Compile Include="My Project\Resources.Designer.vb">
+    <Compile Update="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="My Project\Settings.Designer.vb">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="iPropertiesController.X.manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Autodesk.iPropertiesController.Inventor.addin">
+    <None Update="Autodesk.iPropertiesController.Inventor.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="My Project\Settings.settings">
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -148,52 +96,94 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>-->
+  <ItemGroup>
+    <Content Include="AssemblyInfo.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AssemblyInfo.vb</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
+    <Resource Include="Resources\white_button.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="iPropertiesForm.resx">
-      <DependentUpon>iPropertiesForm.vb</DependentUpon>
-    </EmbeddedResource>
+    <Resource Include="Resources\paperclip1.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="My Project\Resources.resx">
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\addin.ico" />
+    <Resource Include="Resources\CHECKIN.png" />
+    <Resource Include="Resources\CHECKOUT.png" />
+    <Resource Include="Resources\green_button_tick.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Installer\Installer.iss" />
     <Content Include="Resources\paperclip.jpg" />
-    <None Include="Resources\paperclip1.jpg" />
-    <None Include="Resources\CHECKOUT.png" />
-    <None Include="Resources\CHECKIN.png" />
-    <None Include="Resources\green_button_tick.png" />
-    <None Include="Resources\white_button.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <ItemGroup>
+    
+    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="1.3.0" />
+    
+    <PackageReference Include="Serilog.Sinks.Seq" Version="7.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System.Windows" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Installer\nppBackup\**" />
+    <EmbeddedResource Remove="Installer\nppBackup\**" />
+    <None Remove="Installer\nppBackup\**" />
+    <Page Remove="Installer\nppBackup\**" />
+  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{e691af34-cb32-4296-8cca-5d1027a27c72}" />
+	</ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32" mt.exe -manifest "$(ProjectDir)IPropertiesController.X.manifest" -outputresource:"$(TargetPath)";#2
-if "$(ConfigurationName)"=="Debug" (
+    <PostBuildEvent>echo Configuration: $(Configuration)
+	echo SolutionDir: $(SolutionDir)
+echo OutDir: $(OutDir)
+echo ProjectDir: $(ProjectDir)
+echo ProjectName: $(ProjectName)
+echo TargetDir: $(TargetDir)
+if "$(Configuration)"=="Debug" (
 XCopy "$(TargetDir)*.*" "C:\ProgramData\Autodesk\Inventor Addins\$(ProjectName)\*.*" /Y /R
 if not exist "C:\Logs" mkdir "C:\Logs"
 )
-if "$(ConfigurationName)"=="Release" (
+if "$(Configuration)"=="Release" (
 cd "$(ProjectDir)\Installer"
-"C:\Program Files (x86)\Inno Setup 5\ISCC.exe" "installer.iss"
+"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer.iss"
 )</PostBuildEvent>
+    <ImportedNamespaces>System.Windows=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,iPropertiesController=True</ImportedNamespaces>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TransformOnBuild>false</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+  </PropertyGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <!--
+      T4 version bump, as in the other AF Automations Inventor/Vault add-ins. TextTransform.exe
+      ships with Visual Studio, not the .NET SDK - probe the usual install locations and SKIP
+      gracefully when absent (CI runners, SDK-only machines): AssemblyInfo.vb is tracked, so a
+      build without the bump just reuses the committed version.
+    -->
+    <PropertyGroup>
+      <TextTransformExe>C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe</TextTransformExe>
+      <TextTransformExe Condition="!Exists('$(TextTransformExe)')">C:\Program Files\Microsoft Visual Studio\18\Professional\Common7\IDE\TextTransform.exe</TextTransformExe>
+    </PropertyGroup>
+    <Exec Condition="Exists('$(TextTransformExe)')" Command="call &quot;$(TextTransformExe)&quot; -a &quot;!!BuildConfiguration!$(Configuration)&quot; &quot;$(ProjectDir)AssemblyInfo.tt&quot;" />
+    <Warning Condition="!Exists('$(TextTransformExe)')" Text="TextTransform.exe not found - skipping T4 version bump; using committed AssemblyInfo.vb as-is." />
+  </Target>
 </Project>

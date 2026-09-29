@@ -1,5 +1,4 @@
 ﻿Imports System.Drawing
-Imports System.Windows.Forms
 Imports Inventor
 
 Namespace iPropertiesController
@@ -78,52 +77,20 @@ Namespace iPropertiesController
         End Sub
 
         Private Sub ButtonDefinition_OnExecute(ByVal context As NameValueMap)
-            If Execute IsNot Nothing Then Execute() Else MessageBox.Show("Nothing to execute.")
+            If Execute IsNot Nothing Then Execute() Else ShowMessage("Nothing to execute.")
         End Sub
 
         Public Execute As Action
 
         Public Shared Function ImageToPicture(ByVal image As Image) As stdole.IPictureDisp
-            Return ImageConverter.ImageToPicture(image)
+            Using bmp As New Bitmap(image)
+                Return PictureDispConverter.ToIPictureDisp(bmp)
+            End Using
         End Function
 
         Public Shared Function IconToPicture(ByVal icon As Icon) As stdole.IPictureDisp
-            Return ImageConverter.ImageToPicture(icon.ToBitmap())
+            Return PictureDispConverter.ToIPictureDisp(icon)
         End Function
-
-        Public Shared Function PictureToImage(ByVal picture As stdole.IPictureDisp) As Image
-            Return ImageConverter.PictureToImage(picture)
-        End Function
-
-        Public Shared Function PictureToIcon(ByVal picture As stdole.IPictureDisp) As Icon
-            Return ImageConverter.PictureToIcon(picture)
-        End Function
-
-        Private Class ImageConverter
-            Inherits AxHost
-
-            Public Sub New()
-                MyBase.New(String.Empty)
-            End Sub
-
-            Public Shared Function ImageToPicture(ByVal image As Image) As stdole.IPictureDisp
-                Return CType(GetIPictureDispFromPicture(image), stdole.IPictureDisp)
-            End Function
-
-            Public Shared Function IconToPicture(ByVal icon As Icon) As stdole.IPictureDisp
-                Return ImageToPicture(icon.ToBitmap())
-            End Function
-
-            Public Shared Function PictureToImage(ByVal picture As stdole.IPictureDisp) As Image
-                Return GetPictureFromIPicture(picture)
-            End Function
-
-            Public Shared Function PictureToIcon(ByVal picture As stdole.IPictureDisp) As Icon
-                Dim bitmap As Bitmap = New Bitmap(PictureToImage(picture))
-                Return System.Drawing.Icon.FromHandle(bitmap.GetHicon())
-            End Function
-
-        End Class
 
     End Class
 

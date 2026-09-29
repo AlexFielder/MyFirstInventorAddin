@@ -2,9 +2,8 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Reflection
 Imports System.Runtime.InteropServices
-Imports System.Windows.Forms
 Imports Inventor
-Imports log4net
+Imports Serilog
 
 Namespace iPropertiesController
 
@@ -36,12 +35,17 @@ Namespace iPropertiesController
         Public Shared myiPropsForm As IPropertiesForm = Nothing
         Public Property InventorAppQuitting As Boolean = False
 
+        ' Seq logging settings, read from the user's environment (set once per workstation).
+        Private Const SeqApiKeyVariable As String = "AFA_IPROPERTIES_SEQ_APIKEY"
+        Private Const SeqServerUrlVariable As String = "AFA_IPROPERTIES_SEQ_URL"
+        Private Const DefaultSeqServerUrl As String = "https://seq.afautomations.co.uk"
+
         'we can set the following to false if we don't want the file to save:
         Public AllowFileToSave As Boolean = True
         Public AllowFileToSaveAs As Boolean = True
 
-        Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
-        Private Shared ReadOnly log As ILog = LogManager.GetLogger(GetType(iPropertiesAddInServer))
+        'Private logHelper As Log4NetFileHelper.Log4NetFileHelper = New Log4NetFileHelper.Log4NetFileHelper()
+        'Private Shared ReadOnly log As ILogger = Log.ForContext(Of iPropertiesAddInServer)()
 
         'Private WithEvents m_sampleButton As ButtonDefinition
 
@@ -61,6 +65,29 @@ Namespace iPropertiesController
             Dim uiMgr As UserInterfaceManager = AddinGlobal.InventorApp.UserInterfaceManager
             attribute = DirectCast(thisAssembly.GetCustomAttributes(GetType(GuidAttribute), True)(0), GuidAttribute)
             Try
+
+                ' Initialize Serilog
+                Dim logPath As String = IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.CommonApplicationData), "Autodesk", "Inventor Addins", "iPropertiesController", "iPropertiesController.log")
+                Directory.CreateDirectory(IO.Path.GetDirectoryName(logPath))
+                Dim loggerConfig = New LoggerConfiguration()
+                With loggerConfig
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .WriteTo.File(logPath, rollingInterval:=Serilog.RollingInterval.Day, retainedFileCountLimit:=7, outputTemplate:="{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
+                End With
+                ' Optional Seq sink. The API key comes from a user environment variable, never from
+                ' source control; without it the add-in logs to file only.
+                Dim seqApiKey As String = System.Environment.GetEnvironmentVariable(SeqApiKeyVariable)
+                Dim seqServerUrl As String = System.Environment.GetEnvironmentVariable(SeqServerUrlVariable)
+                If String.IsNullOrWhiteSpace(seqServerUrl) Then seqServerUrl = DefaultSeqServerUrl
+                Dim useSeq As Boolean = Not String.IsNullOrWhiteSpace(seqApiKey)
+                If useSeq Then loggerConfig.WriteTo.Seq(serverUrl:=seqServerUrl, apiKey:=seqApiKey)
+                Log.Logger = loggerConfig.CreateLogger()
+                If useSeq Then
+                    Log.Information("Seq sink configured: {ServerUrl}", seqServerUrl)
+                Else
+                    Log.Information("{Variable} is not set; logging to file only", SeqApiKeyVariable)
+                End If
 
                 AddinGlobal.GetAddinClassId(Me.GetType())
                 'store our Addin path.
@@ -93,12 +120,7 @@ Namespace iPropertiesController
 
                 AddHandler m_AppEvents.OnCloseDocument, AddressOf Me.m_ApplicationEvents_OnCloseDocument
 
-                'start our logger.
-                logHelper.Init()
-                logHelper.AddFileLogging(IO.Path.Combine(thisAssemblyPath, "iPropertiesController.log"))
-                logHelper.AddFileLogging("C:\Logs\MyLogFile.txt", Core.Level.All, True)
-                logHelper.AddRollingFileLogging("C:\Logs\RollingFileLog.txt", Core.Level.All, True)
-                log.Debug("Loading My First Inventor Addin")
+                Log.Information("Loading My First Inventor Addin")
                 ' TODO: Add button definitions.
 
                 ' Sample to illustrate creating a button definition.
@@ -119,18 +141,12 @@ Namespace iPropertiesController
                     AddToUserInterface(button1)
                     'add our userform to a new DockableWindow
                     Dim localWindow As DockableWindow = Nothing
-                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp)
+                    myiPropsForm = New IPropertiesForm(AddinGlobal.InventorApp, Log.Logger)
                     'deal with Inventor's Dark theme:
-                    If IsInventorUsingDarkTheme() Then
-                        SwitchTheme(myiPropsForm, True)
-                    Else
-                        SwitchTheme(myiPropsForm)
-                    End If
-                    'custom sizing
-                    myiPropsForm.tbDrawnBy.Width = (myiPropsForm.Size.Width * 0.7) - 2 * myiPropsForm.customMargin - myiPropsForm.tbDrawnBy.Location.X
-                    myiPropsForm.Show()
+                    myiPropsForm.ApplyTheme(IsInventorUsingDarkTheme())
+                    iPropsFormHost = New WpfDockableHost(myiPropsForm, New IntPtr(AddinGlobal.InventorApp.MainFrameHWND), 285, 440)
                     Window = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWindow", "iProperties Controller " + AddinGlobal.DisplayableVersion)
-                    Window.AddChild(myiPropsForm.Handle)
+                    Window.AddChild(iPropsFormHost.Handle)
 
                     'If Not Window.IsCustomized = True Then
                     '    'myDockableWindow.DockingState = DockingStateEnum.kFloat
@@ -143,54 +159,18 @@ Namespace iPropertiesController
                     Window.ShowVisibilityCheckBox = True
                     Window.ShowTitleBar = True
                     Window.SetMinimumSize(440, 285)
-                    myiPropsForm.Dock = DockStyle.Fill
                     Window.Visible = True
                     'localWindow = myDockableWindow
                     AddinGlobal.DockableList.Add(Window)
                     'Window = localWindow
-
                 End If
-                log.Info("Loaded My First Inventor Add-in")
+                Log.Information("Loaded My First Inventor Add-in")
             Catch ex As Exception
-                log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
         End Sub
 
-        Private Sub SwitchTheme(ByRef myiPropsForm As IPropertiesForm, Optional DarkTheme As Boolean = False)
-            If DarkTheme Then
-                AddinGlobal.BackColour = Drawing.Color.FromArgb(59, 68, 83)
-                AddinGlobal.ForeColour = Drawing.Color.FromArgb(225, 225, 225)
-                AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(69, 79, 97)
-                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(44, 52, 64)
-            Else
-                AddinGlobal.BackColour = Drawing.Color.FromArgb(240, 240, 240)
-                AddinGlobal.ForeColour = Drawing.Color.FromArgb(0, 0, 0)
-                AddinGlobal.ControlBackColour = Drawing.Color.FromArgb(255, 255, 255)
-                AddinGlobal.ControlHighlightedColour = Drawing.Color.FromArgb(225, 225, 225)
-            End If
-            myiPropsForm.BackColor = AddinGlobal.BackColour
-            For Each FormControl As Control In myiPropsForm.Controls
-                Select Case TypeName(FormControl)
-                    Case "Button"
-                        Dim Btn As Button = FormControl
-                        Btn.BackColor = AddinGlobal.ControlBackColour
-                        Btn.ForeColor = AddinGlobal.ForeColour
-                    Case "Label"
-                        Dim Lbl As Label = FormControl
-                        Lbl.BackColor = AddinGlobal.BackColour
-                        Lbl.ForeColor = AddinGlobal.ForeColour
-                    Case "TextBox"
-                        Dim TxtBox As Windows.Forms.TextBox = FormControl
-                        TxtBox.BackColor = AddinGlobal.ControlHighlightedColour
-                        TxtBox.ForeColor = AddinGlobal.ForeColour
-                    Case "DateTimePicker"
-                        Dim DateTimePickR As DateTimePicker = FormControl
-                        DateTimePickR.CalendarMonthBackground = AddinGlobal.ControlBackColour
-                        DateTimePickR.CalendarForeColor = AddinGlobal.ForeColour
-                End Select
-
-            Next
-        End Sub
+        Private Shared iPropsFormHost As WpfDockableHost = Nothing
 
         Private Function IsInventorUsingDarkTheme() As Boolean
             Dim oThemeManager As ThemeManager = AddinGlobal.InventorApp.ThemeManager
@@ -227,8 +207,8 @@ Namespace iPropertiesController
 
                             myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
                             myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-                            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
+                            myiPropsForm.tbDescription.ResetForeground()
+                            myiPropsForm.tbPartNumber.ResetForeground()
 
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, myiPropsForm.tbDescription.Text, "", True)
                             iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, myiPropsForm.tbPartNumber.Text, "", True)
@@ -297,13 +277,13 @@ Namespace iPropertiesController
                         DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
 
                         If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                            WhatToDo = MsgBox("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
+                            WhatToDo = ShowMessage("Updates are not Deferred, do you want to Defer them?", vbYesNo, "Deferred Checker")
                             If WhatToDo = vbYes Then
                                 AddinGlobal.InventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                                myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                                myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
+                                myiPropsForm.btDefer.Background = Media.Brushes.Red
+                                myiPropsForm.btDefer.Content = "Drawing Updates Deferred"
                                 UpdateStatusBar("Updates are now Deferred")
-                                MsgBox("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
+                                ShowMessage("Updates are now Deferred, continue Checkin", vbOKOnly, "Deferred Checker")
                             End If
                         End If
                     End If
@@ -313,7 +293,7 @@ Namespace iPropertiesController
                         Dim PartNo As String = myiPropsForm.tbPartNumber.Text
                         Dim StockNo As String = myiPropsForm.tbStockNumber.Text
                         If Not PartNo = StockNo Then
-                            stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+                            stockNum = ShowMessage("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
                             If stockNum = vbNo Then
                                 Exit Sub
                             End If
@@ -335,14 +315,14 @@ Namespace iPropertiesController
                     '        Dim kgWeight As Decimal = Weight / 1000
                     '        Dim Weight2 As Decimal = Math.Round(kgWeight, 1)
                     '        If Material = "Generic" Then
-                    '            whatnow = MsgBox("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbYesNo, "Material Check")
+                    '            whatnow = ShowMessage("Material is set as " & Material & " are you sure you don't want it to be something more shiny?", vbYesNo, "Material Check")
                     '            If whatnow = vbNo Then
                     '                AllowFileToSave = False
                     '                AllowFileToSaveAs = False
                     '            End If
                     '        End If
                     '        If Weight2 > 10 Then
-                    '            whatnow = MsgBox("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbYesNo, "Weight Check")
+                    '            whatnow = ShowMessage("The weight of this part is quite high, " & Weight2 & "kg. Are you sure you're happy with that?", vbYesNo, "Weight Check")
                     '            If whatnow = vbNo Then
                     '                AllowFileToSave = False
                     '                AllowFileToSaveAs = False
@@ -357,58 +337,62 @@ Namespace iPropertiesController
         Private Sub m_ApplicationEvents_OnActivateView(ViewObject As Inventor.View, BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 Dim DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
-                myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
-                If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
-                    If DocumentToPulliPropValuesFrom IsNot Nothing Then
-                        Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-                        Dim oSht As Sheet = oDWG.ActiveSheet
-                        Dim oView As DrawingView = Nothing
-                        Dim drawnDoc As Document = Nothing
+                'check if the form exists in case the user hasn't enabled it in the browser yet.
+                If myiPropsForm IsNot Nothing Then
+                    myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
 
-                        For Each view As DrawingView In oSht.DrawingViews
-                            oView = view
-                            Exit For
-                        Next
-                        If oView IsNot Nothing Then
-                            drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                            revno = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-                            modrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
-                            If revno > modrev Then
-                                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                    If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
+                        If DocumentToPulliPropValuesFrom IsNot Nothing Then
+                            Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                            Dim oSht As Sheet = oDWG.ActiveSheet
+                            Dim oView As DrawingView = Nothing
+                            Dim drawnDoc As Document = Nothing
 
-                                iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, revno, "", True)
+                            For Each view As DrawingView In oSht.DrawingViews
+                                oView = view
+                                Exit For
+                            Next
+                            If oView IsNot Nothing Then
+                                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+                                revno = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                modrev = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                                If revno > modrev Then
+                                    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                                    iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, revno, "", True)
+                                End If
                             End If
-                        End If
 
-                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
-                        UpdateFormTextBoxColours()
-                    End If
-                ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
-                    Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
-                    If AssyDoc.SelectSet.Count = 1 Then
-                        Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
-                        DocumentToPulliPropValuesFrom = compOcc.Definition.Document
-                        If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
-                            DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                        ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
                             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                             UpdateFormTextBoxColours()
+                        End If
+                    ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
+                        Dim AssyDoc As AssemblyDocument = AddinGlobal.InventorApp.ActiveDocument
+                        If AssyDoc.SelectSet.Count = 1 Then
+                            Dim compOcc As ComponentOccurrence = AssyDoc.SelectSet(1)
+                            DocumentToPulliPropValuesFrom = compOcc.Definition.Document
+                            If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
+                                DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                            ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
+                                SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                                UpdateFormTextBoxColours()
+                            End If
+                        Else
+                            If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
+                                DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
+                            ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
+                                SetFormDisplayOption(DocumentToPulliPropValuesFrom)
+                                UpdateFormTextBoxColours()
+                            End If
                         End If
                     Else
                         If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
                             DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                        ElseIf DocumentToPulliPropValuesFrom IsNot Nothing Then
+                        End If
+                        If DocumentToPulliPropValuesFrom IsNot Nothing Then
                             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
                             UpdateFormTextBoxColours()
                         End If
-                    End If
-                Else
-                    If AddinGlobal.InventorApp.ActiveEditObject IsNot DocumentToPulliPropValuesFrom Then
-                        DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveEditObject
-                    End If
-                    If DocumentToPulliPropValuesFrom IsNot Nothing Then
-                        SetFormDisplayOption(DocumentToPulliPropValuesFrom)
-                        UpdateFormTextBoxColours()
                     End If
                 End If
             End If
@@ -513,13 +497,13 @@ Namespace iPropertiesController
                                 If TypeOf AssyDoc.SelectSet(1) Is ComponentOccurrence Then
                                     ShowOccurrenceProperties(AssyDoc)
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeatureProxy Then
-                                    myiPropsForm.tbPartNumber.ReadOnly = True
-                                    myiPropsForm.tbDescription.ReadOnly = True
-                                    myiPropsForm.tbStockNumber.ReadOnly = True
-                                    myiPropsForm.tbEngineer.ReadOnly = True
-                                    myiPropsForm.tbRevNo.ReadOnly = True
-                                    myiPropsForm.tbComments.ReadOnly = True
-                                    myiPropsForm.tbNotes.ReadOnly = True
+                                    myiPropsForm.tbPartNumber.IsReadOnly = True
+                                    myiPropsForm.tbDescription.IsReadOnly = True
+                                    myiPropsForm.tbStockNumber.IsReadOnly = True
+                                    myiPropsForm.tbEngineer.IsReadOnly = True
+                                    myiPropsForm.tbRevNo.IsReadOnly = True
+                                    myiPropsForm.tbComments.IsReadOnly = True
+                                    myiPropsForm.tbNotes.IsReadOnly = True
                                     Dim FeatOcc As PartFeature = AssyDoc.SelectSet(1)
                                     Dim holeOcc As HoleFeature = AssyDoc.SelectSet(1)
 
@@ -528,13 +512,13 @@ Namespace iPropertiesController
                                     myiPropsForm.tbStockNumber.Text = FeatOcc.Name
                                     myiPropsForm.tbDescription.Text = FeatOcc.ThreadDesignation
                                 ElseIf TypeOf AssyDoc.SelectSet(1) Is HoleFeature Then
-                                    myiPropsForm.tbPartNumber.ReadOnly = True
-                                    myiPropsForm.tbDescription.ReadOnly = True
-                                    myiPropsForm.tbStockNumber.ReadOnly = True
-                                    myiPropsForm.tbEngineer.ReadOnly = True
-                                    myiPropsForm.tbRevNo.ReadOnly = True
-                                    myiPropsForm.tbComments.ReadOnly = True
-                                    myiPropsForm.tbNotes.ReadOnly = True
+                                    myiPropsForm.tbPartNumber.IsReadOnly = True
+                                    myiPropsForm.tbDescription.IsReadOnly = True
+                                    myiPropsForm.tbStockNumber.IsReadOnly = True
+                                    myiPropsForm.tbEngineer.IsReadOnly = True
+                                    myiPropsForm.tbRevNo.IsReadOnly = True
+                                    myiPropsForm.tbComments.IsReadOnly = True
+                                    myiPropsForm.tbNotes.IsReadOnly = True
                                     Dim holeOcc As PartFeature = AssyDoc.SelectSet(1)
 
                                     myiPropsForm.tbEngineer.Text = "Reading Assembly Hole Properties"
@@ -547,13 +531,13 @@ Namespace iPropertiesController
                                     AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("AssemblyShowAssemblyFeatureDimsCtxCmd").Execute()
 
                                 Else
-                                    myiPropsForm.tbPartNumber.ReadOnly = False
-                                    myiPropsForm.tbDescription.ReadOnly = False
-                                    myiPropsForm.tbStockNumber.ReadOnly = False
-                                    myiPropsForm.tbEngineer.ReadOnly = False
-                                    myiPropsForm.tbRevNo.ReadOnly = False
-                                    myiPropsForm.tbComments.ReadOnly = False
-                                    myiPropsForm.tbNotes.ReadOnly = False
+                                    myiPropsForm.tbPartNumber.IsReadOnly = False
+                                    myiPropsForm.tbDescription.IsReadOnly = False
+                                    myiPropsForm.tbStockNumber.IsReadOnly = False
+                                    myiPropsForm.tbEngineer.IsReadOnly = False
+                                    myiPropsForm.tbRevNo.IsReadOnly = False
+                                    myiPropsForm.tbComments.IsReadOnly = False
+                                    myiPropsForm.tbNotes.IsReadOnly = False
                                     UpdateDisplayediProperties(AssyDoc)
                                 End If
                             ElseIf AssyDoc.SelectSet.Count = 0 Then
@@ -571,13 +555,13 @@ Namespace iPropertiesController
                                     myiPropsForm.btCheckIn.Hide()
                                     myiPropsForm.btCheckOut.Show()
 
-                                    myiPropsForm.tbPartNumber.ReadOnly = True
-                                    myiPropsForm.tbDescription.ReadOnly = True
-                                    myiPropsForm.tbStockNumber.ReadOnly = True
-                                    myiPropsForm.tbEngineer.ReadOnly = True
-                                    myiPropsForm.tbRevNo.ReadOnly = True
-                                    myiPropsForm.tbComments.ReadOnly = True
-                                    myiPropsForm.tbNotes.ReadOnly = True
+                                    myiPropsForm.tbPartNumber.IsReadOnly = True
+                                    myiPropsForm.tbDescription.IsReadOnly = True
+                                    myiPropsForm.tbStockNumber.IsReadOnly = True
+                                    myiPropsForm.tbEngineer.IsReadOnly = True
+                                    myiPropsForm.tbRevNo.IsReadOnly = True
+                                    myiPropsForm.tbComments.IsReadOnly = True
+                                    myiPropsForm.tbNotes.IsReadOnly = True
                                 Else
                                     'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
                                     'myiPropsForm.Label10.Text = "Checked Out"
@@ -586,13 +570,13 @@ Namespace iPropertiesController
                                     myiPropsForm.btCheckIn.Show()
                                     myiPropsForm.btCheckOut.Hide()
 
-                                    myiPropsForm.tbPartNumber.ReadOnly = False
-                                    myiPropsForm.tbDescription.ReadOnly = False
-                                    myiPropsForm.tbStockNumber.ReadOnly = False
-                                    myiPropsForm.tbEngineer.ReadOnly = False
-                                    myiPropsForm.tbRevNo.ReadOnly = False
-                                    myiPropsForm.tbComments.ReadOnly = False
-                                    myiPropsForm.tbNotes.ReadOnly = False
+                                    myiPropsForm.tbPartNumber.IsReadOnly = False
+                                    myiPropsForm.tbDescription.IsReadOnly = False
+                                    myiPropsForm.tbStockNumber.IsReadOnly = False
+                                    myiPropsForm.tbEngineer.IsReadOnly = False
+                                    myiPropsForm.tbRevNo.IsReadOnly = False
+                                    myiPropsForm.tbComments.IsReadOnly = False
+                                    myiPropsForm.tbNotes.IsReadOnly = False
                                 End If
                                 UpdateDisplayediProperties(AssyDoc)
                                 UpdateFormTextBoxColours()
@@ -602,13 +586,13 @@ Namespace iPropertiesController
                             Dim PartDoc As PartDocument = AddinGlobal.InventorApp.ActiveEditDocument
                             If PartDoc.SelectSet.Count = 1 Then
                                 If TypeOf PartDoc.SelectSet(1) Is PartFeature Then
-                                    myiPropsForm.tbPartNumber.ReadOnly = True
-                                    myiPropsForm.tbDescription.ReadOnly = True
-                                    myiPropsForm.tbStockNumber.ReadOnly = True
-                                    myiPropsForm.tbEngineer.ReadOnly = True
-                                    myiPropsForm.tbRevNo.ReadOnly = True
-                                    myiPropsForm.tbComments.ReadOnly = True
-                                    myiPropsForm.tbNotes.ReadOnly = True
+                                    myiPropsForm.tbPartNumber.IsReadOnly = True
+                                    myiPropsForm.tbDescription.IsReadOnly = True
+                                    myiPropsForm.tbStockNumber.IsReadOnly = True
+                                    myiPropsForm.tbEngineer.IsReadOnly = True
+                                    myiPropsForm.tbRevNo.IsReadOnly = True
+                                    myiPropsForm.tbComments.IsReadOnly = True
+                                    myiPropsForm.tbNotes.IsReadOnly = True
                                     Dim FeatOcc As PartFeature = PartDoc.SelectSet(1)
 
                                     myiPropsForm.tbEngineer.Text = "Reading Feature Properties"
@@ -619,23 +603,23 @@ Namespace iPropertiesController
                                     End If
                                     AddinGlobal.InventorApp.CommandManager.ControlDefinitions.Item("PartShowDimensionsCtxCmd").Execute()
                                 Else
-                                    myiPropsForm.tbPartNumber.ReadOnly = False
-                                    myiPropsForm.tbDescription.ReadOnly = False
-                                    myiPropsForm.tbStockNumber.ReadOnly = False
-                                    myiPropsForm.tbEngineer.ReadOnly = False
-                                    myiPropsForm.tbRevNo.ReadOnly = False
-                                    myiPropsForm.tbComments.ReadOnly = False
-                                    myiPropsForm.tbNotes.ReadOnly = False
+                                    myiPropsForm.tbPartNumber.IsReadOnly = False
+                                    myiPropsForm.tbDescription.IsReadOnly = False
+                                    myiPropsForm.tbStockNumber.IsReadOnly = False
+                                    myiPropsForm.tbEngineer.IsReadOnly = False
+                                    myiPropsForm.tbRevNo.IsReadOnly = False
+                                    myiPropsForm.tbComments.IsReadOnly = False
+                                    myiPropsForm.tbNotes.IsReadOnly = False
                                     UpdateDisplayediProperties(PartDoc)
                                 End If
                             Else
-                                myiPropsForm.tbPartNumber.ReadOnly = False
-                                myiPropsForm.tbDescription.ReadOnly = False
-                                myiPropsForm.tbStockNumber.ReadOnly = False
-                                myiPropsForm.tbEngineer.ReadOnly = False
-                                myiPropsForm.tbRevNo.ReadOnly = False
-                                myiPropsForm.tbComments.ReadOnly = False
-                                myiPropsForm.tbNotes.ReadOnly = False
+                                myiPropsForm.tbPartNumber.IsReadOnly = False
+                                myiPropsForm.tbDescription.IsReadOnly = False
+                                myiPropsForm.tbStockNumber.IsReadOnly = False
+                                myiPropsForm.tbEngineer.IsReadOnly = False
+                                myiPropsForm.tbRevNo.IsReadOnly = False
+                                myiPropsForm.tbComments.IsReadOnly = False
+                                myiPropsForm.tbNotes.IsReadOnly = False
                                 UpdateDisplayediProperties(PartDoc)
                             End If
                         Else
@@ -675,15 +659,15 @@ Namespace iPropertiesController
         End Sub
 
         Private Shared Sub UpdateFormTextBoxColours()
-            myiPropsForm.tbDescription.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbPartNumber.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbStockNumber.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbEngineer.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbRevNo.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbComments.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbNotes.ForeColor = Drawing.Color.Black
-            myiPropsForm.tbService.ForeColor = Drawing.Color.Black
+            myiPropsForm.tbDescription.ResetForeground()
+            myiPropsForm.tbPartNumber.ResetForeground()
+            myiPropsForm.tbStockNumber.ResetForeground()
+            myiPropsForm.tbEngineer.ResetForeground()
+            myiPropsForm.tbDrawnBy.ResetForeground()
+            myiPropsForm.tbRevNo.ResetForeground()
+            myiPropsForm.tbComments.ResetForeground()
+            myiPropsForm.tbNotes.ResetForeground()
+            myiPropsForm.tbService.ResetForeground()
         End Sub
 
         Private Sub m_ApplicationEvents_OnQuit(BeforeOrAfter As EventTimingEnum, Context As NameValueMap, ByRef HandlingCode As HandlingCodeEnum)
@@ -709,7 +693,7 @@ Namespace iPropertiesController
 
             If BeforeOrAfter = EventTimingEnum.kAfter Then
                 UpdateDisplayediProperties()
-                myiPropsForm.tbDrawnBy.ForeColor = Drawing.Color.Black
+                myiPropsForm.tbDrawnBy.ResetForeground()
                 myiPropsForm.GetNewFilePaths()
             End If
             HandlingCode = HandlingCodeEnum.kEventNotHandled
@@ -784,245 +768,244 @@ Namespace iPropertiesController
                 DocumentToPulliPropValuesFrom = AddinGlobal.InventorApp.ActiveDocument
             End If
             'If DocumentToPulliPropValuesFrom.FullFileName?.Length > 0 Then
+            If myiPropsForm IsNot Nothing Then
+                If DocumentToPulliPropValuesFrom IsNot Nothing Then
 
-            If DocumentToPulliPropValuesFrom IsNot Nothing Then
-                myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                myiPropsForm.FileLocation.Text = DocumentToPulliPropValuesFrom.FullFileName
-                myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
-            Else ' use the active edit object in cases where we're editing-in-place
-                If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
-                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
+                    myiPropsForm.FileLocation.ResetForeground()
+                    myiPropsForm.FileLocation.Text = DocumentToPulliPropValuesFrom.FullFileName
                     myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
-                Else
-                    myiPropsForm.FileLocation.ForeColor = Drawing.Color.Black
-                    myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
-                    myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
-                End If
-            End If
-
-
-
-            myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
-
-
-            If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
-                myiPropsForm.btDefer.Show()
-                myiPropsForm.Label7.Show()
-                myiPropsForm.tbDrawnBy.Show()
-                myiPropsForm.btShtMaterial.Show()
-                myiPropsForm.btShtScale.Show()
-                myiPropsForm.ModelFileLocation.Show()
-                myiPropsForm.Label5.Hide()
-                myiPropsForm.tbMass.Hide()
-                myiPropsForm.Label9.Hide()
-                myiPropsForm.tbDensity.Hide()
-                myiPropsForm.Label3.Hide()
-                myiPropsForm.tbStockNumber.Hide()
-                myiPropsForm.btCopyPN.Hide()
-                myiPropsForm.btViewNames.Show()
-                myiPropsForm.lbDesigner.Hide()
-                myiPropsForm.tbService.Hide()
-                myiPropsForm.lbservice.Hide()
-                myiPropsForm.btExpDXF.Hide()
-                myiPropsForm.btFrame.Show()
-
-                myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
-                            DocumentToPulliPropValuesFrom,
-                            PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
-
-                Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
-                Dim oSht As Sheet = oDWG.ActiveSheet
-                Dim oView As DrawingView = Nothing
-                Dim drawnDoc As Document = Nothing
-                Dim MaterialString As String = String.Empty
-                Dim DrawDesc As String = String.Empty
-                Dim ModelDesc As String = String.Empty
-
-                If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
-
-                    myiPropsForm.tbDrawnBy.ReadOnly = True
-
-                    'drawnDoc = DocumentToPulliPropValuesFrom
-                    'DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                    'ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                    If iProperties.GetorSetStandardiProperty(
-                                          DocumentToPulliPropValuesFrom,
-                                          PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                        myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                        myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
-                    ElseIf iProperties.GetorSetStandardiProperty(
-                            DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                        myiPropsForm.btDefer.BackColor = Drawing.Color.Green
-                        myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
-                    End If
-
-                Else
-
-                    myiPropsForm.tbDrawnBy.ReadOnly = False
-                    If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
-
-                        If iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
-                            PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Red
-                            myiPropsForm.btDefer.Text = "Drawing Updates Deferred"
-                        ElseIf iProperties.GetorSetStandardiProperty(
-                                DocumentToPulliPropValuesFrom,
-                               PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
-                            myiPropsForm.btDefer.BackColor = Drawing.Color.Green
-                            myiPropsForm.btDefer.Text = "Drawing Updates Not Deferred"
-
-                            For Each view As DrawingView In oSht.DrawingViews
-                                oView = view
-                                Exit For
-                            Next
-
-                            If oView IsNot Nothing Then
-                                drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-
-                                If TypeOf drawnDoc Is AssemblyDocument Then
-                                    myiPropsForm.btITEM.Show()
-                                    myiPropsForm.btReNum.Show()
-                                    myiPropsForm.Label11.Show()
-                                    myiPropsForm.Label12.Show()
-
-
-                                    MaterialString = "See Above"
-                                Else
-                                    myiPropsForm.btITEM.Hide()
-                                    myiPropsForm.btReNum.Hide()
-                                    myiPropsForm.Label11.Show()
-                                    myiPropsForm.Label12.Show()
-
-                                    MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                                End If
-
-                                MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
-                                ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
-
-                                myiPropsForm.ModelFileLocation.ForeColor = Drawing.Color.Black
-                                myiPropsForm.ModelFileLocation.Text = ModelPath
-
-                                myiPropsForm.Label12.Text = MaterialString
-                                'DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                                'ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-                                'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                                'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-
-                            End If
-
-                        End If
+                Else ' use the active edit object in cases where we're editing-in-place
+                    If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
+                        myiPropsForm.FileLocation.ResetForeground()
+                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveEditDocument.FullFileName
+                        myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                     Else
-                        'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                        'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        myiPropsForm.FileLocation.ResetForeground()
+                        myiPropsForm.FileLocation.Text = AddinGlobal.InventorApp.ActiveDocument.FullFileName
+                        myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
                     End If
                 End If
 
-                myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-                myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-                myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
 
-            Else
-                myiPropsForm.Label5.Show()
-                myiPropsForm.tbMass.Show()
-                myiPropsForm.Label9.Show()
-                myiPropsForm.tbDensity.Show()
-                myiPropsForm.Label3.Show()
-                myiPropsForm.tbStockNumber.Show()
-                myiPropsForm.Label7.Hide()
-                myiPropsForm.tbDrawnBy.Hide()
-                myiPropsForm.btDefer.Hide()
-                myiPropsForm.btShtMaterial.Hide()
-                myiPropsForm.btShtScale.Hide()
-                myiPropsForm.ModelFileLocation.Hide()
-                myiPropsForm.btCopyPN.Show()
-                myiPropsForm.btViewNames.Hide()
-                myiPropsForm.lbDesigner.Show()
+                myiPropsForm.tbComments.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, "", "")
 
-                If DocumentToPulliPropValuesFrom.FullFileName IsNot Nothing Then
-                    If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
-                        If DocumentToPulliPropValuesFrom.FullDocumentName.Contains("pisweep") Then
-                            myiPropsForm.lbservice.Show()
-                            myiPropsForm.tbService.Show()
-                            myiPropsForm.btDiaEng.Hide()
-                            myiPropsForm.btDegEng.Hide()
-                            myiPropsForm.Label4.Hide()
-                        ElseIf iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Contains("WALL TUBE") Then
-                            myiPropsForm.lbservice.Show()
-                            myiPropsForm.tbService.Show()
-                            myiPropsForm.btDiaEng.Hide()
-                            myiPropsForm.btDegEng.Hide()
-                            myiPropsForm.Label4.Hide()
-                        Else
-                            myiPropsForm.lbservice.Hide()
-                            myiPropsForm.tbService.Hide()
-                            myiPropsForm.btDiaEng.Show()
-                            myiPropsForm.btDegEng.Show()
-                            myiPropsForm.Label4.Show()
-                        End If
-                    End If
-                End If
-
-                If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
-                    myiPropsForm.btITEM.Show()
-                    myiPropsForm.btReNum.Show()
-                    myiPropsForm.Label11.Hide()
-                    myiPropsForm.Label12.Hide()
+                If TypeOf (DocumentToPulliPropValuesFrom) Is DrawingDocument Then
+                    myiPropsForm.btDefer.Show()
+                    myiPropsForm.Label7.Show()
+                    myiPropsForm.tbDrawnBy.Show()
+                    myiPropsForm.btShtMaterial.Show()
+                    myiPropsForm.btShtScale.Show()
+                    myiPropsForm.ModelFileLocation.Show()
+                    myiPropsForm.Label5.Hide()
+                    myiPropsForm.tbMass.Hide()
+                    myiPropsForm.Label9.Hide()
+                    myiPropsForm.tbDensity.Hide()
+                    myiPropsForm.Label3.Hide()
+                    myiPropsForm.tbStockNumber.Hide()
+                    myiPropsForm.btCopyPN.Hide()
+                    myiPropsForm.btViewNames.Show()
+                    myiPropsForm.lbDesigner.Hide()
+                    myiPropsForm.tbService.Hide()
+                    myiPropsForm.lbservice.Hide()
                     myiPropsForm.btExpDXF.Hide()
                     myiPropsForm.btFrame.Show()
-                ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
-                    myiPropsForm.btITEM.Hide()
-                    myiPropsForm.btReNum.Hide()
-                    myiPropsForm.Label11.Show()
-                    myiPropsForm.Label12.Show()
-                    myiPropsForm.btExpDXF.Show()
-                    myiPropsForm.btFrame.Hide()
+
+                    myiPropsForm.tbDrawnBy.Text = iProperties.GetorSetStandardiProperty(
+                                DocumentToPulliPropValuesFrom,
+                                PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+
+                    Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
+                    Dim oSht As Sheet = oDWG.ActiveSheet
+                    Dim oView As DrawingView = Nothing
+                    Dim drawnDoc As Document = Nothing
+                    Dim MaterialString As String = String.Empty
+                    Dim DrawDesc As String = String.Empty
+                    Dim ModelDesc As String = String.Empty
+
+                    If CheckReadOnly(DocumentToPulliPropValuesFrom) Then
+
+                        myiPropsForm.tbDrawnBy.IsReadOnly = True
+
+                        'drawnDoc = DocumentToPulliPropValuesFrom
+                        'DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                        'ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                        myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                        If iProperties.GetorSetStandardiProperty(
+                                              DocumentToPulliPropValuesFrom,
+                                              PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                            myiPropsForm.btDefer.Background = Media.Brushes.Red
+                            myiPropsForm.btDefer.Content = "Drawing Updates Deferred"
+                        ElseIf iProperties.GetorSetStandardiProperty(
+                                DocumentToPulliPropValuesFrom,
+                                PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                            myiPropsForm.btDefer.Background = Media.Brushes.Green
+                            myiPropsForm.btDefer.Content = "Drawing Updates Not Deferred"
+                        End If
+
+                    Else
+
+                        myiPropsForm.tbDrawnBy.IsReadOnly = False
+                        If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
+
+                            If iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom,
+                                PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
+                                myiPropsForm.btDefer.Background = Media.Brushes.Red
+                                myiPropsForm.btDefer.Content = "Drawing Updates Deferred"
+                            ElseIf iProperties.GetorSetStandardiProperty(
+                                    DocumentToPulliPropValuesFrom,
+                                   PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
+                                myiPropsForm.btDefer.Background = Media.Brushes.Green
+                                myiPropsForm.btDefer.Content = "Drawing Updates Not Deferred"
+
+                                For Each view As DrawingView In oSht.DrawingViews
+                                    oView = view
+                                    Exit For
+                                Next
+
+                                If oView IsNot Nothing Then
+                                    drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
+
+                                    If TypeOf drawnDoc Is AssemblyDocument Then
+                                        myiPropsForm.btITEM.Show()
+                                        myiPropsForm.btReNum.Show()
+                                        myiPropsForm.Label11.Show()
+                                        myiPropsForm.Label12.Show()
+
+
+                                        MaterialString = "See Above"
+                                    Else
+                                        myiPropsForm.btITEM.Hide()
+                                        myiPropsForm.btReNum.Hide()
+                                        myiPropsForm.Label11.Show()
+                                        myiPropsForm.Label12.Show()
+
+                                        MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                                    End If
+
+                                    MainPath = System.IO.Path.GetDirectoryName(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullFileName)
+                                    ModelPath = MainPath & "\" & System.IO.Path.GetFileNameWithoutExtension(oView.ReferencedDocumentDescriptor.ReferencedDocument.FullDocumentName)
+
+                                    myiPropsForm.ModelFileLocation.ResetForeground()
+                                    myiPropsForm.ModelFileLocation.Text = ModelPath
+
+                                    myiPropsForm.Label12.Text = MaterialString
+                                    'DrawDesc = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                                    'ModelDesc = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+                                    'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                                    'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+
+                                End If
+
+                            End If
+                        Else
+                            'myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                            'myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                        End If
+                    End If
+
+                    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+                    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+                    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+                    myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
+                Else
+                    myiPropsForm.Label5.Show()
+                    myiPropsForm.tbMass.Show()
+                    myiPropsForm.Label9.Show()
+                    myiPropsForm.tbDensity.Show()
+                    myiPropsForm.Label3.Show()
+                    myiPropsForm.tbStockNumber.Show()
+                    myiPropsForm.Label7.Hide()
+                    myiPropsForm.tbDrawnBy.Hide()
+                    myiPropsForm.btDefer.Hide()
+                    myiPropsForm.btShtMaterial.Hide()
+                    myiPropsForm.btShtScale.Hide()
+                    myiPropsForm.ModelFileLocation.Hide()
+                    myiPropsForm.btCopyPN.Show()
+                    myiPropsForm.btViewNames.Hide()
+                    myiPropsForm.lbDesigner.Show()
+
+                    If DocumentToPulliPropValuesFrom.FullFileName IsNot Nothing Then
+                        If DocumentToPulliPropValuesFrom.FullDocumentName IsNot Nothing Then
+                            If DocumentToPulliPropValuesFrom.FullDocumentName.Contains("pisweep") Then
+                                myiPropsForm.lbservice.Show()
+                                myiPropsForm.tbService.Show()
+                                myiPropsForm.btDiaEng.Hide()
+                                myiPropsForm.btDegEng.Hide()
+                                myiPropsForm.Label4.Hide()
+                            ElseIf iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "").Contains("WALL TUBE") Then
+                                myiPropsForm.lbservice.Show()
+                                myiPropsForm.tbService.Show()
+                                myiPropsForm.btDiaEng.Hide()
+                                myiPropsForm.btDegEng.Hide()
+                                myiPropsForm.Label4.Hide()
+                            Else
+                                myiPropsForm.lbservice.Hide()
+                                myiPropsForm.tbService.Hide()
+                                myiPropsForm.btDiaEng.Show()
+                                myiPropsForm.btDegEng.Show()
+                                myiPropsForm.Label4.Show()
+                            End If
+                        End If
+                    End If
+
+                    If TypeOf (DocumentToPulliPropValuesFrom) Is AssemblyDocument Then
+                        myiPropsForm.btITEM.Show()
+                        myiPropsForm.btReNum.Show()
+                        myiPropsForm.Label11.Hide()
+                        myiPropsForm.Label12.Hide()
+                        myiPropsForm.btExpDXF.Hide()
+                        myiPropsForm.btFrame.Show()
+                    ElseIf TypeOf (DocumentToPulliPropValuesFrom) Is PartDocument Then
+                        myiPropsForm.btITEM.Hide()
+                        myiPropsForm.btReNum.Hide()
+                        myiPropsForm.Label11.Show()
+                        myiPropsForm.Label12.Show()
+                        myiPropsForm.btExpDXF.Show()
+                        myiPropsForm.btFrame.Hide()
+                    End If
+                    'get the document sub-type
+
+                    myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+
+                    Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
+                    Dim kgMass As Decimal = myMass / 1000
+                    Dim myMass2 As Decimal = Math.Round(kgMass, 3)
+                    myiPropsForm.tbMass.Text = myMass2 & " kg"
+                    Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
+                    Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
+                    myiPropsForm.tbDensity.Text = myDensity2 & " g/cm^3"
+                    myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                    myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+
+                    myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
+
+                    myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
+
+                    myiPropsForm.tbService.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "", "")
+
+                    myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
+
+                    myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+
                 End If
-                'get the document sub-type
 
-                myiPropsForm.tbStockNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "", "")
+                Dim todaysdate As String = String.Format("{0:DD/MM/yyyy}", DateTime.Now)
 
-                Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
-                Dim kgMass As Decimal = myMass / 1000
-                Dim myMass2 As Decimal = Math.Round(kgMass, 3)
-                myiPropsForm.tbMass.Text = myMass2 & " kg"
-                Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
-                Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
-                myiPropsForm.tbDensity.Text = myDensity2 & " g/cm^3"
-                myiPropsForm.Label12.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
-                myiPropsForm.lbDesigner.Text = "By: " & iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", "")
+                If PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties = True Then
+                    myiPropsForm.DateTimePicker1.SelectedDate = CDate(iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", ""))
+                    'Else
+                    '    DocumentToPulliPropValuesFrom.PropertySets.Item("Design Tracking Properties").Item("Creation Date").Value = todaysdate
+                End If
 
-                myiPropsForm.tbPartNumber.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbDescription.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbService.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbEngineer.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "", "")
-
-                myiPropsForm.tbRevNo.Text = iProperties.GetorSetStandardiProperty(DocumentToPulliPropValuesFrom, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "", "")
+                myiPropsForm.tbNotes.Text = iProperties.GetorSetStandardiProperty(
+                        DocumentToPulliPropValuesFrom,
+                        PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, "", "")
 
             End If
-
-            Dim todaysdate As String = String.Format("{0:DD/MM/yyyy}", DateTime.Now)
-
-            If PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties = True Then
-                myiPropsForm.DateTimePicker1.Value = iProperties.GetorSetStandardiProperty(
-                    DocumentToPulliPropValuesFrom,
-                    PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
-                'Else
-                '    DocumentToPulliPropValuesFrom.PropertySets.Item("Design Tracking Properties").Item("Creation Date").Value = todaysdate
-            End If
-
-            myiPropsForm.tbNotes.Text = iProperties.GetorSetStandardiProperty(
-                    DocumentToPulliPropValuesFrom,
-                    PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, "", "")
-
-
             'simplified to this:
             UpdateFormTextBoxColours()
             SetFormDisplayOption(DocumentToPulliPropValuesFrom)
@@ -1059,43 +1042,44 @@ Namespace iPropertiesController
         ''' <param name="DocumentToPulliPropValuesFrom"></param>
         Private Shared Sub SetFormDisplayOption(DocumentToPulliPropValuesFrom As Document)
             If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
-                If CheckReadOnly(DocumentToPulliPropValuesFrom) = True Then
-                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Red
-                    'myiPropsForm.Label10.Text = "Checked In"
-                    myiPropsForm.PictureBox1.Show()
-                    myiPropsForm.PictureBox2.Hide()
-                    myiPropsForm.btCheckIn.Hide()
-                    myiPropsForm.btCheckOut.Show()
+                If myiPropsForm IsNot Nothing Then
+                    If CheckReadOnly(DocumentToPulliPropValuesFrom) = True Then
+                        'myiPropsForm.Label10.ForeColor = Drawing.Color.Red
+                        'myiPropsForm.Label10.Text = "Checked In"
+                        myiPropsForm.PictureBox1.Show()
+                        myiPropsForm.PictureBox2.Hide()
+                        myiPropsForm.btCheckIn.Hide()
+                        myiPropsForm.btCheckOut.Show()
 
-                    myiPropsForm.tbPartNumber.ReadOnly = True
-                    myiPropsForm.tbDescription.ReadOnly = True
-                    myiPropsForm.tbStockNumber.ReadOnly = True
-                    myiPropsForm.tbEngineer.ReadOnly = True
-                    myiPropsForm.tbRevNo.ReadOnly = True
-                    myiPropsForm.tbComments.ReadOnly = True
-                    myiPropsForm.tbNotes.ReadOnly = True
-                    myiPropsForm.tbDrawnBy.ReadOnly = True
-                    myiPropsForm.tbService.ReadOnly = True
-                Else
-                    'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
-                    'myiPropsForm.Label10.Text = "Checked Out"
-                    myiPropsForm.PictureBox1.Hide()
-                    myiPropsForm.PictureBox2.Show()
-                    myiPropsForm.btCheckIn.Show()
-                    myiPropsForm.btCheckOut.Hide()
+                        myiPropsForm.tbPartNumber.IsReadOnly = True
+                        myiPropsForm.tbDescription.IsReadOnly = True
+                        myiPropsForm.tbStockNumber.IsReadOnly = True
+                        myiPropsForm.tbEngineer.IsReadOnly = True
+                        myiPropsForm.tbRevNo.IsReadOnly = True
+                        myiPropsForm.tbComments.IsReadOnly = True
+                        myiPropsForm.tbNotes.IsReadOnly = True
+                        myiPropsForm.tbDrawnBy.IsReadOnly = True
+                        myiPropsForm.tbService.IsReadOnly = True
+                    Else
+                        'myiPropsForm.Label10.ForeColor = Drawing.Color.Green
+                        'myiPropsForm.Label10.Text = "Checked Out"
+                        myiPropsForm.PictureBox1.Hide()
+                        myiPropsForm.PictureBox2.Show()
+                        myiPropsForm.btCheckIn.Show()
+                        myiPropsForm.btCheckOut.Hide()
 
-                    myiPropsForm.tbPartNumber.ReadOnly = False
-                    myiPropsForm.tbDescription.ReadOnly = False
-                    myiPropsForm.tbStockNumber.ReadOnly = False
-                    myiPropsForm.tbEngineer.ReadOnly = False
-                    myiPropsForm.tbRevNo.ReadOnly = False
-                    myiPropsForm.tbComments.ReadOnly = False
-                    myiPropsForm.tbNotes.ReadOnly = False
-                    myiPropsForm.tbDrawnBy.ReadOnly = False
-                    myiPropsForm.tbService.ReadOnly = False
+                        myiPropsForm.tbPartNumber.IsReadOnly = False
+                        myiPropsForm.tbDescription.IsReadOnly = False
+                        myiPropsForm.tbStockNumber.IsReadOnly = False
+                        myiPropsForm.tbEngineer.IsReadOnly = False
+                        myiPropsForm.tbRevNo.IsReadOnly = False
+                        myiPropsForm.tbComments.IsReadOnly = False
+                        myiPropsForm.tbNotes.IsReadOnly = False
+                        myiPropsForm.tbDrawnBy.IsReadOnly = False
+                        myiPropsForm.tbService.IsReadOnly = False
+                    End If
                 End If
             End If
-
         End Sub
 
         ''' <summary>
@@ -1124,7 +1108,7 @@ Namespace iPropertiesController
                     Return False
                 End If
             Catch ex As Exception
-                log.Error(ex.Message)
+                'log.Error(ex.Message)
             End Try
         End Function
 
@@ -1140,6 +1124,9 @@ Namespace iPropertiesController
                 For Each item As DockableWindow In AddinGlobal.DockableList
                     Marshal.FinalReleaseComObject(item)
                 Next
+
+                iPropsFormHost?.Dispose()
+                iPropsFormHost = Nothing
 
                 ' Release objects.
 
@@ -1168,7 +1155,7 @@ Namespace iPropertiesController
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
             Catch ex As Exception
-                log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
         End Sub
 
@@ -1248,7 +1235,7 @@ Namespace iPropertiesController
                     cmdCtrls.AddButton(button1.ButtonDef, button1.DisplayBigIcon, button1.DisplayText, "", button1.InsertBeforeTarget)
                 End If
             Catch ex As Exception
-                log.Error(ex.Message)
+                Log.[Error](ex, ex.Message)
             End Try
         End Sub
 
@@ -1264,7 +1251,7 @@ Namespace iPropertiesController
 
         ' Sample handler for the button.
         'Private Sub m_sampleButton_OnExecute(Context As NameValueMap) Handles m_sampleButton.OnExecute
-        '    MsgBox("Button was clicked.")
+        '    ShowMessage("Button was clicked.")
         'End Sub
 
 #End Region
@@ -1296,101 +1283,52 @@ Public Module Globals
 
 #End Region
 
-#Region "hWnd Wrapper Class"
-
-    ' This class is used to wrap a Win32 hWnd as a .Net IWind32Window class.
-    ' This is primarily used for parenting a dialog to the Inventor window.
-    '
-    ' For example:
-    ' myForm.Show(New WindowWrapper(g_inventorApplication.MainFrameHWND))
-    '
-    Public Class WindowWrapper
-        Implements System.Windows.Forms.IWin32Window
-
-        Public Sub New(ByVal handle As IntPtr)
-            _hwnd = handle
-        End Sub
-
-        Public ReadOnly Property Handle() As IntPtr _
-          Implements System.Windows.Forms.IWin32Window.Handle
-            Get
-                Return _hwnd
-            End Get
-        End Property
-
-        Private _hwnd As IntPtr
-    End Class
-
-#End Region
-
 #Region "Image Converter"
 
-    ' Class used to convert bitmaps and icons from their .Net native types into
-    ' an IPictureDisp object which is what the Inventor API requires. A typical
-    ' usage is shown below where MyIcon is a bitmap or icon that's available
-    ' as a resource of the project.
-    '
+    ' Converts .NET icons and bitmaps into the IPictureDisp objects the Inventor API requires,
+    ' for example:
     ' Dim smallIcon As stdole.IPictureDisp = PictureDispConverter.ToIPictureDisp(My.Resources.MyIcon)
-
     Public NotInheritable Class PictureDispConverter
 
-        <DllImport("OleAut32.dll", EntryPoint:="OleCreatePictureIndirect", ExactSpelling:=True, PreserveSig:=False)>
+        Private Const PICTYPE_BITMAP As Integer = 1
+        Private Const PICTYPE_ICON As Integer = 3
+
+        ' Native PICTDESC: size and type, then a union whose largest member is two handles
+        ' (bitmap + palette), so this layout has the right size on both x86 and x64.
+        <StructLayout(LayoutKind.Sequential)>
+        Private Structure PICTDESC
+            Public cbSizeOfStruct As Integer
+            Public picType As Integer
+            Public handle As IntPtr
+            Public hpal As IntPtr
+        End Structure
+
+        <DllImport("OleAut32.dll", ExactSpelling:=True, PreserveSig:=False)>
         Private Shared Function OleCreatePictureIndirect(
-            <MarshalAs(UnmanagedType.AsAny)> ByVal picdesc As Object,
+            ByRef pictDesc As PICTDESC,
             ByRef iid As Guid,
             <MarshalAs(UnmanagedType.Bool)> ByVal fOwn As Boolean) As stdole.IPictureDisp
         End Function
 
-        Shared iPictureDispGuid As Guid = GetType(stdole.IPictureDisp).GUID
-
-        Private NotInheritable Class PICTDESC
-
-            Private Sub New()
-            End Sub
-
-            'Picture Types
-            Public Const PICTYPE_BITMAP As Short = 1
-
-            Public Const PICTYPE_ICON As Short = 3
-
-            <StructLayout(LayoutKind.Sequential)>
-            Public Class Icon
-                Friend cbSizeOfStruct As Integer = Marshal.SizeOf(GetType(PICTDESC.Icon))
-                Friend picType As Integer = PICTDESC.PICTYPE_ICON
-                Friend hicon As IntPtr = IntPtr.Zero
-                Friend unused1 As Integer
-                Friend unused2 As Integer
-
-                Friend Sub New(ByVal icon As System.Drawing.Icon)
-                    Me.hicon = icon.ToBitmap().GetHicon()
-                End Sub
-
-            End Class
-
-            <StructLayout(LayoutKind.Sequential)>
-            Public Class Bitmap
-                Friend cbSizeOfStruct As Integer = Marshal.SizeOf(GetType(PICTDESC.Bitmap))
-                Friend picType As Integer = PICTDESC.PICTYPE_BITMAP
-                Friend hbitmap As IntPtr = IntPtr.Zero
-                Friend hpal As IntPtr = IntPtr.Zero
-                Friend unused As Integer
-
-                Friend Sub New(ByVal bitmap As System.Drawing.Bitmap)
-                    Me.hbitmap = bitmap.GetHbitmap()
-                End Sub
-
-            End Class
-
-        End Class
-
         Public Shared Function ToIPictureDisp(ByVal icon As System.Drawing.Icon) As stdole.IPictureDisp
-            Dim pictIcon As New PICTDESC.Icon(icon)
-            Return OleCreatePictureIndirect(pictIcon, iPictureDispGuid, True)
+            ' GetHicon returns a new handle, which the picture then owns and destroys.
+            Using bmp = icon.ToBitmap()
+                Return Create(PICTYPE_ICON, bmp.GetHicon())
+            End Using
         End Function
 
         Public Shared Function ToIPictureDisp(ByVal bmp As System.Drawing.Bitmap) As stdole.IPictureDisp
-            Dim pictBmp As New PICTDESC.Bitmap(bmp)
-            Return OleCreatePictureIndirect(pictBmp, iPictureDispGuid, True)
+            Return Create(PICTYPE_BITMAP, bmp.GetHbitmap())
+        End Function
+
+        Private Shared Function Create(picType As Integer, handle As IntPtr) As stdole.IPictureDisp
+            Dim desc As New PICTDESC With {
+                .cbSizeOfStruct = Marshal.SizeOf(GetType(PICTDESC)),
+                .picType = picType,
+                .handle = handle
+            }
+            Dim iid As Guid = GetType(stdole.IPictureDisp).GUID
+            Return OleCreatePictureIndirect(desc, iid, True)
         End Function
 
     End Class

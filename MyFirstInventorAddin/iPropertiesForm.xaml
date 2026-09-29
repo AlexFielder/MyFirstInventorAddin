@@ -1,0 +1,181 @@
+<UserControl x:Class="IPropertiesForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource PanelBack}"
+             Foreground="{DynamicResource PanelFore}"
+             FontFamily="Microsoft Sans Serif"
+             FontSize="11"
+             ToolTipService.InitialShowDelay="250">
+    <!-- Positions and sizes are carried over from the Windows Forms designer (285 x 440 panel).
+         Controls that share a position are alternatives: the add-in server shows or hides them
+         depending on whether a part, assembly or drawing is active.
+         Right-anchored controls use a right margin of (285 - right edge) so they stretch with the window. -->
+    <UserControl.Resources>
+        <!-- Theme brushes: replaced at runtime by ApplyTheme to follow Inventor's light or dark theme. -->
+        <SolidColorBrush x:Key="PanelBack" Color="#F0F0F0" />
+        <SolidColorBrush x:Key="PanelFore" Color="#000000" />
+        <SolidColorBrush x:Key="ControlBack" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="ControlHighlighted" Color="#E1E1E1" />
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource ControlHighlighted}" />
+            <Setter Property="Foreground" Value="{DynamicResource PanelFore}" />
+            <Setter Property="CaretBrush" Value="{DynamicResource PanelFore}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Height" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <!-- Flat buttons, matching the Windows Forms FlatStyle.Flat look. The template keeps
+             Background as set, so btDefer's red/green state survives hover and press. -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ControlBack}" />
+            <Setter Property="Foreground" Value="{DynamicResource PanelFore}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PanelBack}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Height" Value="23" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="False" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource PanelFore}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.75" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Chrome" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="Background" Value="{DynamicResource ControlHighlighted}" />
+            <Setter Property="Foreground" Value="{DynamicResource PanelFore}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style TargetType="DatePickerTextBox">
+            <Setter Property="Background" Value="{DynamicResource ControlHighlighted}" />
+            <Setter Property="Foreground" Value="{DynamicResource PanelFore}" />
+            <Setter Property="CaretBrush" Value="{DynamicResource PanelFore}" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Focusable="False">
+        <Grid MinWidth="285" MinHeight="440">
+
+            <!-- Part number row -->
+            <TextBlock x:Name="Label1" Text="Part No." Margin="3,7,0,0" />
+            <TextBox x:Name="tbPartNumber" Margin="74,7,55,0" HorizontalAlignment="Stretch" />
+            <Image x:Name="PictureBox1" Source="Resources/white_button.png" Margin="236,7,0,0" Width="12" Height="12"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" />
+            <Image x:Name="PictureBox2" Source="Resources/green_button_tick.png" Margin="236,7,0,0" Width="12" Height="12"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Fill" />
+            <Button x:Name="btCheckOut" Margin="253,0,0,0" Width="25" Height="25">
+                <Image Source="Resources/CHECKOUT.png" Stretch="None" />
+            </Button>
+            <Button x:Name="btCheckIn" Margin="253,0,0,0" Width="25" Height="25">
+                <Image Source="Resources/CHECKIN.png" Stretch="None" />
+            </Button>
+
+            <!-- Description row -->
+            <TextBlock x:Name="Label2" Text="Desc." Margin="3,30,0,0" />
+            <Button x:Name="btDiaDes" Content="Ø" Margin="35,25,0,0" Width="16" />
+            <Button x:Name="btDegDes" Content="°" Margin="52,25,0,0" Width="16" />
+            <TextBox x:Name="tbDescription" Margin="74,29,6,0" HorizontalAlignment="Stretch" />
+
+            <!-- Stock number row (parts and assemblies) / defer updates (drawings) -->
+            <TextBlock x:Name="Label3" Text="Stock No." Margin="3,53,0,0" />
+            <TextBox x:Name="tbStockNumber" Margin="74,53,0,0" Width="116" />
+            <Button x:Name="btDefer" Content="Defer Updates Button" Margin="93,48,0,0" Width="187" FontSize="10.67" />
+            <Button x:Name="btCopyPN" Content="Copy Part No." Margin="193,48,0,0" Width="87" />
+
+            <!-- Engineer row / service row (pipe sweeps and wall tubes) -->
+            <TextBlock x:Name="Label4" Text="Eng." Margin="3,76,0,0" />
+            <TextBlock x:Name="lbservice" Text="Service" Margin="3,76,0,0" />
+            <Button x:Name="btDiaEng" Content="Ø" Margin="35,71,0,0" Width="16" />
+            <Button x:Name="btDegEng" Content="°" Margin="52,71,0,0" Width="16" />
+            <TextBox x:Name="tbEngineer" Margin="74,76,6,0" HorizontalAlignment="Stretch" />
+            <TextBox x:Name="tbService" Margin="74,76,6,0" HorizontalAlignment="Stretch" />
+
+            <!-- Mass (parts and assemblies) / drawn by (drawings), plus revision -->
+            <TextBlock x:Name="Label5" Text="Mass" Margin="3,99,0,0" />
+            <TextBlock x:Name="Label7" Text="Drawn By" Margin="3,99,0,0" />
+            <TextBox x:Name="tbMass" Margin="74,99,0,0" Width="116" IsReadOnly="True" />
+            <TextBox x:Name="tbDrawnBy" Margin="74,99,95,0" HorizontalAlignment="Stretch" />
+            <TextBlock x:Name="Label14" Text="Rev. No." Margin="195,99,0,0" />
+            <TextBox x:Name="tbRevNo" Margin="247,99,6,0" HorizontalAlignment="Stretch" />
+
+            <!-- Density (parts and assemblies) / sheet buttons (drawings) -->
+            <TextBlock x:Name="Label9" Text="Density" Margin="3,122,0,0" />
+            <TextBox x:Name="tbDensity" Margin="74,122,0,0" Width="115" IsReadOnly="True" />
+            <Button x:Name="btShtMaterial" Content="Sht Material" Margin="8,117,0,0" Width="75" />
+            <Button x:Name="btShtScale" Content="Sht Scale" Margin="88,117,0,0" Width="66" />
+
+            <!-- Material and BOM buttons -->
+            <TextBlock x:Name="Label11" Text="Matl:" Margin="3,150,0,0" />
+            <TextBlock x:Name="Label12" Text="Material" Margin="31,150,0,0" />
+            <Button x:Name="btViewNames" Content="View Labs" Margin="17,145,0,0" Width="66" />
+            <Button x:Name="btReNum" Content="BoM #" Margin="88,145,0,0" Width="50" />
+            <Button x:Name="btITEM" Content="#ITEM" Margin="143,145,0,0" Width="50" />
+            <Button x:Name="btUpdateAll" Content="Update iProp" Margin="198,145,0,0" Width="82" />
+
+            <!-- Drawn date and revision table -->
+            <TextBlock x:Name="Label6" Text="Drawn Date:" Margin="3,181,0,0" />
+            <DatePicker x:Name="DateTimePicker1" Margin="74,177,0,0" Width="116" Height="22"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Button x:Name="btRevision" Content="Revision" Margin="193,176,0,0" Width="87" Height="22" />
+
+            <TextBlock x:Name="lbDesigner" Text="Designer" Margin="3,205,0,0" FontSize="10.67" />
+
+            <!-- Export buttons -->
+            <Button x:Name="btFrame" Content="Frame" Margin="34,224,0,0" Width="54" />
+            <Button x:Name="btExpDXF" Content="dxf" Margin="55,224,0,0" Width="33" />
+            <Button x:Name="btPipes" Content="pipes" Margin="93,224,0,0" Width="48" />
+            <Button x:Name="btExpStp" Content="stp" Margin="146,224,0,0" Width="31" />
+            <Button x:Name="btExpStl" Content="stl" Margin="182,224,0,0" Width="30" />
+            <Button x:Name="btExpPdf" Content="pdf" Margin="217,224,0,0" Width="40" />
+            <Button x:Name="btAttachFile" Margin="262,223,0,0" Width="18" Height="24">
+                <Image Source="Resources/paperclip1.jpg" Stretch="None" />
+            </Button>
+
+            <!-- Comments and notes -->
+            <TextBlock x:Name="Label13" Text="Cmts:" Margin="3,249,0,0" />
+            <TextBox x:Name="tbComments" Margin="42,249,5,0" Height="39" HorizontalAlignment="Stretch" FontSize="10"
+                     AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+            <TextBlock x:Name="Label15" Text="Notes:" Margin="3,290,0,0" />
+            <TextBox x:Name="tbNotes" Margin="42,290,5,0" Height="39" HorizontalAlignment="Stretch" FontSize="10"
+                     AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+
+            <!-- File locations: click to open the folder in Explorer -->
+            <TextBlock x:Name="FileLocation" Text="File location" Margin="3,329,12,0" Height="44"
+                       HorizontalAlignment="Stretch" TextWrapping="Wrap" FontSize="8.67" Cursor="Hand" />
+            <TextBlock x:Name="ModelFileLocation" Text="Model File location" Margin="3,373,12,0" Height="44"
+                       HorizontalAlignment="Stretch" TextWrapping="Wrap" FontSize="8.67" Cursor="Hand" />
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,18 +1,46 @@
-﻿Imports System.Drawing
-Imports System.Windows.Forms
+﻿Imports System.Windows.Media
+' Aliases rather than Imports System.Windows.Input, whose CommandManager clashes with Inventor's.
+Imports Key = System.Windows.Input.Key
+Imports KeyEventArgs = System.Windows.Input.KeyEventArgs
+Imports MouseEventArgs = System.Windows.Input.MouseEventArgs
 Imports Inventor
 Imports iPropertiesController.iPropertiesController
-Imports log4net
+Imports Serilog
+Imports Serilog.Events
 
-Public Class IPropertiesForm
-    'Inherits Form
+Partial Public Class IPropertiesForm
     Private inventorApp As Inventor.Application
     'Private localWindow As DockableWindow
     Private value As String
     Public Declare Sub Sleep Lib "kernel32" Alias "Sleep" (ByVal dwMilliseconds As Long)
-    Public customMargin As Integer = 5
-    Public customSize As Size = Me.ClientSize
-    Public ReadOnly log As ILog = LogManager.GetLogger(GetType(IPropertiesForm))
+    Public ReadOnly log As ILogger = Nothing
+
+    ' Same colours as the Windows Forms version's SwitchTheme, applied as brushes that every
+    ' control picks up through DynamicResource.
+    Public Sub ApplyTheme(dark As Boolean)
+        If dark Then
+            SetThemeBrush("PanelBack", 59, 68, 83)
+            SetThemeBrush("PanelFore", 225, 225, 225)
+            SetThemeBrush("ControlBack", 69, 79, 97)
+            SetThemeBrush("ControlHighlighted", 44, 52, 64)
+        Else
+            SetThemeBrush("PanelBack", 240, 240, 240)
+            SetThemeBrush("PanelFore", 0, 0, 0)
+            SetThemeBrush("ControlBack", 255, 255, 255)
+            SetThemeBrush("ControlHighlighted", 225, 225, 225)
+        End If
+    End Sub
+
+    Private Sub SetThemeBrush(key As String, r As Byte, g As Byte, b As Byte)
+        Resources(key) = New SolidColorBrush(System.Windows.Media.Color.FromRgb(r, g, b))
+    End Sub
+
+    ' Tab must not move focus or insert a tab: the KeyUp handlers below move focus themselves, in
+    ' an order that depends on the document type, and commit the edit. Stopping Tab here keeps
+    ' focus on the original text box so its KeyUp handler still receives the key.
+    Private Sub IPropertiesForm_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles Me.PreviewKeyDown
+        If e.Key = Key.Tab Then e.Handled = True
+    End Sub
 
     Public Sub GetNewFilePaths()
         If inventorApp.ActiveDocument IsNot Nothing Then
@@ -72,9 +100,12 @@ Public Class IPropertiesForm
     Public RefNewPath As String = String.Empty
     Public RefDoc As Document = Nothing
 
-    Public Sub New(ByVal inventorApp As Inventor.Application) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+    Public Sub New(ByVal inventorApp As Inventor.Application, log As ILogger) ', ByVal addinCLS As String, ByRef localWindow As DockableWindow)
+        ' The parameter shadows the field, so assign it explicitly; the field was previously left
+        ' Nothing, and the first log call in UpdateAllCommon threw a NullReferenceException.
+        Me.log = log
         Try
-            log.Debug("Loading iProperties Form")
+            log.Information("Initializing iProperties form")
             InitializeComponent()
 
             'Me.KeyPreview = True
@@ -98,9 +129,9 @@ Public Class IPropertiesForm
             'localWindow = myDockableWindow
             'AddinGlobal.DockableList.Add(myDockableWindow)
         Catch ex As Exception
-            log.Error(ex.Message)
+            log.Error(ex, "Error initializing iProperties form")
         End Try
-        log.Info("iProperties Form Loaded")
+        log.Information("iProperties form loaded")
 
     End Sub
 
@@ -129,14 +160,15 @@ Public Class IPropertiesForm
                     Dim kgMass As Decimal = myMass / 1000
                     Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                     tbMass.Text = myMass2 & " kg"
-                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbMass.Text)
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Mass updated for {File} to {Mass}", selecteddoc.FullFileName, tbMass.Text)
 
                     Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                     Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                     tbDensity.Text = myDensity2 & " g/cm^3"
-                    log.Debug(selecteddoc.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Density updated for {File} to {Density}", selecteddoc.FullFileName, tbDensity.Text)
 
                     Label12.Text = iProperties.GetorSetStandardiProperty(selecteddoc, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Material for {File} is {Material}", selecteddoc.FullFileName, Label12.Text)
 
                     AssyDoc.SelectSet.Select(compOcc)
                 Else
@@ -144,35 +176,33 @@ Public Class IPropertiesForm
                     Dim kgMass As Decimal = myMass / 1000
                     Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                     tbMass.Text = myMass2 & " kg"
-                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Mass updated for active doc {File} to {Mass}", inventorApp.ActiveDocument.FullFileName, tbMass.Text)
 
                     Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                     Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                     tbDensity.Text = myDensity2 & " g/cm^3"
-                    log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Density updated for active doc {File} to {Density}", inventorApp.ActiveDocument.FullFileName, tbDensity.Text)
 
                     Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                    If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Material for active doc {File} is {Material}", inventorApp.ActiveDocument.FullFileName, Label12.Text)
                 End If
             Else
                 Dim myMass As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMassDesignTrackingProperties, "", "")
                 Dim kgMass As Decimal = myMass / 1000
                 Dim myMass2 As Decimal = Math.Round(kgMass, 3)
                 tbMass.Text = myMass2 & " kg"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbMass.Text)
+                If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Mass updated for active doc {File} to {Mass}", inventorApp.ActiveDocument.FullFileName, tbMass.Text)
 
                 Dim myDensity As Decimal = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDensityDesignTrackingProperties, "", "")
                 Dim myDensity2 As Decimal = Math.Round(myDensity, 3)
                 tbDensity.Text = myDensity2 & " g/cm^3"
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Mass Updated to: " + tbDensity.Text)
+                If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Density updated for active doc {File} to {Density}", inventorApp.ActiveDocument.FullFileName, tbDensity.Text)
 
                 Label12.Text = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kMaterialDesignTrackingProperties, "", "")
+                If log.IsEnabled(LogEventLevel.Debug) Then log.Debug("Material for active doc {File} is {Material}", inventorApp.ActiveDocument.FullFileName, Label12.Text)
             End If
             UpdateStatusBar("iProperties updated")
             'End If
-            ErrorProvider1.Clear()
-            If Me.ValidateChildren() Then
-                ' continue on
-            End If
         End If
     End Sub
 
@@ -240,7 +270,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -250,7 +280,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveEditObject, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties(inventorApp.ActiveEditObject)
-            log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveEditObject.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -260,7 +290,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(selecteddoc, proptoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties(selecteddoc)
-            log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(selecteddoc.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
             iPropertiesAddInServer.ShowOccurrenceProperties(AssyDoc)
         End If
@@ -271,7 +301,7 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, sumtoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
@@ -281,12 +311,12 @@ Public Class IPropertiesForm
             iProp = iProperties.GetorSetStandardiProperty(drawnDoc, sumtoUpdate, newPropValue, "", True)
             'inventorApp.ActiveDocument.Save2(True)
             iPropertiesAddInServer.UpdateDisplayediProperties()
-            log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
+            'log.Debug(inventorApp.ActiveDocument.FullFileName + propname + " Updated to: " + iProp)
             UpdateStatusBar(propname + " updated to " + iProp)
         End If
     End Sub
 
-    Private Sub SendSymbol(ByVal textbox As Object, symbol As String)
+    Private Sub SendSymbol(ByVal textbox As System.Windows.Controls.TextBox, symbol As String)
         Dim insertText = symbol
 
         Dim insertPos As Integer = textbox.SelectionStart
@@ -296,16 +326,16 @@ Public Class IPropertiesForm
         textbox.SelectionStart = insertPos + insertText.Length
     End Sub
 
-    Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.Leave
+    Private Sub tbStockNumber_Leave(sender As Object, e As EventArgs) Handles tbStockNumber.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbStockNumber.ForeColor = Drawing.Color.Black
+            tbStockNumber.ResetForeground()
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kStockNumberDesignTrackingProperties, "Stock Number", tbStockNumber.Text)
         End If
     End Sub
 
-    Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.Leave
+    Private Sub tbEngineer_Leave(sender As Object, e As EventArgs) Handles tbEngineer.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbEngineer.ForeColor = Drawing.Color.Black
+            tbEngineer.ResetForeground()
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kEngineerDesignTrackingProperties, "Engineer", tbEngineer.Text)
 
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -357,38 +387,43 @@ Public Class IPropertiesForm
                     If iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = True Then
                         inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = False
                         'DrawingSettings.DeferUpdates = False
-                        btDefer.BackColor = Drawing.Color.Green
-                        btDefer.Text = "Drawing Updates Not Deferred"
+                        btDefer.Background = Brushes.Green
+                        btDefer.Content = "Drawing Updates Not Deferred"
                         UpdateStatusBar("Drawing updates are no longer deferred")
                     ElseIf iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kDrawingDeferUpdateDesignTrackingProperties, "", "") = False Then
                         inventorApp.ActiveDocument.DrawingSettings.DeferUpdates = True
-                        btDefer.BackColor = Drawing.Color.Red
-                        btDefer.Text = "Drawing Updates Deferred"
+                        btDefer.Background = Brushes.Red
+                        btDefer.Content = "Drawing Updates Deferred"
                         UpdateStatusBar("Drawing updates are now deferred")
                     End If
                 End If
             Else
-                btDefer.BackColor = Drawing.Color.Green
-                btDefer.Text = "Drawing Updates Not Deferred"
-                MessageBox.Show("Save file before deferring updates")
+                btDefer.Background = Brushes.Green
+                btDefer.Content = "Drawing Updates Not Deferred"
+                ShowMessage("Save file before deferring updates")
             End If
         End If
     End Sub
 
-    Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.ValueChanged
+    Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.SelectedDateChanged
+        If Not DateTimePicker1.SelectedDate.HasValue OrElse AddinGlobal.InventorApp?.ActiveDocument Is Nothing Then Return
+        Dim picked As Date = DateTimePicker1.SelectedDate.Value
         If Not iPropertiesAddInServer.CheckReadOnly(AddinGlobal.InventorApp.ActiveDocument) Then
-            If Not iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "") = DateTimePicker1.Value Then
+            ' DatePicker drops the time of day, so compare dates only. Comparing the full value
+            ' would rewrite Creation Time (and dirty the document) every time a document is shown.
+            Dim creationDate As Date = iProperties.GetorSetStandardiProperty(AddinGlobal.InventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCreationDateDesignTrackingProperties, "", "")
+            If creationDate.Date <> picked.Date Then
 
-                inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = DateTimePicker1.Value
-                UpdateStatusBar("Creation date updated to " + DateTimePicker1.Value)
+                inventorApp.ActiveDocument.PropertySets.Item("Design Tracking Properties").Item("Creation Time").Value = picked
+                UpdateStatusBar("Creation date updated to " & picked.ToShortDateString())
             End If
         End If
     End Sub
 
-    Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.Leave
+    Private Sub tbDrawnBy_Leave(sender As Object, e As EventArgs) Handles tbDrawnBy.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
 
-            tbDrawnBy.ForeColor = Drawing.Color.Black
+            tbDrawnBy.ResetForeground()
 
             CheckForDefaultAndUpdate(PropertiesForSummaryInformationEnum.kAuthorSummaryInformation, "", tbDrawnBy.Text)
 
@@ -503,25 +538,25 @@ Public Class IPropertiesForm
         UpdateStatusBar("BOM item numbers copied to #ITEM")
     End Sub
 
-    Private Sub tbMass_Enter(sender As Object, e As EventArgs) Handles tbMass.Enter
+    Private Sub tbMass_Enter(sender As Object, e As EventArgs) Handles tbMass.GotFocus
         If Not tbMass.Text.Length = 0 Then
             Clipboard.SetText(tbMass.Text)
             UpdateStatusBar("Mass copied to clipboard")
         End If
     End Sub
 
-    Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.MouseClick
+    Private Sub tbMass_MouseClick(sender As Object, e As MouseEventArgs) Handles tbMass.PreviewMouseLeftButtonUp
         tbMass_Enter(sender, e)
     End Sub
 
-    Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.Enter
+    Private Sub tbDensity_Enter(sender As Object, e As EventArgs) Handles tbDensity.GotFocus
         If Not tbDensity.Text.Length = 0 Then
             Clipboard.SetText(tbDensity.Text)
             UpdateStatusBar("Density copied to ")
         End If
     End Sub
 
-    Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.MouseClick
+    Private Sub tbDensity_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDensity.PreviewMouseLeftButtonUp
         tbDensity_Enter(sender, e)
     End Sub
 
@@ -577,7 +612,7 @@ Public Class IPropertiesForm
                 Else
                     oPromptText = oPromptEntry
                 End If
-                prtMaterial = InputBox("leaving as 'SEE ABOVE' will fill box with 'SEE ABOVE'" &
+                prtMaterial = ShowInputBox("leaving as 'SEE ABOVE' will fill box with 'SEE ABOVE'" &
                                    vbCrLf & "otherwise you can alter this to suit needs", "Assembly", oPromptText)
                 If prtMaterial = "SEE ABOVE" Then
                     MaterialString = "SEE ABOVE"
@@ -592,7 +627,7 @@ Public Class IPropertiesForm
                 Else
                     oPromptText = oPromptEntry
                 End If
-                prtMaterial = InputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
+                prtMaterial = ShowInputBox("leaving as 'Engineer' will bring through Engineer info from part, " &
                                   vbCrLf & "'PRT'or 'prt' will use part material, otherwise enter desired material info", "Material", oPromptText)
                 If prtMaterial = "Engineer" Then
                     MaterialString = iProperties.GetorSetStandardiProperty(drawnDoc,
@@ -614,9 +649,9 @@ Public Class IPropertiesForm
             oTitleBlock.SetPromptResultText(MaterialTextBox, MaterialString)
         Catch ex As Exception When MaterialTextBox Is Nothing
             UpdateStatusBar("No compatible drawing open!")
-            log.Error(ex.Message)
+            'log.Error(ex.Message)
         Catch ex As Exception
-            log.Error(ex.Message)
+            'log.Error(ex.Message)
         End Try
         UpdateStatusBar("Drawing material set")
     End Sub
@@ -658,7 +693,7 @@ Public Class IPropertiesForm
         End If
 
         Dim drawingDoc As DrawingDocument = TryCast(inventorApp.ActiveDocument, DrawingDocument)
-        dwgScale = InputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
+        dwgScale = ShowInputBox("If you leave as 'Scale from view' then it will use base view scale, otherwise enter scale to show", "Sheet Scale", oPromptText)
 
         For Each view As DrawingView In oSheet.DrawingViews
             oView = view
@@ -736,10 +771,10 @@ Public Class IPropertiesForm
 
     Public Sub AttachRefFile(ActiveDoc As Document, RefFile As String)
         FileNameHere = System.IO.Path.GetFileName(RefFile)
-        AttachFile = MsgBox(FileNameHere & " File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+        AttachFile = ShowMessage(FileNameHere & " File exported, attach it to main file as reference?", vbYesNo, "File Attach")
         If AttachFile = vbYes Then
             If iPropertiesAddInServer.CheckReadOnly(ActiveDoc) Then
-                MessageBox.Show("You can't attach things to read-only files! Your file has been exported but if you want it to be attached, check-out and try again.", "Warning", MessageBoxButtons.OK)
+                ShowMessage("You can't attach things to read-only files! Your file has been exported but if you want it to be attached, check-out and try again.", MsgBoxStyle.OkOnly, "Warning")
                 Exit Sub
             End If
             AddReferences(ActiveDoc, RefFile)
@@ -752,7 +787,7 @@ Public Class IPropertiesForm
     Private Sub btExpStp_Click(sender As Object, e As EventArgs) Handles btExpStp.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+            CheckRef = ShowMessage("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
                 If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
@@ -768,7 +803,7 @@ Public Class IPropertiesForm
                 oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
                 If oSTEPTranslator Is Nothing Then
-                    MsgBox("Could not access STEP translator.")
+                    ShowMessage("Could not access STEP translator.")
                     Exit Sub
                 End If
 
@@ -798,7 +833,7 @@ Public Class IPropertiesForm
                     UpdateStatusBar("File saved as Step file")
 
                     AttachRefFile(inventorApp.ActiveDocument, oData.FileName)
-                    'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                    'AttachFile = ShowMessage("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                     'If AttachFile = vbYes Then
                     '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
                     '    UpdateStatusBar("File attached")
@@ -832,7 +867,7 @@ Public Class IPropertiesForm
                     oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
                     If oSTEPTranslator Is Nothing Then
-                        MsgBox("Could not access STEP translator.")
+                        ShowMessage("Could not access STEP translator.")
                         Exit Sub
                     End If
 
@@ -864,7 +899,7 @@ Public Class IPropertiesForm
                     End If
                 End If
             Else
-                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                CheckRef = ShowMessage("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -882,7 +917,7 @@ Public Class IPropertiesForm
                         oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
                         If oSTEPTranslator Is Nothing Then
-                            MsgBox("Could not access STEP translator.")
+                            ShowMessage("Could not access STEP translator.")
                             Exit Sub
                         End If
 
@@ -924,7 +959,7 @@ Public Class IPropertiesForm
     Private Sub btExpStl_Click(sender As Object, e As EventArgs) Handles btExpStl.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+            CheckRef = ShowMessage("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
                 If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
@@ -938,7 +973,7 @@ Public Class IPropertiesForm
                 Dim oSTLTranslator As TranslatorAddIn
                 oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
                 If oSTLTranslator Is Nothing Then
-                    MsgBox("Could not access STL translator.")
+                    ShowMessage("Could not access STL translator.")
                     Exit Sub
                 End If
 
@@ -1051,7 +1086,7 @@ Public Class IPropertiesForm
                     Dim oSTLTranslator As TranslatorAddIn
                     oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
                     If oSTLTranslator Is Nothing Then
-                        MsgBox("Could not access STL translator.")
+                        ShowMessage("Could not access STL translator.")
                         Exit Sub
                     End If
 
@@ -1101,7 +1136,7 @@ Public Class IPropertiesForm
                     End If
                 End If
             Else
-                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                CheckRef = ShowMessage("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -1117,7 +1152,7 @@ Public Class IPropertiesForm
                         Dim oSTLTranslator As TranslatorAddIn
                         oSTLTranslator = inventorApp.ApplicationAddIns.ItemById("{533E9A98-FC3B-11D4-8E7E-0010B541CD80}")
                         If oSTLTranslator Is Nothing Then
-                            MsgBox("Could not access STL translator.")
+                            ShowMessage("Could not access STL translator.")
                             Exit Sub
                         End If
 
@@ -1176,7 +1211,7 @@ Public Class IPropertiesForm
     Private Sub btExpPdf_Click(sender As Object, e As EventArgs) Handles btExpPdf.Click
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+            CheckRef = ShowMessage("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
                 If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
@@ -1189,7 +1224,7 @@ Public Class IPropertiesForm
 
                 If Not inventorApp.SoftwareVersion.Major > 20 Then
                     inventorApp.StatusBarText = inventorApp.SoftwareVersion.Major
-                    MessageBox.Show("3D PDF export not available in Inventor versions < 2017 release!")
+                    ShowMessage("3D PDF export not available in Inventor versions < 2017 release!")
                     Exit Sub
                 End If
                 ' Get the 3D PDF Add-In.
@@ -1210,7 +1245,7 @@ Public Class IPropertiesForm
                     Dim oDocument As Document = inventorApp.ActiveDocument
 
                     If oDocument.FileSaveCounter = 0 Then
-                        MsgBox("You must save the document to continue...")
+                        ShowMessage("You must save the document to continue...")
                         Return
                     End If
 
@@ -1272,7 +1307,7 @@ Public Class IPropertiesForm
                     UpdateStatusBar("File saved as 3D pdf file")
                     AttachRefFile(inventorApp.ActiveDocument, oOptions.Value("FileOutputLocation"))
                 Else
-                    MsgBox("Inventor 3D PDF Addin not loaded.")
+                    ShowMessage("Inventor 3D PDF Addin not loaded.")
                     Exit Sub
                 End If
             Else
@@ -1351,7 +1386,7 @@ Public Class IPropertiesForm
                     UpdateStatusBar("File saved as pdf file")
                     AttachRefFile(inventorApp.ActiveDocument, oDataMedium.FileName)
                 Else
-                    CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                    CheckRef = ShowMessage("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -1435,26 +1470,26 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbDescription.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbPartNumber_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbDescription.Focus()
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbPartNumber_Leave(sender, e)
                 End If
             End If
         Else
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbDescription.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbPartNumber_Leave(sender, e)
             End If
         End If
@@ -1466,27 +1501,27 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbEngineer.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbStockNumber_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbEngineer.Focus()
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbStockNumber_Leave(sender, e)
                 End If
             End If
         Else
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbEngineer.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbStockNumber_Leave(sender, e)
             End If
         End If
@@ -1498,30 +1533,30 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbEngineer_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo.Focus()
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbEngineer_Leave(sender, e)
                 End If
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbRevNo.Focus()
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbEngineer_Leave(sender, e)
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbDrawnBy.Focus()
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbEngineer_Leave(sender, e)
             End If
         End If
@@ -1533,24 +1568,24 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Or Keys.Return Then
+                If e.Key = Key.Tab OrElse e.Key = Key.Return Then
                     btUpdateAll_Click(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Or Keys.Return Then
+                If e.Key = Key.Tab OrElse e.Key = Key.Return Then
                     btUpdateAll_Click(sender, e)
                 End If
             End If
         Else
-            If e.KeyValue = Keys.Tab Or Keys.Return Then
+            If e.Key = Key.Tab OrElse e.Key = Key.Return Then
                 btUpdateAll_Click(sender, e)
             End If
         End If
 
     End Sub
 
-    Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.Click
+    Private Sub FileLocation_Click(sender As Object, e As EventArgs) Handles FileLocation.MouseLeftButtonUp
         If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
             If AddinGlobal.InventorApp.ActiveEditObject IsNot Nothing Then
                 If (AddinGlobal.InventorApp.ActiveEditDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject) Then
@@ -1611,48 +1646,48 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub FileLocation_MouseHover(sender As Object, e As EventArgs) Handles FileLocation.MouseHover
-        FileLocation.ForeColor = Drawing.Color.Blue
+    Private Sub FileLocation_MouseHover(sender As Object, e As EventArgs) Handles FileLocation.MouseEnter
+        FileLocation.Foreground = Brushes.Blue
     End Sub
 
     Private Sub FileLocation_MouseLeave(sender As Object, e As EventArgs) Handles FileLocation.MouseLeave
-        FileLocation.ForeColor = Drawing.Color.Black
+        FileLocation.ResetForeground()
     End Sub
 
     Private Sub tbPartNumber_TextChanged(sender As Object, e As EventArgs) Handles tbPartNumber.TextChanged
-        tbPartNumber.ForeColor = Drawing.Color.Red
+        tbPartNumber.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbStockNumber_TextChanged(sender As Object, e As EventArgs) Handles tbStockNumber.TextChanged
-        tbStockNumber.ForeColor = Drawing.Color.Red
+        tbStockNumber.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbEngineer_TextChanged(sender As Object, e As EventArgs) Handles tbEngineer.TextChanged
-        tbEngineer.ForeColor = Drawing.Color.Red
+        tbEngineer.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbDrawnBy_TextChanged(sender As Object, e As EventArgs) Handles tbDrawnBy.TextChanged
-        tbDrawnBy.ForeColor = Drawing.Color.Red
+        tbDrawnBy.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbDescription_TextChanged(sender As Object, e As EventArgs) Handles tbDescription.TextChanged
-        tbDescription.ForeColor = Drawing.Color.Red
+        tbDescription.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbComments_TextChanged(sender As Object, e As EventArgs) Handles tbComments.TextChanged
-        tbComments.ForeColor = Drawing.Color.Red
+        tbComments.Foreground = Brushes.Red
     End Sub
 
     Private Sub tbNotes_TextChanged(sender As Object, e As EventArgs) Handles tbNotes.TextChanged
-        tbNotes.ForeColor = Drawing.Color.Red
+        tbNotes.Foreground = Brushes.Red
     End Sub
     Private Sub tbService_TextChanged(sender As Object, e As EventArgs) Handles tbService.TextChanged
-        tbNotes.ForeColor = Drawing.Color.Red
+        tbNotes.Foreground = Brushes.Red
     End Sub
 
-    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.Leave
+    Private Sub tbDescription_Leave(sender As Object, e As EventArgs) Handles tbDescription.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbDescription.ForeColor = Drawing.Color.Black
+            tbDescription.ResetForeground()
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kDescriptionDesignTrackingProperties, "Description", tbDescription.Text)
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
                 Dim iProp As String = String.Empty
@@ -1679,9 +1714,9 @@ Public Class IPropertiesForm
         End If
     End Sub
 
-    Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.Leave
+    Private Sub tbService_Leave(sender As Object, e As EventArgs) Handles tbService.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbDescription.ForeColor = Drawing.Color.Black
+            tbDescription.ResetForeground()
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kProjectDesignTrackingProperties, "Project", tbService.Text)
         End If
     End Sub
@@ -1693,54 +1728,54 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo.Focus()
                     assydoc.SelectSet.Select(compOcc)
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbService_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo.Focus()
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbService_Leave(sender, e)
                 End If
             End If
         Else
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbRevNo.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbService_Leave(sender, e)
             End If
         End If
     End Sub
 
-    Private Sub tbService_Enter(sender As Object, e As EventArgs) Handles tbService.Enter
+    Private Sub tbService_Enter(sender As Object, e As EventArgs) Handles tbService.GotFocus
         If tbService.Text = "Project" Then
             tbService.Clear()
             tbService.Focus()
         End If
     End Sub
 
-    Private Sub tbService_MouseClick(sender As Object, e As EventArgs) Handles tbService.MouseClick
+    Private Sub tbService_MouseClick(sender As Object, e As EventArgs) Handles tbService.PreviewMouseLeftButtonUp
         If tbService.Text = "Project" Then
             tbService.Clear()
             tbService.Focus()
         End If
     End Sub
 
-    Private Sub tbService_MouseHover(sender As Object, e As EventArgs) Handles tbService.MouseHover
+    Private Sub tbService_MouseHover(sender As Object, e As EventArgs) Handles tbService.MouseEnter
         Dim descText As String = tbService.Text
-        ToolTip1.Show(descText, tbService)
+        tbService.ToolTip = If(String.IsNullOrEmpty(descText), Nothing, descText)
     End Sub
 
     Private Sub btExpSat_Click(sender As Object, e As EventArgs)
         Dim oDocu As Document = Nothing
         If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Or inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kPartDocumentObject Then
-            CheckRef = MsgBox("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+            CheckRef = ShowMessage("Have you checked the revision number matches the drawing revision?", vbYesNo, "Rev. Check")
             If CheckRef = vbYes Then
                 oDocu = inventorApp.ActiveDocument
                 If Not iPropertiesAddInServer.CheckReadOnly(oDocu) Then
@@ -1753,7 +1788,7 @@ Public Class IPropertiesForm
                 Dim oSATTrans As TranslatorAddIn
                 oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
                 If oSATTrans Is Nothing Then
-                    MsgBox("Could not access SAT translator.")
+                    ShowMessage("Could not access SAT translator.")
                     Exit Sub
                 End If
                 Dim oContext As TranslationContext
@@ -1791,7 +1826,7 @@ Public Class IPropertiesForm
                 Dim oSATTrans As TranslatorAddIn
                 oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
                 If oSATTrans Is Nothing Then
-                    MsgBox("Could not access SAT translator.")
+                    ShowMessage("Could not access SAT translator.")
                     Exit Sub
                 End If
                 Dim oContext As TranslationContext
@@ -1810,7 +1845,7 @@ Public Class IPropertiesForm
                     AttachRefFile(RefDoc, oData.FileName)
                 End If
             Else
-                CheckRef = MsgBox("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
+                CheckRef = ShowMessage("Have you checked the model revision number matches the drawing revision?", vbYesNo, "Rev. Check")
                 If CheckRef = vbYes Then
                     oDocu = inventorApp.ActiveDocument
                     oDocu.Save2(True)
@@ -1821,7 +1856,7 @@ Public Class IPropertiesForm
                     Dim oSATTrans As TranslatorAddIn
                     oSATTrans = inventorApp.ApplicationAddIns.ItemById("{89162634-02B6-11D5-8E80-0010B541CD80}")
                     If oSATTrans Is Nothing Then
-                        MsgBox("Could not access SAT translator.")
+                        ShowMessage("Could not access SAT translator.")
                         Exit Sub
                     End If
                     Dim oContext As TranslationContext
@@ -1847,39 +1882,39 @@ Public Class IPropertiesForm
 
     End Sub
 
-    Private Sub tbEngineer_Enter(sender As Object, e As EventArgs) Handles tbEngineer.Enter
+    Private Sub tbEngineer_Enter(sender As Object, e As EventArgs) Handles tbEngineer.GotFocus
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Clear()
             tbEngineer.Focus()
         End If
     End Sub
 
-    Private Sub tbStockNumber_Enter(sender As Object, e As EventArgs) Handles tbStockNumber.Enter
+    Private Sub tbStockNumber_Enter(sender As Object, e As EventArgs) Handles tbStockNumber.GotFocus
         If tbStockNumber.Text = "Stock Number" Then
             tbStockNumber.Clear()
             tbStockNumber.Focus()
         End If
     End Sub
 
-    Private Sub tbDescription_Enter(sender As Object, e As EventArgs) Handles tbDescription.Enter
+    Private Sub tbDescription_Enter(sender As Object, e As EventArgs) Handles tbDescription.GotFocus
         If tbDescription.Text = "Description" Then
             tbDescription.Clear()
             tbDescription.Focus()
         End If
     End Sub
 
-    Private Sub tbPartNumber_Enter(sender As Object, e As EventArgs) Handles tbPartNumber.Enter
+    Private Sub tbPartNumber_Enter(sender As Object, e As EventArgs) Handles tbPartNumber.GotFocus
         If tbPartNumber.Text = "Part Number" Then
             tbPartNumber.Clear()
             tbPartNumber.Focus()
         End If
     End Sub
 
-    Private Sub ModelFileLocation_MouseHover(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseHover
-        ModelFileLocation.ForeColor = Drawing.Color.Blue
+    Private Sub ModelFileLocation_MouseHover(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseEnter
+        ModelFileLocation.Foreground = Brushes.Blue
     End Sub
 
-    Private Sub ModelFileLocation_Click(sender As Object, e As EventArgs) Handles ModelFileLocation.Click
+    Private Sub ModelFileLocation_Click(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeftButtonUp
         If AddinGlobal.InventorApp.ActiveEditDocument.FullDocumentName IsNot Nothing Then
             Dim oDWG As DrawingDocument = AddinGlobal.InventorApp.ActiveDocument
 
@@ -1901,10 +1936,10 @@ Public Class IPropertiesForm
     End Sub
 
     Private Sub ModelFileLocation_MouseLeave(sender As Object, e As EventArgs) Handles ModelFileLocation.MouseLeave
-        ModelFileLocation.ForeColor = Drawing.Color.Black
+        ModelFileLocation.ResetForeground()
     End Sub
 
-    Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.Leave
+    Private Sub tbRevNo_Leave(sender As Object, e As EventArgs) Handles tbRevNo.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
             If TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
                 Dim oDWG As DrawingDocument = inventorApp.ActiveDocument
@@ -1918,19 +1953,19 @@ Public Class IPropertiesForm
                 Next
 
                 drawnDoc = oView.ReferencedDocumentDescriptor.ReferencedDocument
-                tbRevNo.ForeColor = Drawing.Color.Black
+                tbRevNo.ResetForeground()
                 Dim drawingRev As String = tbRevNo.Text
 
                 Dim iProp As String = String.Empty
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp, drawnDoc)
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", drawingRev, iProp)
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + drawingRev)
                 UpdateStatusBar("Revision updated to " + drawingRev)
 
                 'iProperties.GetorSetStandardiProperty(drawnDoc, PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, drawingRev, "", True)
 
             Else
-                tbRevNo.ForeColor = Drawing.Color.Black
+                tbRevNo.ResetForeground()
 
                 Dim iPropRev As String = tbRevNo.Text
 
@@ -1938,7 +1973,7 @@ Public Class IPropertiesForm
                 UpdateProperties(PropertiesForSummaryInformationEnum.kRevisionSummaryInformation, "Revision", iPropRev, iProp)
 
 
-                log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
+                'log.Debug(inventorApp.ActiveDocument.FullFileName + " Revision Updated to: " + iPropRev)
                 UpdateStatusBar("Revision updated to " + iPropRev)
             End If
         End If
@@ -1950,83 +1985,83 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo_Leave(sender, e)
                     btUpdateAll.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbRevNo_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbRevNo_Leave(sender, e)
                     btUpdateAll.Focus()
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbRevNo_Leave(sender, e)
                 End If
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbRevNo_Leave(sender, e)
                 btUpdateAll.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbRevNo_Leave(sender, e)
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbRevNo_Leave(sender, e)
                 btUpdateAll.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbRevNo_Leave(sender, e)
             End If
         End If
     End Sub
 
     Private Sub tbRevNo_TextChanged(sender As Object, e As EventArgs) Handles tbRevNo.TextChanged
-        tbRevNo.ForeColor = Drawing.Color.Red
+        tbRevNo.Foreground = Brushes.Red
     End Sub
 
-    Private Sub tbPartNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbPartNumber.MouseClick
+    Private Sub tbPartNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbPartNumber.PreviewMouseLeftButtonUp
         If tbPartNumber.Text = "Part Number" Then
             tbPartNumber.Clear()
             tbPartNumber.Focus()
         End If
     End Sub
 
-    Private Sub tbDescription_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDescription.MouseClick
+    Private Sub tbDescription_MouseClick(sender As Object, e As MouseEventArgs) Handles tbDescription.PreviewMouseLeftButtonUp
         If tbDescription.Text = "Description" Then
             tbDescription.Clear()
             tbDescription.Focus()
         End If
     End Sub
 
-    Private Sub tbStockNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbStockNumber.MouseClick
+    Private Sub tbStockNumber_MouseClick(sender As Object, e As MouseEventArgs) Handles tbStockNumber.PreviewMouseLeftButtonUp
         If tbStockNumber.Text = "Stock Number" Then
             tbStockNumber.Clear()
             tbStockNumber.Focus()
         End If
     End Sub
 
-    Private Sub tbEngineer_MouseClick(sender As Object, e As MouseEventArgs) Handles tbEngineer.MouseClick
+    Private Sub tbEngineer_MouseClick(sender As Object, e As MouseEventArgs) Handles tbEngineer.PreviewMouseLeftButtonUp
         If tbEngineer.Text = "Engineer" Then
             tbEngineer.Clear()
             tbEngineer.Focus()
         End If
     End Sub
 
-    Private Sub tbRevNo_Enter(sender As Object, e As EventArgs) Handles tbRevNo.Enter
+    Private Sub tbRevNo_Enter(sender As Object, e As EventArgs) Handles tbRevNo.GotFocus
         If tbRevNo.Text = "Revision Number" Then
             tbRevNo.Clear()
             tbRevNo.Focus()
         End If
     End Sub
 
-    Private Sub tbRevNo_MouseClick(sender As Object, e As MouseEventArgs) Handles tbRevNo.MouseClick
+    Private Sub tbRevNo_MouseClick(sender As Object, e As MouseEventArgs) Handles tbRevNo.PreviewMouseLeftButtonUp
         If tbRevNo.Text = "Revision Number" Then
             tbRevNo.Clear()
             tbRevNo.Focus()
@@ -2079,6 +2114,7 @@ Public Class IPropertiesForm
             If tbPartNumber.Text.Length > 0 Then
                 tbStockNumber.Text = tbPartNumber.Text
                 tbStockNumber_Leave(sender, e)
+                log.Information($"Part Number copied: {tbPartNumber.Text}")
             End If
         End If
     End Sub
@@ -2086,7 +2122,7 @@ Public Class IPropertiesForm
     Private Sub btPipes_Click(sender As Object, e As EventArgs) Handles btPipes.Click
         'define the active document as an assembly file
         If Not inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kAssemblyDocumentObject Then
-            MessageBox.Show("Please run this rule from the assembly file.", "Vikoma Notice")
+            ShowMessage("Please run this rule from the assembly file.", MsgBoxStyle.OkOnly, "Vikoma Notice")
             Exit Sub
         End If
 
@@ -2097,11 +2133,11 @@ Public Class IPropertiesForm
         oAsmName = System.IO.Path.GetFileNameWithoutExtension(oAsmDoc.FullDocumentName)
 
         'get user input
-        RUsure = MessageBox.Show(
+        RUsure = ShowMessage(
         "This will create a STEP file for all components." _
         & vbLf & " " _
         & vbLf & "Are you sure you want to create STEP Drawings for all of the assembly components?" _
-        & vbLf & "This could take a while.", "Batch Output STEPs ", MessageBoxButtons.YesNo)
+        & vbLf & "This could take a while.", MsgBoxStyle.YesNo, "Batch Output STEPs ")
         If RUsure = vbNo Then
             Return
         Else
@@ -2198,7 +2234,7 @@ Public Class IPropertiesForm
                         oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
                         If oSTEPTranslator Is Nothing Then
-                            MsgBox("Could not access STEP translator.")
+                            ShowMessage("Could not access STEP translator.")
                             Exit Sub
                         End If
 
@@ -2229,7 +2265,7 @@ Public Class IPropertiesForm
                             UpdateStatusBar("File saved as Step file")
 
                             'AttachRefFile(oAsmDoc, oData.FileName)
-                            AttachFile = MsgBox("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            AttachFile = ShowMessage("File " & RefName & " exported, attach it to main file as reference?", vbYesNo, "File Attach")
                             If AttachFile = vbYes Then
                                 AddReferences(inventorApp.ActiveDocument, oData.FileName)
                                 UpdateStatusBar("File attached")
@@ -2251,7 +2287,7 @@ Public Class IPropertiesForm
                         oSTEPTranslator = inventorApp.ApplicationAddIns.ItemById("{90AF7F40-0C01-11D5-8E83-0010B541CD80}")
 
                         If oSTEPTranslator Is Nothing Then
-                            MsgBox("Could not access STEP translator.")
+                            ShowMessage("Could not access STEP translator.")
                             Exit Sub
                         End If
 
@@ -2282,7 +2318,7 @@ Public Class IPropertiesForm
                             UpdateStatusBar("File saved as Step file")
 
                             AttachRefFile(oAsmDoc, oData.FileName)
-                            'AttachFile = MsgBox("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
+                            'AttachFile = ShowMessage("File exported, attach it to main file as reference?", vbYesNo, "File Attach")
                             'If AttachFile = vbYes Then
                             '    AddReferences(inventorApp.ActiveDocument, oData.FileName)
                             '    UpdateStatusBar("File attached")
@@ -2305,7 +2341,7 @@ Public Class IPropertiesForm
             '    Dim PartNo As String = tbPartNumber.Text
             '    Dim StockNo As String = tbStockNumber.Text
             '    If Not PartNo = StockNo Then
-            '        stockNum = MsgBox("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
+            '        stockNum = ShowMessage("Your Stock Number and Part Number are different, is this OK?", vbYesNo, "Stock/Part Number Check")
             '        If stockNum = vbNo Then
             '            Exit Sub
             '        End If
@@ -2484,9 +2520,9 @@ Public Class IPropertiesForm
         'oDrawDoc.Sheets.Item("Sheet:1").Activate()
     End Sub
 
-    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.Leave
+    Private Sub tbPartNumber_Leave(sender As Object, e As EventArgs) Handles tbPartNumber.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
-            tbPartNumber.ForeColor = Drawing.Color.Black
+            tbPartNumber.ResetForeground()
             CheckForDefaultAndUpdate(PropertiesForDesignTrackingPropertiesEnum.kPartNumberDesignTrackingProperties, "Part Number", tbPartNumber.Text)
 
             If inventorApp.ActiveDocument.DocumentType = DocumentTypeEnum.kDrawingDocumentObject Then
@@ -2512,7 +2548,7 @@ Public Class IPropertiesForm
 
     Private Sub btCopyPN_KeyUp(sender As Object, e As KeyEventArgs) Handles btCopyPN.KeyUp
         If AddinGlobal.InventorApp.ActiveDocument IsNot Nothing Then
-            If e.KeyValue = Keys.Return Then
+            If e.Key = Key.Return Then
                 If tbPartNumber.Text.Length > 0 Then
                     tbStockNumber.Text = tbPartNumber.Text
                     tbStockNumber_Leave(sender, e)
@@ -2527,109 +2563,109 @@ Public Class IPropertiesForm
             assydoc = inventorApp.ActiveDocument
             If assydoc.SelectSet.Count = 1 Then
                 Dim compOcc As ComponentOccurrence = assydoc.SelectSet(1)
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
                     assydoc.SelectSet.Select(compOcc)
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbDescription_Leave(sender, e)
                     assydoc.SelectSet.Select(compOcc)
                 End If
             Else
-                If e.KeyValue = Keys.Tab Then
+                If e.Key = Key.Tab Then
                     tbDescription.SelectionStart = 0
                     tbStockNumber.Focus()
 
-                ElseIf e.KeyValue = Keys.Return Then
+                ElseIf e.Key = Key.Return Then
                     tbDescription_Leave(sender, e)
                 End If
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is PartDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbDescription.SelectionStart = 0
                 tbStockNumber.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbDescription_Leave(sender, e)
             End If
         ElseIf TypeOf (inventorApp.ActiveDocument) Is DrawingDocument Then
-            If e.KeyValue = Keys.Tab Then
+            If e.Key = Key.Tab Then
                 tbDescription.SelectionStart = 0
                 tbEngineer.Focus()
 
-            ElseIf e.KeyValue = Keys.Return Then
+            ElseIf e.Key = Key.Return Then
                 tbDescription_Leave(sender, e)
             End If
         End If
     End Sub
 
     Private Sub tbDrawnBy_KeyUp(sender As Object, e As KeyEventArgs) Handles tbDrawnBy.KeyUp
-        If e.KeyValue = Keys.Tab Then
+        If e.Key = Key.Tab Then
             tbRevNo.Focus()
-        ElseIf e.KeyValue = Keys.Return Then
+        ElseIf e.Key = Key.Return Then
             tbDrawnBy_Leave(sender, e)
         End If
     End Sub
 
-    Private Sub tbPartNumber_MouseHover(sender As Object, e As EventArgs) Handles tbPartNumber.MouseHover
+    Private Sub tbPartNumber_MouseHover(sender As Object, e As EventArgs) Handles tbPartNumber.MouseEnter
         Dim partText As String = tbPartNumber.Text
-        ToolTip1.Show(partText, tbPartNumber)
+        tbPartNumber.ToolTip = If(String.IsNullOrEmpty(partText), Nothing, partText)
     End Sub
 
-    Private Sub tbDescription_MouseHover(sender As Object, e As EventArgs) Handles tbDescription.MouseHover
+    Private Sub tbDescription_MouseHover(sender As Object, e As EventArgs) Handles tbDescription.MouseEnter
         Dim descText As String = tbDescription.Text
-        ToolTip1.Show(descText, tbDescription)
+        tbDescription.ToolTip = If(String.IsNullOrEmpty(descText), Nothing, descText)
     End Sub
 
-    Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.Leave
+    Private Sub tbNotes_Leave(sender As Object, e As EventArgs) Handles tbNotes.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForDesignTrackingPropertiesEnum.kCatalogWebLinkDesignTrackingProperties, tbNotes.Text, "", True)
-            tbNotes.ForeColor = Drawing.Color.Black
+            tbNotes.ResetForeground()
         End If
     End Sub
 
     Private Sub tbNotes_KeyUp(sender As Object, e As KeyEventArgs) Handles tbNotes.KeyUp
-        If e.KeyValue = Keys.Return Then
+        If e.Key = Key.Return Then
             tbNotes_Leave(sender, e)
         End If
     End Sub
 
-    Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.Leave
+    Private Sub tbComments_Leave(sender As Object, e As EventArgs) Handles tbComments.LostFocus
         If inventorApp.ActiveDocument IsNot Nothing Then
             iProperties.GetorSetStandardiProperty(inventorApp.ActiveDocument, PropertiesForSummaryInformationEnum.kCommentsSummaryInformation, tbComments.Text, "", True)
-            tbComments.ForeColor = Drawing.Color.Black
+            tbComments.ResetForeground()
         End If
     End Sub
 
     Private Sub tbComments_KeyUp(sender As Object, e As KeyEventArgs) Handles tbComments.KeyUp
-        If e.KeyValue = Keys.Return Then
+        If e.Key = Key.Return Then
             tbComments_Leave(sender, e)
         End If
     End Sub
 
-    Private Sub tbComments_Enter(sender As Object, e As EventArgs) Handles tbComments.Enter
+    Private Sub tbComments_Enter(sender As Object, e As EventArgs) Handles tbComments.GotFocus
         If tbComments.Text = "Comments" Then
             tbComments.Clear()
             tbComments.Focus()
         End If
         Dim hovText As String = "Comments"
-        ToolTip1.Show(hovText, tbComments)
+        tbComments.ToolTip = If(String.IsNullOrEmpty(hovText), Nothing, hovText)
     End Sub
 
-    Private Sub tbComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseHover
+    Private Sub tbComments_MouseHover(sender As Object, e As EventArgs) Handles tbComments.MouseEnter
         Dim hovText As String = tbComments.Text
-        ToolTip1.Show(hovText, tbComments)
+        tbComments.ToolTip = If(String.IsNullOrEmpty(hovText), Nothing, hovText)
     End Sub
 
-    Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseHover
+    Private Sub tbNotes_MouseHover(sender As Object, e As EventArgs) Handles tbNotes.MouseEnter
         Dim hovText As String = tbNotes.Text
-        ToolTip1.Show(hovText, tbNotes)
+        tbNotes.ToolTip = If(String.IsNullOrEmpty(hovText), Nothing, hovText)
     End Sub
 
-    Private Sub tbNotes_Enter(sender As Object, e As EventArgs) Handles tbNotes.Enter
+    Private Sub tbNotes_Enter(sender As Object, e As EventArgs) Handles tbNotes.GotFocus
         Dim hovText As String = "Notes"
-        ToolTip1.Show(hovText, tbNotes)
+        tbNotes.ToolTip = If(String.IsNullOrEmpty(hovText), Nothing, hovText)
     End Sub
 
     ''Validates a string of alpha characters
@@ -2668,9 +2704,9 @@ Public Class IPropertiesForm
         Dim oNumberRev As String = String.Empty
 
         'oDoc.PropertySets.Item("Inventor Summary Information").Item("Author").Value ="ELC"
-        oNumberRev = UCase(InputBox("Input revision letter/number, leave blank for new revision.", "REV", ""))
-        oChange = UCase(InputBox("Input change number if any?", "ECN", ""))
-        oInput = UCase(InputBox("What did you change?", "CHANGE", "INTRODUCED"))
+        oNumberRev = UCase(ShowInputBox("Input revision letter/number, leave blank for new revision.", "REV", ""))
+        oChange = UCase(ShowInputBox("Input change number if any?", "ECN", ""))
+        oInput = UCase(ShowInputBox("What did you change?", "CHANGE", "INTRODUCED"))
         If oInput = "" Then
             Exit Sub
         End If
@@ -2870,7 +2906,7 @@ Public Class IPropertiesForm
 
         ElseIf oFileDlg.FileName <> "" Then
             AddReferences(oDoc, oFileDlg.FileName)
-            MsgBox("File attached")
+            ShowMessage("File attached")
         End If
     End Sub
 
