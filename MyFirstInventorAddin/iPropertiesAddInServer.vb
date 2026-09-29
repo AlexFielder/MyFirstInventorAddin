@@ -167,10 +167,37 @@ Namespace iPropertiesController
                     AddinGlobal.DockableList.Add(Window)
                     'Window = localWindow
 
+#If DEBUG Then
+                    AddWpfSpikeWindow(uiMgr)
+#End If
                 End If
                 Log.Information("Loaded My First Inventor Add-in")
             Catch ex As Exception
                 Log.[Error](ex, ex.Message)
+            End Try
+        End Sub
+
+        Private Shared wpfSpikeHost As WpfDockableHost = Nothing
+
+        ' Spike: a second dockable window hosting a WPF UserControl, to prove keyboard input,
+        ' theming and resizing work before migrating the real panel off Windows Forms.
+        Private Sub AddWpfSpikeWindow(uiMgr As UserInterfaceManager)
+            Try
+                Dim panel As New WpfSpikePanel()
+                panel.ApplyTheme(IsInventorUsingDarkTheme())
+                wpfSpikeHost = New WpfDockableHost(panel, New IntPtr(AddinGlobal.InventorApp.MainFrameHWND), 440, 500)
+
+                Dim spikeWindow As DockableWindow = uiMgr.DockableWindows.Add(attribute.Value, "iPropertiesControllerWpfSpike", "WPF Spike " + AddinGlobal.DisplayableVersion)
+                spikeWindow.AddChild(wpfSpikeHost.Handle)
+                spikeWindow.DisabledDockingStates = DockingStateEnum.kDockTop + DockingStateEnum.kDockBottom
+                spikeWindow.ShowVisibilityCheckBox = True
+                spikeWindow.ShowTitleBar = True
+                spikeWindow.SetMinimumSize(300, 300)
+                spikeWindow.Visible = True
+                AddinGlobal.DockableList.Add(spikeWindow)
+                Log.Information("WPF spike window added, HWND {Hwnd}", wpfSpikeHost.Handle)
+            Catch ex As Exception
+                Log.Error(ex, "WPF spike window failed to load")
             End Try
         End Sub
 
@@ -1162,6 +1189,9 @@ Namespace iPropertiesController
                 For Each item As DockableWindow In AddinGlobal.DockableList
                     Marshal.FinalReleaseComObject(item)
                 Next
+
+                wpfSpikeHost?.Dispose()
+                wpfSpikeHost = Nothing
 
                 ' Release objects.
 
