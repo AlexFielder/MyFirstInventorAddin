@@ -42,12 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Autodesk.Inventor.Interop">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2025\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2027\Bin\Public Assemblies\Autodesk.Inventor.Interop.dll</HintPath>
       <Private>True</Private>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="stdole">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2025\Bin\stdole.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\Autodesk\Inventor 2027\Bin\stdole.dll</HintPath>
     </Reference>
     <Reference Update="System">
       <Name>System</Name>
@@ -81,7 +81,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -97,7 +97,7 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <Content Include="Resources\white_button.png" />
   </ItemGroup>
